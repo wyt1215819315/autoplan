@@ -13,6 +13,8 @@ public interface AutoNetmusicDao {
 
     AutoNetmusic selectByPrimaryKey(Integer id);
 
+    AutoNetmusic selectByUid(String uid);
+
     List<AutoNetmusic> selectAll();
 
     int updateByPrimaryKeySelective(AutoNetmusic record);

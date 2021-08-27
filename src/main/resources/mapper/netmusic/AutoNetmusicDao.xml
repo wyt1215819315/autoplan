@@ -1,223 +1,231 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.netmusic.dao.AutoNetmusicDao">
-  <resultMap id="BaseResultMap" type="com.netmusic.model.AutoNetmusic">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="countrycode" jdbcType="VARCHAR" property="countrycode" />
-    <result column="userid" jdbcType="INTEGER" property="userid" />
-    <result column="netmusic_id" jdbcType="VARCHAR" property="netmusicId" />
-    <result column="netmusic_name" jdbcType="VARCHAR" property="netmusicName" />
-    <result column="netmusic_level" jdbcType="VARCHAR" property="netmusicLevel" />
-    <result column="netmusic_need_day" jdbcType="VARCHAR" property="netmusicNeedDay" />
-    <result column="netmusic_need_listen" jdbcType="VARCHAR" property="netmusicNeedListen" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="cookie" jdbcType="VARCHAR" property="cookie" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="enable" jdbcType="VARCHAR" property="enable" />
-    <result column="other" jdbcType="VARCHAR" property="other" />
-    <result column="enddate" jdbcType="TIMESTAMP" property="enddate" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, phone, `password`, countrycode, userid, netmusic_id, netmusic_name, netmusic_level, 
+    <resultMap id="BaseResultMap" type="com.netmusic.model.AutoNetmusic">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="countrycode" jdbcType="VARCHAR" property="countrycode"/>
+        <result column="userid" jdbcType="INTEGER" property="userid"/>
+        <result column="netmusic_id" jdbcType="VARCHAR" property="netmusicId"/>
+        <result column="netmusic_name" jdbcType="VARCHAR" property="netmusicName"/>
+        <result column="netmusic_level" jdbcType="VARCHAR" property="netmusicLevel"/>
+        <result column="netmusic_need_day" jdbcType="VARCHAR" property="netmusicNeedDay"/>
+        <result column="netmusic_need_listen" jdbcType="VARCHAR" property="netmusicNeedListen"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="cookie" jdbcType="VARCHAR" property="cookie"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="enable" jdbcType="VARCHAR" property="enable"/>
+        <result column="other" jdbcType="VARCHAR" property="other"/>
+        <result column="enddate" jdbcType="TIMESTAMP" property="enddate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, phone, `password`, countrycode, userid, netmusic_id, netmusic_name, netmusic_level,
     netmusic_need_day, netmusic_need_listen, `name`, cookie, `status`, `enable`, other, 
     enddate
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from auto_netmusic
-    where id = #{id,jdbcType=INTEGER}
-  </select>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from auto_netmusic
+        where id = #{id,jdbcType=INTEGER}
+    </select>
     <select id="selectAll" resultType="com.netmusic.model.AutoNetmusic">
-      select
-      <include refid="Base_Column_List" />
-      from auto_netmusic
+        select
+        <include refid="Base_Column_List"/>
+        from auto_netmusic
+    </select>
+    <select id="selectByUid" resultType="com.netmusic.model.AutoNetmusic">
+        select
+        <include refid="Base_Column_List"/>
+        from auto_netmusic
+        where netmusic_id = #{uid}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from auto_netmusic
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.netmusic.model.AutoNetmusic" useGeneratedKeys="true">
-    insert into auto_netmusic (phone, `password`, countrycode, 
-      userid, netmusic_id, netmusic_name, 
-      netmusic_level, netmusic_need_day, netmusic_need_listen, 
-      `name`, cookie, `status`, 
-      `enable`, other, enddate
-      )
-    values (#{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{countrycode,jdbcType=VARCHAR}, 
-      #{userid,jdbcType=INTEGER}, #{netmusicId,jdbcType=VARCHAR}, #{netmusicName,jdbcType=VARCHAR}, 
-      #{netmusicLevel,jdbcType=VARCHAR}, #{netmusicNeedDay,jdbcType=VARCHAR}, #{netmusicNeedListen,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{cookie,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{enable,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR}, #{enddate,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.netmusic.model.AutoNetmusic" useGeneratedKeys="true">
-    insert into auto_netmusic
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="countrycode != null">
-        countrycode,
-      </if>
-      <if test="userid != null">
-        userid,
-      </if>
-      <if test="netmusicId != null">
-        netmusic_id,
-      </if>
-      <if test="netmusicName != null">
-        netmusic_name,
-      </if>
-      <if test="netmusicLevel != null">
-        netmusic_level,
-      </if>
-      <if test="netmusicNeedDay != null">
-        netmusic_need_day,
-      </if>
-      <if test="netmusicNeedListen != null">
-        netmusic_need_listen,
-      </if>
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="cookie != null">
-        cookie,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="enable != null">
-        `enable`,
-      </if>
-      <if test="other != null">
-        other,
-      </if>
-      <if test="enddate != null">
-        enddate,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="countrycode != null">
-        #{countrycode,jdbcType=VARCHAR},
-      </if>
-      <if test="userid != null">
-        #{userid,jdbcType=INTEGER},
-      </if>
-      <if test="netmusicId != null">
-        #{netmusicId,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicName != null">
-        #{netmusicName,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicLevel != null">
-        #{netmusicLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicNeedDay != null">
-        #{netmusicNeedDay,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicNeedListen != null">
-        #{netmusicNeedListen,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="cookie != null">
-        #{cookie,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="enable != null">
-        #{enable,jdbcType=VARCHAR},
-      </if>
-      <if test="other != null">
-        #{other,jdbcType=VARCHAR},
-      </if>
-      <if test="enddate != null">
-        #{enddate,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.netmusic.model.AutoNetmusic">
-    update auto_netmusic
-    <set>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="countrycode != null">
-        countrycode = #{countrycode,jdbcType=VARCHAR},
-      </if>
-      <if test="userid != null">
-        userid = #{userid,jdbcType=INTEGER},
-      </if>
-      <if test="netmusicId != null">
-        netmusic_id = #{netmusicId,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicName != null">
-        netmusic_name = #{netmusicName,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicLevel != null">
-        netmusic_level = #{netmusicLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicNeedDay != null">
-        netmusic_need_day = #{netmusicNeedDay,jdbcType=VARCHAR},
-      </if>
-      <if test="netmusicNeedListen != null">
-        netmusic_need_listen = #{netmusicNeedListen,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="cookie != null">
-        cookie = #{cookie,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="enable != null">
-        `enable` = #{enable,jdbcType=VARCHAR},
-      </if>
-      <if test="other != null">
-        other = #{other,jdbcType=VARCHAR},
-      </if>
-      <if test="enddate != null">
-        enddate = #{enddate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.netmusic.model.AutoNetmusic">
-    update auto_netmusic
-    set phone = #{phone,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
-      countrycode = #{countrycode,jdbcType=VARCHAR},
-      userid = #{userid,jdbcType=INTEGER},
-      netmusic_id = #{netmusicId,jdbcType=VARCHAR},
-      netmusic_name = #{netmusicName,jdbcType=VARCHAR},
-      netmusic_level = #{netmusicLevel,jdbcType=VARCHAR},
-      netmusic_need_day = #{netmusicNeedDay,jdbcType=VARCHAR},
-      netmusic_need_listen = #{netmusicNeedListen,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      cookie = #{cookie,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=VARCHAR},
-      `enable` = #{enable,jdbcType=VARCHAR},
-      other = #{other,jdbcType=VARCHAR},
-      enddate = #{enddate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        delete
+        from auto_netmusic
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.netmusic.model.AutoNetmusic"
+            useGeneratedKeys="true">
+        insert into auto_netmusic (phone, `password`, countrycode,
+                                   userid, netmusic_id, netmusic_name,
+                                   netmusic_level, netmusic_need_day, netmusic_need_listen,
+                                   `name`, cookie, `status`,
+                                   `enable`, other, enddate)
+        values (#{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{countrycode,jdbcType=VARCHAR},
+                #{userid,jdbcType=INTEGER}, #{netmusicId,jdbcType=VARCHAR}, #{netmusicName,jdbcType=VARCHAR},
+                #{netmusicLevel,jdbcType=VARCHAR}, #{netmusicNeedDay,jdbcType=VARCHAR},
+                #{netmusicNeedListen,jdbcType=VARCHAR},
+                #{name,jdbcType=VARCHAR}, #{cookie,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+                #{enable,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR}, #{enddate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.netmusic.model.AutoNetmusic"
+            useGeneratedKeys="true">
+        insert into auto_netmusic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="countrycode != null">
+                countrycode,
+            </if>
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="netmusicId != null">
+                netmusic_id,
+            </if>
+            <if test="netmusicName != null">
+                netmusic_name,
+            </if>
+            <if test="netmusicLevel != null">
+                netmusic_level,
+            </if>
+            <if test="netmusicNeedDay != null">
+                netmusic_need_day,
+            </if>
+            <if test="netmusicNeedListen != null">
+                netmusic_need_listen,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="cookie != null">
+                cookie,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="enable != null">
+                `enable`,
+            </if>
+            <if test="other != null">
+                other,
+            </if>
+            <if test="enddate != null">
+                enddate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="countrycode != null">
+                #{countrycode,jdbcType=VARCHAR},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="netmusicId != null">
+                #{netmusicId,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicName != null">
+                #{netmusicName,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicLevel != null">
+                #{netmusicLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicNeedDay != null">
+                #{netmusicNeedDay,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicNeedListen != null">
+                #{netmusicNeedListen,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="cookie != null">
+                #{cookie,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="enable != null">
+                #{enable,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="enddate != null">
+                #{enddate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.netmusic.model.AutoNetmusic">
+        update auto_netmusic
+        <set>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="countrycode != null">
+                countrycode = #{countrycode,jdbcType=VARCHAR},
+            </if>
+            <if test="userid != null">
+                userid = #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="netmusicId != null">
+                netmusic_id = #{netmusicId,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicName != null">
+                netmusic_name = #{netmusicName,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicLevel != null">
+                netmusic_level = #{netmusicLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicNeedDay != null">
+                netmusic_need_day = #{netmusicNeedDay,jdbcType=VARCHAR},
+            </if>
+            <if test="netmusicNeedListen != null">
+                netmusic_need_listen = #{netmusicNeedListen,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="cookie != null">
+                cookie = #{cookie,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="enable != null">
+                `enable` = #{enable,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                other = #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="enddate != null">
+                enddate = #{enddate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.netmusic.model.AutoNetmusic">
+        update auto_netmusic
+        set phone                = #{phone,jdbcType=VARCHAR},
+            `password`           = #{password,jdbcType=VARCHAR},
+            countrycode          = #{countrycode,jdbcType=VARCHAR},
+            userid               = #{userid,jdbcType=INTEGER},
+            netmusic_id          = #{netmusicId,jdbcType=VARCHAR},
+            netmusic_name        = #{netmusicName,jdbcType=VARCHAR},
+            netmusic_level       = #{netmusicLevel,jdbcType=VARCHAR},
+            netmusic_need_day    = #{netmusicNeedDay,jdbcType=VARCHAR},
+            netmusic_need_listen = #{netmusicNeedListen,jdbcType=VARCHAR},
+            `name`               = #{name,jdbcType=VARCHAR},
+            cookie               = #{cookie,jdbcType=VARCHAR},
+            `status`             = #{status,jdbcType=VARCHAR},
+            `enable`             = #{enable,jdbcType=VARCHAR},
+            other                = #{other,jdbcType=VARCHAR},
+            enddate              = #{enddate,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

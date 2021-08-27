@@ -226,7 +226,7 @@ public class BiliService {
         }
         map.put("flag", true);
         map.put("msg", "check complete");
-        map.put("data", autoBilibili);
+//        map.put("data", autoBilibili);
         return map;
     }
 

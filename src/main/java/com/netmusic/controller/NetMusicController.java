@@ -1,7 +1,7 @@
-package com.oldwu.controller;
+package com.netmusic.controller;
 
-import com.oldwu.entity.AutoBilibili;
-import com.oldwu.service.BiliService;
+import com.netmusic.model.AutoNetmusic;
+import com.netmusic.service.NetmusicService;
 import com.oldwu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,25 +13,20 @@ import java.security.Principal;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user/bili")
-public class BiliController {
+@RequestMapping("/api/user/netmusic")
+public class NetMusicController {
 
     @Autowired
-    private BiliService service;
+    private NetmusicService netmusicService;
 
     @Autowired
     private UserService userService;
 
 
     @PostMapping("/add")
-    public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
-        autoBilibili.setUserid(userService.getUserId(principal.getName()));
-        return service.addBiliPlan(autoBilibili);
+    public Map<String, String> add(@RequestBody AutoNetmusic autoNetmusic, Principal principal) {
+        autoNetmusic.setUserid(userService.getUserId(principal.getName()));
+        return netmusicService.addBiliPlan(autoNetmusic);
     }
-
-//    @RequestMapping("/add")
-//    public Map<String,String> addBiliInfo(){
-//
-//    }
 
 }

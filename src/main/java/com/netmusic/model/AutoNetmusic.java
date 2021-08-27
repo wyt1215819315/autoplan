@@ -1,6 +1,7 @@
 package com.netmusic.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import lombok.Data;
 
@@ -43,4 +44,12 @@ public class AutoNetmusic implements Serializable {
     private Date enddate;
 
     private static final long serialVersionUID = 1L;
+
+    public String getEndDateString(){
+        if (enddate == null){
+            return null;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+        return simpleDateFormat.format(enddate);
+    }
 }
