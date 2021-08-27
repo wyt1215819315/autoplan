@@ -1,0 +1,14 @@
+{
+  "taskIntervalTime": 10,
+  "numberOfCoins": 5,
+  "reserveCoins": 50,
+  "selectLike": 0,
+  "monthEndAutoCharge": true,
+  "giveGift": true,
+  "upLive": "0",
+  "chargeForLove": "0",
+  "devicePlatform": "ios",
+  "coinAddPriority": 1,
+  "skipDailyTask": false,
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36 Edg/91.0.864.54"
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>登录页面</title>
+    <link rel="stylesheet" th:href="@{static/css/bootstrap.min.css}"/>
+    <style type="text/css">
+        body {
+            padding-top: 50px;
+        }
+
+        .starter-template {
+            padding: 40px 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">oldwu Auto_Helper</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/index}"> 首页 </a></li>
+                <li><a th:href="@{/}"> bilibili-Helper </a></li>
+                <li><a th:href="@{/}"> netmusic-Helper </a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li><a th:href="@{/reg}"> 注册 </a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+
+    <div class="starter-template">
+        <p class="bg-warning" th:if="${param.logout}">已成功注销</p><!-- 1 -->
+        <p class="bg-danger" th:if="${param.error}">有错误，请重试</p> <!-- 2 -->
+        <p class="bg-success" th:if="${regok}">注册成功，请登录</p> <!-- 2 -->
+        <h2>使用账号密码登录</h2>
+        <form action="/login" method="POST" name="form" th:action="@{/login}"> <!-- 3 -->
+            <div class="form-group">
+                <label for="username">账号</label>
+                <input class="form-control" name="username" placeholder="账号" type="text" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input class="form-control" name="password" placeholder="密码" type="password"/>
+            </div>
+            <input class="btn btn-primary" id="login" type="submit" value="Login"/>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

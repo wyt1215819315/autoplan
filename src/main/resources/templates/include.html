@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerr(title)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{/static/css/pear.css}">
+</head>
+
+<!-- 通用JS -->
+<div th:fragment="footer">
+    <script> let rootPath="[[${rootPath}]]";</script>
+    <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+<!--    <script th:src="@{/static/js/layui.js}"></script>-->
+    <script th:src="@{/static/js/pear.js}"></script>
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+</div>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container" th:fragment="header">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">oldwu Auto_Helper</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar">
+        <ul class="nav navbar-nav">
+            <li><a th:href="@{/index}"> 首页 </a></li>
+            <li><a th:href="@{/bili/index}"> bilibili-Helper </a></li>
+            <li><a th:href="@{/netmusic/index}"> netmusic-Helper </a></li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/admin/job/view}"> 定时任务管理 </a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/admin/joblog/view}"> 定时任务日志查看 </a>
+            </li>
+        </ul>
+        <ul sec:authorize="!hasRole('ROLE_USER')" class="nav navbar-nav pull-right">
+            <li><a th:href="@{/login}"> 登录 </a></li>
+            <li><a th:href="@{/reg}"> 注册 </a></li>
+        </ul>
+        <ul sec:authorize="hasRole('ROLE_USER')" class="nav navbar-nav pull-right">
+            <li>
+                <a th:text="欢迎你 + ${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" href="my"></a>
+            </li>
+            <li><a href="/logout"> 注销 </a></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

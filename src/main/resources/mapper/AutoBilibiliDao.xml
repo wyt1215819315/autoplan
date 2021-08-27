@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oldwu.dao.AutoBilibiliDao">
+  <resultMap id="BaseResultMap" type="com.oldwu.entity.AutoBilibili">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sessdata" jdbcType="VARCHAR" property="sessdata" />
+    <result column="bili_jct" jdbcType="VARCHAR" property="biliJct" />
+    <result column="dedeuserid" jdbcType="VARCHAR" property="dedeuserid" />
+    <result column="taskIntervalTime" jdbcType="INTEGER" property="taskintervaltime" />
+    <result column="numberOfCoins" jdbcType="INTEGER" property="numberofcoins" />
+    <result column="reserveCoins" jdbcType="INTEGER" property="reservecoins" />
+    <result column="selectLike" jdbcType="INTEGER" property="selectlike" />
+    <result column="monthEndAutoCharge" jdbcType="VARCHAR" property="monthendautocharge" />
+    <result column="giveGift" jdbcType="VARCHAR" property="givegift" />
+    <result column="upLive" jdbcType="VARCHAR" property="uplive" />
+    <result column="chargeForLove" jdbcType="VARCHAR" property="chargeforlove" />
+    <result column="devicePlatform" jdbcType="VARCHAR" property="deviceplatform" />
+    <result column="coinAddPriority" jdbcType="INTEGER" property="coinaddpriority" />
+    <result column="userAgent" jdbcType="VARCHAR" property="useragent" />
+    <result column="skipDailyTask" jdbcType="VARCHAR" property="skipdailytask" />
+    <result column="SERVERPUSHKEY" jdbcType="VARCHAR" property="serverpushkey" />
+    <result column="other" jdbcType="VARCHAR" property="other" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, `name`, sessdata, bili_jct, dedeuserid, taskIntervalTime, numberOfCoins, 
+    reserveCoins, selectLike, monthEndAutoCharge, giveGift, upLive, chargeForLove, devicePlatform, 
+    coinAddPriority, userAgent, skipDailyTask, SERVERPUSHKEY, other
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auto_bilibili
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultType="com.oldwu.entity.AutoBilibili">
+    select
+    <include refid="Base_Column_List" />
+    from auto_bilibili
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auto_bilibili
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoBilibili" useGeneratedKeys="true">
+    insert into auto_bilibili (userid, `name`, sessdata, 
+      bili_jct, dedeuserid, taskIntervalTime, 
+      numberOfCoins, reserveCoins, selectLike, 
+      monthEndAutoCharge, giveGift, upLive, 
+      chargeForLove, devicePlatform, coinAddPriority, 
+      userAgent, skipDailyTask, SERVERPUSHKEY, 
+      other)
+    values (#{userid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sessdata,jdbcType=VARCHAR}, 
+      #{biliJct,jdbcType=VARCHAR}, #{dedeuserid,jdbcType=VARCHAR}, #{taskintervaltime,jdbcType=INTEGER}, 
+      #{numberofcoins,jdbcType=INTEGER}, #{reservecoins,jdbcType=INTEGER}, #{selectlike,jdbcType=INTEGER}, 
+      #{monthendautocharge,jdbcType=VARCHAR}, #{givegift,jdbcType=VARCHAR}, #{uplive,jdbcType=VARCHAR}, 
+      #{chargeforlove,jdbcType=VARCHAR}, #{deviceplatform,jdbcType=VARCHAR}, #{coinaddpriority,jdbcType=INTEGER}, 
+      #{useragent,jdbcType=VARCHAR}, #{skipdailytask,jdbcType=VARCHAR}, #{serverpushkey,jdbcType=VARCHAR}, 
+      #{other,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoBilibili" useGeneratedKeys="true">
+    insert into auto_bilibili
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="sessdata != null">
+        sessdata,
+      </if>
+      <if test="biliJct != null">
+        bili_jct,
+      </if>
+      <if test="dedeuserid != null">
+        dedeuserid,
+      </if>
+      <if test="taskintervaltime != null">
+        taskIntervalTime,
+      </if>
+      <if test="numberofcoins != null">
+        numberOfCoins,
+      </if>
+      <if test="reservecoins != null">
+        reserveCoins,
+      </if>
+      <if test="selectlike != null">
+        selectLike,
+      </if>
+      <if test="monthendautocharge != null">
+        monthEndAutoCharge,
+      </if>
+      <if test="givegift != null">
+        giveGift,
+      </if>
+      <if test="uplive != null">
+        upLive,
+      </if>
+      <if test="chargeforlove != null">
+        chargeForLove,
+      </if>
+      <if test="deviceplatform != null">
+        devicePlatform,
+      </if>
+      <if test="coinaddpriority != null">
+        coinAddPriority,
+      </if>
+      <if test="useragent != null">
+        userAgent,
+      </if>
+      <if test="skipdailytask != null">
+        skipDailyTask,
+      </if>
+      <if test="serverpushkey != null">
+        SERVERPUSHKEY,
+      </if>
+      <if test="other != null">
+        other,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sessdata != null">
+        #{sessdata,jdbcType=VARCHAR},
+      </if>
+      <if test="biliJct != null">
+        #{biliJct,jdbcType=VARCHAR},
+      </if>
+      <if test="dedeuserid != null">
+        #{dedeuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="taskintervaltime != null">
+        #{taskintervaltime,jdbcType=INTEGER},
+      </if>
+      <if test="numberofcoins != null">
+        #{numberofcoins,jdbcType=INTEGER},
+      </if>
+      <if test="reservecoins != null">
+        #{reservecoins,jdbcType=INTEGER},
+      </if>
+      <if test="selectlike != null">
+        #{selectlike,jdbcType=INTEGER},
+      </if>
+      <if test="monthendautocharge != null">
+        #{monthendautocharge,jdbcType=VARCHAR},
+      </if>
+      <if test="givegift != null">
+        #{givegift,jdbcType=VARCHAR},
+      </if>
+      <if test="uplive != null">
+        #{uplive,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeforlove != null">
+        #{chargeforlove,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceplatform != null">
+        #{deviceplatform,jdbcType=VARCHAR},
+      </if>
+      <if test="coinaddpriority != null">
+        #{coinaddpriority,jdbcType=INTEGER},
+      </if>
+      <if test="useragent != null">
+        #{useragent,jdbcType=VARCHAR},
+      </if>
+      <if test="skipdailytask != null">
+        #{skipdailytask,jdbcType=VARCHAR},
+      </if>
+      <if test="serverpushkey != null">
+        #{serverpushkey,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null">
+        #{other,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.AutoBilibili">
+    update auto_bilibili
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sessdata != null">
+        sessdata = #{sessdata,jdbcType=VARCHAR},
+      </if>
+      <if test="biliJct != null">
+        bili_jct = #{biliJct,jdbcType=VARCHAR},
+      </if>
+      <if test="dedeuserid != null">
+        dedeuserid = #{dedeuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="taskintervaltime != null">
+        taskIntervalTime = #{taskintervaltime,jdbcType=INTEGER},
+      </if>
+      <if test="numberofcoins != null">
+        numberOfCoins = #{numberofcoins,jdbcType=INTEGER},
+      </if>
+      <if test="reservecoins != null">
+        reserveCoins = #{reservecoins,jdbcType=INTEGER},
+      </if>
+      <if test="selectlike != null">
+        selectLike = #{selectlike,jdbcType=INTEGER},
+      </if>
+      <if test="monthendautocharge != null">
+        monthEndAutoCharge = #{monthendautocharge,jdbcType=VARCHAR},
+      </if>
+      <if test="givegift != null">
+        giveGift = #{givegift,jdbcType=VARCHAR},
+      </if>
+      <if test="uplive != null">
+        upLive = #{uplive,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeforlove != null">
+        chargeForLove = #{chargeforlove,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceplatform != null">
+        devicePlatform = #{deviceplatform,jdbcType=VARCHAR},
+      </if>
+      <if test="coinaddpriority != null">
+        coinAddPriority = #{coinaddpriority,jdbcType=INTEGER},
+      </if>
+      <if test="useragent != null">
+        userAgent = #{useragent,jdbcType=VARCHAR},
+      </if>
+      <if test="skipdailytask != null">
+        skipDailyTask = #{skipdailytask,jdbcType=VARCHAR},
+      </if>
+      <if test="serverpushkey != null">
+        SERVERPUSHKEY = #{serverpushkey,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null">
+        other = #{other,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.AutoBilibili">
+    update auto_bilibili
+    set userid = #{userid,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      sessdata = #{sessdata,jdbcType=VARCHAR},
+      bili_jct = #{biliJct,jdbcType=VARCHAR},
+      dedeuserid = #{dedeuserid,jdbcType=VARCHAR},
+      taskIntervalTime = #{taskintervaltime,jdbcType=INTEGER},
+      numberOfCoins = #{numberofcoins,jdbcType=INTEGER},
+      reserveCoins = #{reservecoins,jdbcType=INTEGER},
+      selectLike = #{selectlike,jdbcType=INTEGER},
+      monthEndAutoCharge = #{monthendautocharge,jdbcType=VARCHAR},
+      giveGift = #{givegift,jdbcType=VARCHAR},
+      upLive = #{uplive,jdbcType=VARCHAR},
+      chargeForLove = #{chargeforlove,jdbcType=VARCHAR},
+      devicePlatform = #{deviceplatform,jdbcType=VARCHAR},
+      coinAddPriority = #{coinaddpriority,jdbcType=INTEGER},
+      userAgent = #{useragent,jdbcType=VARCHAR},
+      skipDailyTask = #{skipdailytask,jdbcType=VARCHAR},
+      SERVERPUSHKEY = #{serverpushkey,jdbcType=VARCHAR},
+      other = #{other,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

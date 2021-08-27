@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>老吴的自动任务管理-首页</title>
+    <link rel="stylesheet" th:href="@{static/css/bootstrap.min.css}"/>
+    <style type="text/css">
+        body {
+            padding-top: 50px;
+        }
+
+        .starter-template {
+            padding: 40px 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<nav th:include="/include::header" class="navbar navbar-inverse navbar-fixed-top">
+
+</nav>
+
+
+<div class="container">
+    <h1>这是一个自动化托管系统</h1>
+    <h2>能够实现每日自动b站领经验，网易云自动签到刷300首歌</h2>
+    <h2>项目任务部分源码来源</h2>
+    <h2>
+        <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
+    </h2>
+    <h2>
+        <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
+    </h2>
+    <h2><a href="" target="_blank">使用说明</a></h2>
+</div>
+
+
+</body>
+
+</html>

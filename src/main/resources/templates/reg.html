@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>注册页面</title>
+    <link rel="stylesheet" th:href="@{static/css/bootstrap.min.css}"/>
+    <style type="text/css">
+        body {
+            padding-top: 50px;
+        }
+
+        .starter-template {
+            padding: 40px 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">oldwu Auto_Helper</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li><a th:href="@{/index}"> 首页 </a></li>
+                <li><a th:href="@{/}"> bilibili-Helper </a></li>
+                <li><a th:href="@{/}"> netmusic-Helper </a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li><a th:href="@{/login}"> 登录 </a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+
+    <div class="starter-template">
+        <p class="bg-danger" th:if="${error}" th:text="${msg}"></p>
+        <h2>注册账号（请牢记，不支持找回）</h2>
+        <form action="/login" method="POST" name="form" th:action="@{/reg}"> <!-- 3 -->
+            <div class="form-group">
+                <label for="username">账号</label>
+                <input class="form-control" id="username" name="username" placeholder="账号" type="text" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input class="form-control" id="password" name="password" placeholder="密码" type="password"/>
+            </div>
+            <div class="form-group">
+                <label for="repassword">确认密码</label>
+                <input class="form-control" id="repassword" name="repassword" placeholder="密码" type="password"/>
+            </div>
+            <input class="btn btn-primary" id="reg" onclick="return check()" type="submit" value="注册"/>
+        </form>
+    </div>
+
+</div>
+<script>
+    function check() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var repassword = document.getElementById("repassword").value;
+        if (username.length < 6 || username.length > 20) {
+            alert("用户名必须为6-20位！");
+            return false;
+        } else if (password !== repassword) {
+            alert("两次输入的密码不一致!")
+            return false;
+        } else if (password.length < 8 || password.length > 20) {
+            alert("密码长度需在8-20位之间！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+
+</html>

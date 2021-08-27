@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oldwu.dao.UserDao">
+    <resultMap id="userMap" type="com.oldwu.domain.SysUser">
+        <id property="id" column="ID"/>
+        <result property="username" column="username"/>
+        <result property="password" column="PASSWORD"/>
+        <collection property="roles" ofType="com.oldwu.domain.SysRole">
+            <result column="name" property="name"/>
+        </collection>
+
+    </resultMap>
+    <insert id="regUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `sys_user`(`username`, `password`)
+        VALUES (#{username}, #{password})
+    </insert>
+    <insert id="setRole">
+        INSERT INTO `auto_plan`.`sys_role_user`(`sys_user_id`, `sys_role_id`) VALUES (#{id}, 2)
+    </insert>
+    <select id="findByUserName" parameterType="String" resultMap="userMap">
+        select u.*
+             , r.name
+        from Sys_User u
+                 LEFT JOIN sys_role_user sru on u.id = sru.Sys_User_id
+                 LEFT JOIN Sys_Role r on sru.Sys_Role_id = r.id
+        where username = #{username}
+    </select>
+</mapper>

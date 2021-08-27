@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<body>
+<form th:action="@{/logout}" method="post" id="test_form">
+    <button type="submit" class="btn">Log Out</button>
+</form>
+<script>
+    window.onload = function(){
+        var form = document.getElementById('test_form');
+        form.submit();
+    }
+</script>
+</body>
+
+</html>
