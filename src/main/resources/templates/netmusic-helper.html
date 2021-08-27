@@ -3,8 +3,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="text/html;charset=UTF-8"/>
-    <title>b站任务列表</title>
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <title>网易云任务列表</title>
+<!--    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>-->
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
@@ -19,10 +19,8 @@
         }
     </style>
 </head>
-<body>
-<nav th:include="/include::header" class="navbar navbar-inverse navbar-fixed-top">
-
-</nav>
+<body style="padding-top: 0;margin: 10px">
+<ul th:include="/include::header" class="layui-nav"></ul>
 
 
 <div class="container">
@@ -51,12 +49,11 @@
         </thead>
         <tbody>
         <tr th:each="plan:${list}">
-            <td th:text="${plan()}"></td>
-            <td th:text="${plan.getBiliCoin()}"></td>
-            <td th:text="${plan.getBiliLevel()}"></td>
-            <td th:text="${plan.getBiliUpexp() - plan.getBiliExp()}"></td>
-            <td th:text="${plan.getIsVip()?'大会员':'不是大会员'}"></td>
-            <td th:text="${plan.getSkipdailytask()?'任务关闭':'任务开启'}"></td>
+            <td th:text="${plan.getNetmusicName()}"></td>
+            <td th:text="${plan.getNetmusicLevel()}"></td>
+            <td th:text="${plan.getNetmusicNeedDay()}"></td>
+            <td th:text="${plan.getNetmusicNeedListen()}"></td>
+            <td th:text="${plan.getEnable().equals('false')?'任务关闭':'任务开启'}"></td>
             <td>
                 <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
                 <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
@@ -72,7 +69,7 @@
 
 </div>
 
-
+<script th:include="/include::layelement"></script>
 </body>
 
 </html>

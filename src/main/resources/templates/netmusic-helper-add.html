@@ -3,8 +3,9 @@
 <head>
     <meta content="text/html;charset=UTF-8"/>
     <title>b站任务添加</title>
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/bootstrap.min.css}"/>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script th:src="@{/static/js/md5.js}"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
     <style type="text/css">
@@ -26,11 +27,8 @@
         }
     </style>
 </head>
-<body>
-
-<nav th:include="/include::header" class="navbar navbar-inverse navbar-fixed-top">
-
-</nav>
+<body style="padding-top: 0;margin: 10px">
+<ul th:include="/include::header" class="layui-nav"></ul>
 <div class="main-container">
 
     <div class="main-container">
@@ -47,132 +45,42 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">Sessdate</label>
+                <label class="layui-form-label">手机区号（默认86）</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="sessdata" name="sessdata"
-                           placeholder="Sessdate"
-                           type="text">
+                    <input autocomplete="off" class="layui-input" lay-verify="countrycode" name="countrycode"
+                           placeholder="手机区号，中国的不填没事"
+                           type="number">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">biliJct</label>
+                <label class="layui-form-label">登录手机号</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="biliJct" name="biliJct"
-                           placeholder="biliJct"
-                           type="text">
+                    <input autocomplete="off" class="layui-input" lay-verify="phone" name="phone"
+                           placeholder="请输入登录手机号"
+                           type="number">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">dedeuserid</label>
+                <label class="layui-form-label">登录密码</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="dedeuserid" name="dedeuserid"
-                           placeholder="dedeuserid" type="text">
+                    <input autocomplete="off" class="layui-input" lay-verify="password" name="password"
+                           placeholder="请输入登录密码，格式为32位md5，如果未转换程序会自动帮你转换"
+                           type="password">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">任务执行间隔</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="taskintervaltime" name="taskintervaltime"
-                           placeholder="任务执行间隔" type="number" value="10">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">每日投币数量</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="numberofcoins" name="numberofcoins"
-                           placeholder="每日投币数量"
-                           type="number" value="5">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">预留的硬币数</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="reservecoins" name="reservecoins"
-                           placeholder="预留的硬币数"
-                           type="number" value="50">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">投币时是否点赞</label>
+                <label class="layui-form-label">是否开启任务</label>
                 <div class="layui-input-block">
                     <select class="layui-input" name="selectlike">
-                        <option selected value="0">投币时不点赞</option>
-                        <option value="1">投币时点赞</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">年度大会员月底是否用 B 币券给自己充电</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="monthendautocharge">
                         <option selected value="true">开启</option>
                         <option value="false">关闭</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">直播送出即将过期的礼物</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="givegift">
-                        <option selected value="true">开启</option>
-                        <option value="false">关闭</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">直播送出即将过期的礼物，指定 up 主，为 0 时则随随机</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="uplive" name="uplive"
-                           placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主"
-                           type="number" value="0">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
-                           placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电"
-                           type="number" value="0">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">手机端漫画签到时的平台，建议选择你设备的平台</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="deviceplatform">
-                        <option selected value="ios">苹果</option>
-                        <option value="android">安卓</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">投币规则</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="coinaddpriority">
-                        <option value="0">优先给热榜视频投币</option>
-                        <option selected value="1">优先给关注的 up 投币</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">浏览器UA</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="useragent" name="useragent"
-                           placeholder="不知道就空着" type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">每日任务总开关</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="skipdailytask">
-                        <option selected value="false">开</option>
-                        <option value="true">关</option>
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">任务完成推送WebHook</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="serverpushkey" name="serverpushkey"
+                    <input autocomplete="off" class="layui-input" lay-verify="other" name="other"
                            placeholder="输入WebHook地址，支持钉钉，server酱"
                            type="text">
                 </div>
@@ -190,40 +98,29 @@
     layui.use(['form', 'jquery'], function () {
         let form = layui.form;
         let $ = layui.jquery;
-        let MODULE_PATH = rootPath + "/api/user/bili";
+        let MODULE_PATH = rootPath + "/api/user/netmusic";
 
         //名称验证
         form.verify({
-            dedeuserid: function (value) {
+            phone: function (value) {
                 if (value.length == 0) {
-                    return 'cookie三项为必填！';
+                    return '手机号为必填！';
                 }
-                // var msg = "";
-                // $.ajax({
-                //     url: MODULE_PATH + '/checkLoginNameUnique',
-                //     data: "username=" + value,
-                //     dataType: 'json',
-                //     type: 'post',
-                //     async: false,
-                //     success: function (result) {
-                //         msg = result;
-                //     }
-                // });
-                // if (msg == 1) {
-                //     return "已有相同数据";
-                // }
+            },
+            password: function (value) {
+                if(value.length == 0){
+                    return '请输入密码！';
+                }
             }
         });
 
 
         //保存
         form.on('submit(user-save)', function (data) {
-            // let roleIds = "";
-            // $('input[type=checkbox]:checked').each(function () {
-            //     roleIds += $(this).val() + ",";
-            // });
-            // roleIds = roleIds.substr(0, roleIds.length - 1);
-            // data.field.roleIds = roleIds;
+            var password = data.field.password;
+            if(password.length != 32){
+                data.field.password = hex_md5(password);
+            }
             $.ajax({
                 url: MODULE_PATH + '/add',
                 data: JSON.stringify(data.field),
@@ -256,6 +153,6 @@
         });
     })
 </script>
-
+<script th:include="/include::layelement"></script>
 </body>
 </html>

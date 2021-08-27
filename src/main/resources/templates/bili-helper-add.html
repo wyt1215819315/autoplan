@@ -3,7 +3,6 @@
 <head>
     <meta content="text/html;charset=UTF-8"/>
     <title>b站任务添加</title>
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
@@ -26,11 +25,9 @@
         }
     </style>
 </head>
-<body>
+<body style="padding-top: 0;margin: 10px">
+<ul th:include="/include::header" class="layui-nav"></ul>
 
-<nav th:include="/include::header" class="navbar navbar-inverse navbar-fixed-top">
-
-</nav>
 <div class="main-container">
 
     <div class="main-container">
@@ -196,34 +193,24 @@
         form.verify({
             dedeuserid: function (value) {
                 if (value.length == 0) {
-                    return 'cookie三项为必填！';
+                    return '请输入dedeuserid！';
                 }
-                // var msg = "";
-                // $.ajax({
-                //     url: MODULE_PATH + '/checkLoginNameUnique',
-                //     data: "username=" + value,
-                //     dataType: 'json',
-                //     type: 'post',
-                //     async: false,
-                //     success: function (result) {
-                //         msg = result;
-                //     }
-                // });
-                // if (msg == 1) {
-                //     return "已有相同数据";
-                // }
+            },
+            sessdata: function (value) {
+                if (value.length == 0) {
+                    return '请输入sessdata！';
+                }
+            },
+            biliJct: function (value) {
+                if (value.length == 0) {
+                    return '请输入biliJct！';
+                }
             }
         });
 
 
         //保存
         form.on('submit(user-save)', function (data) {
-            // let roleIds = "";
-            // $('input[type=checkbox]:checked').each(function () {
-            //     roleIds += $(this).val() + ",";
-            // });
-            // roleIds = roleIds.substr(0, roleIds.length - 1);
-            // data.field.roleIds = roleIds;
             $.ajax({
                 url: MODULE_PATH + '/add',
                 data: JSON.stringify(data.field),
@@ -256,6 +243,6 @@
         });
     })
 </script>
-
+<script th:include="/include::layelement"></script>
 </body>
 </html>

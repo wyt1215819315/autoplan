@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.pollix.at/thymeleaf/shiro" xmlns="">
 <head>
-    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
+    <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
     <th:block th:include="include :: headerr('定时任务列表')"/>
-    <th:block th:include="include :: header"/>
 </head>
 <body class="pear-container">
+<ul th:include="/include::header" class="layui-nav"></ul>
 <div class="layui-card">
     <div class="layui-card-body">
         <form class="layui-form" action="">
@@ -31,6 +33,7 @@
         <table id="sysQuartzJob-table" lay-filter="sysQuartzJob-table"></table>
     </div>
 </div>
+<script th:include="/include::layelement"></script>
 </body>
 
 <script type="text/html" id="role-toolbar">
@@ -81,7 +84,6 @@
     <span class="layui-badge">禁止</span>
     {{# } }}
 </script>
-
 
 <th:block th:include="include :: footer"/>
 <script>

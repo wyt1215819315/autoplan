@@ -3,7 +3,9 @@
 <head>
     <meta content="text/html;charset=UTF-8"/>
     <title>注册页面</title>
-    <link rel="stylesheet" th:href="@{static/css/bootstrap.min.css}"/>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
+    <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
     <style type="text/css">
         body {
             padding-top: 50px;
@@ -15,48 +17,54 @@
         }
     </style>
 </head>
-<body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">oldwu Auto_Helper</a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav">
-                <li><a th:href="@{/index}"> 首页 </a></li>
-                <li><a th:href="@{/}"> bilibili-Helper </a></li>
-                <li><a th:href="@{/}"> netmusic-Helper </a></li>
-            </ul>
-            <ul class="nav navbar-nav pull-right">
-                <li><a th:href="@{/login}"> 登录 </a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</nav>
+<body style="padding-top: 0;margin: 10px">
+<ul th:include="/include::header" class="layui-nav"></ul>
 <div class="container">
 
-    <div class="starter-template">
+    <div class="starter-template" style="text-align: center">
         <p class="bg-danger" th:if="${error}" th:text="${msg}"></p>
-        <h2>注册账号（请牢记，不支持找回）</h2>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>注册账号（请牢记，不支持找回）</legend>
+        </fieldset>
         <form action="/login" method="POST" name="form" th:action="@{/reg}"> <!-- 3 -->
-            <div class="form-group">
-                <label for="username">账号</label>
-                <input class="form-control" id="username" name="username" placeholder="账号" type="text" value=""/>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
+                               placeholder="请输入用户名" id="username"
+                               required type="text">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">密码</label>
-                <input class="form-control" id="password" name="password" placeholder="密码" type="password"/>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
+                               placeholder="请输入密码" id="password"
+                               required type="password">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="repassword">确认密码</label>
-                <input class="form-control" id="repassword" name="repassword" placeholder="密码" type="password"/>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="repassword"
+                               placeholder="请重新输入密码" id="repassword"
+                               required type="password">
+                    </div>
+                </div>
             </div>
-            <input class="btn btn-primary" id="reg" onclick="return check()" type="submit" value="注册"/>
+            <input class="layui-btn layui-btn-lg" id="reg" onclick="return check()" type="submit" value="注册"/>
         </form>
     </div>
 
 </div>
+<script th:if="${error}" th:inline="javascript">
+    layer.msg("/*[[${msg}]]*/", {icon: 2, time: 5000});
+</script>
 <script>
     function check() {
         var username = document.getElementById("username").value;
@@ -75,6 +83,7 @@
         return true;
     }
 </script>
+<script th:include="/include::layelement"></script>
 </body>
 
 </html>
