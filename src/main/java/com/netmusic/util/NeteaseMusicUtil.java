@@ -16,10 +16,8 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * 网易云音乐解析
@@ -36,17 +34,17 @@ public class NeteaseMusicUtil {
     private static final String private_url = "https://music.163.com/weapi/user/playlist?csrf_token=";
     private static final String detail_url = "https://music.163.com/weapi/v6/playlist/detail?csrf_token=";
     private static final String feedback_url = "http://music.163.com/weapi/feedback/weblog";
-    private static String cookie;
-    private static String csrf;
-    private static Integer uid;
+//    private static String cookie;
+//    private static String csrf;
+//    private static Integer uid;
 
     public static void main(String[] args) {
         Map<String, String> infos = new HashMap<>();
         infos.put("phone", "");
         infos.put("countrycode", "86");
         infos.put("password", "");
-        Map<String, String> login = login(infos, getNetMusicLoginHeaders());
-        shuaMusicTask();
+        Map<String, String> login = login(infos);
+//        shuaMusicTask();
 //        sign(0);
 //        Map<String, String> mlist = getUserSubscribePlayLists();
 //        getListMusics(JSON.parseArray(mlist.get("playlists")));
@@ -54,66 +52,78 @@ public class NeteaseMusicUtil {
 
     /**
      * 执行任务主方法
+     *
      * @param userInfo
      * @return
      */
-    public static boolean run(Map<String,String> userInfo){
+    public static Map<String, Object> run(Map<String, String> userInfo) {
+        Map<String, Object> map = new HashMap<>();
         String countrycode = userInfo.get("countrycode");
         String password = userInfo.get("password");
-        if (countrycode == null || countrycode.equals("") || !StringUtils.isNumeric(countrycode)){
-            userInfo.put("countrycode","86");
+        if (countrycode == null || countrycode.equals("") || !StringUtils.isNumeric(countrycode)) {
+            userInfo.put("countrycode", "86");
         }
-        if (password.length()!=32){
-            userInfo.put("password",md532(password));
+        if (password.length() != 32) {
+            userInfo.put("password", md532(password));
         }
         //登录校验
-        Map<String, String> login = login(userInfo, getNetMusicLoginHeaders());
+        Map<String, String> login = login(userInfo);
         boolean flag = Boolean.parseBoolean(login.get("flag"));
-        if (!flag){
-            return false;
+        if (!flag) {
+            map.put("flag", false);
+            map.put("msg", login.get("msg"));
+            return map;
         }
+        //获取cookie，uid，csrf
+        Integer uid = Integer.valueOf(login.get("uid"));
+        String cookie = login.get("cookie");
+        String csrf = login.get("csrf");
         //签到
-        sign(0);
-        sign(1);
+        Map<String, String> sign = sign(0, csrf, cookie);
+        Map<String, String> sign1 = sign(1, csrf, cookie);
         //刷歌
-        shuaMusicTask();
-        return true;
+        Map<String, String> shuaMap = shuaMusicTask(csrf, cookie);
+        map.put("flag", true);
+        map.put("msg", login.get("msg") + "\n" + sign.get("msg") + "\n" + sign1.get("msg") + "\n" + shuaMap.get("msg"));
+        return map;
     }
 
-    public static Map<String,String> shuaMusicTask(){
-        Map<String,String> result = new HashMap<>();
-        JSONArray taskMusics = getTaskMusics();
+    public static Map<String, String> shuaMusicTask(String csrf, String cookie) {
+        Map<String, String> result = new HashMap<>();
+        Map<String, String> taskMusicsMap = getTaskMusics(csrf, cookie);
+        result.put("msg", taskMusicsMap.get("msg") + "\n");
+        JSONArray taskMusics = JSON.parseArray(taskMusicsMap.get("taskMusics"));
         JSONArray musicsTask = new JSONArray();
         JSONObject postData = new JSONObject();
         for (int i = 0; i < taskMusics.size(); i++) {
             JSONObject music = new JSONObject();
             JSONObject json = new JSONObject();
-            json.put("download",0);
-            json.put("end","playend");
-            json.put("id",taskMusics.getInteger(i));
-            json.put("sourceId","");
-            json.put("time",300);
-            json.put("type","song");
-            json.put("wifi",0);
-            music.put("action","play");
-            music.put("json",json);
+            json.put("download", 0);
+            json.put("end", "playend");
+            json.put("id", taskMusics.getInteger(i));
+            json.put("sourceId", "");
+            json.put("time", 300);
+            json.put("type", "song");
+            json.put("wifi", 0);
+            music.put("action", "play");
+            music.put("json", json);
             musicsTask.add(music);
         }
-        postData.put("logs",musicsTask);
+        postData.put("logs", musicsTask);
         try {
             HttpResponse httpResponse = HttpUtils.doPost(feedback_url, null, HttpUtils.getHeaders(), null, getRequestParam(postData.toJSONString()));
             JSONObject json = HttpUtils.getJson(httpResponse);
-            if (json.getInteger("code") == 200){
-                result.put("flag","true");
-                result.put("msg","刷听歌量成功，共"+musicsTask.size()+"首");
-            }else {
-                result.put("flag","false");
-                result.put("msg","刷听歌量失败 " + json.getInteger("code") + "：" + json.getString("message"));
+            if (json.getInteger("code") == 200) {
+                result.put("flag", "true");
+                result.put("msg", result.get("msg") + "刷听歌量成功，共" + musicsTask.size() + "首");
+            } else {
+                result.put("flag", "false");
+                result.put("msg", result.get("msg") + "刷听歌量失败 " + json.getInteger("code") + "：" + json.getString("message"));
             }
             return result;
         } catch (Exception exception) {
-            result.put("flag","false");
-            result.put("msg","刷听歌量失败 " + exception.getMessage());
+            result.put("flag", "false");
+            result.put("msg", result.get("msg") + "刷听歌量失败 " + exception.getMessage());
             exception.printStackTrace();
             return result;
         }
@@ -121,22 +131,32 @@ public class NeteaseMusicUtil {
 
     /**
      * 获取任务歌单池内的所有音乐ID
+     *
      * @return
      */
-    public static JSONArray getTaskMusics(){
+    public static Map<String, String> getTaskMusics(String csrf, String cookie) {
         int num = 320;
-        Random random = new Random(new Date().getTime());
+        //Random random = new Random(new Date().getTime());
         JSONArray musics = new JSONArray();
-        JSONArray recommend_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserRecommendPlayLists().get("playlists"))).get("musiclists"));
+        Map<String, String> userRecommendPlayLists = getUserRecommendPlayLists(csrf, cookie);
+        JSONArray array = JSON.parseArray(userRecommendPlayLists.get("playlists"));
+        Map<String, String> playlists = getListMusics(array, csrf, cookie);
+        String msg = userRecommendPlayLists.get("msg") + "\n" + playlists.get("msg");
+        JSONArray recommend_musics = JSON.parseArray(playlists.get("musiclists"));
         //JSONArray subscribe_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserSubscribePlayLists().get("playlists"))).get("musiclists"));
-        if (recommend_musics.size() > num){
+        if (recommend_musics.size() > num) {
             for (int i = 0; i < num; i++) {
                 musics.add(recommend_musics.getInteger(i));
             }
-        }else {
+        } else {
             musics.addAll(recommend_musics);
         }
-        return musics;
+        msg = msg + "\n已添加" + musics.size() + "首歌曲到播放列表";
+        Map<String, String> map = new HashMap<>();
+        map.put("flag", "true");
+        map.put("msg", msg);
+        map.put("taskMusics", musics.toJSONString());
+        return map;
     }
 
     /**
@@ -145,7 +165,7 @@ public class NeteaseMusicUtil {
      * @param mList
      * @return
      */
-    public static Map<String, String> getListMusics(JSONArray mList) {
+    public static Map<String, String> getListMusics(JSONArray mList, String csrf, String cookie) {
         Map<String, String> result = new HashMap<>();
         JSONArray allMusics = new JSONArray();
         String msg = "";
@@ -186,7 +206,7 @@ public class NeteaseMusicUtil {
      *
      * @return
      */
-    public static Map<String, String> getUserSubscribePlayLists() {
+    public static Map<String, String> getUserSubscribePlayLists(Integer uid, String csrf, String cookie) {
         Map<String, String> result = new HashMap<>();
         JSONObject up = new JSONObject();
         up.put("uid", uid);
@@ -231,7 +251,7 @@ public class NeteaseMusicUtil {
      *
      * @return
      */
-    public static Map<String, String> getUserRecommendPlayLists() {
+    public static Map<String, String> getUserRecommendPlayLists(String csrf, String cookie) {
         Map<String, String> result = new HashMap<>();
         String str = "{\"csrf_token\":\"" + csrf + "\"}";
         Map<String, String> headers = getHeaders();
@@ -269,7 +289,7 @@ public class NeteaseMusicUtil {
      * @param flag 签到的客户端0=PC/web；1=android/ios
      * @return
      */
-    public static Map<String, String> sign(int flag) {
+    public static Map<String, String> sign(int flag, String csrf, String cookie) {
         if (flag < 0 || flag > 1) {
             flag = 0;
         }
@@ -342,12 +362,12 @@ public class NeteaseMusicUtil {
      * 登录流程
      *
      * @param info
-     * @param headers
      * @return
      */
-    public static Map<String, String> login(Map<String, String> info, Map<String, String> headers) {
+    public static Map<String, String> login(Map<String, String> info) {
         Map<String, String> result = new HashMap<>();
-        if (StringUtils.isBlank(info.get("phone")) || StringUtils.isBlank("password")){
+        Map<String, String> headers = getNetMusicLoginHeaders();
+        if (StringUtils.isBlank(info.get("phone")) || StringUtils.isBlank("password")) {
             result.put("msg", "用户名或密码不能为空！");
             result.put("flag", "false");
         }
@@ -357,21 +377,23 @@ public class NeteaseMusicUtil {
             JSONObject json = HttpUtils.getJson(httpResponse);
             if (json.getInteger("code") == 200) {
                 Map<String, String> cookies = HttpUtils.getCookies(httpResponse);
-                cookie = HttpUtils.getCookieString(httpResponse);
-                csrf = cookies.get("__csrf");
+                String cookieString = HttpUtils.getCookieString(httpResponse);
+                result.put("cookie", cookieString);
                 String csrf = cookies.get("__csrf");
                 result.put("csrf", csrf);
                 result.put("data", json.toJSONString());
                 String nickname = json.getJSONObject("profile").getString("nickname");
                 result.put("nickname", nickname);
                 String uid = json.getJSONObject("account").getString("id");
-                NeteaseMusicUtil.uid = Integer.valueOf(uid);
                 result.put("uid", uid);
-                Map<String, String> level = getLevel(loginData);
+                Map<String, String> level = getLevel(loginData, cookieString);
                 String level1 = level.get("level");
                 int count = Integer.parseInt(level.get("nextPlayCount")) - Integer.parseInt(level.get("nowPlayCount"));
                 int days = Integer.parseInt(level.get("nextLoginCount")) - Integer.parseInt(level.get("nowLoginCount"));
                 String msg = nickname + " 登录成功，当前等级：" + level1 + "\n\n距离升级还需听" + count + "首歌\n\n距离升级还需登录" + days + "天";
+                result.put("level", level1);
+                result.put("days", String.valueOf(days));
+                result.put("count", String.valueOf(count));
                 result.put("msg", msg);
                 result.put("flag", "true");
                 return result;
@@ -395,7 +417,7 @@ public class NeteaseMusicUtil {
      * @param login_data
      * @return
      */
-    public static Map<String, String> getLevel(Map<String, String> login_data) {
+    public static Map<String, String> getLevel(Map<String, String> login_data, String cookie) {
         Map<String, String> result = new HashMap<>();
         Map<String, String> headers = getHeaders();
         headers.put("cookie", cookie);
