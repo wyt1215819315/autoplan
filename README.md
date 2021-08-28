@@ -9,7 +9,7 @@
 2. 网易云自动签到刷歌任务
 
 ### 测试服务器地址
-<a href="https://auto.oldwu.top/" target="_blank">https://auto.oldwu.top </a>
+<a href="https://auto.oldwu.top/" target="_blank">点击打开</a>
 
 ### 项目结构
 采用Springboot + Thymeleaf + layui制作
