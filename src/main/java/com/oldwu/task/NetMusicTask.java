@@ -49,7 +49,7 @@ public class NetMusicTask {
      * 网易云定时签到任务
      */
     public void doAutoCheck() {
-        int reconnect = 5;//最大重试次数
+        int reconnect = 2;//最大重试次数
         List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
             Integer autoId = autoNetmusic.getId();
@@ -73,7 +73,7 @@ public class NetMusicTask {
             infos.put("countrycode",countrycode);
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i+1).append("次尝试");
+                msg.append("\n开始第").append(i+1).append("次任务");
                 Map<String, Object> run = NeteaseMusicUtil.run(infos);
                 if (!(boolean)run.get("flag")){
                     if (i != reconnect-1){

@@ -2,7 +2,6 @@ package com.netmusic.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.util.NumberUtil;
@@ -59,6 +58,7 @@ public class NeteaseMusicUtil {
      * @return
      */
     public static Map<String, Object> run(Map<String, String> userInfo) {
+        int reconn = 5;
         Map<String, Object> map = new HashMap<>();
         String countrycode = userInfo.get("countrycode");
         String password = userInfo.get("password");
@@ -69,11 +69,22 @@ public class NeteaseMusicUtil {
             userInfo.put("password", md532(password));
         }
         //登录校验
-        Map<String, String> login = login(userInfo);
-        boolean flag = Boolean.parseBoolean(login.get("flag"));
+        boolean flag = false;
+        StringBuilder msg = new StringBuilder();
+        Map<String, String> login = new HashMap<>();
+        for (int i = 0; i < reconn; i++) {
+            login = login(userInfo);
+            flag = Boolean.parseBoolean(login.get("flag"));
+            if (flag) {
+                msg.append("\n").append(login.get("msg"));
+                break;
+            }
+            msg.append("\n").append(login.get("msg"));
+            msg.append("\n[WARNING]登录失败，开始第").append(i + 1).append("次尝试");
+        }
         if (!flag) {
             map.put("flag", false);
-            map.put("msg", login.get("msg"));
+            map.put("msg", msg.toString());
             return map;
         }
         //获取cookie，uid，csrf
@@ -81,18 +92,37 @@ public class NeteaseMusicUtil {
         String cookie = login.get("cookie");
         String csrf = login.get("csrf");
         //签到
-        Map<String, String> sign = sign(0, csrf, cookie);
-        boolean flag1 = Boolean.parseBoolean(sign.get("flag"));
-        Map<String, String> sign1 = sign(1, csrf, cookie);
-        boolean flag2 = Boolean.parseBoolean(sign1.get("flag"));
+        boolean flag1 = false;
+        boolean flag2 = false;
+        boolean flag3 = false;
+        for (int i = 0; i < reconn; i++) {
+            Map<String, String> sign = sign(0, csrf, cookie);
+            flag1 = Boolean.parseBoolean(sign.get("flag"));
+            Map<String, String> sign1 = sign(1, csrf, cookie);
+            flag2 = Boolean.parseBoolean(sign1.get("flag"));
+            if (flag1 && flag2) {
+                msg.append("\n").append(sign.get("msg")).append("\n").append(sign1.get("msg"));
+                break;
+            }
+            msg.append("\n").append(sign.get("msg")).append(sign1.get("msg"));
+            msg.append("\n[WARNING]签到出现异常，开始第").append(i + 1).append("次尝试");
+        }
         //刷歌
-        Map<String, String> shuaMap = shuaMusicTask(csrf, cookie);
-        boolean flag3 = Boolean.parseBoolean(shuaMap.get("flag"));
+        for (int i = 0; i < reconn; i++) {
+            Map<String, String> shuaMap = shuaMusicTask(csrf, cookie);
+            flag3 = Boolean.parseBoolean(shuaMap.get("flag"));
+            if (flag3) {
+                msg.append("\n").append(shuaMap.get("msg"));
+                break;
+            }
+            msg.append("\n").append(shuaMap.get("msg"));
+            msg.append("\n[WARNING]刷歌出现异常，开始第").append(i + 1).append("次尝试");
+        }
         if (flag1 && flag2 && flag3) {
             map.put("complete", true);
         }
         map.put("flag", true);
-        map.put("msg", login.get("msg") + "\n" + sign.get("msg") + "\n" + sign1.get("msg") + "\n" + shuaMap.get("msg"));
+        map.put("msg", login.get("msg") + "\n" + msg);
         return map;
     }
 
@@ -236,7 +266,7 @@ public class NeteaseMusicUtil {
                 exception.printStackTrace();
                 result.put("flag", "false");
                 msg = msg + "\n获取歌单" + listId + "失败！" + exception.getMessage();
-                result.put("msg",msg);
+                result.put("msg", msg);
                 return result;
             }
         }
