@@ -2,6 +2,7 @@ package com.netmusic.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.util.NumberUtil;
@@ -81,17 +82,35 @@ public class NeteaseMusicUtil {
         String csrf = login.get("csrf");
         //签到
         Map<String, String> sign = sign(0, csrf, cookie);
+        boolean flag1 = Boolean.parseBoolean(sign.get("flag"));
         Map<String, String> sign1 = sign(1, csrf, cookie);
+        boolean flag2 = Boolean.parseBoolean(sign1.get("flag"));
         //刷歌
         Map<String, String> shuaMap = shuaMusicTask(csrf, cookie);
+        boolean flag3 = Boolean.parseBoolean(shuaMap.get("flag"));
+        if (flag1 && flag2 && flag3) {
+            map.put("complete", true);
+        }
         map.put("flag", true);
         map.put("msg", login.get("msg") + "\n" + sign.get("msg") + "\n" + sign1.get("msg") + "\n" + shuaMap.get("msg"));
         return map;
     }
 
     public static Map<String, String> shuaMusicTask(String csrf, String cookie) {
+        int reconn = 3;
         Map<String, String> result = new HashMap<>();
-        Map<String, String> taskMusicsMap = getTaskMusics(csrf, cookie);
+        Map<String, String> taskMusicsMap = new HashMap<>();
+        for (int i = 0; i < reconn; i++) {
+            taskMusicsMap = getTaskMusics(csrf, cookie);
+            if (taskMusicsMap.get("flag").equals("true")) {
+                break;
+            }
+        }
+        if (taskMusicsMap.get("flag").equals("false")) {
+            result.put("flag", "false");
+            result.put("msg", "获取任务歌单" + reconn + "次均失败！" + taskMusicsMap.get("msg"));
+            return result;
+        }
         result.put("msg", taskMusicsMap.get("msg") + "\n");
         JSONArray taskMusics = JSON.parseArray(taskMusicsMap.get("taskMusics"));
         JSONArray musicsTask = new JSONArray();
@@ -101,7 +120,7 @@ public class NeteaseMusicUtil {
             JSONObject json = new JSONObject();
             json.put("download", 0);
             json.put("end", "playend");
-            json.put("id", taskMusics.getInteger(i));
+            json.put("id", taskMusics.getLong(i));
             json.put("sourceId", "");
             json.put("time", 300);
             json.put("type", "song");
@@ -137,23 +156,41 @@ public class NeteaseMusicUtil {
      */
     public static Map<String, String> getTaskMusics(String csrf, String cookie) {
         int num = 320;
-        //Random random = new Random(new Date().getTime());
+        Map<String, String> map = new HashMap<>();
         JSONArray musics = new JSONArray();
         Map<String, String> userRecommendPlayLists = getUserRecommendPlayLists(csrf, cookie);
+        if (userRecommendPlayLists.get("flag").equals("false")) {
+            map.put("flag", "false");
+            map.put("msg", userRecommendPlayLists.get("msg"));
+            return map;
+        }
         JSONArray array = JSON.parseArray(userRecommendPlayLists.get("playlists"));
         Map<String, String> playlists = getListMusics(array, csrf, cookie);
+        if (playlists.get("flag").equals("false")) {
+            map.put("flag", "false");
+            map.put("msg", playlists.get("msg"));
+            return map;
+        }
         String msg = userRecommendPlayLists.get("msg") + "\n" + playlists.get("msg");
         JSONArray recommend_musics = JSON.parseArray(playlists.get("musiclists"));
-        //JSONArray subscribe_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserSubscribePlayLists().get("playlists"))).get("musiclists"));
         if (recommend_musics.size() > num) {
-            for (int i = 0; i < num; i++) {
-                musics.add(recommend_musics.getLong(i));
+            int[] ints = NumberUtil.randomCommon(1, recommend_musics.size(), num);
+            for (int anInt : ints) {
+                musics.add(recommend_musics.getLong(anInt));
             }
         } else {
             musics.addAll(recommend_musics);
         }
+        //System.out.println(musics);
+        //JSONArray subscribe_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserSubscribePlayLists().get("playlists"))).get("musiclists"));
+//        if (recommend_musics.size() > num) {
+//            for (int i = 0; i < num; i++) {
+//                musics.add(recommend_musics.getLong(i));
+//            }
+//        } else {
+//            musics.addAll(recommend_musics);
+//        }
         msg = msg + "\n已添加" + musics.size() + "首歌曲到播放列表";
-        Map<String, String> map = new HashMap<>();
         map.put("flag", "true");
         map.put("msg", msg);
         map.put("taskMusics", musics.toJSONString());
@@ -183,7 +220,9 @@ public class NeteaseMusicUtil {
                 String s = EntityUtils.toString(httpResponse.getEntity());
                 //System.out.println(s);
                 JSONObject json = JSON.parseObject(s);
-                
+                if (json == null) {
+                    continue;
+                }
                 if (json.getInteger("code") == 200) {
                     JSONArray trackIds = json.getJSONObject("playlist").getJSONArray("trackIds");
                     for (int i1 = 0; i1 < trackIds.size(); i1++) {
@@ -195,7 +234,10 @@ public class NeteaseMusicUtil {
                 msg = msg + "\n获取歌单" + listId + "成功！";
             } catch (Exception exception) {
                 exception.printStackTrace();
+                result.put("flag", "false");
                 msg = msg + "\n获取歌单" + listId + "失败！" + exception.getMessage();
+                result.put("msg",msg);
+                return result;
             }
         }
         result.put("flag", "true");
@@ -308,13 +350,13 @@ public class NeteaseMusicUtil {
             Integer code = json.getInteger("code");
             map.put("code", code.toString());
             if (code == 200) {
-                text = flag == 0 ? "PC/WEB" : "移动端" + "签到成功，经验+" + json.getString("point");
+                text = (flag == 0 ? "PC/WEB" : "移动端") + "签到成功，经验+" + json.getString("point");
                 map.put("flag", "true");
             } else if (code == -2) {
-                text = flag == 0 ? "PC/WEB" : "移动端" + "今天已经签到过了";
+                text = (flag == 0 ? "PC/WEB" : "移动端") + "今天已经签到过了";
                 map.put("flag", "true");
             } else {
-                text = flag == 0 ? "PC/WEB" : "移动端" + "签到失败，错误代码" + code + "，信息：" + json.getString("message");
+                text = (flag == 0 ? "PC/WEB" : "移动端") + "签到失败，错误代码" + code + "，信息：" + json.getString("message");
                 map.put("flag", "false");
             }
             map.put("msg", text);
