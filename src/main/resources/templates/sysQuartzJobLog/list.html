@@ -7,7 +7,7 @@
     <th:block th:include="include :: headerr('定时任务日志列表')"/>
 </head>
 <body class="pear-container">
-<ul th:include="/include::header" class="layui-nav"></ul>
+<ul th:include="include::header" class="layui-nav"></ul>
 <div class="layui-card">
     <div class="layui-card-body">
         <form class="layui-form" action="">
@@ -33,7 +33,7 @@
         <table id="sysQuartzJobLog-table" lay-filter="sysQuartzJobLog-table"></table>
     </div>
 </div>
-<script th:include="/include::layelement"></script>
+<script th:include="include::layelement"></script>
 </body>
 
 <script type="text/html" id="role-toolbar">

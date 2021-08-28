@@ -10,6 +10,7 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
 import com.oldwu.entity.AutoBilibili;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
 import com.oldwu.log.OldwuLog;
 import com.oldwu.service.BiliService;
@@ -42,6 +43,45 @@ public class NetMusicTask {
     @Autowired
     public void getBiliDao(AutoNetmusicDao netmusicDao) {
         NetMusicTask.netmusicDao = netmusicDao;
+    }
+
+    /**
+     * 用于每日0点重置状态
+     */
+    public void resetStatus(){
+        //重置自动任务的标识
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+        for (AutoNetmusic autoNetmusic : autoNetmusics) {
+            int autoId = autoNetmusic.getId();
+            AutoNetmusic autoNetmusic1 = new AutoNetmusic();
+            autoNetmusic1.setId(autoId);
+            autoNetmusic1.setStatus("100");
+            netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+        }
+    }
+
+    /**
+     * 刷新用户的等级等信息
+     */
+    public void refreshUserInfo(){
+        //获取数据库中所有用户
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+        for (AutoNetmusic autoNetmusic : autoNetmusics) {
+            Map<String,String> infos = new HashMap<>();
+            infos.put("phone", autoNetmusic.getPhone());
+            infos.put("password", autoNetmusic.getPassword());
+            infos.put("countrycode", autoNetmusic.getCountrycode());
+            Map<String, String> login = NeteaseMusicUtil.login(infos);
+            if (login.get("flag").equals("false")){
+                continue;
+            }
+            autoNetmusic.setNetmusicName(login.get("nickname"));
+            autoNetmusic.setNetmusicId(login.get("uid"));
+            autoNetmusic.setNetmusicNeedDay(login.get("days"));
+            autoNetmusic.setNetmusicNeedListen(login.get("count"));
+            autoNetmusic.setNetmusicLevel(login.get("level"));
+            netmusicDao.updateByPrimaryKeySelective(autoNetmusic);
+        }
     }
 
 

@@ -18,7 +18,7 @@
     </style>
 </head>
 <body style="padding-top: 0;margin: 10px">
-<ul class="layui-nav" th:include="/include::header"></ul>
+<ul class="layui-nav" th:include="include::header"></ul>
 <div class="container">
 
 
@@ -52,7 +52,7 @@
     </div>
 
 </div>
-<script th:include="/include::layelement"></script>
+<script th:include="include::layelement"></script>
 <script th:if="${regok}" th:inline="javascript">
     layui.use(['jquery','form'], function () {
         layer.msg("注册成功，请登录", {icon: 1, time: 3000});

@@ -31,7 +31,7 @@
             and bi_auto_id = #{biAutoId,jdbcType=INTEGER}
         </if>
         <if test="netAutoId != null">
-            and net_auto_id = #{netAutoId,jdbcType=INTEGER},
+            and net_auto_id = #{netAutoId,jdbcType=INTEGER}
         </if>
         order by date desc
         limit 1

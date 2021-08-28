@@ -32,14 +32,12 @@ public class NetmusicService {
         return result;
     }
 
-    public List<AutoNetmusic> getMyPlan(){
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+
+    public List<AutoNetmusic> getMyPlan(int userid){
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(userid);
         List<AutoNetmusic> result = new ArrayList<>();
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
             autoNetmusic.setPassword(null);
-            autoNetmusic.setNetmusicId(null);
-            autoNetmusic.setPhone(null);
-            autoNetmusic.setNetmusicName(HelpUtil.userNameEncode(autoNetmusic.getNetmusicName()));
             result.add(autoNetmusic);
         }
         return result;

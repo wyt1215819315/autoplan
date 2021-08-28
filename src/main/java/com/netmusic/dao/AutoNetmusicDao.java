@@ -17,6 +17,8 @@ public interface AutoNetmusicDao {
 
     List<AutoNetmusic> selectAll();
 
+    List<AutoNetmusic> selectMine(int userid);
+
     int updateByPrimaryKeySelective(AutoNetmusic record);
 
     int updateByPrimaryKey(AutoNetmusic record);

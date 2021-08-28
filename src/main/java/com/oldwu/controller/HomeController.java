@@ -1,5 +1,7 @@
 package com.oldwu.controller;
 
+import com.netmusic.model.AutoNetmusic;
+import com.netmusic.service.NetmusicService;
 import com.oldwu.domain.Msg;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
@@ -32,6 +34,8 @@ public class HomeController {
     private UserService userService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private NetmusicService netmusicService;
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -55,10 +59,10 @@ public class HomeController {
         return "reg";
     }
 
-    @GetMapping("/include")
-    public String include() {
-        return "include";
-    }
+//    @GetMapping("/include")
+//    public String include() {
+//        return "include";
+//    }
 
     @PostMapping("/reg")
     public String regpo(@Param("username") String username, @Param("password") String password, Model model) {
@@ -89,8 +93,10 @@ public class HomeController {
 
     @GetMapping("/my")
     public String myIndex(Model model, Principal principal) {
-        List<BiliPlan> allPlan = biliService.getMyPlan(userService.getUserId(principal.getName()));
-        model.addAttribute("list", allPlan);
+        List<BiliPlan> biliPlans = biliService.getMyPlan(userService.getUserId(principal.getName()));
+        List<AutoNetmusic> netplans = netmusicService.getMyPlan(userService.getUserId(principal.getName()));
+        model.addAttribute("bililist", biliPlans);
+        model.addAttribute("netlist", netplans);
         return "my-helper";
     }
 }

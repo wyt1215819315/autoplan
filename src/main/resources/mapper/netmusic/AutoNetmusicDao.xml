@@ -41,6 +41,12 @@
         from auto_netmusic
         where netmusic_id = #{uid}
     </select>
+    <select id="selectMine" resultType="com.netmusic.model.AutoNetmusic">
+        select
+        <include refid="Base_Column_List"/>
+        from auto_netmusic
+        where userid = #{userid}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from auto_netmusic
