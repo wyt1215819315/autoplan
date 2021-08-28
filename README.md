@@ -2,14 +2,14 @@
 这是一个自动化的托管系统，目前支持网易云，bilibili
 
 ### 开源地址
-
+[wyt1215819315 / autoplan](https://github.com/wyt1215819315/autoplan)
 
 ### 目前已经实现
 1. b站每日自动经验任务
 2. 网易云自动签到刷歌任务
 
 ### 测试服务器地址
-
+https://auto.oldwu.top/
 
 ### 项目结构
 采用Springboot + Thymeleaf + layui制作
