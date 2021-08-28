@@ -28,7 +28,7 @@ public class LiveCheckin implements Task {
             log.info("直播签到成功，本次签到获得" + data.get("text").getAsString() + "," + data.get("specialText").getAsString());
         } else {
             String message = liveCheckinResponse.get("message").getAsString();
-            OldwuLog.error("直播签到失败: " + message);
+            OldwuLog.warning("直播签到失败: " + message);
             log.debug("直播签到失败: " + message);
         }
     }
