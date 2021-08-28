@@ -64,6 +64,8 @@ public class BiliMain {
             ServerVerify.verifyInit(args[3], args[4]);
         } else if (args.length > 3) {
             ServerVerify.verifyInit(args[3]);
+        }else {
+            ServerVerify.verifyInit(null, null);
         }
 
 //        VersionInfo.printVersionInfo();
