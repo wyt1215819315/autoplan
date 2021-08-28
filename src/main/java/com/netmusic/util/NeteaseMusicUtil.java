@@ -7,6 +7,7 @@ import com.oldwu.util.HttpUtils;
 import com.oldwu.util.NumberUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
@@ -146,7 +147,7 @@ public class NeteaseMusicUtil {
         //JSONArray subscribe_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserSubscribePlayLists().get("playlists"))).get("musiclists"));
         if (recommend_musics.size() > num) {
             for (int i = 0; i < num; i++) {
-                musics.add(recommend_musics.getInteger(i));
+                musics.add(recommend_musics.getLong(i));
             }
         } else {
             musics.addAll(recommend_musics);
@@ -170,7 +171,7 @@ public class NeteaseMusicUtil {
         JSONArray allMusics = new JSONArray();
         String msg = "";
         for (int i = 0; i < mList.size(); i++) {
-            Integer listId = mList.getInteger(i);
+            Long listId = Long.valueOf(mList.getString(i));
             JSONObject up = new JSONObject();
             up.put("id", listId);
             up.put("n", 1000);
@@ -179,13 +180,15 @@ public class NeteaseMusicUtil {
             headers.put("cookie", cookie);
             try {
                 HttpResponse httpResponse = HttpUtils.doPost(detail_url + csrf, null, headers, null, getRequestParam(up.toJSONString()));
-                JSONObject json = HttpUtils.getJson(httpResponse);
-                result.put("data", json.toJSONString());
+                String s = EntityUtils.toString(httpResponse.getEntity());
+                //System.out.println(s);
+                JSONObject json = JSON.parseObject(s);
+                
                 if (json.getInteger("code") == 200) {
                     JSONArray trackIds = json.getJSONObject("playlist").getJSONArray("trackIds");
                     for (int i1 = 0; i1 < trackIds.size(); i1++) {
                         JSONObject track = trackIds.getJSONObject(i1);
-                        Integer id = track.getInteger("id");
+                        Long id = track.getLong("id");
                         allMusics.add(id);
                     }
                 }
@@ -225,7 +228,7 @@ public class NeteaseMusicUtil {
                 for (int i = 0; i < playlist.size(); i++) {
                     JSONObject play = playlist.getJSONObject(i);
                     if (play.getBoolean("subscribed")) {
-                        Integer id = play.getInteger("id");
+                        String id = play.getString("id");
                         playLists.add(id);
                     }
                 }
@@ -265,7 +268,7 @@ public class NeteaseMusicUtil {
                 JSONArray playLists = new JSONArray();
                 for (int i = 0; i < recommend.size(); i++) {
                     JSONObject re = recommend.getJSONObject(i);
-                    Integer id = re.getInteger("id");
+                    String id = re.getString("id");
                     playLists.add(id);
                 }
                 result.put("flag", "true");

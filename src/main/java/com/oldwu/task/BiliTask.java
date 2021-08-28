@@ -6,6 +6,7 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
 import com.oldwu.entity.AutoBilibili;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
 import com.oldwu.log.OldwuLog;
 import com.oldwu.service.BiliService;
@@ -43,6 +44,19 @@ public class BiliTask {
     @Autowired
     public void getBiliUserDao(BiliUserDao biliUserDao) {
         BiliTask.biliUserDao = biliUserDao;
+    }
+
+    public void resetStatus(){
+        //重置自动任务的标识
+        //bili
+        List<BiliPlan> biliPlans = biliUserDao.selectAll();
+        for (BiliPlan biliPlan : biliPlans) {
+            int autoId = biliPlan.getAutoId();
+            BiliUser biliUser = new BiliUser();
+            biliUser.setAutoId(autoId);
+            biliUser.setStatus("100");
+            biliUserDao.updateByAutoIdSelective(biliUser);
+        }
     }
 
     /**

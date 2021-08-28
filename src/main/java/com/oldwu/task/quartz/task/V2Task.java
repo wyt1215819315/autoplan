@@ -26,19 +26,6 @@ public class V2Task {
         V2Task.biliUserDao = biliUserDao;
     }
 
-    public void resetStatus(){
-        //重置自动任务的标识
-        //bili
-        List<BiliPlan> biliPlans = biliUserDao.selectAll();
-        for (BiliPlan biliPlan : biliPlans) {
-            int autoId = biliPlan.getAutoId();
-            BiliUser biliUser = new BiliUser();
-            biliUser.setAutoId(autoId);
-            biliUser.setStatus("100");
-            biliUserDao.updateByAutoIdSelective(biliUser);
-        }
-    }
-
     /**
      * 无参的任务
      */

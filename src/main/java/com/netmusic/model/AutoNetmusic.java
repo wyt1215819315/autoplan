@@ -45,6 +45,15 @@ public class AutoNetmusic implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public AutoNetmusic() {
+    }
+
+    public AutoNetmusic(Integer id, String status, Date enddate) {
+        this.id = id;
+        this.status = status;
+        this.enddate = enddate;
+    }
+
     public String getEndDateString(){
         if (enddate == null){
             return null;

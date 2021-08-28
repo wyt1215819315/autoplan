@@ -26,7 +26,7 @@
 <div class="container">
     <div class="layui-btn-container">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>网易云托管任务列表</legend>
+            <legend>网易云托管任务列表(tips:网易云数据刷新存在延迟，因此系统并不会马上更新数据)</legend>
         </fieldset>
         <a href="add" class="layui-btn layui-btn-normal">
             添加网易云任务
@@ -57,7 +57,7 @@
             <td>
                 <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
                 <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
-                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号cookie已过期</span>
+                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号验证失败</span>
                 <span th:if="${plan.getStatus().equals('0')}" style="color: yellow">任务未开启</span>
                 <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
                 <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
