@@ -71,6 +71,11 @@
         from bili_user
         where id = #{id,jdbcType=INTEGER}
     </delete>
+    <delete id="deleteByAutoId">
+        delete
+        from bili_user
+        where auto_id = #{id}
+    </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.BiliUser"
             useGeneratedKeys="true">
         insert into bili_user (auto_id, `uid`, bili_name,

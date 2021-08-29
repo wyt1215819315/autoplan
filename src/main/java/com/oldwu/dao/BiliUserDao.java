@@ -8,6 +8,8 @@ import java.util.List;
 public interface BiliUserDao {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteByAutoId(Integer id);
+
     int insert(BiliUser record);
 
     int insertSelective(BiliUser record);

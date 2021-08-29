@@ -25,4 +25,14 @@
                  LEFT JOIN Sys_Role r on sru.Sys_Role_id = r.id
         where username = #{username}
     </select>
+    <select id="getRole" resultType="java.lang.String">
+        SELECT
+            sys_role.`name` AS role
+        FROM
+            sys_user
+                INNER JOIN sys_role_user ON sys_role_user.sys_user_id = sys_user.id
+                INNER JOIN sys_role ON sys_role_user.sys_role_id = sys_role.id
+        WHERE
+            sys_user.id = #{id}
+    </select>
 </mapper>

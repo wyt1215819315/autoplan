@@ -36,10 +36,22 @@
         order by date desc
         limit 1
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="com.oldwu.entity.AutoLog">
         delete
         from auto_log
         where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByAutoId">
+        delete
+        from auto_log
+        where
+        <if test="biAutoId != null">
+            bi_auto_id = #{biAutoId}
+        </if>
+        <if test="netAutoId != null">
+            net_auto_id = #{netAutoId}
+        </if>
+        and userid = #{userid}
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog"
             useGeneratedKeys="true">

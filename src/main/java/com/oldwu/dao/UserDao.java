@@ -8,4 +8,5 @@ public interface UserDao {
     public SysUser findByUserName(String username);
     int regUser(SysUser user);
     int setRole(int id);
+    String getRole(Integer id);
 }

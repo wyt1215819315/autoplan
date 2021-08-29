@@ -49,7 +49,7 @@
             <th>任务是否开启</th>
             <th>任务运行状态</th>
             <th>任务最后运行时间</th>
-            <th>查看日志</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -71,7 +71,8 @@
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a th:href="${'getlog?bid=' + plan.getAutoId()}" target="_blank">查看日志</a>
+                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?bid=' + plan.getAutoId()}" target="_blank">查看日志</a>
+                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeBili(${plan.getAutoId()})|">删除任务</button>
             </td>
         </tr>
         </tbody>
@@ -114,15 +115,64 @@
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a th:href="${'getlog?nid=' + plan.getId()}" target="_blank">查看日志</a>
+                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?nid=' + plan.getId()}" target="_blank">查看日志</a>
+                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeNetmusic(${plan.getId()})|">删除任务</button>
             </td>
         </tr>
         </tbody>
     </table>
 
 </div>
-
+<script> let rootPath = "[[${rootPath}]]";</script>
 <script th:include="include::layelement"></script>
+<script>
+    function removeBili(bid) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: rootPath + "/api/user/bili/delete?bid=" + bid,
+                    // dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code==200) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                window.location.href= rootPath + "/my";
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 2000});
+                        }
+                    }
+                })
+            });
+        });
+    }
+    function removeNetmusic(nid) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: rootPath + "/api/user/netmusic/delete?nid=" + nid,
+                    // dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code==200) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                window.location.href= rootPath + "/my";
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 2000});
+                        }
+                    }
+                })
+            });
+        });
+    }
+</script>
 </body>
 
 </html>

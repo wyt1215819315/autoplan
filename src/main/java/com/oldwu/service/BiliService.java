@@ -10,8 +10,11 @@ import com.misec.task.TaskInfoHolder;
 import com.misec.utils.HelpUtil;
 import com.misec.utils.HttpUtil;
 import com.oldwu.dao.AutoBilibiliDao;
+import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
+import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoBilibili;
+import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
 import com.oldwu.util.HttpUtils;
@@ -35,6 +38,12 @@ public class BiliService {
 
     @Autowired
     private BiliUserDao biliUserDao;
+
+    @Autowired
+    private AutoLogDao autoLogDao;
+
+    @Autowired
+    private UserDao userDao;
 
     public Map<String, Object> getQrcodeStatus(String oauthKey) {
         Map<String, String> headers = new HashMap<>();
@@ -290,4 +299,53 @@ public class BiliService {
         return map;
     }
 
+    public Map<String, Object> deleteBiliPlan(AutoBilibili autoBilibili) {
+        Map<String,Object> map = new HashMap<>();
+        //校验用户id
+        Integer userid = autoBilibili.getUserid();
+        Integer autoid = autoBilibili.getId();
+        if (autoid == null || autoid == 0){
+            map.put("code",-1);
+            map.put("msg","传参不能为空！");
+            return map;
+        }
+        List<BiliPlan> biliPlans = biliUserDao.selectMine(userid);
+        boolean flag = false;
+        for (BiliPlan biliPlan : biliPlans) {
+            int autoId = biliPlan.getAutoId();
+            if (autoId == autoid){
+                flag = true;
+                break;
+            }
+        }
+        if (userDao.getRole(userid).equals("ROLE_ADMIN")){  //忽略管理
+            flag = true;
+        }
+        if (!flag){
+            map.put("code",403);
+            map.put("msg","你没有权限删除这条或数据不存在！");
+            return map;
+        }
+        //首先删除日志
+        AutoLog autoLog = new AutoLog();
+        autoLog.setUserid(autoBilibili.getUserid());
+        autoLog.setBiAutoId(autoBilibili.getId());
+        try {
+            autoLogDao.deleteByAutoId(autoLog);
+            //然后删除b站用户数据
+            biliUserDao.deleteByAutoId(autoid);
+            //最后删除主要数据
+            int i = autoBilibiliDao.deleteByPrimaryKey(autoid);
+            if (i > 0){
+                map.put("code",200);
+                map.put("msg","删除成功");
+                return map;
+            }
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+        map.put("code",-1);
+        map.put("msg","删除失败！");
+        return map;
+    }
 }

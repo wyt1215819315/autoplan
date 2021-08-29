@@ -4,6 +4,10 @@ import com.misec.utils.HelpUtil;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
+import com.oldwu.dao.AutoLogDao;
+import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AutoLog;
+import com.oldwu.entity.BiliPlan;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,12 @@ public class NetmusicService {
 
     @Autowired
     private AutoNetmusicDao netmusicDao;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private AutoLogDao autoLogDao;
 
     public List<AutoNetmusic> getAllPlan(){
         List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
@@ -111,4 +121,50 @@ public class NetmusicService {
         return map;
     }
 
+    public Map<String, Object> deleteBiliPlan(AutoNetmusic autoNetmusic) {
+        Map<String,Object> map = new HashMap<>();
+        //校验用户id
+        Integer userid = autoNetmusic.getUserid();
+        Integer autoid = autoNetmusic.getId();
+        if (autoid == null || autoid == 0){
+            map.put("code",-1);
+            map.put("msg","传参不能为空！");
+            return map;
+        }
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(userid);
+        boolean flag = false;
+        for (AutoNetmusic netmusic : autoNetmusics) {
+            int autoId = netmusic.getId();
+            if (autoId == autoid){
+                flag = true;
+                break;
+            }
+        }
+        if (userDao.getRole(userid).equals("ROLE_ADMIN")){  //忽略管理
+            flag = true;
+        }
+        if (!flag){
+            map.put("code",403);
+            map.put("msg","你没有权限删除这条或数据不存在！");
+            return map;
+        }
+        //首先删除日志
+        AutoLog autoLog = new AutoLog();
+        autoLog.setUserid(autoNetmusic.getUserid());
+        autoLog.setNetAutoId(autoNetmusic.getId());
+        try {
+            autoLogDao.deleteByAutoId(autoLog);
+            int i = netmusicDao.deleteByPrimaryKey(autoid);
+            if (i > 0){
+                map.put("code",200);
+                map.put("msg","删除成功");
+                return map;
+            }
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+        map.put("code",-1);
+        map.put("msg","删除失败！");
+        return map;
+    }
 }

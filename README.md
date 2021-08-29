@@ -77,6 +77,9 @@ mybatis:
 3. 统一推送关键词
 4. 手动执行任务
 
+### 更新日志
+* 21.8.29 更新了b站二维码登录以及任务删除功能
+
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
