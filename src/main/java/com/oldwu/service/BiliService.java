@@ -1,5 +1,6 @@
 package com.oldwu.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
@@ -13,7 +14,9 @@ import com.oldwu.dao.BiliUserDao;
 import com.oldwu.entity.AutoBilibili;
 import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
+import com.oldwu.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,8 @@ import static com.misec.task.TaskInfoHolder.userInfo;
 
 @Service
 public class BiliService {
+    private static final String qrcodeUrl = "http://passport.bilibili.com/qrcode/getLoginUrl";
+    private static final String qrcodeStatusUrl = "http://passport.bilibili.com/qrcode/getLoginInfo";
 
     @Autowired
     private AutoBilibiliDao autoBilibiliDao;
@@ -31,7 +36,61 @@ public class BiliService {
     @Autowired
     private BiliUserDao biliUserDao;
 
-    public List<BiliPlan> getAllPlan(){
+    public Map<String, Object> getQrcodeStatus(String oauthKey) {
+        Map<String, String> headers = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
+        String body = "oauthKey=" + oauthKey;
+        headers.put("Accept-Language", "zh-cn");
+        headers.put("Connection", "keep-alive");
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        try {
+            HttpResponse httpResponse = HttpUtils.doPost(qrcodeStatusUrl, null, headers, null, body);
+            JSONObject json = HttpUtils.getJson(httpResponse);
+            if (json == null || json.getBoolean("status") == null){
+                result.put("code","-100");
+                result.put("msg","获取状态失败！");
+                return result;
+            }
+            Boolean status = json.getBoolean("status");
+            if (!status){
+                Integer data = json.getInteger("data");
+                String message = json.getString("message");
+                result.put("code",data);
+                result.put("msg",message);
+                return result;
+            }else {
+                //登陆成功
+                Map<String, String> cookies = HttpUtils.getCookies(httpResponse);
+                result.put("code",200);
+                result.put("msg","校验成功！已自动填充");
+                result.put("dedeuserid",cookies.get("DedeUserID"));
+                result.put("sessdate",cookies.get("SESSDATA"));
+                result.put("bilijct",cookies.get("bili_jct"));
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("code","-101");
+            result.put("msg","获取状态失败！"+e);
+            return result;
+        }
+    }
+
+    public String getQrcodeAuth() {
+        try {
+            HttpResponse httpResponse = HttpUtils.doGet(qrcodeUrl, null, HttpUtils.getHeaders(), null);
+            JSONObject json = HttpUtils.getJson(httpResponse);
+            if (json != null && json.getInteger("code") == 0) {
+                return json.getJSONObject("data").getString("oauthKey");
+            } else {
+                return "二维码获取失败！";
+            }
+        } catch (Exception e) {
+            return "获取二维码失败！";
+        }
+    }
+
+    public List<BiliPlan> getAllPlan() {
         List<BiliPlan> newPlans = new ArrayList<>();
         for (BiliPlan biliPlan : biliUserDao.selectAll()) {
             biliPlan.setBiliName(HelpUtil.userNameEncode(biliPlan.getBiliName()));
@@ -40,7 +99,7 @@ public class BiliService {
         return newPlans;
     }
 
-    public List<BiliPlan> getMyPlan(Integer userid){
+    public List<BiliPlan> getMyPlan(Integer userid) {
         return biliUserDao.selectMine(userid);
     }
 
@@ -67,6 +126,7 @@ public class BiliService {
 
     /**
      * 校验用户，成功写入任务数据，失败返回msg
+     *
      * @param autoBilibili
      * @return
      */
@@ -126,14 +186,14 @@ public class BiliService {
                 map.put("msg", "数据库错误！更新任务信息失败！");
                 return map;
             }
-            updateUserInfo(autoBilibili,userInfo,true);
+            updateUserInfo(autoBilibili, userInfo, true);
             map.put("msg", "更新原有登录信息成功：" + s);
             map.put("flag", "true");
             return map;
         }
     }
 
-    public boolean updateUserInfo(AutoBilibili autoBilibili,Data userInfo,boolean update){
+    public boolean updateUserInfo(AutoBilibili autoBilibili, Data userInfo, boolean update) {
         BiliUser biliUser1 = new BiliUser();
         biliUser1.setAutoId(autoBilibili.getId());
         biliUser1.setBiliCoin(userInfo.getMoney());
@@ -145,10 +205,10 @@ public class BiliService {
         biliUser1.setFaceImg(userInfo.getFace());
         biliUser1.setIsVip(TaskInfoHolder.queryVipStatusType() == 0 ? "false" : "true");
         biliUser1.setVipDueDate(new Date(userInfo.getVipDueDate()));
-        if (!update){
+        if (!update) {
             //增加用户信息
             return biliUserDao.insertSelective(biliUser1) > 0;
-        }else {
+        } else {
             //update
             biliUser1.setAutoId(autoBilibili.getId());
             return biliUserDao.updateByAutoIdSelective(biliUser1) > 0;

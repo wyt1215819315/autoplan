@@ -6,6 +6,7 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+    <script th:src="@{/static/js/qrcode.js}"></script>
     <style type="text/css">
         body {
             padding-top: 50px;
@@ -34,6 +35,9 @@
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>添加b站自动任务(全局默认仅需填前三项即可)</legend>
         </fieldset>
+        <button onclick="qrcode()" data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">
+            扫🐴登录
+        </button>
         <form class="layui-form">
             <div class="layui-form-item">
                 <label class="layui-form-label">任务名</label>
@@ -46,7 +50,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">Sessdate</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="sessdata" name="sessdata"
+                    <input autocomplete="off" id="sessdate" class="layui-input" lay-verify="sessdata" name="sessdata"
                            placeholder="Sessdate"
                            type="text">
                 </div>
@@ -54,7 +58,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">biliJct</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="biliJct" name="biliJct"
+                    <input autocomplete="off" id="bilijct" class="layui-input" lay-verify="biliJct" name="biliJct"
                            placeholder="biliJct"
                            type="text">
                 </div>
@@ -62,7 +66,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">dedeuserid</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="dedeuserid" name="dedeuserid"
+                    <input autocomplete="off" id="dedeuserid" class="layui-input" lay-verify="dedeuserid" name="dedeuserid"
                            placeholder="dedeuserid" type="text">
                 </div>
             </div>
@@ -189,6 +193,7 @@
         let $ = layui.jquery;
         let MODULE_PATH = rootPath + "/api/user/bili";
 
+
         //名称验证
         form.verify({
             dedeuserid: function (value) {
@@ -242,6 +247,63 @@
             return false;
         });
     })
+</script>
+<script>
+    function qrcode(){
+        layui.use('layer', function() {
+            var t2;
+            layer.open({
+                type: 1,
+                title: '扫码后自动填充前三项',
+                area: ["500px", "530px"],
+                shade: 0.5,
+                id: 'LAY_layuipro',
+                maxmin: false,
+                offset: [80, 0],
+                content: '<div id="qrcode">正在获取二维码</div>',
+                zIndex: layer.zIndex,
+                success: function(layero) {
+                    $.get(rootPath + "/api/user/bili/qrcode", {}, function(str){
+                        $('#qrcode').html("");
+                        $('#qrcode').qrcode({
+                            render: "canvas",
+                            width: 450,
+                            height: 450,
+                            text: "https://passport.bilibili.com/qrcode/h5/login?oauthKey="+str
+                        });
+                        t2 = window.setInterval(function() {
+                            $.ajax({
+                                url: rootPath + '/api/user/bili/qrcode',
+                                data: str,
+                                // dataType: 'json',
+                                contentType: 'text/html;charset=UTF-8',
+                                type: 'post',
+                                success: function (result) {
+                                    if (result.code == 200) {
+                                        layer.msg(result.msg, {icon: 1, time: 2000}, function () {
+                                            $('#dedeuserid').val(result.dedeuserid);
+                                            $('#sessdate').val(result.sessdate);
+                                            $('#bilijct').val(result.bilijct);
+                                            window.clearInterval(t2);
+                                            layer.closeAll();
+                                        });
+                                    } else if(result.code == -1 || result.code == -2){
+                                        layer.msg(result.msg, {icon: 2, time: 5000},function () {
+                                            $('#qrcode').html(result.msg);
+                                            window.clearInterval(t2);
+                                        });
+                                    }
+                                }
+                            });
+                        },2000)
+                    });
+                },
+                end: function () {
+                    window.clearInterval(t2);
+                }
+            });
+        });
+    }
 </script>
 <script th:include="include::layelement"></script>
 </body>

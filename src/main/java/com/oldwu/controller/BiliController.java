@@ -4,15 +4,13 @@ import com.oldwu.entity.AutoBilibili;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/api/user/bili")
 public class BiliController {
 
@@ -24,9 +22,22 @@ public class BiliController {
 
 
     @PostMapping("/add")
+    @ResponseBody
     public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.addBiliPlan(autoBilibili);
+    }
+
+    @GetMapping("/qrcode")
+    @ResponseBody
+    public String getQrcode(){
+        return service.getQrcodeAuth();
+    }
+
+    @PostMapping("/qrcode")
+    @ResponseBody
+    public Map<String,Object> getQrcodeStatus(@RequestBody String oauthKey){
+        return service.getQrcodeStatus(oauthKey);
     }
 
 //    @RequestMapping("/add")

@@ -22,7 +22,9 @@
 
 ### 使用说明
 #### bilibili
-请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>以获取cookie值
+已实现扫码登录
+
+cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>以获取cookie值
 #### 网易云
 都是字面意思
 
@@ -70,7 +72,10 @@ mybatis:
 5. b站项目不支持tele推送
 
 ### 未来
-1. b站扫码登录
+1. 参数编辑功能
+2. 网易云推送
+3. 统一推送关键词
+4. 手动执行任务
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
