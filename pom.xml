@@ -126,7 +126,7 @@
         <dependency><!-- 添加mybatis依赖 -->
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.4.5</version>
+            <version>3.5.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
