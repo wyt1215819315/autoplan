@@ -42,9 +42,9 @@ public class BiliMain {
 
     public static void main(String[] args) {
         String[] strings = new String[3];
-        strings[0] = "242960530";
-        strings[1] = "d3a15b67%2C1641204938%2Ccf1b6%2A71";
-        strings[2] = "22a05f9454dedebaaa6ba6af030213e2";
+        strings[0] = "";
+        strings[1] = "";
+        strings[2] = "";
         run(strings,0,1);
         System.err.println(OldwuLog.getLog());
     }
