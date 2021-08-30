@@ -1,8 +1,7 @@
 package com.misec;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.oldwu.log.OldwuLog;
+import com.push.ServerPush;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.misec.config.Config;
@@ -10,8 +9,6 @@ import com.misec.login.ServerVerify;
 import com.misec.login.Verify;
 import com.misec.org.slf4j.impl.StaticLoggerBinder;
 import com.misec.task.DailyTask;
-import com.misec.task.ServerPush;
-import com.misec.utils.VersionInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,7 +74,7 @@ public class BiliMain {
         } else {
             OldwuLog.log("已开启了跳过本日任务，本日任务跳过（不会发起任何网络请求），如果需要取消跳过，请将skipDailyTask值改为false");
             log.info("已开启了跳过本日任务，本日任务跳过（不会发起任何网络请求），如果需要取消跳过，请将skipDailyTask值改为false");
-            ServerPush.doServerPush();
+            ServerPush.doServerPush(OldwuLog.getLog(),ServerVerify.getFtKey());
         }
     }
 

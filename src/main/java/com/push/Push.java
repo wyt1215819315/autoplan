@@ -1,7 +1,7 @@
-package com.misec.push;
+package com.push;
 
-import com.misec.push.model.PushMetaInfo;
-import com.misec.push.model.PushResult;
+import com.push.model.PushMetaInfo;
+import com.push.model.PushResult;
 
 /**
  * 推送消息接口

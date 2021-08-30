@@ -1,27 +1,23 @@
-package com.misec.push.impl;
+package com.push.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
-import com.misec.apiquery.ApiList;
-import com.misec.push.AbstractPush;
-import com.misec.push.model.PushMetaInfo;
+import com.push.AbstractPush;
+import com.push.model.PushMetaInfo;
 
 /**
- * @description:
- * @author: liming
- * @create: 2021-05-06 18:10
- **/
-public class WeiXinPush extends AbstractPush {
-    /**
-     * Push ++ 默认TOKEN长度
-     */
-    public static final int WEIXIN_CHANNEL_TOKEN_DEFAULT_LENGTH = 36;
+ * 钉钉机器人
+ *
+ * @author itning
+ * @since 2021/3/22 19:15
+ */
+public class DingTalkPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.weixingPush + metaInfo.getToken();
+        return metaInfo.getToken();
     }
 
     @Override
@@ -44,19 +40,20 @@ public class WeiXinPush extends AbstractPush {
 
     @Getter
     static class MessageModel {
-        private final String msgtype = "markdown";
-        private final Markdown markdown;
+        private final String msgtype = "text";
+        private final String title = "BILIBILI-HELPER任务简报";
+        private final Text text;
 
         public MessageModel(String content) {
-            this.markdown = new Markdown(content);
+            this.text = new Text(content);
         }
     }
 
     @Getter
-    static class Markdown {
+    static class Text {
         private final String content;
 
-        public Markdown(String content) {
+        public Text(String content) {
             this.content = content.replaceAll("\r\n\r", "");
         }
     }

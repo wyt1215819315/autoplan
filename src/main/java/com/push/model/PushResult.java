@@ -1,4 +1,4 @@
-package com.misec.push.model;
+package com.push.model;
 
 import lombok.Getter;
 

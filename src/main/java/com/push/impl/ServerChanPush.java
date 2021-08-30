@@ -1,10 +1,10 @@
-package com.misec.push.impl;
+package com.push.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
-import com.misec.push.AbstractPush;
-import com.misec.push.model.PushMetaInfo;
+import com.push.AbstractPush;
+import com.push.model.PushMetaInfo;
 
 /**
  * server酱推送

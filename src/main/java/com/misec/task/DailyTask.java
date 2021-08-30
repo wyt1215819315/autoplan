@@ -2,9 +2,11 @@ package com.misec.task;
 
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
+import com.misec.login.ServerVerify;
 import com.misec.utils.HttpUtil;
 import com.misec.utils.SleepTime;
 import com.oldwu.log.OldwuLog;
+import com.push.ServerPush;
 import lombok.extern.log4j.Log4j2;
 
 import java.text.SimpleDateFormat;
@@ -79,7 +81,7 @@ public class DailyTask {
             OldwuLog.error(e.getMessage());
             log.debug(e);
         } finally {
-            ServerPush.doServerPush();
+            ServerPush.doServerPush(OldwuLog.getLog(), ServerVerify.getFtKey());
         }
     }
 

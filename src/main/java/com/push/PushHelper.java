@@ -1,6 +1,6 @@
-package com.misec.push;
+package com.push;
 
-import com.misec.push.model.PushMetaInfo;
+import com.push.model.PushMetaInfo;
 
 /**
  * 推送工具

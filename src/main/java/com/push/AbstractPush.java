@@ -1,10 +1,10 @@
-package com.misec.push;
+package com.push;
 
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
-import com.misec.push.model.PushMetaInfo;
-import com.misec.push.model.PushResult;
-import com.misec.push.model.RetryContext;
+import com.push.model.PushMetaInfo;
+import com.push.model.PushResult;
+import com.push.model.RetryContext;
 import com.misec.utils.HttpUtil;
 
 /**
