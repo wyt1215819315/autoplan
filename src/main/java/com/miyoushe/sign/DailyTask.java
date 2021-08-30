@@ -64,6 +64,7 @@ public class DailyTask implements Runnable {
                 map.put("msg",stringBuilder.toString() + "\n" + map.get("msg"));
                 return map;
             }
+            stringBuilder.append("\n").append(map.get("msg"));
         }
         if (miHoYoSign != null) {
             try {

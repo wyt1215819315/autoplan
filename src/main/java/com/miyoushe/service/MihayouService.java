@@ -47,7 +47,7 @@ public class MihayouService {
     }
 
     public List<AutoMihayou> getMyPlan(Integer userId) {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectAll();
+        List<AutoMihayou> autoMihayous = mihayouDao.selectMine(userId);
         List<AutoMihayou> result = new ArrayList<>();
         for (AutoMihayou mihayous : autoMihayous) {
             mihayous.setCookie(null);
