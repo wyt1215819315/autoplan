@@ -43,7 +43,7 @@
         from auto_log
         where id = #{id,jdbcType=BIGINT}
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.gene" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog" useGeneratedKeys="true">
         insert into auto_log (auto_id, `name`, `type`,
                               `status`, userid, `date`,
                               `text`, other)
@@ -51,7 +51,7 @@
                 #{status,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP},
                 #{text,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.gene"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog"
             useGeneratedKeys="true">
         insert into auto_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -107,7 +107,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.gene">
+    <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.AutoLog">
         update auto_log
         <set>
             <if test="autoId != null">
@@ -137,7 +137,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.gene">
+    <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.AutoLog">
         update auto_log
         set auto_id  = #{autoId,jdbcType=INTEGER},
             `name`   = #{name,jdbcType=VARCHAR},

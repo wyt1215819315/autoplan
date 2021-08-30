@@ -14,6 +14,7 @@ import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
 import com.oldwu.log.OldwuLog;
 import com.oldwu.service.BiliService;
+import com.push.ServerPush;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -139,6 +140,9 @@ public class NetMusicTask {
                     msg.append("\n[!WARNING!]任务运行出现异常\n").append(run.get("msg"));
                 }
             }
+            //执行推送任务
+            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getOther());
+            msg.append("\n").append(s);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
             logDao.insertSelective(netlog);

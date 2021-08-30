@@ -265,7 +265,8 @@ public class NeteaseMusicUtil {
             } catch (Exception exception) {
                 exception.printStackTrace();
                 result.put("flag", "false");
-                msg = msg + "\n获取歌单" + listId + "失败！" + exception.getMessage();
+                msg = msg + "\n获取歌单" + listId + "失败！";
+                msg = msg + "\n获取歌单" + listId + "失败！";
                 result.put("msg", msg);
                 return result;
             }
