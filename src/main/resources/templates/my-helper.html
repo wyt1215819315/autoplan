@@ -71,7 +71,7 @@
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?bid=' + plan.getAutoId()}" target="_blank">查看日志</a>
+                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=bilibili&id=' + plan.getAutoId()}" target="_blank">查看日志</a>
                 <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeBili(${plan.getAutoId()})|">删除任务</button>
             </td>
         </tr>
@@ -115,7 +115,7 @@
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?nid=' + plan.getId()}" target="_blank">查看日志</a>
+                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=netmusic&id=' + plan.getId()}" target="_blank">查看日志</a>
                 <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeNetmusic(${plan.getId()})|">删除任务</button>
             </td>
         </tr>

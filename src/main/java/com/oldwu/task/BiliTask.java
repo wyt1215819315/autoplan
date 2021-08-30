@@ -91,7 +91,7 @@ public class BiliTask {
             strings[2] = autoBilibili.getBiliJct();
             BiliMain.run(strings, auto_id, userid);
             //写入至数据库
-            AutoLog bilibili = new AutoLog(auto_id, null, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
+            AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insertSelective(bilibili);
             //更新用户信息,一并检查cookie
             Map<String, String> map = biliService.checkUser(autoBilibili);

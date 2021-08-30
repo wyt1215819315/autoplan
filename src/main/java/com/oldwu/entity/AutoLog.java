@@ -13,9 +13,7 @@ import lombok.Data;
 public class AutoLog implements Serializable {
     private Long id;
 
-    private Integer biAutoId;
-
-    private Integer netAutoId;
+    private Integer autoId;
 
     private String name;
 
@@ -33,9 +31,8 @@ public class AutoLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public AutoLog(Integer biAutoId, Integer netAutoId, String type, String status, Integer userid, Date date, String text) {
-        this.biAutoId = biAutoId;
-        this.netAutoId = netAutoId;
+    public AutoLog(Integer autoId, String type, String status, Integer userid, Date date, String text) {
+        this.autoId = autoId;
         this.type = type;
         this.status = status;
         this.userid = userid;

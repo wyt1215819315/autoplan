@@ -3,8 +3,7 @@
 <mapper namespace="com.oldwu.dao.AutoLogDao">
     <resultMap id="BaseResultMap" type="com.oldwu.entity.AutoLog">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="bi_auto_id" jdbcType="INTEGER" property="biAutoId"/>
-        <result column="net_auto_id" jdbcType="INTEGER" property="netAutoId"/>
+        <result column="auto_id" jdbcType="INTEGER" property="autoId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="type" jdbcType="VARCHAR" property="type"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
@@ -14,7 +13,7 @@
         <result column="other" jdbcType="VARCHAR" property="other"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, bi_auto_id, net_auto_id, `name`, `type`, `status`, userid, `date`, `text`, other
+        id, auto_id, `name`, `type`, `status`, userid, `date`, `text`, other
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -22,55 +21,42 @@
         from auto_log
         where id = #{id,jdbcType=BIGINT}
     </select>
+    <delete id="deleteByAutoId">
+        delete
+        from auto_log
+        where auto_id = #{autoId}
+          and type = #{type}
+          and userid = #{userid}
+    </delete>
     <select id="selectByCondition" resultType="com.oldwu.entity.AutoLog">
         select
         <include refid="Base_Column_List"/>
         from auto_log
         where userid = #{userid}
-        <if test="biAutoId != null">
-            and bi_auto_id = #{biAutoId,jdbcType=INTEGER}
-        </if>
-        <if test="netAutoId != null">
-            and net_auto_id = #{netAutoId,jdbcType=INTEGER}
-        </if>
+        and auto_id = #{autoId}
+        and type = #{type}
         order by date desc
         limit 1
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="com.oldwu.entity.AutoLog">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
         from auto_log
         where id = #{id,jdbcType=BIGINT}
     </delete>
-    <delete id="deleteByAutoId">
-        delete
-        from auto_log
-        where
-        <if test="biAutoId != null">
-            bi_auto_id = #{biAutoId}
-        </if>
-        <if test="netAutoId != null">
-            net_auto_id = #{netAutoId}
-        </if>
-        and userid = #{userid}
-    </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog"
-            useGeneratedKeys="true">
-        insert into auto_log (bi_auto_id, net_auto_id, `name`,
-                              `type`, `status`, userid,
-                              `date`, `text`, other)
-        values (#{biAutoId,jdbcType=INTEGER}, #{netAutoId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
-                #{type,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER},
-                #{date,jdbcType=TIMESTAMP}, #{text,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR})
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.gene" useGeneratedKeys="true">
+        insert into auto_log (auto_id, `name`, `type`,
+                              `status`, userid, `date`,
+                              `text`, other)
+        values (#{autoId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+                #{status,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP},
+                #{text,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.gene"
             useGeneratedKeys="true">
         insert into auto_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="biAutoId != null">
-                bi_auto_id,
-            </if>
-            <if test="netAutoId != null">
-                net_auto_id,
+            <if test="autoId != null">
+                auto_id,
             </if>
             <if test="name != null">
                 `name`,
@@ -95,11 +81,8 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="biAutoId != null">
-                #{biAutoId,jdbcType=INTEGER},
-            </if>
-            <if test="netAutoId != null">
-                #{netAutoId,jdbcType=INTEGER},
+            <if test="autoId != null">
+                #{autoId,jdbcType=INTEGER},
             </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
@@ -124,14 +107,11 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.AutoLog">
+    <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.gene">
         update auto_log
         <set>
-            <if test="biAutoId != null">
-                bi_auto_id = #{biAutoId,jdbcType=INTEGER},
-            </if>
-            <if test="netAutoId != null">
-                net_auto_id = #{netAutoId,jdbcType=INTEGER},
+            <if test="autoId != null">
+                auto_id = #{autoId,jdbcType=INTEGER},
             </if>
             <if test="name != null">
                 `name` = #{name,jdbcType=VARCHAR},
@@ -157,17 +137,16 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.AutoLog">
+    <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.gene">
         update auto_log
-        set bi_auto_id  = #{biAutoId,jdbcType=INTEGER},
-            net_auto_id = #{netAutoId,jdbcType=INTEGER},
-            `name`      = #{name,jdbcType=VARCHAR},
-            `type`      = #{type,jdbcType=VARCHAR},
-            `status`    = #{status,jdbcType=VARCHAR},
-            userid      = #{userid,jdbcType=INTEGER},
-            `date`      = #{date,jdbcType=TIMESTAMP},
-            `text`      = #{text,jdbcType=VARCHAR},
-            other       = #{other,jdbcType=VARCHAR}
+        set auto_id  = #{autoId,jdbcType=INTEGER},
+            `name`   = #{name,jdbcType=VARCHAR},
+            `type`   = #{type,jdbcType=VARCHAR},
+            `status` = #{status,jdbcType=VARCHAR},
+            userid   = #{userid,jdbcType=INTEGER},
+            `date`   = #{date,jdbcType=TIMESTAMP},
+            `text`   = #{text,jdbcType=VARCHAR},
+            other    = #{other,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 </mapper>

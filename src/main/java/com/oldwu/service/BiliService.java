@@ -329,7 +329,8 @@ public class BiliService {
         //首先删除日志
         AutoLog autoLog = new AutoLog();
         autoLog.setUserid(autoBilibili.getUserid());
-        autoLog.setBiAutoId(autoBilibili.getId());
+        autoLog.setAutoId(autoBilibili.getId());
+        autoLog.setType("bilibili");
         try {
             autoLogDao.deleteByAutoId(autoLog);
             //然后删除b站用户数据

@@ -151,7 +151,8 @@ public class NetmusicService {
         //首先删除日志
         AutoLog autoLog = new AutoLog();
         autoLog.setUserid(autoNetmusic.getUserid());
-        autoLog.setNetAutoId(autoNetmusic.getId());
+        autoLog.setAutoId(autoNetmusic.getId());
+        autoLog.setType("netmusic");
         try {
             autoLogDao.deleteByAutoId(autoLog);
             int i = netmusicDao.deleteByPrimaryKey(autoid);

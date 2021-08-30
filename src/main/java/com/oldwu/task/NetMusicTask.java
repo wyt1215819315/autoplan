@@ -140,7 +140,7 @@ public class NetMusicTask {
                 }
             }
             //日志写入至数据库
-            AutoLog netlog = new AutoLog(null, autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
+            AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
             logDao.insertSelective(netlog);
             //更新任务状态
             autoNetmusic1.setEnddate(new Date());

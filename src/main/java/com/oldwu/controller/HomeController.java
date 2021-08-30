@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -82,10 +83,14 @@ public class HomeController {
     }
 
     @GetMapping("/getlog")
-    public String getLog(Model model, Principal principal,@Param("bid") Integer bid,@Param("nid") Integer nid) {
-        AutoLog log = logService.getLog(bid, nid, userService.getUserId(principal.getName()));
+    public String getLog(Model model, Principal principal,@Param("id") Integer id,@Param("type") String type) {
+        AutoLog log = logService.getLog(id, type, userService.getUserId(principal.getName()));
         if (log == null || log.getId() == null){
-            return "404";
+            AutoLog log1 = new AutoLog();
+            log1.setText("当前无日志");
+            log1.setDate(new Date());
+            model.addAttribute("log",log1);
+            return "getlog";
         }
         model.addAttribute("log",log);
         return "getlog";
