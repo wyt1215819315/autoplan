@@ -1,5 +1,7 @@
 package com.oldwu.controller;
 
+import com.miyoushe.model.AutoMihayou;
+import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
 import com.oldwu.domain.Msg;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yangyibo on 17/1/18.
@@ -37,6 +38,8 @@ public class HomeController {
     private LogService logService;
     @Autowired
     private NetmusicService netmusicService;
+    @Autowired
+    private MihayouService mihayouService;
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -83,16 +86,16 @@ public class HomeController {
     }
 
     @GetMapping("/getlog")
-    public String getLog(Model model, Principal principal,@Param("id") Integer id,@Param("type") String type) {
+    public String getLog(Model model, Principal principal, @Param("id") Integer id, @Param("type") String type) {
         AutoLog log = logService.getLog(id, type, userService.getUserId(principal.getName()));
-        if (log == null || log.getId() == null){
+        if (log == null || log.getId() == null) {
             AutoLog log1 = new AutoLog();
             log1.setText("当前无日志");
             log1.setDate(new Date());
-            model.addAttribute("log",log1);
+            model.addAttribute("log", log1);
             return "getlog";
         }
-        model.addAttribute("log",log);
+        model.addAttribute("log", log);
         return "getlog";
     }
 
@@ -100,8 +103,10 @@ public class HomeController {
     public String myIndex(Model model, Principal principal) {
         List<BiliPlan> biliPlans = biliService.getMyPlan(userService.getUserId(principal.getName()));
         List<AutoNetmusic> netplans = netmusicService.getMyPlan(userService.getUserId(principal.getName()));
+        List<AutoMihayou> mihuyouplans = mihayouService.getMyPlan(userService.getUserId(principal.getName()));
         model.addAttribute("bililist", biliPlans);
         model.addAttribute("netlist", netplans);
+        model.addAttribute("milist", mihuyouplans);
         return "my-helper";
     }
 }

@@ -2,7 +2,6 @@ package com.netmusic.controller;
 
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
-import com.oldwu.entity.AutoBilibili;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +26,13 @@ public class NetMusicController {
         AutoNetmusic autoNetmusic = new AutoNetmusic();
         autoNetmusic.setUserid(userService.getUserId(principal.getName()));
         autoNetmusic.setId(nid);
-        return netmusicService.deleteBiliPlan(autoNetmusic);
+        return netmusicService.deleteNetMusicPlan(autoNetmusic);
     }
 
     @PostMapping("/add")
     public Map<String, String> add(@RequestBody AutoNetmusic autoNetmusic, Principal principal) {
         autoNetmusic.setUserid(userService.getUserId(principal.getName()));
-        return netmusicService.addBiliPlan(autoNetmusic);
+        return netmusicService.addNetMusicPlan(autoNetmusic);
     }
 
 }

@@ -42,7 +42,7 @@ public class NetMusicTask {
     }
 
     @Autowired
-    public void getBiliDao(AutoNetmusicDao netmusicDao) {
+    public void getNetMusicDao(AutoNetmusicDao netmusicDao) {
         NetMusicTask.netmusicDao = netmusicDao;
     }
 

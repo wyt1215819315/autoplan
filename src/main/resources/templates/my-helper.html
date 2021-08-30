@@ -33,6 +33,9 @@
         <a href="netmusic/add" class="layui-btn layui-btn-normal">
             添加网易云任务
         </a>
+        <a href="miyoushe/add" class="layui-btn layui-btn-normal">
+            添加米游社任务
+        </a>
     </div>
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
         <legend>b站任务列表</legend>
@@ -93,7 +96,7 @@
             <th>任务是否开启</th>
             <th>任务运行状态</th>
             <th>任务最后运行时间</th>
-            <th>查看日志</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -122,6 +125,44 @@
         </tbody>
     </table>
 
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>米忽悠任务列表</legend>
+    </fieldset>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>任务名称</th>
+            <th>用户名</th>
+            <th>原神UID</th>
+            <th>任务是否开启</th>
+            <th>任务运行状态</th>
+            <th>任务最后运行时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="plan:${milist}">
+            <td th:text="${plan.getName()}"></td>
+            <td th:text="${plan.getMiName()}"></td>
+            <td th:text="${plan.getGenshinUid()}"></td>
+            <td th:text="${plan.getEnable()?'任务开启':'任务关闭'}"></td>
+            <td>
+                <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
+                <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
+                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号信息已过期</span>
+                <span th:if="${plan.getStatus().equals('0')}" style="color: yellow">任务未开启</span>
+                <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
+                <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
+            </td>
+            <td th:text="${plan.getEndDateString()}"></td>
+            <td>
+                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=mihuyou&id=' + plan.getId()}" target="_blank">查看日志</a>
+                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removemihuyou(${plan.getId()})|">删除任务</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <script> let rootPath = "[[${rootPath}]]";</script>
 <script th:include="include::layelement"></script>
@@ -156,6 +197,29 @@
                 let loading = layer.load();
                 $.ajax({
                     url: rootPath + "/api/user/netmusic/delete?nid=" + nid,
+                    // dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code==200) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                window.location.href= rootPath + "/my";
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 2000});
+                        }
+                    }
+                })
+            });
+        });
+    }
+    function removemihuyou(mid) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: rootPath + "/api/user/mihayou/delete?id=" + mid,
                     // dataType: 'json',
                     type: 'post',
                     success: function (result) {

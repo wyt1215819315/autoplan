@@ -1,5 +1,7 @@
 package com.oldwu.controller;
 
+import com.miyoushe.model.AutoMihayou;
+import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
 import com.oldwu.entity.BiliPlan;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class PageController {
 
     @Autowired
     private NetmusicService netmusicService;
+
+    @Autowired
+    private MihayouService mihayouService;
 
 
     @GetMapping("/netmusic/index")
@@ -44,6 +48,18 @@ public class PageController {
     @GetMapping("/bili/add")
     public String addPage(){
         return "bili-helper-add";
+    }
+
+    @GetMapping("/miyoushe/index")
+    public String miyousheindex(Model model){
+        List<AutoMihayou> allPlan = mihayouService.getAllPlan();
+        model.addAttribute("list",allPlan);
+        return "miyoushe-helper";
+    }
+
+    @GetMapping("/miyoushe/add")
+    public String miyousheaddPage(){
+        return "miyoushe-helper-add";
     }
 
 }

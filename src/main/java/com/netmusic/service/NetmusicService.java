@@ -53,7 +53,7 @@ public class NetmusicService {
         return result;
     }
 
-    public Map<String, String> addBiliPlan(AutoNetmusic autoNetmusic) {
+    public Map<String, String> addNetMusicPlan(AutoNetmusic autoNetmusic) {
         Map<String, String> map = new HashMap<>();
         Map<String, Object> stringObjectMap = checkForm(autoNetmusic);
         if (!(boolean) stringObjectMap.get("flag")) {
@@ -121,7 +121,7 @@ public class NetmusicService {
         return map;
     }
 
-    public Map<String, Object> deleteBiliPlan(AutoNetmusic autoNetmusic) {
+    public Map<String, Object> deleteNetMusicPlan(AutoNetmusic autoNetmusic) {
         Map<String,Object> map = new HashMap<>();
         //校验用户id
         Integer userid = autoNetmusic.getUserid();

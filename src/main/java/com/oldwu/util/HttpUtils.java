@@ -437,4 +437,15 @@ public class HttpUtils {
         }
         return cookieContiner;
     }
+
+    public static String getCookieByName(String cookie, String name) {
+        String[] split = cookie.split(";");
+        for (String s : split) {
+            String h = s.trim();
+            if (h.startsWith(name)) {
+                return h.substring(h.indexOf('=') + 1);
+            }
+        }
+        return null;
+    }
 }

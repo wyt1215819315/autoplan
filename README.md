@@ -28,6 +28,12 @@ cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE"
 #### 网易云
 都是字面意思
 
+#### 米游社
+暂时只支持原神签到任务
+其余由于原项目存在一些问题暂时搁置
+
+[更多使用说明请查看](https://blog.oldwu.top/index.php/archives/84/#toc_5)
+
 ### 项目部署
 1. 导入idea并下载依赖
 2. 在mysql中创建数据库并导入sql
@@ -56,7 +62,7 @@ mybatis:
     map-underscore-to-camel-case: true
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 ```
-4. 使用maven打包
+4. 使用maven打包，并使用`java -jar xxx.jar`运行
 5. 注册账号，并将其定为管理员账户，步骤：
    1. 查看`sys_user`表中你的账号对应的`id`
     2. 进入`sys_role_user`表中找到对应的`user_id`
@@ -66,19 +72,23 @@ mybatis:
 
 ### 一些问题
 1. 网易云任务会出现莫名其妙的json解析失败导致一系列莫名其妙的错误，目前采用重试来解决，无法定位错误根源
-2. 代码不是一般的乱，（非常非常乱....），本人萌新一枚，请大佬多多指教
+2. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
 3. 由于BILIBILI-HELPER-PRE项目大多采用static变量，因此无法多线程运行
-4. 网易云项目暂不支持push推送，仅支持任务面板查看运行状态以及日志
+4. 米游社签到由于原项目存在缺陷，暂只支持原神签到领奖励功能
 
 ### 未来
 1. 参数编辑功能
-2. 米游社原神自动签到
+3. bilibili赛事预测
 4. 手动执行任务
 
 ### 更新日志
 * 21.8.29 更新了b站二维码登录以及任务删除功能
+* 21.8.30 增加了网易云推送，改变了日志表结构
+* 21.8.31 增加了米游社原神签到
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
+3. <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
+4. <a href="https://github.com/y1ndan/genshinhelper">genshinhelper</a>
 
