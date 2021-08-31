@@ -13,7 +13,9 @@ import sun.misc.BASE64Encoder;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -58,7 +60,7 @@ public class NeteaseMusicUtil {
      * @return
      */
     public static Map<String, Object> run(Map<String, String> userInfo) {
-        int reconn = 5;
+        int reconn = 3;
         Map<String, Object> map = new HashMap<>();
         String countrycode = userInfo.get("countrycode");
         String password = userInfo.get("password");
@@ -109,7 +111,7 @@ public class NeteaseMusicUtil {
         }
         //刷歌
         for (int i = 0; i < reconn; i++) {
-            Map<String, String> shuaMap = shuaMusicTask(csrf, cookie);
+            Map<String, String> shuaMap = shuaMusicTask(uid, csrf, cookie);
             flag3 = Boolean.parseBoolean(shuaMap.get("flag"));
             if (flag3) {
                 msg.append("\n").append(shuaMap.get("msg"));
@@ -126,12 +128,12 @@ public class NeteaseMusicUtil {
         return map;
     }
 
-    public static Map<String, String> shuaMusicTask(String csrf, String cookie) {
+    public static Map<String, String> shuaMusicTask(Integer uid, String csrf, String cookie) {
         int reconn = 3;
         Map<String, String> result = new HashMap<>();
         Map<String, String> taskMusicsMap = new HashMap<>();
         for (int i = 0; i < reconn; i++) {
-            taskMusicsMap = getTaskMusics(csrf, cookie);
+            taskMusicsMap = getTaskMusics(csrf, cookie, uid);
             if (taskMusicsMap.get("flag").equals("true")) {
                 break;
             }
@@ -159,10 +161,15 @@ public class NeteaseMusicUtil {
             music.put("json", json);
             musicsTask.add(music);
         }
-        postData.put("logs", musicsTask);
+        postData.put("logs", musicsTask.toJSONString());
+        Map<String, String> headers = getHeaders();
+        headers.put("cookie",cookie);
         try {
-            HttpResponse httpResponse = HttpUtils.doPost(feedback_url, null, HttpUtils.getHeaders(), null, getRequestParam(postData.toJSONString()));
-            JSONObject json = HttpUtils.getJson(httpResponse);
+//            HttpResponse httpResponse = HttpUtils.doPost(feedback_url, null, getHeaders(), null, getRequestParam(postData.toJSONString()));
+//            String s = EntityUtils.toString(httpResponse.getEntity());
+            String requestParamString = getRequestParamString(postData.toJSONString());
+            String s = HttpUtils.sendPost(feedback_url, requestParamString, cookie);
+            JSONObject json = JSON.parseObject(s);
             if (json.getInteger("code") == 200) {
                 result.put("flag", "true");
                 result.put("msg", result.get("msg") + "刷听歌量成功，共" + musicsTask.size() + "首");
@@ -184,25 +191,31 @@ public class NeteaseMusicUtil {
      *
      * @return
      */
-    public static Map<String, String> getTaskMusics(String csrf, String cookie) {
+    public static Map<String, String> getTaskMusics(String csrf, String cookie, Integer uid) {
         int num = 320;
+        int num1 = 200;
         Map<String, String> map = new HashMap<>();
         JSONArray musics = new JSONArray();
         Map<String, String> userRecommendPlayLists = getUserRecommendPlayLists(csrf, cookie);
-        if (userRecommendPlayLists.get("flag").equals("false")) {
+        Map<String, String> userSubscribePlayLists = getUserSubscribePlayLists(uid, csrf, cookie);
+        if (userRecommendPlayLists.get("flag").equals("false") || userSubscribePlayLists.get("flag").equals("false")) {
             map.put("flag", "false");
             map.put("msg", userRecommendPlayLists.get("msg"));
             return map;
         }
         JSONArray array = JSON.parseArray(userRecommendPlayLists.get("playlists"));
+        JSONArray array1 = JSON.parseArray(userSubscribePlayLists.get("playlists"));
         Map<String, String> playlists = getListMusics(array, csrf, cookie);
-        if (playlists.get("flag").equals("false")) {
+        Map<String, String> playlists1 = getListMusics(array1, csrf, cookie);
+        if (playlists.get("flag").equals("false") || playlists1.get("flag").equals("false")) {
             map.put("flag", "false");
             map.put("msg", playlists.get("msg"));
             return map;
         }
         String msg = userRecommendPlayLists.get("msg") + "\n" + playlists.get("msg");
+        msg = msg + "\n" + userSubscribePlayLists.get("msg") + "\n" + playlists1.get("msg");
         JSONArray recommend_musics = JSON.parseArray(playlists.get("musiclists"));
+        JSONArray subscribe_musics = JSON.parseArray(playlists1.get("musiclists"));
         if (recommend_musics.size() > num) {
             int[] ints = NumberUtil.randomCommon(1, recommend_musics.size(), num);
             for (int anInt : ints) {
@@ -211,15 +224,14 @@ public class NeteaseMusicUtil {
         } else {
             musics.addAll(recommend_musics);
         }
-        //System.out.println(musics);
-        //JSONArray subscribe_musics = JSON.parseArray(getListMusics(JSON.parseArray(getUserSubscribePlayLists().get("playlists"))).get("musiclists"));
-//        if (recommend_musics.size() > num) {
-//            for (int i = 0; i < num; i++) {
-//                musics.add(recommend_musics.getLong(i));
-//            }
-//        } else {
-//            musics.addAll(recommend_musics);
-//        }
+        if (subscribe_musics.size() > num1) {
+            int[] ints = NumberUtil.randomCommon(1, subscribe_musics.size(), num1);
+            for (int anInt : ints) {
+                musics.add(subscribe_musics.getLong(anInt));
+            }
+        } else {
+            musics.addAll(subscribe_musics);
+        }
         msg = msg + "\n已添加" + musics.size() + "首歌曲到播放列表";
         map.put("flag", "true");
         map.put("msg", msg);
@@ -246,9 +258,9 @@ public class NeteaseMusicUtil {
             Map<String, String> headers = getHeaders();
             headers.put("cookie", cookie);
             try {
-                HttpResponse httpResponse = HttpUtils.doPost(detail_url + csrf, null, headers, null, getRequestParam(up.toJSONString()));
-                String s = EntityUtils.toString(httpResponse.getEntity());
-                //System.out.println(s);
+                String s = HttpUtils.sendPost(detail_url + csrf, getRequestParamString(up.toJSONString()), cookie);
+//                HttpResponse httpResponse = HttpUtils.doPost(detail_url + csrf, null, headers, null, getRequestParam(up.toJSONString()));
+//                String s = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject json = JSON.parseObject(s);
                 if (json == null) {
                     continue;
@@ -261,7 +273,7 @@ public class NeteaseMusicUtil {
                         allMusics.add(id);
                     }
                 }
-                msg = msg + "\n获取歌单" + listId + "成功！";
+//                msg = msg + "\n获取歌单" + listId + "成功！";
             } catch (Exception exception) {
                 exception.printStackTrace();
                 result.put("flag", "false");
@@ -289,11 +301,13 @@ public class NeteaseMusicUtil {
         up.put("limit", 1001);
         up.put("offset", 0);
         up.put("csrf_token", csrf);
-        Map<String, String> headers = getHeaders();
-        headers.put("cookie", cookie);
+//        Map<String, String> headers = getHeaders();
+//        headers.put("cookie", cookie);
         try {
-            HttpResponse httpResponse = HttpUtils.doPost(private_url + csrf, null, headers, null, getRequestParam(up.toJSONString()));
-            JSONObject json = HttpUtils.getJson(httpResponse);
+            String s = HttpUtils.sendPost(private_url + csrf, getRequestParamString(up.toJSONString()), cookie);
+//            HttpResponse httpResponse = HttpUtils.doPost(private_url + csrf, null, headers, null, getRequestParam(up.toJSONString()));
+//            JSONObject json = HttpUtils.getJson(httpResponse);
+            JSONObject json = JSON.parseObject(s);
             result.put("data", json.toJSONString());
             if (json.getInteger("code") == 200) {
                 JSONArray playlist = json.getJSONArray("playlist");
@@ -330,11 +344,13 @@ public class NeteaseMusicUtil {
     public static Map<String, String> getUserRecommendPlayLists(String csrf, String cookie) {
         Map<String, String> result = new HashMap<>();
         String str = "{\"csrf_token\":\"" + csrf + "\"}";
-        Map<String, String> headers = getHeaders();
-        headers.put("cookie", cookie);
+//        Map<String, String> headers = getHeaders();
+//        headers.put("cookie", cookie);
         try {
-            HttpResponse httpResponse = HttpUtils.doPost(recommend_url, null, headers, null, getRequestParam(str));
-            JSONObject json = HttpUtils.getJson(httpResponse);
+            String s = HttpUtils.sendPost(recommend_url, getRequestParamString(str), cookie);
+//            HttpResponse httpResponse = HttpUtils.doPost(recommend_url, null, headers, null, getRequestParam(str));
+//            JSONObject json = HttpUtils.getJson(httpResponse);
+            JSONObject json = JSON.parseObject(s);
             result.put("data", json.toJSONString());
             if (json.getInteger("code") == 200) {
                 JSONArray recommend = json.getJSONArray("recommend");
@@ -374,8 +390,10 @@ public class NeteaseMusicUtil {
         headers.put("cookie", cookie);
         String str = "{\"type\":" + flag + "}";
         try {
-            HttpResponse httpResponse = HttpUtils.doPost(sign_url + csrf, null, headers, null, getRequestParam(str));
-            JSONObject json = HttpUtils.getJson(httpResponse);
+            String s = HttpUtils.sendPost(sign_url + csrf, getRequestParamString(str), cookie);
+//            HttpResponse httpResponse = HttpUtils.doPost(sign_url + csrf, null, headers, null, getRequestParam(str));
+//            JSONObject json = HttpUtils.getJson(httpResponse);
+            JSONObject json = JSON.parseObject(s);
             map.put("data", json.toJSONString());
             String text;
             Integer code = json.getInteger("code");
@@ -408,6 +426,27 @@ public class NeteaseMusicUtil {
         data.put("params", encText);
         data.put("encSecKey", encSecKey);
         return data;
+    }
+
+    public static String getRequestParamString(String text) {
+        Map<String, String> requestParam = getRequestParam(text);
+        try {
+            requestParam.put("params", URLEncoder.encode(requestParam.get("params"),"utf-8"));
+            requestParam.put("encSecKey", URLEncoder.encode(requestParam.get("encSecKey"),"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "params="+requestParam.get("params")+"&encSecKey="+requestParam.get("encSecKey");
+    }
+
+    public static String getRequestParamString(Map<String, String> requestParam) {
+        try {
+            requestParam.put("params", URLEncoder.encode(requestParam.get("params"),"utf-8"));
+            requestParam.put("encSecKey", URLEncoder.encode(requestParam.get("encSecKey"),"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "params="+requestParam.get("params")+"&encSecKey="+requestParam.get("encSecKey");
     }
 
 
@@ -449,6 +488,8 @@ public class NeteaseMusicUtil {
         }
         try {
             Map<String, String> loginData = getLoginData(info.get("phone"), info.get("countrycode"), info.get("password"));
+//            String s = HttpUtils.sendPost(login_url, headers, getRequestParamString(loginData), null);
+//            JSONObject json = JSON.parseObject(s);
             HttpResponse httpResponse = HttpUtils.doPost(login_url, null, headers, null, loginData);
             JSONObject json = HttpUtils.getJson(httpResponse);
             if (json.getInteger("code") == 200) {
@@ -498,8 +539,10 @@ public class NeteaseMusicUtil {
         Map<String, String> headers = getHeaders();
         headers.put("cookie", cookie);
         try {
-            HttpResponse httpResponse = HttpUtils.doPost(level_url, null, headers, null, login_data);
-            JSONObject json = HttpUtils.getJson(httpResponse);
+            String s = HttpUtils.sendPost(level_url, getRequestParamString(login_data), cookie);
+//            HttpResponse httpResponse = HttpUtils.doPost(level_url, null, headers, null, login_data);
+//            JSONObject json = HttpUtils.getJson(httpResponse);
+            JSONObject json = JSON.parseObject(s);
             result.put("code", json.getString("code"));
             if (json.getInteger("code") != 200) {
                 result.put("flag", "false");

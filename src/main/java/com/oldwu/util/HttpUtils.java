@@ -33,9 +33,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -96,11 +96,127 @@ public class HttpUtils {
             for (String key : bodys.keySet()) {
                 nameValuePairList.add(new BasicNameValuePair(key, bodys.get(key)));
             }
-            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList, "utf-8");
+            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList,"utf-8");
+//            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList, "gbk");
             formEntity.setContentType("application/x-www-form-urlencoded; charset=UTF-8");
             request.setEntity(formEntity);
         }
         return httpClient.execute(request);
+    }
+
+    /**
+     * 向指定 URL 发送POST方法的请求
+     *
+     * @param url   发送请求的 URL
+     * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return 所代表远程资源的响应结果
+     */
+    public static String sendPost(String url, Map<String,String> headers,String param, String cookie) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            Set<String> strings = headers.keySet();
+            for (String string : strings) {
+                String s = headers.get(string);
+                conn.setRequestProperty(string,s);
+            }
+            // 发送POST请求必须设置如下两行
+            if (cookie != null) {
+                conn.setRequestProperty("Cookie", cookie);
+            }
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(param);
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            return "error:发送 POST 请求出现异常！" + e;
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 向指定 URL 发送POST方法的请求
+     *
+     * @param url   发送请求的 URL
+     * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return 所代表远程资源的响应结果
+     */
+    public static String sendPost(String url, String param, String cookie) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("Referer", "https://music.163.com/");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            conn.setRequestProperty("accept", "*/*");
+//            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+            // 发送POST请求必须设置如下两行
+            if (cookie != null) {
+                conn.setRequestProperty("Cookie", cookie);
+            }
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(param);
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            return "error:发送 POST 请求出现异常！" + e;
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
     }
 
     /**

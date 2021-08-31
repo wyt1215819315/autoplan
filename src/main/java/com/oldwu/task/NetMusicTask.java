@@ -150,6 +150,7 @@ public class NetMusicTask {
             autoNetmusic1.setEnddate(new Date());
             netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
         }
+        refreshUserInfo();
     }
 
 }
