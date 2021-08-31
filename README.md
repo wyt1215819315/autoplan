@@ -1,5 +1,5 @@
 # AutoPlan_Helper
-这是一个自动化的托管系统，目前支持网易云，bilibili
+这是一个自动化的托管系统，目前支持网易云，bilibili，米游社原神签到
 
 ### 开源地址
 [wyt1215819315 / autoplan](https://github.com/wyt1215819315/autoplan)
