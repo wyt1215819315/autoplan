@@ -96,13 +96,13 @@
         let cols = [
             [
                 {type: 'checkbox'},
-                {title: 'ID', field: 'id', align: 'center'},
+                {title: 'ID', field: 'id', align: 'center' ,hide: 'true'},
                 {title: '任务名称', field: 'jobName', align: 'left'},
-                {title: '任务组名', field: 'jobGroup', align: 'left'},
-                {title: '调用目标字符串', field: 'invokeTarget', align: 'left'},
+                {title: '任务组名', field: 'jobGroup', align: 'left',hide: 'true'},
+                {title: '调用目标字符串', field: 'invokeTarget', align: 'left',hide: 'true'},
                 {title: 'cron执行表达式', field: 'cronExpression', align: 'left'},
-                {title: 'cron计划策略', field: 'misfirePolicy', align: 'left',toolbar: '#sysQuartzJob-misfirePolicy'},
-                {title: '是否并发执行', field: 'concurrent', align: 'left',toolbar: '#sysQuartzJob-concurrent'},
+                {title: 'cron计划策略', field: 'misfirePolicy', align: 'left',toolbar: '#sysQuartzJob-misfirePolicy',hide: 'true'},
+                {title: '是否并发执行', field: 'concurrent', align: 'left',toolbar: '#sysQuartzJob-concurrent',hide: 'true'},
                 {title: '任务状态', field: 'status', align: 'center',toolbar: '#sysQuartzJob-enable'},
                 {title: '操作', toolbar: '#sysQuartzJob-bar', align: 'center'}
             ]

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-      xmlns:th="http://www.thymeleaf.org">
+<html
+        xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="text/html;charset=UTF-8"/>
     <title>我的任务列表</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+    <link rel="stylesheet" th:href="@{/static/css/pear.css}">
+    <script th:src="@{/static/js/pear.js}"></script>
     <style type="text/css">
         body {
             padding-top: 50px;
@@ -19,7 +21,7 @@
     </style>
 </head>
 <body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
+<ul class="layui-nav" th:include="include::header"></ul>
 
 
 <div class="container">
@@ -27,13 +29,13 @@
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>操作</legend>
         </fieldset>
-        <a href="bili/add" class="layui-btn layui-btn-normal">
+        <a class="layui-btn layui-btn-normal" href="bili/add">
             添加b站任务
         </a>
-        <a href="netmusic/add" class="layui-btn layui-btn-normal">
+        <a class="layui-btn layui-btn-normal" href="netmusic/add">
             添加网易云任务
         </a>
-        <a href="miyoushe/add" class="layui-btn layui-btn-normal">
+        <a class="layui-btn layui-btn-normal" href="miyoushe/add">
             添加米游社任务
         </a>
     </div>
@@ -65,17 +67,38 @@
             <td th:text="${plan.getIsVip()?'大会员':'不是大会员'}"></td>
             <td th:text="${plan.getSkipdailytask()?'任务关闭':'任务开启'}"></td>
             <td>
-                <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
-                <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
-                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号cookie已过期</span>
-                <span th:if="${plan.getStatus().equals('0')}" style="color: yellow">任务未开启</span>
-                <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
-                <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
+                <span style="color: green" th:if="${plan.getStatus().equals('200')}">任务运行完毕</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('-1')}">任务运行失败</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('500')}">账号cookie已过期</span>
+                <span style="color: yellow" th:if="${plan.getStatus().equals('0')}">任务未开启</span>
+                <span style="color: #0efade" th:if="${plan.getStatus().equals('1')}">任务运行中</span>
+                <span style="color: blue"
+                      th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}">等待运行</span>
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=bilibili&id=' + plan.getAutoId()}" target="_blank">查看日志</a>
-                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeBili(${plan.getAutoId()})|">删除任务</button>
+                <div class="layui-btn-container">
+                    <button class="pear-btn pear-btn-success pear-btn-sm"
+                            th:onclick="|openLog('bilibili','${plan.getAutoId()}')|"
+                            title="日志">
+                        <i class="layui-icon layui-icon-tips"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-primary pear-btn-sm"
+                            th:onclick=""
+                            title="修改">
+                        <i class="layui-icon layui-icon-edit"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-danger pear-btn-sm"
+                            th:onclick="|removeBili(${plan.getAutoId()})|"
+                            title="删除">
+                        <i class="layui-icon layui-icon-delete"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-warming pear-btn-md"
+                            th:onclick=""
+                            title="执行一次">
+                        <i class="layui-icon layui-icon-triangle-r"></i>
+                    </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -109,17 +132,38 @@
             <td th:text="${plan.getNetmusicNeedListen()}"></td>
             <td th:text="${plan.getEnable()?'任务开启':'任务关闭'}"></td>
             <td>
-                <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
-                <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
-                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号信息已过期</span>
-                <span th:if="${plan.getStatus().equals('0')}" style="color: yellow">任务未开启</span>
-                <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
-                <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
+                <span style="color: green" th:if="${plan.getStatus().equals('200')}">任务运行完毕</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('-1')}">任务运行失败</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('500')}">账号信息已过期</span>
+                <span style="color: yellow" th:if="${plan.getStatus().equals('0')}">任务未开启</span>
+                <span style="color: #0efade" th:if="${plan.getStatus().equals('1')}">任务运行中</span>
+                <span style="color: blue"
+                      th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}">等待运行</span>
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=netmusic&id=' + plan.getId()}" target="_blank">查看日志</a>
-                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removeNetmusic(${plan.getId()})|">删除任务</button>
+                <div class="layui-btn-container">
+                    <button class="pear-btn pear-btn-success pear-btn-sm"
+                            th:onclick="|openLog('netmusic','${plan.getId()}')|"
+                            title="日志">
+                        <i class="layui-icon layui-icon-tips"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-primary pear-btn-sm"
+                            th:onclick=""
+                            title="修改">
+                        <i class="layui-icon layui-icon-edit"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-danger pear-btn-sm"
+                            th:onclick="|removeNetmusic(${plan.getId()})|"
+                            title="删除">
+                        <i class="layui-icon layui-icon-delete"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-warming pear-btn-md"
+                            th:onclick=""
+                            title="执行一次">
+                        <i class="layui-icon layui-icon-triangle-r"></i>
+                    </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -148,17 +192,38 @@
             <td th:text="${plan.getGenshinUid()}"></td>
             <td th:text="${plan.getEnable()?'任务开启':'任务关闭'}"></td>
             <td>
-                <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
-                <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
-                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号信息已过期</span>
-                <span th:if="${plan.getStatus().equals('0')}" style="color: yellow">任务未开启</span>
-                <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
-                <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
+                <span style="color: green" th:if="${plan.getStatus().equals('200')}">任务运行完毕</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('-1')}">任务运行失败</span>
+                <span style="color: red" th:if="${plan.getStatus().equals('500')}">账号信息已过期</span>
+                <span style="color: yellow" th:if="${plan.getStatus().equals('0')}">任务未开启</span>
+                <span style="color: #0efade" th:if="${plan.getStatus().equals('1')}">任务运行中</span>
+                <span style="color: blue"
+                      th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}">等待运行</span>
             </td>
             <td th:text="${plan.getEndDateString()}"></td>
             <td>
-                <a class="layui-btn layui-btn-primary layui-border-blue" th:href="${'getlog?type=mihuyou&id=' + plan.getId()}" target="_blank">查看日志</a>
-                <button class="layui-btn layui-btn-primary layui-border-red" th:onclick="|removemihuyou(${plan.getId()})|">删除任务</button>
+                <div class="layui-btn-container">
+                    <button class="pear-btn pear-btn-success pear-btn-sm"
+                            th:onclick="|openLog('mihuyou','${plan.getId()}')|"
+                            title="日志">
+                        <i class="layui-icon layui-icon-tips"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-primary pear-btn-sm"
+                            th:onclick=""
+                            title="修改">
+                        <i class="layui-icon layui-icon-edit"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-danger pear-btn-sm"
+                            th:onclick="|removemihuyou(${plan.getId()})|"
+                            title="删除">
+                        <i class="layui-icon layui-icon-delete"></i>
+                    </button>
+                    <button class="pear-btn pear-btn-warming pear-btn-md"
+                            th:onclick=""
+                            title="执行一次">
+                        <i class="layui-icon layui-icon-triangle-r"></i>
+                    </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -167,6 +232,10 @@
 <script> let rootPath = "[[${rootPath}]]";</script>
 <script th:include="include::layelement"></script>
 <script>
+    function openLog(type, id) {
+        window.open(rootPath + "/getlog?type=" + type + "&id=" + id, "_blank");
+    }
+
     function removeBili(bid) {
         layui.use(['table', 'form', 'jquery'], function () {
             layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
@@ -178,9 +247,9 @@
                     type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.code==200) {
+                        if (result.code == 200) {
                             layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                window.location.href= rootPath + "/my";
+                                window.location.href = rootPath + "/my";
                             });
                         } else {
                             layer.msg(result.msg, {icon: 2, time: 2000});
@@ -190,6 +259,7 @@
             });
         });
     }
+
     function removeNetmusic(nid) {
         layui.use(['table', 'form', 'jquery'], function () {
             layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
@@ -201,9 +271,9 @@
                     type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.code==200) {
+                        if (result.code == 200) {
                             layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                window.location.href= rootPath + "/my";
+                                window.location.href = rootPath + "/my";
                             });
                         } else {
                             layer.msg(result.msg, {icon: 2, time: 2000});
@@ -213,6 +283,7 @@
             });
         });
     }
+
     function removemihuyou(mid) {
         layui.use(['table', 'form', 'jquery'], function () {
             layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
@@ -224,9 +295,9 @@
                     type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.code==200) {
+                        if (result.code == 200) {
                             layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                window.location.href= rootPath + "/my";
+                                window.location.href = rootPath + "/my";
                             });
                         } else {
                             layer.msg(result.msg, {icon: 2, time: 2000});
