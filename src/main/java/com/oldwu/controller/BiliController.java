@@ -22,9 +22,16 @@ public class BiliController {
     private UserService userService;
 
 
+    @PostMapping("/edit")
+    @ResponseBody
+    public Map<String, Object> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+        autoBilibili.setUserid(userService.getUserId(principal.getName()));
+        return service.editBiliPlan(autoBilibili);
+    }
+
     @PostMapping("/add")
     @ResponseBody
-    public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+    public Map<String, String> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.addBiliPlan(autoBilibili);
     }
@@ -49,6 +56,7 @@ public class BiliController {
     public Map<String,Object> getQrcodeStatus(@RequestBody String oauthKey){
         return service.getQrcodeStatus(oauthKey);
     }
+
 
 //    @RequestMapping("/add")
 //    public Map<String,String> addBiliInfo(){

@@ -6,6 +6,7 @@ import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AutoBilibili;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +56,7 @@ public class NetmusicService {
 
     public Map<String, String> addNetMusicPlan(AutoNetmusic autoNetmusic) {
         Map<String, String> map = new HashMap<>();
-        Map<String, Object> stringObjectMap = checkForm(autoNetmusic);
+        Map<String, Object> stringObjectMap = checkForm(autoNetmusic,false);
         if (!(boolean) stringObjectMap.get("flag")) {
             map.put("code", "-1");
             map.put("msg", (String) stringObjectMap.get("msg"));
@@ -94,21 +95,23 @@ public class NetmusicService {
         return map;
     }
 
-    public Map<String,Object> checkForm(AutoNetmusic autoNetmusic){
+    public Map<String,Object> checkForm(AutoNetmusic autoNetmusic,boolean skipCheckCookie){
         Map<String,Object> map = new HashMap<>();
-        String name = autoNetmusic.getName();
-        String phone = autoNetmusic.getPhone();
-        String password = autoNetmusic.getPassword();
         String enable = autoNetmusic.getEnable();
         String other = autoNetmusic.getOther();
-        String countrycode = autoNetmusic.getCountrycode();
-        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(password)){
-            map.put("flag", false);
-            map.put("msg", "前三项不能为空！");
-            return map;
-        }
-        if (StringUtils.isBlank(countrycode) || !StringUtils.isNumeric(countrycode)){
-            autoNetmusic.setCountrycode("86");
+        if (!skipCheckCookie){
+            String name = autoNetmusic.getName();
+            String phone = autoNetmusic.getPhone();
+            String password = autoNetmusic.getPassword();
+            String countrycode = autoNetmusic.getCountrycode();
+            if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(password)){
+                map.put("flag", false);
+                map.put("msg", "前三项不能为空！");
+                return map;
+            }
+            if (StringUtils.isBlank(countrycode) || !StringUtils.isNumeric(countrycode)){
+                autoNetmusic.setCountrycode("86");
+            }
         }
         if (StringUtils.isBlank(enable) || !enable.equals("true") && !enable.equals("false")){
             autoNetmusic.setEnable("true");
@@ -166,6 +169,46 @@ public class NetmusicService {
         }
         map.put("code",-1);
         map.put("msg","删除失败！");
+        return map;
+    }
+
+    public AutoNetmusic getMyEditPlan(AutoNetmusic autoNetmusic1) {
+        AutoNetmusic autoNetmusic = netmusicDao.selectByPrimaryKey(autoNetmusic1.getId());
+        if (autoNetmusic == null || autoNetmusic.getId() == null){
+            return null;
+        }
+        //放行管理员
+        String role = userDao.getRole(autoNetmusic1.getUserid());
+        if (!autoNetmusic.getUserid().equals(autoNetmusic1.getUserid()) && !role.equals("ROLE_ADMIN")){
+            return null;
+        }
+        return autoNetmusic;
+    }
+
+    public Map<String, Object> editNetMusicPlan(AutoNetmusic autoNetmusic1) {
+        Map<String,Object> map = new HashMap<>();
+        AutoNetmusic autoNetmusic = netmusicDao.selectByPrimaryKey(autoNetmusic1.getId());
+        if (autoNetmusic == null || autoNetmusic.getId() == null){
+            map.put("code",-1);
+            map.put("msg","参数错误！");
+            return map;
+        }
+        //放行管理员
+        String role = userDao.getRole(autoNetmusic1.getUserid());
+        if (!autoNetmusic.getUserid().equals(autoNetmusic1.getUserid()) && !role.equals("ROLE_ADMIN")){
+            map.put("code",403);
+            map.put("msg","你没有权限修改！");
+            return map;
+        }
+        checkForm(autoNetmusic1,true);
+        int i = netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+        if (i>0){
+            map.put("code",200);
+            map.put("msg","操作成功！");
+            return map;
+        }
+        map.put("code",0);
+        map.put("msg","操作失败！");
         return map;
     }
 }

@@ -2,9 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="text/html;charset=UTF-8"/>
-    <title>米游社任务添加</title>
+    <title>修改米忽悠任务</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <script th:src="@{/static/js/md5.js}"></script>
     <link href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" rel="stylesheet" type="text/css"/>
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
     <style type="text/css">
@@ -19,34 +18,21 @@
     </style>
 </head>
 <body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
+
 <div class="main-container">
 
     <div class="main-container">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>添加米游社自动任务</legend>
-            <legend>关于cookie的说明</legend>
-            <legend>
-                电脑端可以将后面的链接拖动到书签，登录米游社点击书签即可获取：<a style="color: red" href="javascript:(function(){let domain=document.domain;let cookie=document.cookie;prompt('Cookies: '+domain, cookie)})();" target="_blank">Ganyu Cookies Getter</a>
-            </legend>
-            <legend>手机端请查看
-                <a href="https://blog.oldwu.top/index.php/archives/84/#toc_11" target="_blank">使用说明</a>
-            </legend>
+            <legend>修改米忽悠自动任务</legend>
         </fieldset>
         <form class="layui-form">
+            <input type="hidden" name="id" th:value="${mihuyou.getId()}">
             <div class="layui-form-item">
                 <label class="layui-form-label">任务名</label>
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="name" name="name"
                            placeholder="输入任务名"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">cookie</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="cookie" name="cookie"
-                           placeholder="输入cookie，不知道怎么取请看使用教程"
+                           th:value="${mihuyou.getName()}"
                            type="text">
                 </div>
             </div>
@@ -54,20 +40,21 @@
                 <label class="layui-form-label">是否开启任务</label>
                 <div class="layui-input-block">
                     <select class="layui-input" name="enable">
-                        <option selected value="true">开启</option>
-                        <option value="false">关闭</option>
+                        <option value="false" th:selected="${mihuyou.getEnable().equals('false')}">关</option>
+                        <option value="true" th:selected="${mihuyou.getEnable().equals('true')}">开</option>
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">任务完成推送WebHook</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="webhook" name="webhook"
-                           placeholder="输入WebHook地址，支持钉钉，server酱等，详情看使用说明"
-                           type="text">
+                    <input autocomplete="off" class="layui-input" lay-verify="serverpushkey" name="serverpushkey"
+                           placeholder="输入WebHook地址，支持钉钉，server酱"
+                           type="text" th:value="${mihuyou.getWebhook()}">
                 </div>
             </div>
-            <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save" lay-submit="" type="submit">
+            <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
+                    lay-submit="" type="submit">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -82,31 +69,16 @@
         let $ = layui.jquery;
         let MODULE_PATH = rootPath + "/api/user/mihayou";
 
-        //名称验证
-        form.verify({
-            name: function (value) {
-                if (value.length == 0) {
-                    return '任务名为必填！';
-                }
-            },
-            cookie: function (value) {
-                if(value.length == 0){
-                    return '不输cookie执行空气？';
-                }
-            }
-        });
-
 
         //保存
         form.on('submit(user-save)', function (data) {
             $.ajax({
-                url: MODULE_PATH + '/add',
+                url: MODULE_PATH + '/edit',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json;charset=UTF-8',
                 type: 'post',
-                beforeSend: function() {
-                    layer.msg("校验用户信息中，请稍后", {icon: 3, time: 5000});
+                beforeSend: function () {
                     this.layerIndex = layer.load(0, {
                         shade: [0.5, '#393D49']
                     });
@@ -114,7 +86,7 @@
                 success: function (result) {
                     if (result.code == 200) {
                         layer.msg(result.msg, {icon: 1, time: 2000}, function () {
-                            window.location.href= rootPath + "/my";
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                         });
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 8000});
@@ -122,9 +94,6 @@
                 },
                 error: function () {
                     layer.msg("连接服务器失败！", {icon: 2, time: 2000});
-                },
-                complete: function () {
-                    layer.close(this.layerIndex);
                 }
             })
             return false;

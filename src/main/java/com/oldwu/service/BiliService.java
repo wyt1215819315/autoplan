@@ -55,32 +55,32 @@ public class BiliService {
         try {
             HttpResponse httpResponse = HttpUtils.doPost(qrcodeStatusUrl, null, headers, null, body);
             JSONObject json = HttpUtils.getJson(httpResponse);
-            if (json == null || json.getBoolean("status") == null){
-                result.put("code","-100");
-                result.put("msg","获取状态失败！");
+            if (json == null || json.getBoolean("status") == null) {
+                result.put("code", "-100");
+                result.put("msg", "获取状态失败！");
                 return result;
             }
             Boolean status = json.getBoolean("status");
-            if (!status){
+            if (!status) {
                 Integer data = json.getInteger("data");
                 String message = json.getString("message");
-                result.put("code",data);
-                result.put("msg",message);
+                result.put("code", data);
+                result.put("msg", message);
                 return result;
-            }else {
+            } else {
                 //登陆成功
                 Map<String, String> cookies = HttpUtils.getCookies(httpResponse);
-                result.put("code",200);
-                result.put("msg","校验成功！已自动填充");
-                result.put("dedeuserid",cookies.get("DedeUserID"));
-                result.put("sessdate",cookies.get("SESSDATA"));
-                result.put("bilijct",cookies.get("bili_jct"));
+                result.put("code", 200);
+                result.put("msg", "校验成功！已自动填充");
+                result.put("dedeuserid", cookies.get("DedeUserID"));
+                result.put("sessdate", cookies.get("SESSDATA"));
+                result.put("bilijct", cookies.get("bili_jct"));
                 return result;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("code","-101");
-            result.put("msg","获取状态失败！"+e);
+            result.put("code", "-101");
+            result.put("msg", "获取状态失败！" + e);
             return result;
         }
     }
@@ -108,13 +108,26 @@ public class BiliService {
         return newPlans;
     }
 
+    public AutoBilibili getMyEditPlan(AutoBilibili autoBilibili1) {
+        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        if (autoBilibili == null || autoBilibili.getId() == null) {
+            return null;
+        }
+        //放行管理员
+        String role = userDao.getRole(autoBilibili1.getUserid());
+        if (!autoBilibili.getUserid().equals(autoBilibili1.getUserid()) && !role.equals("ROLE_ADMIN")) {
+            return null;
+        }
+        return autoBilibili;
+    }
+
     public List<BiliPlan> getMyPlan(Integer userid) {
         return biliUserDao.selectMine(userid);
     }
 
     public Map<String, String> addBiliPlan(AutoBilibili autoBilibili) {
         Map<String, String> map = new HashMap<>();
-        Map<String, Object> stringObjectMap = checkForm(autoBilibili);
+        Map<String, Object> stringObjectMap = checkForm(autoBilibili, false);
         if (!(boolean) stringObjectMap.get("flag")) {
             map.put("code", "-1");
             map.put("msg", (String) stringObjectMap.get("msg"));
@@ -230,20 +243,22 @@ public class BiliService {
      * @param autoBilibili
      * @return
      */
-    public Map<String, Object> checkForm(AutoBilibili autoBilibili) {
+    public Map<String, Object> checkForm(AutoBilibili autoBilibili, boolean skipCookieCheck) {
         Map<String, Object> map = new HashMap<>();
-        String biliJct = autoBilibili.getBiliJct();
-        String dedeuserid = autoBilibili.getDedeuserid();
-        String sessdata = autoBilibili.getSessdata();
-        if (StringUtils.isBlank(biliJct) || StringUtils.isBlank(dedeuserid) || StringUtils.isBlank(sessdata)) {
-            map.put("flag", false);
-            map.put("msg", "cookie的三项都不能为空！");
-            return map;
-        }
-        if (StringUtils.isBlank(autoBilibili.getName())) {
-            map.put("flag", false);
-            map.put("msg", "任务名不能为空！");
-            return map;
+        if (!skipCookieCheck) {
+            String biliJct = autoBilibili.getBiliJct();
+            String dedeuserid = autoBilibili.getDedeuserid();
+            String sessdata = autoBilibili.getSessdata();
+            if (StringUtils.isBlank(biliJct) || StringUtils.isBlank(dedeuserid) || StringUtils.isBlank(sessdata)) {
+                map.put("flag", false);
+                map.put("msg", "cookie的三项都不能为空！");
+                return map;
+            }
+            if (StringUtils.isBlank(autoBilibili.getName())) {
+                map.put("flag", false);
+                map.put("msg", "任务名不能为空！");
+                return map;
+            }
         }
         Integer taskintervaltime = autoBilibili.getTaskintervaltime();
         if (taskintervaltime == null || taskintervaltime < 1) {
@@ -300,30 +315,30 @@ public class BiliService {
     }
 
     public Map<String, Object> deleteBiliPlan(AutoBilibili autoBilibili) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         //校验用户id
         Integer userid = autoBilibili.getUserid();
         Integer autoid = autoBilibili.getId();
-        if (autoid == null || autoid == 0){
-            map.put("code",-1);
-            map.put("msg","传参不能为空！");
+        if (autoid == null || autoid == 0) {
+            map.put("code", -1);
+            map.put("msg", "传参不能为空！");
             return map;
         }
         List<BiliPlan> biliPlans = biliUserDao.selectMine(userid);
         boolean flag = false;
         for (BiliPlan biliPlan : biliPlans) {
             int autoId = biliPlan.getAutoId();
-            if (autoId == autoid){
+            if (autoId == autoid) {
                 flag = true;
                 break;
             }
         }
-        if (userDao.getRole(userid).equals("ROLE_ADMIN")){  //忽略管理
+        if (userDao.getRole(userid).equals("ROLE_ADMIN")) {  //忽略管理
             flag = true;
         }
-        if (!flag){
-            map.put("code",403);
-            map.put("msg","你没有权限删除这条或数据不存在！");
+        if (!flag) {
+            map.put("code", 403);
+            map.put("msg", "你没有权限删除这条或数据不存在！");
             return map;
         }
         //首先删除日志
@@ -337,16 +352,43 @@ public class BiliService {
             biliUserDao.deleteByAutoId(autoid);
             //最后删除主要数据
             int i = autoBilibiliDao.deleteByPrimaryKey(autoid);
-            if (i > 0){
-                map.put("code",200);
-                map.put("msg","删除成功");
+            if (i > 0) {
+                map.put("code", 200);
+                map.put("msg", "删除成功");
                 return map;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        map.put("code",-1);
-        map.put("msg","删除失败！");
+        map.put("code", -1);
+        map.put("msg", "删除失败！");
+        return map;
+    }
+
+    public Map<String, Object> editBiliPlan(AutoBilibili autoBilibili1) {
+        Map<String, Object> map = new HashMap<>();
+        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        if (autoBilibili == null || autoBilibili.getId() == null) {
+            map.put("code", -1);
+            map.put("msg", "参数错误！");
+            return map;
+        }
+        //放行管理员
+        String role = userDao.getRole(autoBilibili1.getUserid());
+        if (!autoBilibili.getUserid().equals(autoBilibili1.getUserid()) && !role.equals("ROLE_ADMIN")) {
+            map.put("code", 403);
+            map.put("msg", "你没有权限修改！");
+            return map;
+        }
+        checkForm(autoBilibili1, true);
+        int i = autoBilibiliDao.updateByPrimaryKeySelective(autoBilibili1);
+        if (i > 0) {
+            map.put("code", 200);
+            map.put("msg", "操作成功！");
+            return map;
+        }
+        map.put("code", 0);
+        map.put("msg", "操作失败！");
         return map;
     }
 }

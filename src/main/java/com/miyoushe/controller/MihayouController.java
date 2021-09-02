@@ -2,6 +2,7 @@ package com.miyoushe.controller;
 
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
+import com.netmusic.model.AutoNetmusic;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ public class MihayouController {
     @Autowired
     private MihayouService mihayouService;
 
+    @PostMapping("/edit")
+    public Map<String, Object> edit(@RequestBody AutoMihayou autoMihayou, Principal principal) {
+        autoMihayou.setUserId(userService.getUserId(principal.getName()));
+        return mihayouService.editMiHuYouPlan(autoMihayou);
+    }
 
     @PostMapping("/delete")
     public Map<String, Object> delete(@Param("id") Integer id, Principal principal) {

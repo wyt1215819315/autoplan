@@ -9,16 +9,6 @@
     <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
     <link rel="stylesheet" th:href="@{/static/css/pear.css}">
     <script th:src="@{/static/js/pear.js}"></script>
-    <style type="text/css">
-        body {
-            padding-top: 50px;
-        }
-
-        .starter-template {
-            padding: 40px 15px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body style="padding-top: 0;margin: 10px">
 <ul class="layui-nav" th:include="include::header"></ul>
@@ -84,7 +74,7 @@
                         <i class="layui-icon layui-icon-tips"></i>
                     </button>
                     <button class="pear-btn pear-btn-primary pear-btn-sm"
-                            th:onclick=""
+                            th:onclick="|editbili(${plan.getAutoId()})|"
                             title="修改">
                         <i class="layui-icon layui-icon-edit"></i>
                     </button>
@@ -93,11 +83,11 @@
                             title="删除">
                         <i class="layui-icon layui-icon-delete"></i>
                     </button>
-                    <button class="pear-btn pear-btn-warming pear-btn-md"
-                            th:onclick=""
-                            title="执行一次">
-                        <i class="layui-icon layui-icon-triangle-r"></i>
-                    </button>
+<!--                    <button class="pear-btn pear-btn-warming pear-btn-md"-->
+<!--                            th:onclick=""-->
+<!--                            title="执行一次">-->
+<!--                        <i class="layui-icon layui-icon-triangle-r"></i>-->
+<!--                    </button>-->
                 </div>
             </td>
         </tr>
@@ -149,7 +139,7 @@
                         <i class="layui-icon layui-icon-tips"></i>
                     </button>
                     <button class="pear-btn pear-btn-primary pear-btn-sm"
-                            th:onclick=""
+                            th:onclick="|editnetmusic(${plan.getId()})|"
                             title="修改">
                         <i class="layui-icon layui-icon-edit"></i>
                     </button>
@@ -209,7 +199,7 @@
                         <i class="layui-icon layui-icon-tips"></i>
                     </button>
                     <button class="pear-btn pear-btn-primary pear-btn-sm"
-                            th:onclick=""
+                            th:onclick="|editmihuyou(${plan.getId()})|"
                             title="修改">
                         <i class="layui-icon layui-icon-edit"></i>
                     </button>
@@ -232,6 +222,51 @@
 <script> let rootPath = "[[${rootPath}]]";</script>
 <script th:include="include::layelement"></script>
 <script>
+    function editbili(id) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['800px', '500px'],
+                content: rootPath + '/bili/edit?id=' + id,
+                end: function () {
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    function editnetmusic(id) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['800px', '500px'],
+                content: rootPath + '/netmusic/edit?id=' + id,
+                end: function () {
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    function editmihuyou(id) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['800px', '500px'],
+                content: rootPath + '/mihayou/edit?id=' + id,
+                end: function () {
+                    location.reload();
+                }
+            });
+        });
+    }
+
     function openLog(type, id) {
         window.open(rootPath + "/getlog?type=" + type + "&id=" + id, "_blank");
     }
