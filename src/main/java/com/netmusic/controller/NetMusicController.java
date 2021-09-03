@@ -41,4 +41,10 @@ public class NetMusicController {
         return netmusicService.addNetMusicPlan(autoNetmusic);
     }
 
+    @PostMapping("/run")
+    public Map<String, Object> run(@Param("id") Integer id, Principal principal) {
+        Integer userId = userService.getUserId(principal.getName());
+        return netmusicService.doDailyTaskPersonal(id,userId);
+    }
+
 }

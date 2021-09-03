@@ -71,7 +71,7 @@ public class PageController {
         return "netmusic-helper-edit";
     }
 
-    @GetMapping("/mihayou/edit")
+    @GetMapping("/mihuyou/edit")
     public String getMyMihuYouEditPage(@Param("id") Integer id, Principal principal,Model model){
         AutoMihayou autoMihayou = new AutoMihayou();
         autoMihayou.setUserId(userService.getUserId(principal.getName()));
@@ -85,14 +85,14 @@ public class PageController {
         return "bili-helper-add";
     }
 
-    @GetMapping("/miyoushe/index")
+    @GetMapping("/mihuyou/index")
     public String miyousheindex(Model model){
         List<AutoMihayou> allPlan = mihayouService.getAllPlan();
         model.addAttribute("list",allPlan);
         return "miyoushe-helper";
     }
 
-    @GetMapping("/miyoushe/add")
+    @GetMapping("/mihuyou/add")
     public String miyousheaddPage(){
         return "miyoushe-helper-add";
     }

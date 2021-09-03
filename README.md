@@ -86,6 +86,7 @@ mybatis:
 * 21.8.29 更新了b站二维码登录以及任务删除功能
 * 21.8.30 增加了网易云推送，改变了日志表结构
 * 21.8.31 增加了米游社原神签到，修复了网易云刷歌不计数的问题（摔、垃圾网易云json数组外边还要加引号）
+* 21.9.2 增加了编辑参数编辑功能
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>

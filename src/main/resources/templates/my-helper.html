@@ -149,7 +149,7 @@
                         <i class="layui-icon layui-icon-delete"></i>
                     </button>
                     <button class="pear-btn pear-btn-warming pear-btn-md"
-                            th:onclick=""
+                            th:onclick="|runNetmusic(${plan.getId()})|"
                             title="执行一次">
                         <i class="layui-icon layui-icon-triangle-r"></i>
                     </button>
@@ -209,7 +209,7 @@
                         <i class="layui-icon layui-icon-delete"></i>
                     </button>
                     <button class="pear-btn pear-btn-warming pear-btn-md"
-                            th:onclick=""
+                            th:onclick="|runMiHuYou(${plan.getId()})|"
                             title="执行一次">
                         <i class="layui-icon layui-icon-triangle-r"></i>
                     </button>
@@ -222,6 +222,54 @@
 <script> let rootPath = "[[${rootPath}]]";</script>
 <script th:include="include::layelement"></script>
 <script>
+    function runMiHuYou(id) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.confirm('确定要手动运行一次该任务？', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: rootPath + "/api/user/mihuyou/run?id=" + id,
+                    // dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code == 200) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                window.location.href = rootPath + "/my";
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 2000});
+                        }
+                    }
+                })
+            });
+        });
+    }
+
+    function runNetmusic(id) {
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.confirm('确定要手动运行一次该任务？', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: rootPath + "/api/user/netmusic/run?id=" + id,
+                    // dataType: 'json',
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code == 200) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                window.location.href = rootPath + "/my";
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 2000});
+                        }
+                    }
+                })
+            });
+        });
+    }
+
     function editbili(id) {
         layui.use(['table', 'form', 'jquery'], function () {
             layer.open({
@@ -259,7 +307,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['800px', '500px'],
-                content: rootPath + '/mihayou/edit?id=' + id,
+                content: rootPath + '/mihuyou/edit?id=' + id,
                 end: function () {
                     location.reload();
                 }
@@ -325,7 +373,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: rootPath + "/api/user/mihayou/delete?id=" + mid,
+                    url: rootPath + "/api/user/mihuyou/delete?id=" + mid,
                     // dataType: 'json',
                     type: 'post',
                     success: function (result) {

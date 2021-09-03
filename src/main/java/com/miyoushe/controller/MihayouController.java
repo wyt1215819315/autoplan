@@ -2,7 +2,6 @@ package com.miyoushe.controller;
 
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
-import com.netmusic.model.AutoNetmusic;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.security.Principal;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user/mihayou")
+@RequestMapping("/api/user/mihuyou")
 public class MihayouController {
 
     @Autowired
@@ -42,6 +41,12 @@ public class MihayouController {
     public Map<String, String> add(@RequestBody AutoMihayou autoMihayou, Principal principal) {
         autoMihayou.setUserId(userService.getUserId(principal.getName()));
         return mihayouService.addMiHuYouPlan(autoMihayou);
+    }
+
+    @PostMapping("/run")
+    public Map<String, Object> run(@Param("id") Integer id, Principal principal) {
+        Integer userId = userService.getUserId(principal.getName());
+        return mihayouService.doDailyTaskPersonal(id,userId);
     }
 
 }
