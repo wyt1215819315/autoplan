@@ -131,6 +131,9 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
         data.put("region", MiHoYoConfig.REGION);
         data.put("uid", uid);
         JSONObject signInfoResult = HttpUtils.doGet(MiHoYoConfig.INFO_URL, getHeaders(), data);
+        if (signInfoResult == null || signInfoResult.getJSONObject("data") == null){
+            return null;
+        }
         LocalDateTime time = LocalDateTime.now();
         Boolean isSign = signInfoResult.getJSONObject("data").getBoolean("is_sign");
         Integer totalSignDay = signInfoResult.getJSONObject("data").getInteger("total_sign_day");

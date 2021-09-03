@@ -26,6 +26,14 @@
             <legend>修改米忽悠自动任务</legend>
         </fieldset>
         <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">米哈游通行证cookie</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="lcookie" name="lcookie"
+                           placeholder="输入米哈游通行证cookie，用于获取login_ticket，如果不需要使用米游币任务或上一次已经输入过，请忽略"
+                           type="text">
+                </div>
+            </div>
             <input type="hidden" name="id" th:value="${mihuyou.getId()}">
             <div class="layui-form-item">
                 <label class="layui-form-label">任务名</label>
@@ -89,11 +97,14 @@
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                         });
                     } else {
-                        layer.msg(result.msg, {icon: 2, time: 8000});
+                        layer.msg(result.msg, {icon: 2, time: 5000});
                     }
                 },
                 error: function () {
                     layer.msg("连接服务器失败！", {icon: 2, time: 2000});
+                },
+                complete: function () {
+                    layer.close(this.layerIndex);
                 }
             })
             return false;

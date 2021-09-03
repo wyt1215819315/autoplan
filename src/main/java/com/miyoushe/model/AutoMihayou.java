@@ -17,6 +17,8 @@ public class AutoMihayou implements Serializable {
 
     private String cookie;
 
+    private String lcookie;
+
     private String suid;
 
     private String stoken;

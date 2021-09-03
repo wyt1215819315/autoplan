@@ -27,10 +27,13 @@
             <legend>添加米游社自动任务</legend>
             <legend>关于cookie的说明</legend>
             <legend>
+                米游社中的cookie没有login_ticket字段，如果需要使用米游币任务，请前往米哈游通行证页面获取cookie
+            </legend>
+            <legend>
                 电脑端可以将后面的链接拖动到书签，登录米游社点击书签即可获取：<a style="color: red" href="javascript:(function(){let domain=document.domain;let cookie=document.cookie;prompt('Cookies: '+domain, cookie)})();" target="_blank">Ganyu Cookies Getter</a>
             </legend>
             <legend>手机端请查看
-                <a href="https://blog.oldwu.top/index.php/archives/84/#toc_11" target="_blank">使用说明</a>
+                <a href="https://blog.oldwu.top/index.php/archives/84/#toc_9" target="_blank">使用说明</a>
             </legend>
         </fieldset>
         <form class="layui-form">
@@ -43,10 +46,18 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">cookie</label>
+                <label class="layui-form-label">米游社cookie</label>
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="cookie" name="cookie"
                            placeholder="输入cookie，不知道怎么取请看使用教程"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">米哈游通行证cookie</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="lcookie" name="lcookie"
+                           placeholder="输入米哈游通行证cookie，用于获取login_ticket，如果不需要使用米游币任务，请忽略"
                            type="text">
                 </div>
             </div>
@@ -99,6 +110,9 @@
 
         //保存
         form.on('submit(user-save)', function (data) {
+            if(data.field.lcookie === undefined || data.field.lcookie === ''){
+                data.field.lcookie = data.field.cookie;
+            }
             $.ajax({
                 url: MODULE_PATH + '/add',
                 data: JSON.stringify(data.field),
@@ -116,7 +130,11 @@
                         layer.msg(result.msg, {icon: 1, time: 2000}, function () {
                             window.location.href= rootPath + "/my";
                         });
-                    } else {
+                    } else if(result.code == 201){
+                        layer.msg(result.msg, {icon: 3, time: 5000}, function () {
+                            window.location.href= rootPath + "/my";
+                        });
+                    }else {
                         layer.msg(result.msg, {icon: 2, time: 8000});
                     }
                 },

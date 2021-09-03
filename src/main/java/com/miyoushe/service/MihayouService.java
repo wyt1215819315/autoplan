@@ -1,19 +1,19 @@
 package com.miyoushe.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.sign.DailyTask;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
 import com.miyoushe.sign.gs.GenshinHelperProperties;
-import com.netmusic.model.AutoNetmusic;
-import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.util.HttpUtils;
 import com.push.ServerPush;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,6 @@ public class MihayouService {
 
     @Autowired
     private AutoLogDao autoLogDao;
-
 
 
     public List<AutoMihayou> getAllPlan() {
@@ -109,7 +108,7 @@ public class MihayouService {
 
     public Map<String, String> addMiHuYouPlan(AutoMihayou autoMihayou) {
         Map<String, String> map = new HashMap<>();
-        Map<String, Object> stringObjectMap = checkForm(autoMihayou,false);
+        Map<String, Object> stringObjectMap = checkForm(autoMihayou, false);
         if (!(boolean) stringObjectMap.get("flag")) {
             map.put("code", "-1");
             map.put("msg", (String) stringObjectMap.get("msg"));
@@ -128,6 +127,7 @@ public class MihayouService {
         autoMihayou.setMiName((String) uidInfo.get("nickname"));
         autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
         autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
+        autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
         autoMihayou.setStatus("100");
         //判断数据是否存在，使用stuid进行检索
         AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
@@ -141,12 +141,16 @@ public class MihayouService {
         }
         map.put("code", "200");
         map.put("msg", (String) uidInfo.get("msg"));
+        if (!stringObjectMap.containsKey("login_ticket_str") || stringObjectMap.containsKey("login_ticket") && !(Boolean) stringObjectMap.get("login_ticket")) {
+            map.put("code", "201");
+            map.put("msg", map.get("msg") + "\n" + stringObjectMap.get("msg"));
+        }
         return map;
-
     }
 
     public Map<String, Object> checkForm(AutoMihayou autoMihayou, boolean skipCookieCheck) {
         Map<String, Object> map = new HashMap<>();
+        String lcookie = autoMihayou.getLcookie();
         String enable = autoMihayou.getEnable();
         String webhook = autoMihayou.getWebhook();
         if (!skipCookieCheck) {
@@ -159,18 +163,76 @@ public class MihayouService {
             }
             //检查cookie字段
             String account_id = HttpUtils.getCookieByName(autoMihayou.getCookie(), "account_id");
+            String cookie_token = HttpUtils.getCookieByName(autoMihayou.getCookie(), "cookie_token");
             if (StringUtils.isBlank(account_id)) {
                 //备用方案
                 account_id = HttpUtils.getCookieByName(autoMihayou.getCookie(), "ltuid");
             }
-            String cookie_token = HttpUtils.getCookieByName(autoMihayou.getCookie(), "cookie_token");
-            if (StringUtils.isBlank(account_id) || StringUtils.isBlank(cookie_token)) {
-                map.put("flag", false);
-                map.put("msg", "cookie中必须包含account_id/ltuid 和 cookie_token 字段，请尝试重新登录米游社获取！");
-                return map;
+            if (!StringUtils.isBlank(lcookie)) {
+                //校验两个cookie字段
+                String login_uid = HttpUtils.getCookieByName(lcookie, "login_uid");
+                if (!StringUtils.isBlank(login_uid) && !StringUtils.isBlank(account_id)) {
+                    if (!login_uid.equals(account_id)) {
+                        map.put("flag", false);
+                        map.put("msg", "两项cookie中的账号信息不一致！");
+                        return map;
+                    }
+                }
+                if (StringUtils.isBlank(account_id)) {
+                    //备用方案2
+                    account_id = HttpUtils.getCookieByName(lcookie, "login_uid");
+                }
+                String login_ticket = HttpUtils.getCookieByName(lcookie, "login_ticket");
+                if (StringUtils.isBlank(account_id) || StringUtils.isBlank(login_ticket)) {
+                    map.put("login_ticket", false);
+                    map.put("msg", "cookie中没有login_ticket字段或login_ticket已过期，无法使用米游币任务，如果需要使用，请前往米哈游通行证处获取");
+                } else {
+                    //获取stoken
+                    Map<String, Object> cookieToken = getCookieToken(login_ticket, account_id);
+                    if (!(boolean) cookieToken.get("flag")) {
+                        map.put("login_ticket", false);
+                        map.put("msg", "login_ticket校验失败：" + cookieToken.get("msg") + "你可能无法使用米游币任务！");
+                    } else {
+                        map.put("login_ticket_str", login_ticket);
+                        map.put("stoken", cookieToken.get("stoken"));
+                    }
+                }
+            } else {
+                map.put("msg", "没有填写米哈游通行证cookie，如果您无需使用米游币任务，请忽略此消息");
             }
             map.put("stuid", account_id);
-            map.put("stoken", cookie_token);
+            if (StringUtils.isBlank(account_id) || StringUtils.isBlank(cookie_token)) {
+                map.put("flag", false);
+                map.put("msg", "无效的cookie：米游社cookie中必须包含cookie_token和account_id字段！");
+                return map;
+            }
+        } else {
+            if (!StringUtils.isBlank(lcookie) && autoMihayou.getId() != null) {
+                String login_uid = HttpUtils.getCookieByName(lcookie, "login_uid");
+                String suid = mihayouDao.selectByPrimaryKey(autoMihayou.getId()).getSuid();
+                if (!StringUtils.isBlank(login_uid) && !StringUtils.isBlank(suid)) {
+                    if (!login_uid.equals(suid)) {
+                        map.put("flag", false);
+                        map.put("msg", "与之前添加的账号信息不一致！");
+                        return map;
+                    }
+                }
+                String login_ticket = HttpUtils.getCookieByName(lcookie, "login_ticket");
+                if (!StringUtils.isBlank(suid) && !StringUtils.isBlank(login_ticket)) {
+                    //获取stoken
+                    Map<String, Object> cookieToken = getCookieToken(login_ticket, suid);
+                    if ((boolean) cookieToken.get("flag")) {
+                        autoMihayou.setOtherKey(login_ticket);
+                        autoMihayou.setStoken((String) cookieToken.get("stoken"));
+                    }else {
+                        map.put("flag", false);
+                        map.put("msg", "login_ticket校验失败：" + cookieToken.get("msg"));
+                    }
+                }else {
+                    map.put("flag", false);
+                    map.put("msg", "没有发现login_ticket字段！");
+                }
+            }
         }
         if (StringUtils.isBlank(enable) || !enable.equals("true") && !enable.equals("false")) {
             autoMihayou.setEnable("true");
@@ -179,9 +241,37 @@ public class MihayouService {
             autoMihayou.setWebhook(null);
         }
         //返回ltuid和token
+        if (map.containsKey("flag") && !(boolean)map.get("flag")){
+            return map;
+        }
         map.put("flag", true);
-        map.put("msg", "check complete");
         return map;
+    }
+
+    public Map<String, Object> getCookieToken(String login_ticket, String accountId) {
+        Map<String, Object> map = new HashMap<>();
+        String token_url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket?login_ticket=%s&token_types=3&uid=%s";
+        token_url = String.format(token_url, login_ticket, accountId);
+        HttpResponse httpResponse = null;
+        try {
+            httpResponse = HttpUtils.doGet(token_url, null, HttpUtils.getHeaders(), null);
+            JSONObject result = HttpUtils.getJson(httpResponse);
+            if (!"OK".equals(result.get("message"))) {
+                map.put("flag", false);
+                map.put("msg", "login_ticket已失效,请重新登录获取");
+//                System.err.println("login_ticket已失效,请重新登录获取");
+                return map;
+            }
+            map.put("flag", true);
+            map.put("msg", "OK");
+            map.put("stoken", result.getJSONObject("data").getJSONArray("list").getJSONObject(0).getString("token"));
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("flag", false);
+            map.put("msg", "服务端请求失败！" + e.getMessage());
+            return map;
+        }
     }
 
     public AutoMihayou getMyEditPlan(AutoMihayou autoMihayou1) {
@@ -212,7 +302,13 @@ public class MihayouService {
             map.put("msg", "你没有权限修改！");
             return map;
         }
-        checkForm(autoMihayou1, true);
+        //TODO 校验login_tocket
+        Map<String, Object> formResult = checkForm(autoMihayou1, true);
+        if (!(boolean) formResult.get("flag")){
+            map.put("code",201);
+            map.put("msg",formResult.get("msg"));
+            return map;
+        }
         int i = mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
         if (i > 0) {
             map.put("code", 200);
@@ -246,7 +342,7 @@ public class MihayouService {
         Thread t = new Thread(() -> {
             int reconnect = 1;//最大重试次数
             //更新任务状态
-            AutoMihayou autoMihayou1 = new AutoMihayou(autoId,"1",null);
+            AutoMihayou autoMihayou1 = new AutoMihayou(autoId, "1", null);
             mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
             //执行任务
             String suid = autoMihayou.getSuid();
@@ -259,17 +355,17 @@ public class MihayouService {
             DailyTask dailyTask = new DailyTask(account);
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i+1).append("次任务");
+                msg.append("\n开始第").append(i + 1).append("次任务");
                 Map<String, Object> maprun = dailyTask.doDailyTask();
-                if (!(boolean)maprun.get("flag")){
-                    if (i != reconnect-1){
+                if (!(boolean) maprun.get("flag")) {
+                    if (i != reconnect - 1) {
                         msg.append(maprun.get("msg"));
                         msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
                         continue;
                     }
                     autoMihayou1.setStatus("500");
                     break;
-                }else {
+                } else {
                     //任务成功完成
                     msg.append("\n").append(maprun.get("msg")).append("\n[SUCCESS]任务全部正常完成，进程退出");
                     autoMihayou1.setStatus("200");
