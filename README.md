@@ -87,6 +87,7 @@ mybatis:
 * 21.9.2 增加了编辑参数编辑功能
 * 21.9.3 增加了网易云任务和米游社任务的手动执行开关
 * 21.9.4 增加了米游社cookie字段，使其能够执行米游币任务
+* 21.9.5 修复了非管理员无法使用单次执行任务的问题，修复了米游社任务无权限访问的问题
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>

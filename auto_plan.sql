@@ -11,7 +11,7 @@
  Target Server Version : 80018
  File Encoding         : 65001
 
- Date: 30/08/2021 20:22:25
+ Date: 05/09/2021 12:48:38
 */
 
 SET NAMES utf8mb4;
@@ -46,7 +46,7 @@ CREATE TABLE `auto_bilibili`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `userid`(`userid`) USING BTREE,
   CONSTRAINT `auto_bilibili_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for auto_log
@@ -65,7 +65,7 @@ CREATE TABLE `auto_log`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `userid`(`userid`) USING BTREE,
   CONSTRAINT `auto_log_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 99 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for auto_mihayou
@@ -90,7 +90,7 @@ CREATE TABLE `auto_mihayou`  (
   UNIQUE INDEX `suid`(`suid`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE,
   CONSTRAINT `auto_mihayou_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for auto_netmusic
@@ -117,7 +117,7 @@ CREATE TABLE `auto_netmusic`  (
   UNIQUE INDEX `netmusic_id`(`netmusic_id`) USING BTREE,
   INDEX `userid`(`userid`) USING BTREE,
   CONSTRAINT `auto_netmusic_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for bili_user
@@ -142,7 +142,7 @@ CREATE TABLE `bili_user`  (
   UNIQUE INDEX `uid`(`uid`) USING BTREE,
   INDEX `auto_id`(`auto_id`) USING BTREE,
   CONSTRAINT `bili_user_ibfk_1` FOREIGN KEY (`auto_id`) REFERENCES `auto_bilibili` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -152,7 +152,7 @@ CREATE TABLE `sys_role`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
@@ -173,7 +173,7 @@ CREATE TABLE `sys_role_user`  (
   INDEX `sys_role_id`(`sys_role_id`) USING BTREE,
   CONSTRAINT `sys_role_user_ibfk_1` FOREIGN KEY (`sys_user_id`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `sys_role_user_ibfk_2` FOREIGN KEY (`sys_role_id`) REFERENCES `sys_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -187,7 +187,7 @@ CREATE TABLE `sys_user`  (
   `regdate` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for t_sys_quartz_job
@@ -213,6 +213,8 @@ INSERT INTO `t_sys_quartz_job` VALUES ('590884423877136384', 'b站定时重置�
 INSERT INTO `t_sys_quartz_job` VALUES ('591255386712051712', '网易云自动任务', 'DEFAULT', 'netTask.doAutoCheck()', '0 0 8 * * ? *', '3', '1', 0);
 INSERT INTO `t_sys_quartz_job` VALUES ('591479208484671488', '网易云定时重置任务状态', 'DEFAULT', 'netTask.resetStatus()', '0 0 0 * * ? *', '3', '1', 0);
 INSERT INTO `t_sys_quartz_job` VALUES ('591479486176956416', '网易云定时刷新用户信息', 'DEFAULT', 'netTask.refreshUserInfo()', '0 0 12 * * ? *', '3', '1', 0);
+INSERT INTO `t_sys_quartz_job` VALUES ('592293890904690688', '米游社自动任务', 'DEFAULT', 'mihuyouTask.doAutoCheck()', '0 0 8 * * ? *', '3', '1', 0);
+INSERT INTO `t_sys_quartz_job` VALUES ('592295794938351616', '米游社自动重置任务状态', 'DEFAULT', 'mihuyouTask.resetStatus()', '0 0 0 * * ? *', '3', '1', 0);
 
 -- ----------------------------
 -- Table structure for t_sys_quartz_job_log

@@ -281,8 +281,8 @@ public class BiliService {
             autoBilibili.setMonthendautocharge("true");
         }
         String uplive = autoBilibili.getUplive();
-        if (StringUtils.isBlank(uplive) || !uplive.equals("true") && !uplive.equals("false")) {
-            autoBilibili.setUplive("true");
+        if (StringUtils.isBlank(uplive)) {
+            autoBilibili.setUplive("0");
         }
         String chargeforlove = autoBilibili.getChargeforlove();
         if (StringUtils.isBlank(chargeforlove) || !StringUtils.isNumeric(chargeforlove)) {
