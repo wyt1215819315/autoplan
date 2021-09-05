@@ -84,7 +84,7 @@ public class NeteaseMusicUtil {
             msg.append("\n").append(login.get("msg"));
             msg.append("\n[WARNING]登录失败，开始第").append(i + 1).append("次尝试");
         }
-        if (!flag) {
+        if (!flag || !login.containsKey("uid")) {
             map.put("flag", false);
             map.put("msg", msg.toString());
             return map;

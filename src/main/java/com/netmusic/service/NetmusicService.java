@@ -218,7 +218,7 @@ public class NetmusicService {
             return map;
         }
         String role = userDao.getRole(autoNetmusic.getUserid());
-        if (!autoNetmusic.getUserid().equals(autoId) && !role.equals("ROLE_ADMIN")) {
+        if (!autoNetmusic.getUserid().equals(userid) && !role.equals("ROLE_ADMIN")) {
             map.put("code", 403);
             map.put("msg", "你没有权限执行！");
             return map;

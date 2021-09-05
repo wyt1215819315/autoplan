@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index").permitAll()
                 .antMatchers("/bili/index").permitAll()
                 .antMatchers("/netmusic/index").permitAll()
-                .antMatchers("/miyoushe/index").permitAll()
+                .antMatchers("/mihuyou/index").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")

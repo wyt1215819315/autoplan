@@ -302,7 +302,6 @@ public class MihayouService {
             map.put("msg", "你没有权限修改！");
             return map;
         }
-        //TODO 校验login_tocket
         Map<String, Object> formResult = checkForm(autoMihayou1, true);
         if (!(boolean) formResult.get("flag")){
             map.put("code",201);
@@ -329,7 +328,7 @@ public class MihayouService {
             return map;
         }
         String role = userDao.getRole(autoMihayou.getUserId());
-        if (!autoMihayou.getUserId().equals(autoId) && !role.equals("ROLE_ADMIN")) {
+        if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")) {
             map.put("code", 403);
             map.put("msg", "你没有权限执行！");
             return map;
