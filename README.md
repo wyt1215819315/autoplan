@@ -1,16 +1,23 @@
 # AutoPlan_Helper
 这是一个自动化的托管系统，目前支持网易云签到刷歌，bilibili，米游社原神签到
 
+目前项目属于测试阶段，可能会有些莫名其妙的bug，敬请谅解
+
+如果觉得好用，点个**star**吧
+
 ### 开源地址
 [wyt1215819315 / autoplan](https://github.com/wyt1215819315/autoplan)
 
 ### 目前已经实现
 1. b站每日自动经验任务
+1. b站赛事预测赚硬币任务
 2. 网易云自动签到刷歌任务
 3. 米游社原神签到领奖励任务以及米游币任务
 
 ### 测试服务器地址
 <a href="https://auto.oldwu.top/" target="_blank">点击打开</a>
+
+本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境
 
 ### 项目结构
 采用Springboot + Thymeleaf + layui制作
@@ -23,7 +30,8 @@
 
 ### 使用说明
 #### bilibili
-已实现扫码登
+支持b站签到任务以及赛事预测任务
+已实现扫码登录
 
 cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>以获取cookie值
 #### 网易云
@@ -75,9 +83,7 @@ mybatis:
 3. 由于BILIBILI-HELPER-PRE项目大多采用static变量，因此无法多线程运行，也无法手动执行
 
 ### 未来
-1. 参数编辑功能
 2. 统一推送，即不用填写多个，仅需在个人中心绑定一个即可
-3. bilibili赛事预测
 4. 手动执行b站任务
 
 ### 更新日志
@@ -87,10 +93,12 @@ mybatis:
 * 21.9.2 增加了编辑参数编辑功能
 * 21.9.3 增加了网易云任务和米游社任务的手动执行开关
 * 21.9.4 增加了米游社cookie字段，使其能够执行米游币任务
-* 21.9.5 修复了非管理员无法使用单次执行任务的问题，修复了米游社任务无权限访问的问题
+* 21.9.5 修复了非管理员无法使用单次执行任务的问题，修复了米游社任务无权限访问的问题，修复了bilibili直播送礼物报错的问题
+* 21.9.6 增加了bilibili赛事预测
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
+1. <a href="https://github.com/JunzhouLiu/bilibili-match-prediction">bilibili-match-prediction</a>
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
 3. <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
 4. <a href="https://github.com/y1ndan/genshinhelper">genshinhelper</a>

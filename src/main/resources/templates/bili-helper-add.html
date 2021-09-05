@@ -170,6 +170,32 @@
                            type="text">
                 </div>
             </div>
+<!--            预测部分-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">赛事预测总开关</label>
+                <div class="layui-input-block">
+                    <select class="layui-input" name="matchEnable" lay-filter="matchEnable" id="matchEnable">
+                        <option selected value="false">关</option>
+                        <option value="true">开</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item" id="match_pre" style="display: none">
+                <label class="layui-form-label">单次预测投注硬币</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="matchPredictnumberofcoins" name="matchPredictnumberofcoins"
+                           placeholder="单次预测投注硬币"
+                           type="number" value="10">
+                </div>
+            </div>
+            <div class="layui-form-item" id="match_coin" style="display: none">
+                <label class="layui-form-label">预测保留硬币</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="matchMinimumnumberofcoins" name="matchMinimumnumberofcoins"
+                           placeholder="预测保留硬币"
+                           type="number" value="200">
+                </div>
+            </div>
             <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save" lay-submit="" type="submit">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
@@ -184,6 +210,18 @@
         let form = layui.form;
         let $ = layui.jquery;
         let MODULE_PATH = rootPath + "/api/user/bili";
+
+        form.on('select(matchEnable)', function (data) {
+            if (data.value == 'false') {
+                $("#match_pre").css("display", "none");
+                $("#match_coin").css("display", "none");
+                form.render('select');
+            } else {
+                $("#match_pre").css("display", "block");
+                $("#match_coin").css("display", "block");
+                form.render('select');
+            }
+        });
 
 
         //名称验证

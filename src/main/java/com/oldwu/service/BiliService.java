@@ -261,7 +261,7 @@ public class BiliService {
             }
         }
         Integer taskintervaltime = autoBilibili.getTaskintervaltime();
-        if (taskintervaltime == null || taskintervaltime < 1) {
+        if (taskintervaltime == null || taskintervaltime < 1 || taskintervaltime > 100) {
             autoBilibili.setTaskintervaltime(10);
         }
         Integer numberofcoins = autoBilibili.getNumberofcoins();
@@ -307,6 +307,18 @@ public class BiliService {
         String serverpushkey = autoBilibili.getServerpushkey();
         if (StringUtils.isBlank(serverpushkey)) {
             autoBilibili.setServerpushkey(null);
+        }
+        String matchEnable = autoBilibili.getMatchEnable();
+        if (StringUtils.isBlank(matchEnable) || !matchEnable.equals("true") && !matchEnable.equals("false")) {
+            autoBilibili.setMatchEnable("false");
+        }
+        Integer predictnumberofcoins = autoBilibili.getMatchPredictnumberofcoins();
+        if (predictnumberofcoins == null || predictnumberofcoins < 0) {
+            autoBilibili.setMatchPredictnumberofcoins(10);
+        }
+        Integer minimumnumberofcoins = autoBilibili.getMatchMinimumnumberofcoins();
+        if (minimumnumberofcoins == null || minimumnumberofcoins < 0) {
+            autoBilibili.setMatchPredictnumberofcoins(200);
         }
         map.put("flag", true);
         map.put("msg", "check complete");

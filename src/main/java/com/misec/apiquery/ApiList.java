@@ -88,4 +88,13 @@ public class ApiList {
      */
     public static String getBvidByCreate = "https://api.bilibili.com/x/space/arc/search";
     public static String getCoinLog ="https://api.bilibili.com/x/member/web/coin/log?jsonp=jsonp";
+
+
+    /**
+     * 赛事预测部分
+     */
+    public static String queryQuestions = "https://api.bilibili.com/x/esports/guess/collection/question";
+
+    public static String queryMatchInfo = "https://api.bilibili.com/x/esports/guess/collection/statis";
+    public static String doAdd = "https://api.bilibili.com/x/esports/guess/add";
 }

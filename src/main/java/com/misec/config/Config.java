@@ -58,6 +58,10 @@ public class Config {
     private String chargeForLove;
     private Integer reserveCoins;
     private Integer taskIntervalTime;
+    //预测部分
+    private Boolean enablePredict;
+    private Integer predictNumberOfCoins;
+    private Integer minimumNumberOfCoins;
 
     private static AutoBilibiliDao bilibiliDao;
     @Autowired
@@ -66,6 +70,13 @@ public class Config {
     }
 
     private Config() {
+    }
+
+    public Integer getPredictNumberOfCoins() {
+        if (predictNumberOfCoins > 10) {
+            predictNumberOfCoins = 10;
+        }
+        return predictNumberOfCoins;
     }
 
     public static Config getInstance() {
@@ -83,6 +94,9 @@ public class Config {
                 ",\nUA：" + userAgent + "\n" +
                 ",\n是否跳过每日任务：" + skipDailyTask +
                 ",\n任务执行间隔时间" + taskIntervalTime +
+                ",\n赛事预测总开关" + enablePredict +
+                ",\n赛事预测单次投注硬币" + predictNumberOfCoins +
+                ",\n赛事预测保留硬币" + minimumNumberOfCoins +
                 '}';
     }
 
@@ -107,6 +121,9 @@ public class Config {
         config.setChargeForLove(autoBilibili.getChargeforlove());
         config.setReserveCoins(autoBilibili.getReservecoins());
         config.setTaskIntervalTime(autoBilibili.getTaskintervaltime());
+        config.setEnablePredict(Boolean.parseBoolean(autoBilibili.getMatchEnable()));
+        config.setPredictNumberOfCoins(autoBilibili.getMatchPredictnumberofcoins());
+        config.setMinimumNumberOfCoins(autoBilibili.getMatchMinimumnumberofcoins());
         Config.CONFIG.merge(config);
     }
 
@@ -201,6 +218,15 @@ public class Config {
             if (taskIntervalTime <= 0) {
                 taskIntervalTime = 1;
             }
+        }
+        if (config.getEnablePredict() != null){
+            enablePredict = config.getEnablePredict();
+        }
+        if (config.getPredictNumberOfCoins() != null){
+            predictNumberOfCoins = config.getPredictNumberOfCoins();
+        }
+        if (config.getMinimumNumberOfCoins() != null){
+            minimumNumberOfCoins = config.getMinimumNumberOfCoins();
         }
     }
 }

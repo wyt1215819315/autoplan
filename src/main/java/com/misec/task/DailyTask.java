@@ -2,6 +2,7 @@ package com.misec.task;
 
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
+import com.misec.config.Config;
 import com.misec.login.ServerVerify;
 import com.misec.utils.HttpUtil;
 import com.misec.utils.SleepTime;
@@ -37,6 +38,10 @@ public class DailyTask {
         dailyTasks.add(new GiveGift());
         dailyTasks.add(new ChargeMe());
         dailyTasks.add(new GetVipPrivilege());
+        Config config = Config.getInstance();
+        if (config.getEnablePredict()){
+            dailyTasks.add(new MatchGame());
+        }
         Collections.shuffle(dailyTasks);
         dailyTasks.add(0, new UserCheck());
         dailyTasks.add(1, new CoinLogs());

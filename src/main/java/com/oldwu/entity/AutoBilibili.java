@@ -91,5 +91,11 @@ public class AutoBilibili implements Serializable {
 
     private String other;
 
+    //预测部分
+    private String matchEnable;
+    private Integer matchPredictnumberofcoins;
+    private Integer matchMinimumnumberofcoins;
+
+
     private static final long serialVersionUID = 1L;
 }

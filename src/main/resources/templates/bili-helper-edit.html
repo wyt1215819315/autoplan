@@ -26,7 +26,7 @@
             <legend>修改b站自动任务</legend>
         </fieldset>
         <form class="layui-form">
-            <input type="hidden" name="id" th:value="${bili.getId()}">
+            <input name="id" th:value="${bili.getId()}" type="hidden">
             <div class="layui-form-item">
                 <label class="layui-form-label">任务名</label>
                 <div class="layui-input-block">
@@ -94,7 +94,7 @@
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="uplive" name="uplive"
                            placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主"
-                           type="number" th:value="${bili.getUplive()}">
+                           th:value="${bili.getUplive()}" type="number">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -102,15 +102,15 @@
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
                            placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电"
-                           type="number" th:value="${bili.getChargeforlove()}">
+                           th:value="${bili.getChargeforlove()}" type="number">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">手机端漫画签到时的平台，建议选择你设备的平台</label>
                 <div class="layui-input-block">
                     <select class="layui-input" name="deviceplatform">
-                        <option value="ios" th:selected="${bili.getDeviceplatform().equals('ios')}">苹果</option>
-                        <option value="android" th:selected="${bili.getDeviceplatform().equals('android')}">安卓</option>
+                        <option th:selected="${bili.getDeviceplatform().equals('ios')}" value="ios">苹果</option>
+                        <option th:selected="${bili.getDeviceplatform().equals('android')}" value="android">安卓</option>
                     </select>
                 </div>
             </div>
@@ -118,8 +118,8 @@
                 <label class="layui-form-label">投币规则</label>
                 <div class="layui-input-block">
                     <select class="layui-input" name="coinaddpriority">
-                        <option value="0" th:selected="${bili.getCoinaddpriority() == 0}">优先给热榜视频投币</option>
-                        <option value="1" th:selected="${bili.getCoinaddpriority() == 1}">优先给关注的 up 投币</option>
+                        <option th:selected="${bili.getCoinaddpriority() == 0}" value="0">优先给热榜视频投币</option>
+                        <option th:selected="${bili.getCoinaddpriority() == 1}" value="1">优先给关注的 up 投币</option>
                     </select>
                 </div>
             </div>
@@ -127,15 +127,15 @@
                 <label class="layui-form-label">浏览器UA</label>
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="useragent" name="useragent"
-                           placeholder="不知道就空着" type="text" th:value="${bili.getUseragent()}">
+                           placeholder="不知道就空着" th:value="${bili.getUseragent()}" type="text">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">每日任务总开关</label>
                 <div class="layui-input-block">
                     <select class="layui-input" name="skipdailytask">
-                        <option value="false" th:selected="${bili.getSkipdailytask().equals('false')}">开</option>
-                        <option value="true" th:selected="${bili.getSkipdailytask().equals('true')}">关</option>
+                        <option th:selected="${bili.getSkipdailytask().equals('false')}" value="false">开</option>
+                        <option th:selected="${bili.getSkipdailytask().equals('true')}" value="true">关</option>
                     </select>
                 </div>
             </div>
@@ -144,7 +144,35 @@
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="serverpushkey" name="serverpushkey"
                            placeholder="输入WebHook地址，支持钉钉，server酱"
-                           type="text" th:value="${bili.getServerpushkey()}">
+                           th:value="${bili.getServerpushkey()}" type="text">
+                </div>
+            </div>
+            <!--            预测部分-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">赛事预测总开关</label>
+                <div class="layui-input-block">
+                    <select class="layui-input" id="matchEnable" lay-filter="matchEnable" name="matchEnable">
+                        <option selected value="false">关</option>
+                        <option value="true">开</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item" id="match_pre" style="display: none">
+                <label class="layui-form-label">单次预测投注硬币</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="matchPredictnumberofcoins"
+                           name="matchPredictnumberofcoins"
+                           placeholder="单次预测投注硬币"
+                           type="number" value="10">
+                </div>
+            </div>
+            <div class="layui-form-item" id="match_coin" style="display: none">
+                <label class="layui-form-label">预测保留硬币</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="matchMinimumnumberofcoins"
+                           name="matchMinimumnumberofcoins"
+                           placeholder="预测保留硬币"
+                           type="number" value="200">
                 </div>
             </div>
             <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
@@ -163,6 +191,17 @@
         let $ = layui.jquery;
         let MODULE_PATH = rootPath + "/api/user/bili";
 
+        form.on('select(matchEnable)', function (data) {
+            if (data.value == 'false') {
+                $("#match_pre").css("display", "none");
+                $("#match_coin").css("display", "none");
+                form.render('select');
+            } else {
+                $("#match_pre").css("display", "block");
+                $("#match_coin").css("display", "block");
+                form.render('select');
+            }
+        });
 
         //保存
         form.on('submit(user-save)', function (data) {

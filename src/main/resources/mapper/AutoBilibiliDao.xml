@@ -22,11 +22,14 @@
         <result column="skipDailyTask" jdbcType="VARCHAR" property="skipdailytask"/>
         <result column="SERVERPUSHKEY" jdbcType="VARCHAR" property="serverpushkey"/>
         <result column="other" jdbcType="VARCHAR" property="other"/>
+        <result column="match_enable" jdbcType="VARCHAR" property="matchEnable"/>
+        <result column="match_predictNumberOfCoins" jdbcType="INTEGER" property="matchPredictnumberofcoins"/>
+        <result column="match_minimumNumberOfCoins" jdbcType="INTEGER" property="matchMinimumnumberofcoins"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, userid, `name`, sessdata, bili_jct, dedeuserid, taskIntervalTime, numberOfCoins,
     reserveCoins, selectLike, monthEndAutoCharge, giveGift, upLive, chargeForLove, devicePlatform, 
-    coinAddPriority, userAgent, skipDailyTask, SERVERPUSHKEY, other
+    coinAddPriority, userAgent, skipDailyTask, SERVERPUSHKEY, other,match_enable,match_predictNumberOfCoins,match_minimumNumberOfCoins
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -52,7 +55,7 @@
                                    monthEndAutoCharge, giveGift, upLive,
                                    chargeForLove, devicePlatform, coinAddPriority,
                                    userAgent, skipDailyTask, SERVERPUSHKEY,
-                                   other)
+                                   other,match_enable,match_predictNumberOfCoins,match_minimumNumberOfCoins)
         values (#{userid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sessdata,jdbcType=VARCHAR},
                 #{biliJct,jdbcType=VARCHAR}, #{dedeuserid,jdbcType=VARCHAR}, #{taskintervaltime,jdbcType=INTEGER},
                 #{numberofcoins,jdbcType=INTEGER}, #{reservecoins,jdbcType=INTEGER}, #{selectlike,jdbcType=INTEGER},
@@ -60,7 +63,8 @@
                 #{chargeforlove,jdbcType=VARCHAR}, #{deviceplatform,jdbcType=VARCHAR},
                 #{coinaddpriority,jdbcType=INTEGER},
                 #{useragent,jdbcType=VARCHAR}, #{skipdailytask,jdbcType=VARCHAR}, #{serverpushkey,jdbcType=VARCHAR},
-                #{other,jdbcType=VARCHAR})
+                #{other,jdbcType=VARCHAR},#{matchEnable,jdbcType=VARCHAR},#{matchPredictnumberofcoins,jdbcType=INTEGER},
+                #{matchMinimumnumberofcoins,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoBilibili"
             useGeneratedKeys="true">
@@ -123,6 +127,15 @@
             <if test="other != null">
                 other,
             </if>
+            <if test="matchEnable != null">
+                match_enable,
+            </if>
+            <if test="matchPredictnumberofcoins != null">
+                match_predictNumberOfCoins,
+            </if>
+            <if test="matchMinimumnumberofcoins != null">
+                match_minimumNumberOfCoins,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userid != null">
@@ -181,6 +194,15 @@
             </if>
             <if test="other != null">
                 #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="matchEnable != null">
+                #{matchEnable,jdbcType=VARCHAR},
+            </if>
+            <if test="matchPredictnumberofcoins != null">
+                #{matchPredictnumberofcoins,jdbcType=VARCHAR},
+            </if>
+            <if test="matchMinimumnumberofcoins != null">
+                #{matchMinimumnumberofcoins,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -244,6 +266,15 @@
             <if test="other != null">
                 other = #{other,jdbcType=VARCHAR},
             </if>
+            <if test="matchEnable != null">
+                match_enable = #{matchEnable,jdbcType=VARCHAR},
+            </if>
+            <if test="matchPredictnumberofcoins != null">
+                match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=VARCHAR},
+            </if>
+            <if test="matchMinimumnumberofcoins != null">
+                match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -267,7 +298,10 @@
             userAgent          = #{useragent,jdbcType=VARCHAR},
             skipDailyTask      = #{skipdailytask,jdbcType=VARCHAR},
             SERVERPUSHKEY      = #{serverpushkey,jdbcType=VARCHAR},
-            other              = #{other,jdbcType=VARCHAR}
+            other              = #{other,jdbcType=VARCHAR},
+            match_enable = #{matchEnable,jdbcType=VARCHAR},
+            match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=VARCHAR},
+            match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

@@ -11,7 +11,7 @@
  Target Server Version : 80018
  File Encoding         : 65001
 
- Date: 05/09/2021 12:48:38
+ Date: 05/09/2021 17:09:52
 */
 
 SET NAMES utf8mb4;
@@ -42,11 +42,14 @@ CREATE TABLE `auto_bilibili`  (
   `skipDailyTask` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'false' COMMENT '是否跳过每日任务',
   `SERVERPUSHKEY` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '推送地址',
   `enddate` datetime(0) NULL DEFAULT NULL,
+  `match_enable` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'false' COMMENT '预测是否开启',
+  `match_predictNumberOfCoins` int(11) NOT NULL DEFAULT 10 COMMENT '单次预测投注硬币',
+  `match_minimumNumberOfCoins` int(11) NOT NULL DEFAULT 200 COMMENT '预测保留硬币',
   `other` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `userid`(`userid`) USING BTREE,
   CONSTRAINT `auto_bilibili_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for auto_log
@@ -142,7 +145,7 @@ CREATE TABLE `bili_user`  (
   UNIQUE INDEX `uid`(`uid`) USING BTREE,
   INDEX `auto_id`(`auto_id`) USING BTREE,
   CONSTRAINT `bili_user_ibfk_1` FOREIGN KEY (`auto_id`) REFERENCES `auto_bilibili` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_role
