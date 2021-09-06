@@ -90,7 +90,7 @@ public class NeteaseMusicUtil {
             return map;
         }
         //获取cookie，uid，csrf
-        Integer uid = Integer.valueOf(login.get("uid"));
+        Long uid = Long.valueOf(login.get("uid"));
         String cookie = login.get("cookie");
         String csrf = login.get("csrf");
         //签到
@@ -128,7 +128,7 @@ public class NeteaseMusicUtil {
         return map;
     }
 
-    public static Map<String, String> shuaMusicTask(Integer uid, String csrf, String cookie) {
+    public static Map<String, String> shuaMusicTask(Long uid, String csrf, String cookie) {
         int reconn = 3;
         Map<String, String> result = new HashMap<>();
         Map<String, String> taskMusicsMap = new HashMap<>();
@@ -191,7 +191,7 @@ public class NeteaseMusicUtil {
      *
      * @return
      */
-    public static Map<String, String> getTaskMusics(String csrf, String cookie, Integer uid) {
+    public static Map<String, String> getTaskMusics(String csrf, String cookie, Long uid) {
         int num = 320;
         int num1 = 200;
         Map<String, String> map = new HashMap<>();
@@ -294,7 +294,7 @@ public class NeteaseMusicUtil {
      *
      * @return
      */
-    public static Map<String, String> getUserSubscribePlayLists(Integer uid, String csrf, String cookie) {
+    public static Map<String, String> getUserSubscribePlayLists(Long uid, String csrf, String cookie) {
         Map<String, String> result = new HashMap<>();
         JSONObject up = new JSONObject();
         up.put("uid", uid);
