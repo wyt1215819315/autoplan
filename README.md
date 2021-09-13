@@ -43,9 +43,7 @@ cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE"
 [更多使用说明请查看](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
 ### 项目部署
-1. 导入idea并下载依赖
-2. 在mysql中创建数据库并导入sql
-3. 在`resources`中添加`application.yml`配置文件，内容如下
+1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，内容如下：
 ```yaml
 server:
   #服务器端口
@@ -70,13 +68,32 @@ mybatis:
     map-underscore-to-camel-case: true
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 ```
-4. 使用maven打包，并使用`java -jar xxx.jar`运行
-5. 注册账号，并将其定为管理员账户，步骤：
-   1. 查看`sys_user`表中你的账号对应的`id`
-    2. 进入`sys_role_user`表中找到对应的`user_id`
-    3. 将对应行的`sys_role_id`值改为1
-6. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
+2. 在mysql中创建数据库并导入sql
+3. 接下来你可以选择两种方式部署：
+<details>
+<summary>使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行</summary>
 
+1. 将`application.yml`修改正确并放入jar包同级目录中
+2. 使用`java -jar xxx.jar`运行
+
+</details>
+
+<details>
+<summary>自行编译</summary>
+
+1. 导入idea并下载依赖（请使用JDK1.8）
+2. 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
+3. 使用maven install打包成jar
+4. 使用`java -jar xxx.jar`运行
+
+</details>
+
+
+4. 注册账号，并将其定为管理员账户，步骤：
+   1. 查看`sys_user`表中你的账号对应的`id`
+   2. 进入`sys_role_user`表中找到对应的`user_id`
+   3. 将对应行的`sys_role_id`值改为1
+6. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
 ### 一些问题
 1. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
