@@ -7,8 +7,8 @@ import com.oldwu.util.HttpUtils;
 import com.oldwu.util.NumberUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
-import sun.misc.BASE64Encoder;
+
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -603,7 +603,7 @@ public class NeteaseMusicUtil {
             IvParameterSpec iv = new IvParameterSpec(ivParameter.getBytes());//使用CBC模式，需要一个向量iv，可增加加密算法的强度
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
             byte[] encrypted = cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8));
-            String base64 = new BASE64Encoder().encode(encrypted);//此处使用BASE64做转码。
+            String base64 = new String(Base64.getEncoder().encode(encrypted));//此处使用BASE64做转码。
             base64 = base64.replaceAll("\r", "");
             base64 = base64.replaceAll("\n", "");
             return base64;
