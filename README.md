@@ -43,7 +43,7 @@ cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE"
 [更多使用说明请查看](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
 ### 项目部署
-1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，内容如下：
+1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，或者可以直接复制以下内容：
 ```yaml
 server:
   #服务器端口
@@ -100,6 +100,7 @@ mybatis:
 3. 由于BILIBILI-HELPER-PRE项目大多采用static变量，因此无法多线程运行，也无法手动执行
 
 ### 未来
+1. 管理员功能：查看日志，删除任务等
 2. 统一推送，即不用填写多个，仅需在个人中心绑定一个即可
 4. 手动执行b站任务
 
@@ -112,6 +113,7 @@ mybatis:
 * 21.9.4 增加了米游社cookie字段，使其能够执行米游币任务
 * 21.9.5 修复了非管理员无法使用单次执行任务的问题，修复了米游社任务无权限访问的问题，修复了bilibili直播送礼物报错的问题
 * 21.9.6 增加了bilibili赛事预测,修复了网易云uid超出int范围导致任务中断的问题
+* 21.9.15 尝试更新了BILIBILI-HELPER至1.1.5，可以改善部分任务中出现的null错误
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>

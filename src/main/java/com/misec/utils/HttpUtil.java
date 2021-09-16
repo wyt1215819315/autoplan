@@ -3,6 +3,7 @@ package com.misec.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.misec.login.Verify;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
@@ -16,33 +17,34 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import com.misec.login.Verify;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
 /**
+ * http utils.
+ *
  * @author Junzhou Liu
- * @create 2020/10/11 4:03
+ * @since 2020/10/11 4:03
  */
 
 @Log4j2
 @Data
 public class HttpUtil {
     /**
-     * 设置配置请求参数
-     * 设置连接主机服务超时时间
-     * 设置连接请求超时时间
-     * 设置读取数据连接超时时间
+     * 设置配置请求参数.
+     * 设置连接主机服务超时时间.
+     * 设置连接请求超时时间.
+     * 设置读取数据连接超时时间.
      */
     private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom().setConnectTimeout(5000)
             .setConnectionRequestTimeout(5000)
             .setSocketTimeout(10000)
             .build();
-    static Verify verify = Verify.getInstance();
-    private static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54";
+    private static Verify verify = Verify.getInstance();
+    private static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) "
+            + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54";
     private static CloseableHttpClient httpClient = null;
     private static CloseableHttpResponse httpResponse = null;
 
@@ -95,16 +97,12 @@ public class HttpUtil {
             resultJson = processResult(httpResponse);
         } catch (Exception e) {
             log.error("", e);
-            e.printStackTrace();
         } finally {
             httpResource(httpClient, httpResponse);
         }
         return resultJson;
     }
 
-    public static JsonObject doGet(String url) {
-        return doGet(url, new JsonObject());
-    }
 
     private static NameValuePair getNameValuePair(Map.Entry<String, JsonElement> entry) {
         return new BasicNameValuePair(entry.getKey(), Optional.ofNullable(entry.getValue()).map(Object::toString).orElse(null));
@@ -112,6 +110,10 @@ public class HttpUtil {
 
     public static NameValuePair[] getPairList(JsonObject pJson) {
         return pJson.entrySet().parallelStream().map(HttpUtil::getNameValuePair).toArray(NameValuePair[]::new);
+    }
+
+    public static JsonObject doGet(String url) {
+        return doGet(url, new JsonObject());
     }
 
     public static JsonObject doGet(String url, JsonObject pJson) {
@@ -134,7 +136,7 @@ public class HttpUtil {
             httpResponse = httpClient.execute(httpGet);
             resultJson = processResult(httpResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         } finally {
             // 关闭资源
             httpResource(httpClient, httpResponse);
@@ -152,7 +154,11 @@ public class HttpUtil {
             HttpEntity entity = httpResponse.getEntity();
             // 通过EntityUtils中的toString方法将结果转换为字符串
             String result = EntityUtils.toString(entity);
-            resultJson = new JsonParser().parse(result).getAsJsonObject();
+            try {
+                resultJson = new JsonParser().parse(result).getAsJsonObject();
+            } catch (Exception e) {
+                log.debug("HttpUtil parse json error: {}", result.substring(0, 100));
+            }
             switch (responseStatusCode) {
                 case 200:
                     break;
@@ -171,14 +177,14 @@ public class HttpUtil {
             try {
                 response.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
         if (null != httpClient) {
             try {
                 httpClient.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }

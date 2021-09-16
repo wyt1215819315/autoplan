@@ -3,25 +3,27 @@ package com.push.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.Getter;
 import com.misec.apiquery.ApiList;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
+import lombok.Getter;
 
 /**
- * @description:
- * @author: liming
- * @create: 2021-05-06 18:10
+ * WeiXinPush .
+ *
+ * @author liming
+ * @since 2021-05-06 18:10
  **/
 public class WeiXinPush extends AbstractPush {
+
     /**
-     * Push ++ 默认TOKEN长度
+     * WeiXinPush 默认TOKEN长度.
      */
     public static final int WEIXIN_CHANNEL_TOKEN_DEFAULT_LENGTH = 36;
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.weixingPush + metaInfo.getToken();
+        return ApiList.WECHAT_PUSH + metaInfo.getToken();
     }
 
     @Override

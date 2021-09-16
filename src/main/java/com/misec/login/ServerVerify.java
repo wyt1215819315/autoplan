@@ -17,7 +17,7 @@ public class ServerVerify {
     }
 
     public static void verifyInit(String ftKey, String chatId) {
-        ServerVerify.FT_KEY = ftKey;
+        FT_KEY = ftKey;
         ServerVerify.CHAT_ID = chatId;
     }
 

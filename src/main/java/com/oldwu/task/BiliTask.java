@@ -68,10 +68,14 @@ public class BiliTask {
             OldwuLog.clear();
             Integer auto_id = autoBilibili.getId();
             Integer userid = autoBilibili.getUserid();
-            //任务未开启，下一个
+            BiliUser userb = biliUserDao.selectByAutoId(auto_id);
+            //任务未开启或已经完成，下一个
             if (Boolean.parseBoolean(autoBilibili.getSkipdailytask())) {
                 BiliUser biliUser = new BiliUser(auto_id, "0", new Date());
                 biliUserDao.updateByAutoIdSelective(biliUser);
+                continue;
+            }
+            if (userb.getStatus().equals("200")){
                 continue;
             }
             //更新任务状态
@@ -89,7 +93,18 @@ public class BiliTask {
             strings[0] = autoBilibili.getDedeuserid();
             strings[1] = autoBilibili.getSessdata();
             strings[2] = autoBilibili.getBiliJct();
-            BiliMain.run(strings, auto_id, userid);
+            //防止一个任务出错影响整体
+            try {
+                BiliMain.run(strings, auto_id, userid);
+            }catch (Exception e){
+                OldwuLog.error("严重！！任务中断！！：：" + e.getMessage());
+                System.err.println(e.getMessage());
+                biliUser.setStatus("-1");
+                biliUser.setEnddate(new Date());
+                biliUserDao.updateByAutoIdSelective(biliUser);
+                OldwuLog.clear();
+                continue;
+            }
             //写入至数据库
             AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insertSelective(bilibili);

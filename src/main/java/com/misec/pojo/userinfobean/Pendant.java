@@ -3,10 +3,10 @@ package com.misec.pojo.userinfobean;
 import lombok.Data;
 
 /**
- * Auto-generated
+ * Auto-generated .
  *
  * @author Junzhou Liu
- * @create 2020/10/11 4:21
+ * @since 2020/10/11 4:21
  */
 
 @Data

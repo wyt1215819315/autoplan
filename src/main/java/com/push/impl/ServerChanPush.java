@@ -18,7 +18,7 @@ public class ServerChanPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.ServerPush + metaInfo.getToken() + ".send";
+        return ApiList.SERVER_PUSH + metaInfo.getToken() + ".send";
     }
 
     @Override

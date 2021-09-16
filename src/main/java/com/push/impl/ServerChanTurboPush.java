@@ -2,13 +2,13 @@ package com.push.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.extern.slf4j.Slf4j;
 import com.misec.apiquery.ApiList;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Turbo版本server酱推送
+ * Turbo版本server酱推送.
  *
  * @author itning
  * @since 2021/3/22 17:14
@@ -18,7 +18,7 @@ public class ServerChanTurboPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.ServerPushV2 + metaInfo.getToken() + ".send";
+        return ApiList.SERVER_PUSH_V2 + metaInfo.getToken() + ".send";
     }
 
     @Override

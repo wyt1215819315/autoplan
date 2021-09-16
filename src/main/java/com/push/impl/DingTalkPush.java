@@ -3,12 +3,12 @@ package com.push.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.Getter;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
+import lombok.Getter;
 
 /**
- * 钉钉机器人
+ * 钉钉机器人.
  *
  * @author itning
  * @since 2021/3/22 19:15

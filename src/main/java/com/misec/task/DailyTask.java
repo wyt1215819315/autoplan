@@ -34,14 +34,12 @@ public class DailyTask {
         dailyTasks.add(new MangaSign());
         dailyTasks.add(new CoinAdd());
         dailyTasks.add(new Silver2coin());
-        dailyTasks.add(new LiveCheckin());
+        dailyTasks.add(new LiveChecking());
         dailyTasks.add(new GiveGift());
         dailyTasks.add(new ChargeMe());
         dailyTasks.add(new GetVipPrivilege());
-        Config config = Config.getInstance();
-        if (config.getEnablePredict()){
-            dailyTasks.add(new MatchGame());
-        }
+        dailyTasks.add(new MatchGame());
+        dailyTasks.add(new MangaRead());
         Collections.shuffle(dailyTasks);
         dailyTasks.add(0, new UserCheck());
         dailyTasks.add(1, new CoinLogs());
@@ -53,34 +51,32 @@ public class DailyTask {
      * @author @srcrs
      */
     public static JsonObject getDailyTaskStatus() {
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.reward);
+        JsonObject jsonObject = HttpUtil.doGet(ApiList.REWARD);
         int responseCode = jsonObject.get(STATUS_CODE_STR).getAsInt();
         if (responseCode == 0) {
-            OldwuLog.log("请求本日任务完成状态成功");
             log.info("请求本日任务完成状态成功");
+            OldwuLog.log("请求本日任务完成状态成功");
             return jsonObject.get("data").getAsJsonObject();
         } else {
-            OldwuLog.error(jsonObject.get("message").getAsString());
             log.debug(jsonObject.get("message").getAsString());
-            return HttpUtil.doGet(ApiList.reward).get("data").getAsJsonObject();
+            OldwuLog.error(jsonObject.get("message").getAsString());
+            return HttpUtil.doGet(ApiList.REWARD).get("data").getAsJsonObject();
             //偶发性请求失败，再请求一次。
         }
     }
 
     public void doDailyTask() {
         try {
-            printTime();
-            log.debug("任务启动中");
-            for (Task task : dailyTasks) {
+            dailyTasks.forEach(task -> {
+                log.debug("------{}开始------", task.getName());
                 OldwuLog.log("------{" + task.getName() + "}开始------");
-                log.info("------{}开始------", task.getName());
                 task.run();
+                log.debug("------{}结束------\n", task.getName());
                 OldwuLog.log("------{" + task.getName() + "}结束------");
-                log.info("------{}结束------\n", task.getName());
                 new SleepTime().sleepDefault();
-            }
-            OldwuLog.log("本日任务已全部执行完毕");
+            });
             log.info("本日任务已全部执行完毕");
+            OldwuLog.log("本日任务已全部执行完毕");
             calculateUpgradeDays();
         } catch (Exception e) {
             OldwuLog.error(e.getMessage());
@@ -88,14 +84,6 @@ public class DailyTask {
         } finally {
             ServerPush.doServerPush(OldwuLog.getLog(), ServerVerify.getFtKey());
         }
-    }
-
-    private void printTime() {
-        Date d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = sdf.format(d);
-        OldwuLog.log(time);
-        log.info(time);
     }
 }
 

@@ -3,7 +3,7 @@ package com.misec.task;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
-import com.misec.config.Config;
+import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
 import com.misec.utils.HelpUtil;
 import com.misec.utils.HttpUtil;
@@ -31,8 +31,9 @@ public class ChargeMe implements Task {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int day = cal.get(Calendar.DATE);
         //被充电用户的userID
-        String userId = Verify.getInstance().getUserId();
-        String configChargeUserId = Config.getInstance().getChargeForLove();
+        String userId = ConfigLoader.getTaskConfig().getChargeForLove();
+
+        String userName = OftenApi.queryUserNameByUid(userId);
 
         //B币券余额
         double couponBalance;
@@ -45,40 +46,39 @@ public class ChargeMe implements Task {
             return;
         }
 
-        if (!Boolean.TRUE.equals(Config.getInstance().getMonthEndAutoCharge())) {
-            OldwuLog.log("未开启月底给自己充电功能");
+        if (!Boolean.TRUE.equals(ConfigLoader.getTaskConfig().getMonthEndAutoCharge())) {
             log.info("未开启月底给自己充电功能");
+            OldwuLog.log("未开启月底给自己充电功能");
             return;
         }
 
-        if (!"0".equals(configChargeUserId)) {
-            String userName = OftenApi.queryUserNameByUid(configChargeUserId);
-            if ("1".equals(userName)) {
-                userId = Verify.getInstance().getUserId();
-                OldwuLog.log("充电对象已置为你本人");
-                log.info("充电对象已置为你本人");
-            } else {
-                userId = Config.getInstance().getChargeForLove();
-                OldwuLog.log("你配置的充电对象非本人而是:  " + HelpUtil.userNameEncode(userName));
-                log.info("你配置的充电对象非本人而是: {}", HelpUtil.userNameEncode(userName));
-            }
-        } else {
-            OldwuLog.log("你配置的充电对象是你本人没错了！");
-            log.info("你配置的充电对象是你本人没错了！");
+        if ("0".equals(userId) || "".equals(userId)) {
+            log.info("充电对象uid配置错误，请参考最新的文档");
+            OldwuLog.log("充电对象uid配置错误，请参考最新的文档");
+            return;
         }
+
+        if (day < ConfigLoader.getTaskConfig().getChargeDay()) {
+            log.info("今天是本月的第: {}天，还没到充电日子呢", day);
+            OldwuLog.log("今天是本月的第: " + day + "天，还没到充电日子呢");
+            return;
+        }
+
+
+        log.info("月底自动充电对象是: {}", HelpUtil.userNameEncode(userName));
+        OldwuLog.log("月底自动充电对象是: " + HelpUtil.userNameEncode(userName));
 
         if (userInfo != null) {
             couponBalance = userInfo.getWallet().getCoupon_balance();
         } else {
-            JsonObject queryJson = HttpUtil.doGet(ApiList.chargeQuery + "?mid=" + userId);
+            JsonObject queryJson = HttpUtil.doGet(ApiList.CHARGE_QUERY + "?mid=" + userId);
             couponBalance = queryJson.getAsJsonObject("data").getAsJsonObject("bp_wallet").get("coupon_balance").getAsDouble();
         }
 
         /*
-          判断条件 是月底&&是年大会员&&b币券余额大于2&&配置项允许自动充电
+          判断条件 是月底&&是年大会员&&b币券余额大于2&&配置项允许自动充电.
          */
-        if (day >= 28 && couponBalance >= 2 &&
-                Boolean.TRUE.equals(Config.getInstance().getMonthEndAutoCharge())) {
+        if (day == ConfigLoader.getTaskConfig().getChargeDay() && couponBalance >= 2) {
             String requestBody = "bp_num=" + couponBalance
                     + "&is_bp_remains_prior=true"
                     + "&up_mid=" + userId
@@ -86,7 +86,7 @@ public class ChargeMe implements Task {
                     + "&oid=" + userId
                     + "&csrf=" + Verify.getInstance().getBiliJct();
 
-            JsonObject jsonObject = HttpUtil.doPost(ApiList.autoCharge, requestBody);
+            JsonObject jsonObject = HttpUtil.doPost(ApiList.AUTO_CHARGE, requestBody);
 
             int resultCode = jsonObject.get(STATUS_CODE_STR).getAsInt();
             if (resultCode == 0) {
@@ -101,32 +101,23 @@ public class ChargeMe implements Task {
                     String orderNo = dataJson.get("order_no").getAsString();
                     chargeComments(orderNo);
                 } else {
+                    log.debug("充电失败了啊 原因: {}", jsonObject);
                     OldwuLog.error("充电失败了啊 原因: " + jsonObject);
-                    log.debug("充电失败了啊 原因: " + jsonObject);
                 }
 
             } else {
+                log.debug("充电失败了啊 原因: {}", jsonObject);
                 OldwuLog.error("充电失败了啊 原因: " + jsonObject);
-                log.debug("充电失败了啊 原因: " + jsonObject);
             }
-        } else {
-            if (day < 28) {
-                OldwuLog.log("今天是本月的第: " + day + "天，还没到充电日子呢");
-                log.info("今天是本月的第: " + day + "天，还没到充电日子呢");
-            } else {
-                OldwuLog.log("本月已经充过电了，睿总送咱的B币券已经没有啦，下月再充啦");
-                log.info("本月已经充过电了，睿总送咱的B币券已经没有啦，下月再充啦");
-            }
-
         }
     }
 
     private void chargeComments(String token) {
 
         String requestBody = "order_id=" + token
-                + "&message=" + "BILIBILI-HELPER自动充电"
+                + "&message=" + "期待up主的新作品！"
                 + "&csrf=" + Verify.getInstance().getBiliJct();
-        JsonObject jsonObject = HttpUtil.doPost(ApiList.chargeComment, requestBody);
+        JsonObject jsonObject = HttpUtil.doPost(ApiList.CHARGE_COMMENT, requestBody);
 
         if (jsonObject.get(STATUS_CODE_STR).getAsInt() == 0) {
             OldwuLog.log("充电留言成功");
@@ -135,7 +126,6 @@ public class ChargeMe implements Task {
             OldwuLog.error(jsonObject.get("message").getAsString());
             log.debug(jsonObject.get("message").getAsString());
         }
-
     }
 
     @Override

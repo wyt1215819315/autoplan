@@ -17,7 +17,7 @@ public class Verify {
     }
 
     /**
-     * Cookies信息 从浏览器获取
+     * Cookies信息 从浏览器获取.
      *
      * @param userId   uid
      * @param sessData sessData
@@ -27,13 +27,6 @@ public class Verify {
         Verify.userId = userId;
         Verify.sessData = sessData;
         Verify.biliJct = biliJct;
-    }
-
-    /**
-     * 合并cookies
-     */
-    public static void mergeUserCookies(){
-
     }
 
     public static Verify getInstance() {

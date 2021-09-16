@@ -16,6 +16,8 @@ public interface BiliUserDao {
 
     BiliUser selectByPrimaryKey(Integer id);
 
+    BiliUser selectByAutoId(Integer autoId);
+
     List<BiliPlan> selectAll();
 
     List<BiliPlan> selectMine(Integer userid);

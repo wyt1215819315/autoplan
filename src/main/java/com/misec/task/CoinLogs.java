@@ -15,7 +15,9 @@ import lombok.extern.log4j.Log4j2;
 public class CoinLogs implements Task {
     @Override
     public void run() {
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.getCoinLog);
+
+        JsonObject jsonObject = HttpUtil.doGet(ApiList.GET_COIN_LOG);
+
         if (jsonObject.get("code").getAsInt() == 0) {
             JsonObject data = jsonObject.getAsJsonObject("data");
             OldwuLog.log("最近一周共计 " + data.get("count").getAsInt() + " 条硬币记录");
@@ -26,7 +28,7 @@ public class CoinLogs implements Task {
             double expend = 0.0;
             for (JsonElement jsonElement : coinList) {
                 double delta = jsonElement.getAsJsonObject().get("delta").getAsDouble();
-                String reason = jsonElement.getAsJsonObject().get("reason").getAsString();
+                //  String reason = jsonElement.getAsJsonObject().get("reason").getAsString();
                 if (delta > 0) {
                     income += delta;
                 } else {

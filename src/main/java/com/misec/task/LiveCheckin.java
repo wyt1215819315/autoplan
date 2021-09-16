@@ -15,6 +15,7 @@ import static com.misec.task.TaskInfoHolder.STATUS_CODE_STR;
  * @since 2020-11-22 5:42
  */
 @Log4j2
+@Deprecated
 public class LiveCheckin implements Task {
 
 

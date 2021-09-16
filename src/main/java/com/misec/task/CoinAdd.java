@@ -3,7 +3,7 @@ package com.misec.task;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
-import com.misec.config.Config;
+import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
 import com.misec.utils.HttpUtil;
 import com.misec.utils.SleepTime;
@@ -22,22 +22,24 @@ import static com.misec.task.TaskInfoHolder.getVideoId;
  * @author @JunzhouLiu @Kurenai
  * @since 2020-11-22 5:28
  */
+@SuppressWarnings("StringConcatenationArgumentToLogCall")
 @Log4j2
 public class CoinAdd implements Task {
 
     /**
-     * 检查是否投币
+     * 检查是否投币.
      *
      * @param bvid av号
-     * @return 返回是否投过硬币了
+     * @return 返回是否投过硬币了.
      */
     static boolean isCoinAdded(String bvid) {
         String urlParam = "?bvid=" + bvid;
-        JsonObject result = HttpUtil.doGet(ApiList.isCoin + urlParam);
+        JsonObject result = HttpUtil.doGet(ApiList.IS_COIN + urlParam);
 
         int multiply = result.getAsJsonObject("data").get("multiply").getAsInt();
         if (multiply > 0) {
             log.info("之前已经为av" + bvid + "投过" + multiply + "枚硬币啦");
+            OldwuLog.log("之前已经为av" + bvid + "投过" + multiply + "枚硬币啦");
             return true;
         } else {
             return false;
@@ -51,15 +53,15 @@ public class CoinAdd implements Task {
         int addCoinOperateCount = 0;
         //安全检查，最多投币数
         final int maxNumberOfCoins = 5;
-        //获取自定义配置投币数 配置写在src/main/resources/config.json中
-        int setCoin = Config.getInstance().getNumberOfCoins();
+        //获取自定义配置投币数 配置写在src/main/resources/taskConfig.json中
+        int setCoin = ConfigLoader.getTaskConfig().getNumberOfCoins();
         // 预留硬币数
-        int reserveCoins = Config.getInstance().getReserveCoins();
+        int reserveCoins = ConfigLoader.getTaskConfig().getReserveCoins();
 
         //已投的硬币
         int useCoin = TaskInfoHolder.expConfirm();
         //投币策略
-        int coinAddPriority = Config.getInstance().getCoinAddPriority();
+        int coinAddPriority = ConfigLoader.getTaskConfig().getCoinAddPriority();
 
         if (setCoin > maxNumberOfCoins) {
             OldwuLog.log("自定义投币数为: " + setCoin + "枚," + "为保护你的资产，自定义投币数重置为: " + maxNumberOfCoins + "枚");
@@ -80,7 +82,7 @@ public class CoinAdd implements Task {
         if (needCoins <= 0) {
             OldwuLog.log("已完成设定的投币任务，今日无需再投币了");
             log.info("已完成设定的投币任务，今日无需再投币了");
-            // return;
+            return;
         } else {
             OldwuLog.log("投币数调整为: " + needCoins + "枚");
             log.info("投币数调整为: " + needCoins + "枚");
@@ -95,8 +97,6 @@ public class CoinAdd implements Task {
         }
 
         if (coinBalance < reserveCoins) {
-            OldwuLog.warning("剩余硬币数为 " + beforeAddCoinBalance + ",低于预留硬币数 " + reserveCoins + ",今日不再投币");
-            OldwuLog.warning("tips: 当硬币余额少于你配置的预留硬币数时，则会暂停当日投币任务");
             log.info("剩余硬币数为{},低于预留硬币数{},今日不再投币", beforeAddCoinBalance, reserveCoins);
             log.info("tips: 当硬币余额少于你配置的预留硬币数时，则会暂停当日投币任务");
             return;
@@ -104,9 +104,8 @@ public class CoinAdd implements Task {
         OldwuLog.log("投币前余额为 : " + beforeAddCoinBalance);
         log.info("投币前余额为 : " + beforeAddCoinBalance);
         /*
-         * 开始投币
-         * 请勿修改 max_numberOfCoins 这里多判断一次保证投币数超过5时 不执行投币操作
-         * 最后一道安全判断，保证即使前面的判断逻辑错了，也不至于发生投币事故
+         * 请勿修改 max_numberOfCoins 这里多判断一次保证投币数超过5时 不执行投币操作.
+         * 最后一道安全判断，保证即使前面的判断逻辑错了，也不至于发生投币事故.
          */
         while (needCoins > 0 && needCoins <= maxNumberOfCoins) {
             String bvid;
@@ -118,9 +117,9 @@ public class CoinAdd implements Task {
 
             addCoinOperateCount++;
             new VideoWatch().watchVideo(bvid);
-            boolean flag = coinAdd(bvid, 1, Config.getInstance().getSelectLike());
+            new SleepTime().sleepDefault();
+            boolean flag = coinAdd(bvid, 1, ConfigLoader.getTaskConfig().getSelectLike());
             if (flag) {
-                new SleepTime().sleepDefault();
                 needCoins--;
             }
             if (addCoinOperateCount > 15) {
@@ -129,11 +128,12 @@ public class CoinAdd implements Task {
                 break;
             }
         }
-        OldwuLog.log("投币任务完成后余额为: " + OftenApi.getCoinBalance());
-        log.info("投币任务完成后余额为: " + OftenApi.getCoinBalance());
+        log.info("投币任务完成后余额为: {}", OftenApi.getCoinBalance());
     }
 
     /**
+     * 投币操作工具类.
+     *
      * @param bvid       av号
      * @param multiply   投币数量
      * @param selectLike 是否同时点赞 1是
@@ -151,15 +151,18 @@ public class CoinAdd implements Task {
                     + "&select_like=" + selectLike
                     + "&cross_domain=" + "true"
                     + "&csrf=" + Verify.getInstance().getBiliJct();
-            JsonObject jsonObject = HttpUtil.doPost(ApiList.CoinAdd, requestBody, headers);
+            JsonObject jsonObject = HttpUtil.doPost(ApiList.COIN_ADD, requestBody, headers);
             if (jsonObject.get(STATUS_CODE_STR).getAsInt() == 0) {
                 log.info("为 " + videoTitle + " 投币成功");
+                OldwuLog.log("为 " + videoTitle + " 投币成功");
                 return true;
             } else {
+                OldwuLog.log("投币失败" + jsonObject.get("message").getAsString());
                 log.info("投币失败" + jsonObject.get("message").getAsString());
                 return false;
             }
         } else {
+            OldwuLog.error("已经为" + videoTitle + "投过币了");
             log.debug("已经为" + videoTitle + "投过币了");
             return false;
         }

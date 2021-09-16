@@ -7,7 +7,7 @@ import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 
 /**
- * TG推送
+ * TG推送 .
  *
  * @author itning
  * @since 2021/3/22 17:55
@@ -16,7 +16,7 @@ public class TelegramPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.ServerPushTelegram + metaInfo.getToken() + "/sendMessage";
+        return ApiList.SERVER_PUSH_TELEGRAM + metaInfo.getToken() + "/sendMessage";
     }
 
     @Override

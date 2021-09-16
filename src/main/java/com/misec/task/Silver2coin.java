@@ -8,6 +8,8 @@ import com.misec.utils.HttpUtil;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Objects;
+
 import static com.misec.task.TaskInfoHolder.STATUS_CODE_STR;
 import static com.misec.task.TaskInfoHolder.userInfo;
 
@@ -22,8 +24,13 @@ public class Silver2coin implements Task {
 
     @Override
     public void run() {
-
-        JsonObject queryStatus = HttpUtil.doGet(ApiList.getSilver2coinStatus).get("data").getAsJsonObject();
+        JsonObject queryStatus = HttpUtil.doGet(ApiList.GET_SILVER_2_COIN_STATUS);
+        if (queryStatus == null || Objects.isNull(queryStatus.get("data"))) {
+            log.error("获取银瓜子状态失败");
+            OldwuLog.error("获取银瓜子状态失败");
+            return;
+        }
+        queryStatus = queryStatus.get("data").getAsJsonObject();
         //银瓜子兑换硬币汇率
         final int exchangeRate = 700;
         int silverNum = queryStatus.get("silver").getAsInt();
@@ -32,9 +39,9 @@ public class Silver2coin implements Task {
             OldwuLog.log("当前银瓜子余额为: " + silverNum + ",不足700,不进行兑换");
             log.info("当前银瓜子余额为:{},不足700,不进行兑换", silverNum);
         } else {
-            String requsetBody = "csrf_token=" + Verify.getInstance().getBiliJct() +
-                    "&csrf=" + Verify.getInstance().getBiliJct();
-            JsonObject resultJson = HttpUtil.doPost(ApiList.silver2coin, requsetBody);
+            String requestBody = "csrf_token=" + Verify.getInstance().getBiliJct()
+                    + "&csrf=" + Verify.getInstance().getBiliJct();
+            JsonObject resultJson = HttpUtil.doPost(ApiList.SILVER_2_COIN, requestBody);
 
             int responseCode = resultJson.get(STATUS_CODE_STR).getAsInt();
             if (responseCode == 0) {

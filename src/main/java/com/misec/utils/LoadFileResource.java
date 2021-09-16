@@ -6,22 +6,23 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * 工具类通过流的方式读取文件.
+ *
  * @author Junzhou Liu
- * @create 2020/10/17 19:31
- * 工具类通过流的方式读取文件
+ * @since 2020/10/17 19:31
  */
 @Log4j2
 public class LoadFileResource {
 
     /**
-     * 从外部资源读取配置文件
+     * 从外部资源读取配置文件.
      *
      * @return config
      */
     public static String loadConfigJsonFromFile() {
         String config = null;
         try {
-            String outPath = System.getProperty("user.dir") + File.separator + "config.json"  ;
+            String outPath = System.getProperty("user.dir") + File.separator + "config.json";
             InputStream is = new FileInputStream(outPath);
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -29,17 +30,16 @@ public class LoadFileResource {
             is.close();
             config = new String(buffer, StandardCharsets.UTF_8);
         } catch (FileNotFoundException e) {
-            log.info("未扫描到外部配置文件，即将加载默认配置文件【此提示仅针自行部署的Linux用户，普通用户请忽略】");
+            log.debug("未扫描到外部配置文件");
         } catch (IOException e) {
-            e.printStackTrace();
-            log.debug("", e);
+            log.debug(e);
         }
         return config;
     }
 
 
     /**
-     * 从resource读取版本文件
+     * 从resource读取版本文件.
      *
      * @param fileName 文件名
      * @return 返回读取到文件
@@ -56,7 +56,6 @@ public class LoadFileResource {
             json = new String(buffer, StandardCharsets.UTF_8);
 
         } catch (IOException e) {
-            e.printStackTrace();
             log.debug("", e);
         }
         return json;
@@ -64,6 +63,8 @@ public class LoadFileResource {
 
 
     /**
+     * load file.
+     *
      * @param filePath 读入的文件路径
      * @return 返回str
      */
@@ -77,7 +78,6 @@ public class LoadFileResource {
             is.close();
             logs = new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
             log.debug("", e);
         }
         return logs;

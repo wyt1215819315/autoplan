@@ -19,7 +19,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         id, auto_id, `uid`, bili_name, bili_coin, bili_exp, bili_upexp, bili_level, face_img,
-    is_vip, vip_due_date, other
+    is_vip, vip_due_date, other, `status`
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -65,6 +65,12 @@
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
         WHERE auto_bilibili.userid = #{userid}
+    </select>
+    <select id="selectByAutoId" resultType="com.oldwu.entity.BiliUser">
+        select
+        <include refid="Base_Column_List"/>
+        from bili_user
+        where auto_id = #{autoId}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete

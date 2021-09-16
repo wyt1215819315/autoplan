@@ -1,6 +1,7 @@
 package com.misec.task;
 
 import com.google.gson.JsonObject;
+import com.misec.config.ConfigLoader;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 import com.misec.apiquery.ApiList;
@@ -16,14 +17,12 @@ import com.misec.utils.HttpUtil;
 
 @Log4j2
 public class MangaSign implements Task {
-
-
     @Override
     public void run() {
 
-        String platform = Config.getInstance().getDevicePlatform();
+        String platform = ConfigLoader.getTaskConfig().getDevicePlatform();
         String requestBody = "platform=" + platform;
-        JsonObject result = HttpUtil.doPost(ApiList.Manga, requestBody);
+        JsonObject result = HttpUtil.doPost(ApiList.MANGA, requestBody);
 
         if (result == null) {
             OldwuLog.log("哔哩哔哩漫画已经签到过了");

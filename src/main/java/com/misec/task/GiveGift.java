@@ -3,6 +3,8 @@ package com.misec.task;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.misec.config.Config;
+import com.misec.config.ConfigLoader;
+import com.misec.config.TaskConfig;
 import com.misec.login.Verify;
 import com.misec.utils.HttpUtil;
 import com.oldwu.log.OldwuLog;
@@ -19,15 +21,15 @@ import lombok.extern.log4j.Log4j2;
 public class GiveGift implements Task {
 
     /**
-     * 获取日志记录器对象
+     * 获取日志记录器对象.
      */
-    Config config = Config.getInstance();
+    TaskConfig taskConfig = ConfigLoader.getTaskConfig();
 
     @Override
     public void run() {
         try {
             /* 从配置类中读取是否需要执行赠送礼物 */
-            if (!Boolean.TRUE.equals(config.getGiveGift())) {
+            if (!Boolean.TRUE.equals(taskConfig.getGiveGift())) {
                 OldwuLog.log("未开启自动送出即将过期礼物功能");
                 log.info("未开启自动送出即将过期礼物功能");
                 return;
@@ -47,7 +49,7 @@ public class GiveGift implements Task {
                 long expireAt = Long.parseLong(json.get("expire_at").getAsString());
                 /* 礼物还剩 1 天送出 */
                 /* 永久礼物到期时间为 0 */
-                if ((expireAt - nowTime) < 60 * 60 * 25 * 1 && expireAt != 0) {
+                if ((expireAt - nowTime) < 60 * 60 * 25 && expireAt != 0) {
                     /* 如果有未送出的礼物，则获取一个直播间 */
                     if ("".equals(roomId)) {
                         JsonObject uidAndRid = getuidAndRid();
@@ -55,11 +57,11 @@ public class GiveGift implements Task {
                         roomId = uidAndRid.get("roomid").getAsString();
                     }
 
-                    String requestBody = "biz_id=" + roomId +
-                            "&ruid=" + uid +
-                            "&bag_id=" + json.get("bag_id") +
-                            "&gift_id=" + json.get("gift_id") +
-                            "&gift_num=" + json.get("gift_num");
+                    String requestBody = "biz_id=" + roomId
+                            + "&ruid=" + uid
+                            + "&bag_id=" + json.get("bag_id")
+                            + "&gift_id=" + json.get("gift_id")
+                            + "&gift_num=" + json.get("gift_num");
                     JsonObject jsonObject3 = xliveBagSend(requestBody);
                     if ("0".equals(jsonObject3.get("code").getAsString())) {
                         /* 礼物的名字 */
@@ -86,11 +88,11 @@ public class GiveGift implements Task {
     }
 
     /**
-     * 获取一个直播间的room_id
+     * 获取一个直播间的room_id.
      *
      * @return String
      * @author srcrs
-     * @Time 2020-10-13
+     * @since 2020-10-13
      */
     public String xliveGetRecommend() {
         return HttpUtil.doGet("https://api.live.bilibili.com/relation/v1/AppWeb/getRecommendList")
@@ -101,12 +103,12 @@ public class GiveGift implements Task {
     }
 
     /**
-     * B站获取直播间的uid
+     * B站获取直播间的uid.
      *
-     * @param roomId up 主的 uid
-     * @return String
-     * @author srcrs
-     * @Time 2020-10-13
+     * @param roomId up 主的 uid.
+     * @return String.
+     * @author srcrs.
+     * @since 2020-10-13.
      */
     public String xliveGetRoomUid(String roomId) {
         JsonObject pJson = new JsonObject();
@@ -121,10 +123,10 @@ public class GiveGift implements Task {
     /**
      * 根据 uid 获取其 roomid
      *
-     * @param mid 即 uid
-     * @return String 返回一个直播间id
-     * @author srcrs
-     * @Time 2020-11-20
+     * @param mid 即 uid.
+     * @return String 返回一个直播间id.
+     * @author srcrs.
+     * @since 2020-11-20.
      */
     public String getRoomInfoOld(String mid) {
         JsonObject pJson = new JsonObject();
@@ -136,11 +138,11 @@ public class GiveGift implements Task {
     }
 
     /**
-     * B站直播获取背包礼物
+     * B站直播获取背包礼物.
      *
      * @return JsonArray
      * @author srcrs
-     * @Time 2020-10-13
+     * @since 2020-10-13
      */
     public JsonArray xliveGiftBagList() {
         JsonObject obj = HttpUtil.doGet("https://api.live.bilibili.com/xlive/web-room/v1/gift/bag_list")
@@ -153,41 +155,38 @@ public class GiveGift implements Task {
     }
 
     /**
-     * B站直播送出背包的礼物
+     * B站直播送出背包的礼物.
      *
-     * @param requestBody
      * @return JsonObject
      * @author srcrs
-     * @Time 2020-10-13
+     * @since 2020-10-13
      */
     public JsonObject xliveBagSend(String requestBody) {
-
-        requestBody += "&uid=" + Verify.getInstance().getUserId() +
-                "&csrf=" + Verify.getInstance().getBiliJct() +
-                "&send_ruid=" + "0" +
-                "&storm_beat_id=" + "0" +
-                "&price=" + "0" +
-                "&platform=" + "pc" +
-                "&biz_code=" + "live";
-
+        requestBody += "&uid=" + Verify.getInstance().getUserId()
+                + "&csrf=" + Verify.getInstance().getBiliJct()
+                + "&send_ruid=" + "0"
+                + "&storm_beat_id=" + "0"
+                + "&price=" + "0"
+                + "&platform=" + "pc"
+                + "&biz_code=" + "live";
         return HttpUtil.doPost("https://api.live.bilibili.com/gift/v2/live/bag_send", requestBody);
     }
 
     /**
-     * 获取一个包含 uid 和 RooId 的 json 对象
+     * 获取一个包含 uid 和 RooId 的 json 对象.
      *
-     * @return JsonObject 返回一个包含 uid 和 RooId 的 json 对象
+     * @return JsonObject 返回一个包含 uid 和 RooId 的 json 对象.
      * @author srcrs
-     * @Time 2020-11-20
+     * @since 2020-11-20
      */
     public JsonObject getuidAndRid() {
         /* 直播间 id */
         String roomId;
         /* 直播间 uid 即 up 的 id*/
         String uid;
-        if (!"0".equals(config.getUpLive())) {
+        if (!"0".equals(taskConfig.getUpLive())) {
             /* 获取指定up的id */
-            uid = config.getUpLive();
+            uid = taskConfig.getUpLive();
             roomId = getRoomInfoOld(uid);
             String status = "0";
             if (status.equals(roomId)) {

@@ -1,5 +1,6 @@
 package com.misec;
 
+import com.misec.config.ConfigLoader;
 import com.oldwu.log.OldwuLog;
 import com.push.ServerPush;
 import org.slf4j.Logger;
@@ -65,10 +66,9 @@ public class BiliMain {
             ServerVerify.verifyInit(null, null);
         }
 
-//        VersionInfo.printVersionInfo();
         //每日任务65经验
-        Config.getInstance().configInit(autoId);
-        if (!Boolean.TRUE.equals(Config.getInstance().getSkipDailyTask())) {
+        ConfigLoader.configInit(autoId);
+        if (!Boolean.TRUE.equals(ConfigLoader.getTaskConfig().getSkipDailyTask())) {
             DailyTask dailyTask = new DailyTask();
             dailyTask.doDailyTask();
         } else {

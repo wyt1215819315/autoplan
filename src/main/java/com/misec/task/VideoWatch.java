@@ -52,35 +52,35 @@ public class VideoWatch implements Task {
         int playedTime = new Random().nextInt(90) + 1;
         String postBody = "bvid=" + bvid
                 + "&played_time=" + playedTime;
-        JsonObject resultJson = HttpUtil.doPost(ApiList.videoHeartbeat, postBody);
+        JsonObject resultJson = HttpUtil.doPost(ApiList.VIDEO_HEARTBEAT, postBody);
         String videoTitle = OftenApi.getVideoTitle(bvid);
         int responseCode = resultJson.get(STATUS_CODE_STR).getAsInt();
         if (responseCode == 0) {
             OldwuLog.log("视频: " + videoTitle + "播放成功,已观看到第" + playedTime + "秒");
-            log.info("视频: " + videoTitle + "播放成功,已观看到第" + playedTime + "秒");
+            log.info("视频: {}播放成功,已观看到第{}秒", videoTitle, playedTime);
         } else {
             OldwuLog.log("视频: " + videoTitle + "播放失败,原因: " + resultJson.get("message").getAsString());
-            log.debug("视频: " + videoTitle + "播放失败,原因: " + resultJson.get("message").getAsString());
+            log.debug("视频: {}播放失败,原因: {}", videoTitle, resultJson.get("message").getAsString());
         }
     }
 
     /**
-     * @param bvid 要分享的视频bvid
+     * @param bvid 要分享的视频bvid.
      */
     public void dailyAvShare(String bvid) {
         String requestBody = "bvid=" + bvid + "&csrf=" + Verify.getInstance().getBiliJct();
-        JsonObject result = HttpUtil.doPost((ApiList.AvShare), requestBody);
+        JsonObject result = HttpUtil.doPost((ApiList.AV_SHARE), requestBody);
 
         String videoTitle = OftenApi.getVideoTitle(bvid);
 
         if (result.get(STATUS_CODE_STR).getAsInt() == 0) {
             OldwuLog.log("视频: " + videoTitle + " 分享成功");
-            log.info("视频: " + videoTitle + " 分享成功");
+            log.info("视频: {} 分享成功", videoTitle);
         } else {
             OldwuLog.error("视频分享失败，原因: " + result.get("message").getAsString());
             OldwuLog.warning("开发者提示: 如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
-            log.debug("视频分享失败，原因: " + result.get("message").getAsString());
-            log.debug("开发者提示: 如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
+            log.debug("视频分享失败，原因: {}", result.get("message").getAsString());
+            log.debug("如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
         }
     }
 }

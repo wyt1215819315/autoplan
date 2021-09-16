@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 元信息
+ * 元信息.
  *
  * @author itning
  * @since 2021/3/22 16:58
@@ -14,22 +14,22 @@ import lombok.Getter;
 public class PushMetaInfo {
 
     /**
-     * TOKEN
+     * TOKEN.
      */
     private final String token;
 
     /**
-     * Telegram Chat Id
+     * Telegram Chat Id .
      */
     private final String chatId;
 
     /**
-     * 失败后重试次数
+     * 失败后重试次数 .
      */
     private final int numberOfRetries;
 
     /**
-     * 失败后重试间隔
+     * 失败后重试间隔 .
      */
     private final long retryInterval;
 
