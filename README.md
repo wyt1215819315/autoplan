@@ -114,6 +114,7 @@ mybatis:
 * 21.9.5 修复了非管理员无法使用单次执行任务的问题，修复了米游社任务无权限访问的问题，修复了bilibili直播送礼物报错的问题
 * 21.9.6 增加了bilibili赛事预测,修复了网易云uid超出int范围导致任务中断的问题
 * 21.9.15 尝试更新了BILIBILI-HELPER至1.1.5，可以改善部分任务中出现的null错误
+* 21.10.1 layui已下线，目前将所有cdn服务换为本地文件
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
