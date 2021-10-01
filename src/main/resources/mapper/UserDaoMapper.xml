@@ -15,7 +15,7 @@
         VALUES (#{username}, #{password})
     </insert>
     <insert id="setRole">
-        INSERT INTO `auto_plan`.`sys_role_user`(`sys_user_id`, `sys_role_id`) VALUES (#{id}, 2)
+        INSERT INTO `sys_role_user`(`sys_user_id`, `sys_role_id`) VALUES (#{id}, 2)
     </insert>
     <select id="findByUserName" parameterType="String" resultMap="userMap">
         select u.*

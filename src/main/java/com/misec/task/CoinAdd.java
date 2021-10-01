@@ -97,6 +97,7 @@ public class CoinAdd implements Task {
         }
 
         if (coinBalance < reserveCoins) {
+            OldwuLog.log("剩余硬币数为" + beforeAddCoinBalance + ",低于预留硬币数" + reserveCoins + ",今日不再投币");
             log.info("剩余硬币数为{},低于预留硬币数{},今日不再投币", beforeAddCoinBalance, reserveCoins);
             log.info("tips: 当硬币余额少于你配置的预留硬币数时，则会暂停当日投币任务");
             return;
@@ -162,7 +163,7 @@ public class CoinAdd implements Task {
                 return false;
             }
         } else {
-            OldwuLog.error("已经为" + videoTitle + "投过币了");
+            OldwuLog.log("已经为" + videoTitle + "投过币了");
             log.debug("已经为" + videoTitle + "投过币了");
             return false;
         }

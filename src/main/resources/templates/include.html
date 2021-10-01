@@ -11,11 +11,15 @@
     <link rel="stylesheet" th:href="@{/static/css/pear.css}">
 </head>
 
+<div th:fragment="static">
+    <script th:src="@{/static/layui/layui.js}"></script>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" type="text/css"/>
+</div>
+
 <!-- 通用JS -->
 <div th:fragment="footer">
     <script> let rootPath = "[[${rootPath}]]";</script>
-    <script src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
-    <!--    <script th:src="@{/static/js/layui.js}"></script>-->
+    <script th:src="@{/static/layui/layui.js}"></script>
     <script th:src="@{/static/js/pear.js}"></script>
     <script th:src="@{/static/js/jquery.min.js}"></script>
 </div>

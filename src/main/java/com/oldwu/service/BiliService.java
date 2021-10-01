@@ -261,7 +261,7 @@ public class BiliService {
             }
         }
         Integer taskintervaltime = autoBilibili.getTaskintervaltime();
-        if (taskintervaltime == null || taskintervaltime < 1 || taskintervaltime > 100) {
+        if (taskintervaltime == null || taskintervaltime < 1 || taskintervaltime > 20) {
             autoBilibili.setTaskintervaltime(10);
         }
         Integer numberofcoins = autoBilibili.getNumberofcoins();
