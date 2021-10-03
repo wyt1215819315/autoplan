@@ -47,9 +47,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">任务完成推送WebHook</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="serverpushkey" name="serverpushkey"
+                    <input autocomplete="off" class="layui-input" lay-verify="webhook" name="webhook"
                            placeholder="输入WebHook地址，支持钉钉，server酱"
-                           type="text" th:value="${netmusic.getOther()}">
+                           type="text" th:value="${netmusic.getWebhook()}">
                 </div>
             </div>
             <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"

@@ -115,6 +115,7 @@ mybatis:
 * 21.9.6 增加了bilibili赛事预测,修复了网易云uid超出int范围导致任务中断的问题
 * 21.9.15 尝试更新了BILIBILI-HELPER至1.1.5，可以改善部分任务中出现的null错误
 * 21.10.1 layui已下线，目前将所有cdn服务换为本地文件
+* 21.10.3 修复了部分bug，更改了部分数据表字段名称使其更统一，增加bilibili反向赛事预测
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
@@ -122,4 +123,8 @@ mybatis:
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
 3. <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
 4. <a href="https://github.com/y1ndan/genshinhelper">genshinhelper</a>
+
+感谢 JetBrains 对本项目的支持。
+
+[![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*y52vqx*_ga*NTE4NjY3NDA2LjE2MjY5NDU3MDk.*_ga_V0XZL7QHEB*MTYzMzE4NjE1Mi4yLjEuMTYzMzE4NjE4MS4w&_ga=2.80927447.171770786.1633179814-518667406.1626945709)](https://www.jetbrains.com/)
 

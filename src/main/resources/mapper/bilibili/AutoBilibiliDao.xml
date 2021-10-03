@@ -20,16 +20,19 @@
         <result column="coinAddPriority" jdbcType="INTEGER" property="coinaddpriority"/>
         <result column="userAgent" jdbcType="VARCHAR" property="useragent"/>
         <result column="skipDailyTask" jdbcType="VARCHAR" property="skipdailytask"/>
-        <result column="SERVERPUSHKEY" jdbcType="VARCHAR" property="serverpushkey"/>
-        <result column="other" jdbcType="VARCHAR" property="other"/>
+        <result column="webhook" jdbcType="VARCHAR" property="webhook"/>
+        <result column="enddate" jdbcType="TIMESTAMP" property="enddate"/>
         <result column="match_enable" jdbcType="VARCHAR" property="matchEnable"/>
         <result column="match_predictNumberOfCoins" jdbcType="INTEGER" property="matchPredictnumberofcoins"/>
         <result column="match_minimumNumberOfCoins" jdbcType="INTEGER" property="matchMinimumnumberofcoins"/>
+        <result column="match_showHandModel" jdbcType="VARCHAR" property="matchShowhandmodel"/>
+        <result column="other" jdbcType="VARCHAR" property="other"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, userid, `name`, sessdata, bili_jct, dedeuserid, taskIntervalTime, numberOfCoins,
-    reserveCoins, selectLike, monthEndAutoCharge, giveGift, upLive, chargeForLove, devicePlatform, 
-    coinAddPriority, userAgent, skipDailyTask, SERVERPUSHKEY, other,match_enable,match_predictNumberOfCoins,match_minimumNumberOfCoins
+    reserveCoins, selectLike, monthEndAutoCharge, giveGift, upLive, chargeForLove, devicePlatform,
+    coinAddPriority, userAgent, skipDailyTask, webhook, enddate, match_enable, match_predictNumberOfCoins,
+    match_minimumNumberOfCoins, match_showHandModel, other
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -54,17 +57,21 @@
                                    numberOfCoins, reserveCoins, selectLike,
                                    monthEndAutoCharge, giveGift, upLive,
                                    chargeForLove, devicePlatform, coinAddPriority,
-                                   userAgent, skipDailyTask, SERVERPUSHKEY,
-                                   other,match_enable,match_predictNumberOfCoins,match_minimumNumberOfCoins)
+                                   userAgent, skipDailyTask, webhook,
+                                   enddate, match_enable, match_predictNumberOfCoins,
+                                   match_minimumNumberOfCoins, match_showHandModel,
+                                   other)
         values (#{userid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sessdata,jdbcType=VARCHAR},
                 #{biliJct,jdbcType=VARCHAR}, #{dedeuserid,jdbcType=VARCHAR}, #{taskintervaltime,jdbcType=INTEGER},
                 #{numberofcoins,jdbcType=INTEGER}, #{reservecoins,jdbcType=INTEGER}, #{selectlike,jdbcType=INTEGER},
                 #{monthendautocharge,jdbcType=VARCHAR}, #{givegift,jdbcType=VARCHAR}, #{uplive,jdbcType=VARCHAR},
                 #{chargeforlove,jdbcType=VARCHAR}, #{deviceplatform,jdbcType=VARCHAR},
                 #{coinaddpriority,jdbcType=INTEGER},
-                #{useragent,jdbcType=VARCHAR}, #{skipdailytask,jdbcType=VARCHAR}, #{serverpushkey,jdbcType=VARCHAR},
-                #{other,jdbcType=VARCHAR},#{matchEnable,jdbcType=VARCHAR},#{matchPredictnumberofcoins,jdbcType=INTEGER},
-                #{matchMinimumnumberofcoins,jdbcType=INTEGER})
+                #{useragent,jdbcType=VARCHAR}, #{skipdailytask,jdbcType=VARCHAR}, #{webhook,jdbcType=VARCHAR},
+                #{enddate,jdbcType=TIMESTAMP}, #{matchEnable,jdbcType=VARCHAR},
+                #{matchPredictnumberofcoins,jdbcType=INTEGER},
+                #{matchMinimumnumberofcoins,jdbcType=INTEGER}, #{matchShowhandmodel,jdbcType=VARCHAR},
+                #{other,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoBilibili"
             useGeneratedKeys="true">
@@ -121,11 +128,11 @@
             <if test="skipdailytask != null">
                 skipDailyTask,
             </if>
-            <if test="serverpushkey != null">
-                SERVERPUSHKEY,
+            <if test="webhook != null">
+                webhook,
             </if>
-            <if test="other != null">
-                other,
+            <if test="enddate != null">
+                enddate,
             </if>
             <if test="matchEnable != null">
                 match_enable,
@@ -135,6 +142,12 @@
             </if>
             <if test="matchMinimumnumberofcoins != null">
                 match_minimumNumberOfCoins,
+            </if>
+            <if test="matchShowhandmodel != null">
+                match_showHandModel,
+            </if>
+            <if test="other != null">
+                other,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -189,20 +202,26 @@
             <if test="skipdailytask != null">
                 #{skipdailytask,jdbcType=VARCHAR},
             </if>
-            <if test="serverpushkey != null">
-                #{serverpushkey,jdbcType=VARCHAR},
+            <if test="webhook != null">
+                #{webhook,jdbcType=VARCHAR},
             </if>
-            <if test="other != null">
-                #{other,jdbcType=VARCHAR},
+            <if test="enddate != null">
+                #{enddate,jdbcType=TIMESTAMP},
             </if>
             <if test="matchEnable != null">
                 #{matchEnable,jdbcType=VARCHAR},
             </if>
             <if test="matchPredictnumberofcoins != null">
-                #{matchPredictnumberofcoins,jdbcType=VARCHAR},
+                #{matchPredictnumberofcoins,jdbcType=INTEGER},
             </if>
             <if test="matchMinimumnumberofcoins != null">
-                #{matchMinimumnumberofcoins,jdbcType=VARCHAR},
+                #{matchMinimumnumberofcoins,jdbcType=INTEGER},
+            </if>
+            <if test="matchShowhandmodel != null">
+                #{matchShowhandmodel,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                #{other,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -260,48 +279,56 @@
             <if test="skipdailytask != null">
                 skipDailyTask = #{skipdailytask,jdbcType=VARCHAR},
             </if>
-            <if test="serverpushkey != null">
-                SERVERPUSHKEY = #{serverpushkey,jdbcType=VARCHAR},
+            <if test="webhook != null">
+                webhook = #{webhook,jdbcType=VARCHAR},
             </if>
-            <if test="other != null">
-                other = #{other,jdbcType=VARCHAR},
+            <if test="enddate != null">
+                enddate = #{enddate,jdbcType=TIMESTAMP},
             </if>
             <if test="matchEnable != null">
                 match_enable = #{matchEnable,jdbcType=VARCHAR},
             </if>
             <if test="matchPredictnumberofcoins != null">
-                match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=VARCHAR},
+                match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=INTEGER},
             </if>
             <if test="matchMinimumnumberofcoins != null">
-                match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=VARCHAR},
+                match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=INTEGER},
+            </if>
+            <if test="matchShowhandmodel != null">
+                match_showHandModel = #{matchShowhandmodel,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                other = #{other,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.AutoBilibili">
         update auto_bilibili
-        set userid             = #{userid,jdbcType=INTEGER},
-            `name`             = #{name,jdbcType=VARCHAR},
-            sessdata           = #{sessdata,jdbcType=VARCHAR},
-            bili_jct           = #{biliJct,jdbcType=VARCHAR},
-            dedeuserid         = #{dedeuserid,jdbcType=VARCHAR},
-            taskIntervalTime   = #{taskintervaltime,jdbcType=INTEGER},
-            numberOfCoins      = #{numberofcoins,jdbcType=INTEGER},
-            reserveCoins       = #{reservecoins,jdbcType=INTEGER},
-            selectLike         = #{selectlike,jdbcType=INTEGER},
+        set userid = #{userid,jdbcType=INTEGER},
+            `name` = #{name,jdbcType=VARCHAR},
+            sessdata = #{sessdata,jdbcType=VARCHAR},
+            bili_jct = #{biliJct,jdbcType=VARCHAR},
+            dedeuserid = #{dedeuserid,jdbcType=VARCHAR},
+            taskIntervalTime = #{taskintervaltime,jdbcType=INTEGER},
+            numberOfCoins = #{numberofcoins,jdbcType=INTEGER},
+            reserveCoins = #{reservecoins,jdbcType=INTEGER},
+            selectLike = #{selectlike,jdbcType=INTEGER},
             monthEndAutoCharge = #{monthendautocharge,jdbcType=VARCHAR},
-            giveGift           = #{givegift,jdbcType=VARCHAR},
-            upLive             = #{uplive,jdbcType=VARCHAR},
-            chargeForLove      = #{chargeforlove,jdbcType=VARCHAR},
-            devicePlatform     = #{deviceplatform,jdbcType=VARCHAR},
-            coinAddPriority    = #{coinaddpriority,jdbcType=INTEGER},
-            userAgent          = #{useragent,jdbcType=VARCHAR},
-            skipDailyTask      = #{skipdailytask,jdbcType=VARCHAR},
-            SERVERPUSHKEY      = #{serverpushkey,jdbcType=VARCHAR},
-            other              = #{other,jdbcType=VARCHAR},
+            giveGift = #{givegift,jdbcType=VARCHAR},
+            upLive = #{uplive,jdbcType=VARCHAR},
+            chargeForLove = #{chargeforlove,jdbcType=VARCHAR},
+            devicePlatform = #{deviceplatform,jdbcType=VARCHAR},
+            coinAddPriority = #{coinaddpriority,jdbcType=INTEGER},
+            userAgent = #{useragent,jdbcType=VARCHAR},
+            skipDailyTask = #{skipdailytask,jdbcType=VARCHAR},
+            webhook = #{webhook,jdbcType=VARCHAR},
+            enddate = #{enddate,jdbcType=TIMESTAMP},
             match_enable = #{matchEnable,jdbcType=VARCHAR},
-            match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=VARCHAR},
-            match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=VARCHAR}
+            match_predictNumberOfCoins = #{matchPredictnumberofcoins,jdbcType=INTEGER},
+            match_minimumNumberOfCoins = #{matchMinimumnumberofcoins,jdbcType=INTEGER},
+            match_showHandModel = #{matchShowhandmodel,jdbcType=VARCHAR},
+            other = #{other,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

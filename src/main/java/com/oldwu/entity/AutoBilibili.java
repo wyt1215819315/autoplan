@@ -1,11 +1,12 @@
 package com.oldwu.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
  * auto_bilibili
- * @author 
+ * @author
  */
 @Data
 public class AutoBilibili implements Serializable {
@@ -87,15 +88,31 @@ public class AutoBilibili implements Serializable {
     /**
      * 推送地址
      */
-    private String serverpushkey;
+    private String webhook;
 
-    private String other;
+    private Date enddate;
 
-    //预测部分
+    /**
+     * 预测是否开启
+     */
     private String matchEnable;
+
+    /**
+     * 单次预测投注硬币
+     */
     private Integer matchPredictnumberofcoins;
+
+    /**
+     * 预测保留硬币
+     */
     private Integer matchMinimumnumberofcoins;
 
+    /**
+     * 押注形式
+     */
+    private String matchShowhandmodel;
+
+    private String other;
 
     private static final long serialVersionUID = 1L;
 }

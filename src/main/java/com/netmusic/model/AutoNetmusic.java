@@ -39,9 +39,11 @@ public class AutoNetmusic implements Serializable {
 
     private String enable;
 
-    private String other;
-
     private Date enddate;
+
+    private String webhook;
+
+    private String other;
 
     private static final long serialVersionUID = 1L;
 

@@ -42,17 +42,6 @@ public class ConfigLoader {
     }
 
     /**
-     * 云函数初始化配置 .
-     *
-     * @param json config json
-     */
-    public static void configInit(String json) {
-        taskConfig = build(json);
-        HttpUtil.setUserAgent(taskConfig.getUserAgent());
-        log.info(taskConfig.toString());
-    }
-
-    /**
      * 优先从jar包同级目录读取.
      */
     public static void configInit(int autoId) {
@@ -82,6 +71,7 @@ public class ConfigLoader {
         config.setMatchGame(Boolean.parseBoolean(autoBilibili.getMatchEnable()));
         config.setPredictNumberOfCoins(autoBilibili.getMatchPredictnumberofcoins());
         config.setMinimumNumberOfCoins(autoBilibili.getMatchMinimumnumberofcoins());
+        config.setShowHandModel(Boolean.parseBoolean(autoBilibili.getMatchShowhandmodel()));
         return config;
     }
 

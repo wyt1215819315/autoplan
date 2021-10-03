@@ -141,9 +141,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">任务完成推送WebHook</label>
                 <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="serverpushkey" name="serverpushkey"
+                    <input autocomplete="off" class="layui-input" lay-verify="webhook" name="webhook"
                            placeholder="输入WebHook地址，支持钉钉，server酱"
-                           th:value="${bili.getServerpushkey()}" type="text">
+                           th:value="${bili.getWebhook()}" type="text">
                 </div>
             </div>
             <!--            预测部分-->
@@ -151,27 +151,36 @@
                 <label class="layui-form-label">赛事预测总开关</label>
                 <div class="layui-input-block">
                     <select class="layui-input" id="matchEnable" lay-filter="matchEnable" name="matchEnable">
-                        <option selected value="false">关</option>
-                        <option value="true">开</option>
+                        <option th:selected="${bili.getMatchEnable().equals('false')}" value="false">关</option>
+                        <option th:selected="${bili.getMatchEnable().equals('true')}" value="true">开</option>
                     </select>
                 </div>
             </div>
-            <div class="layui-form-item" id="match_pre" style="display: none">
-                <label class="layui-form-label">单次预测投注硬币</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="matchPredictnumberofcoins"
-                           name="matchPredictnumberofcoins"
-                           placeholder="单次预测投注硬币"
-                           type="number" value="10">
+            <div id="match_rule">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单次预测投注硬币</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="matchPredictnumberofcoins" name="matchPredictnumberofcoins"
+                               placeholder="单次预测投注硬币"
+                               type="number" th:value="${bili.getMatchPredictnumberofcoins()}">
+                    </div>
                 </div>
-            </div>
-            <div class="layui-form-item" id="match_coin" style="display: none">
-                <label class="layui-form-label">预测保留硬币</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="matchMinimumnumberofcoins"
-                           name="matchMinimumnumberofcoins"
-                           placeholder="预测保留硬币"
-                           type="number" value="200">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预测保留硬币</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="matchMinimumnumberofcoins" name="matchMinimumnumberofcoins"
+                               placeholder="预测保留硬币"
+                               type="number" th:value="${bili.getMatchMinimumnumberofcoins()}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">赛事预测规则</label>
+                    <div class="layui-input-block">
+                        <select class="layui-input" name="matchShowhandmodel" lay-filter="matchShowhandmodel" id="matchShowhandmodel">
+                            <option th:selected="${bili.getMatchShowhandmodel().equals('false')}" value="false">压倍率低的（跟着人多的压）</option>
+                            <option th:selected="${bili.getMatchShowhandmodel().equals('true')}" value="true">压倍率高的（赌命）</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
@@ -192,12 +201,10 @@
 
         form.on('select(matchEnable)', function (data) {
             if (data.value == 'false') {
-                $("#match_pre").css("display", "none");
-                $("#match_coin").css("display", "none");
+                $("#match_rule").css("display", "none");
                 form.render('select');
             } else {
-                $("#match_pre").css("display", "block");
-                $("#match_coin").css("display", "block");
+                $("#match_rule").css("display", "block");
                 form.render('select');
             }
         });

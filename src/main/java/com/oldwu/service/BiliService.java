@@ -304,9 +304,9 @@ public class BiliService {
         if (StringUtils.isBlank(skipdailytask) || !skipdailytask.equals("true") && !skipdailytask.equals("false")) {
             autoBilibili.setSkipdailytask("false");
         }
-        String serverpushkey = autoBilibili.getServerpushkey();
-        if (StringUtils.isBlank(serverpushkey)) {
-            autoBilibili.setServerpushkey(null);
+        String webhook = autoBilibili.getWebhook();
+        if (StringUtils.isBlank(webhook)) {
+            autoBilibili.setWebhook(null);
         }
         String matchEnable = autoBilibili.getMatchEnable();
         if (StringUtils.isBlank(matchEnable) || !matchEnable.equals("true") && !matchEnable.equals("false")) {

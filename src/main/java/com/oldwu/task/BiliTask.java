@@ -83,10 +83,10 @@ public class BiliTask {
             biliUserDao.updateByAutoIdSelective(biliUser);
             //执行任务
             String[] strings = null;
-            if (!StringUtils.isBlank(autoBilibili.getServerpushkey())) {
+            if (!StringUtils.isBlank(autoBilibili.getWebhook())) {
                 //有推送
                 strings = new String[4];
-                strings[3] = autoBilibili.getServerpushkey();
+                strings[3] = autoBilibili.getWebhook();
             } else {
                 strings = new String[3];
             }

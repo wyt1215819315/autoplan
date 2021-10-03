@@ -16,13 +16,14 @@
         <result column="cookie" jdbcType="VARCHAR" property="cookie"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="enable" jdbcType="VARCHAR" property="enable"/>
-        <result column="other" jdbcType="VARCHAR" property="other"/>
         <result column="enddate" jdbcType="TIMESTAMP" property="enddate"/>
+        <result column="webhook" jdbcType="VARCHAR" property="webhook"/>
+        <result column="other" jdbcType="VARCHAR" property="other"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, phone, `password`, countrycode, userid, netmusic_id, netmusic_name, netmusic_level,
-    netmusic_need_day, netmusic_need_listen, `name`, cookie, `status`, `enable`, other, 
-    enddate
+    netmusic_need_day, netmusic_need_listen, `name`, cookie, `status`, `enable`, enddate,
+    webhook, other
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -58,13 +59,15 @@
                                    userid, netmusic_id, netmusic_name,
                                    netmusic_level, netmusic_need_day, netmusic_need_listen,
                                    `name`, cookie, `status`,
-                                   `enable`, other, enddate)
+                                   `enable`, enddate, webhook,
+                                   other)
         values (#{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{countrycode,jdbcType=VARCHAR},
                 #{userid,jdbcType=INTEGER}, #{netmusicId,jdbcType=VARCHAR}, #{netmusicName,jdbcType=VARCHAR},
                 #{netmusicLevel,jdbcType=VARCHAR}, #{netmusicNeedDay,jdbcType=VARCHAR},
                 #{netmusicNeedListen,jdbcType=VARCHAR},
                 #{name,jdbcType=VARCHAR}, #{cookie,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-                #{enable,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR}, #{enddate,jdbcType=TIMESTAMP})
+                #{enable,jdbcType=VARCHAR}, #{enddate,jdbcType=TIMESTAMP}, #{webhook,jdbcType=VARCHAR},
+                #{other,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.netmusic.model.AutoNetmusic"
             useGeneratedKeys="true">
@@ -109,11 +112,14 @@
             <if test="enable != null">
                 `enable`,
             </if>
-            <if test="other != null">
-                other,
-            </if>
             <if test="enddate != null">
                 enddate,
+            </if>
+            <if test="webhook != null">
+                webhook,
+            </if>
+            <if test="other != null">
+                other,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -156,11 +162,14 @@
             <if test="enable != null">
                 #{enable,jdbcType=VARCHAR},
             </if>
-            <if test="other != null">
-                #{other,jdbcType=VARCHAR},
-            </if>
             <if test="enddate != null">
                 #{enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="webhook != null">
+                #{webhook,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                #{other,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -206,11 +215,14 @@
             <if test="enable != null">
                 `enable` = #{enable,jdbcType=VARCHAR},
             </if>
-            <if test="other != null">
-                other = #{other,jdbcType=VARCHAR},
-            </if>
             <if test="enddate != null">
                 enddate = #{enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="webhook != null">
+                webhook = #{webhook,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                other = #{other,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -230,8 +242,9 @@
             cookie               = #{cookie,jdbcType=VARCHAR},
             `status`             = #{status,jdbcType=VARCHAR},
             `enable`             = #{enable,jdbcType=VARCHAR},
-            other                = #{other,jdbcType=VARCHAR},
-            enddate              = #{enddate,jdbcType=TIMESTAMP}
+            enddate              = #{enddate,jdbcType=TIMESTAMP},
+            webhook              = #{webhook,jdbcType=VARCHAR},
+            other                = #{other,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

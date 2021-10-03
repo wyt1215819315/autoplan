@@ -141,7 +141,7 @@ public class NetMusicTask {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getOther());
+            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getWebhook());
             msg.append("\n").append(s);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());

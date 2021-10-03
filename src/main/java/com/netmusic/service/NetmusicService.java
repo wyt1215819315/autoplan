@@ -95,7 +95,7 @@ public class NetmusicService {
     public Map<String, Object> checkForm(AutoNetmusic autoNetmusic, boolean skipCheckCookie) {
         Map<String, Object> map = new HashMap<>();
         String enable = autoNetmusic.getEnable();
-        String other = autoNetmusic.getOther();
+        String webhook = autoNetmusic.getWebhook();
         if (!skipCheckCookie) {
             String name = autoNetmusic.getName();
             String phone = autoNetmusic.getPhone();
@@ -113,8 +113,8 @@ public class NetmusicService {
         if (StringUtils.isBlank(enable) || !enable.equals("true") && !enable.equals("false")) {
             autoNetmusic.setEnable("true");
         }
-        if (StringUtils.isBlank(other)) {
-            autoNetmusic.setOther(null);
+        if (StringUtils.isBlank(webhook)) {
+            autoNetmusic.setWebhook(null);
         }
         map.put("flag", true);
         map.put("msg", "check complete");
@@ -270,7 +270,7 @@ public class NetmusicService {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getOther());
+            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getWebhook());
             msg.append("\n").append(s);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
