@@ -1,11 +1,13 @@
 package com.misec.utils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
 import lombok.Data;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -29,22 +31,16 @@ import java.util.Optional;
  * @since 2020/10/11 4:03
  */
 
-@Log4j2
+@Slf4j
 @Data
-public class HttpUtil {
-    /**
-     * 设置配置请求参数.
-     * 设置连接主机服务超时时间.
-     * 设置连接请求超时时间.
-     * 设置读取数据连接超时时间.
-     */
-    private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom().setConnectTimeout(5000)
+public class HttpUtils {
+    private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
+            .setConnectTimeout(5000)
             .setConnectionRequestTimeout(5000)
             .setSocketTimeout(10000)
             .build();
     private static Verify verify = Verify.getInstance();
-    private static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) "
-            + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54";
+    private static String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38";
     private static CloseableHttpClient httpClient = null;
     private static CloseableHttpResponse httpResponse = null;
 
@@ -56,13 +52,13 @@ public class HttpUtil {
         return doPost(url, requestBody, null);
     }
 
-    public static JsonObject doPost(String url, String requestBody, Map<String, String> headers) {
+    public static JsonObject doPost(String url, String requestBody, Map<String, String> headers, RequestConfig requestConfig) {
         httpClient = HttpClients.createDefault();
         JsonObject resultJson = null;
         // 创建httpPost远程连接实例
         HttpPost httpPost = new HttpPost(url);
         // 设置请求头
-        httpPost.setConfig(REQUEST_CONFIG);
+        httpPost.setConfig(requestConfig);
         /*
           addHeader：添加一个新的请求头字段。（一个请求头中允许有重名字段。）
           setHeader：设置一个请求头字段，有则覆盖，无则添加。
@@ -79,14 +75,11 @@ public class HttpUtil {
         httpPost.setHeader("Cookie", verify.getVerify());
 
         if (null != headers && !headers.isEmpty()) {
-            for (String key : headers.keySet()) {
-                httpPost.setHeader(key, headers.get(key));
-            }
+            headers.forEach(httpPost::setHeader);
         } else {
             httpPost.setHeader("Referer", "https://www.bilibili.com/");
         }
         // 封装post请求参数
-
         StringEntity stringEntity = new StringEntity(requestBody, "utf-8");
 
         httpPost.setEntity(stringEntity);
@@ -98,25 +91,22 @@ public class HttpUtil {
         } catch (Exception e) {
             log.error("", e);
         } finally {
-            httpResource(httpClient, httpResponse);
+            closeResource(httpClient, httpResponse);
         }
         return resultJson;
     }
 
 
-    private static NameValuePair getNameValuePair(Map.Entry<String, JsonElement> entry) {
-        return new BasicNameValuePair(entry.getKey(), Optional.ofNullable(entry.getValue()).map(Object::toString).orElse(null));
+    public static JsonObject doPost(String url, String requestBody, Map<String, String> headers) {
+        return doPost(url, requestBody, headers, REQUEST_CONFIG);
     }
 
-    public static NameValuePair[] getPairList(JsonObject pJson) {
-        return pJson.entrySet().parallelStream().map(HttpUtil::getNameValuePair).toArray(NameValuePair[]::new);
-    }
 
     public static JsonObject doGet(String url) {
         return doGet(url, new JsonObject());
     }
 
-    public static JsonObject doGet(String url, JsonObject pJson) {
+    public static JsonObject doGet(String url, JsonObject pJson, RequestConfig requestConfig) {
         // 通过址默认配置创建一个httpClient实例
         httpClient = HttpClients.createDefault();
         JsonObject resultJson = null;
@@ -131,65 +121,64 @@ public class HttpUtil {
                 httpGet.setHeader(pair.getName(), pair.getValue());
             }
             // 为httpGet实例设置配置
-            httpGet.setConfig(REQUEST_CONFIG);
+            httpGet.setConfig(requestConfig);
             // 执行get请求得到返回对象
             httpResponse = httpClient.execute(httpGet);
             resultJson = processResult(httpResponse);
         } catch (Exception e) {
-            log.error(e);
+            log.error("{}", e.getMessage());
         } finally {
-            // 关闭资源
-            httpResource(httpClient, httpResponse);
+            closeResource(httpClient, httpResponse);
         }
-        return resultJson;
 
+        return resultJson;
     }
 
-    public static JsonObject processResult(CloseableHttpResponse httpResponse) throws IOException {
+    public static JsonObject doGet(String url, JsonObject pJson) {
+        return doGet(url, pJson, REQUEST_CONFIG);
+    }
+
+    public static JsonObject processResult(CloseableHttpResponse httpResponse) {
         JsonObject resultJson = null;
+
         if (httpResponse != null) {
             int responseStatusCode = httpResponse.getStatusLine().getStatusCode();
             // 从响应对象中获取响应内容
             // 通过返回对象获取返回数据
             HttpEntity entity = httpResponse.getEntity();
-            // 通过EntityUtils中的toString方法将结果转换为字符串
-            String result = EntityUtils.toString(entity);
+
+            String result = null;
             try {
-                resultJson = new JsonParser().parse(result).getAsJsonObject();
+                // 通过EntityUtils中的toString方法将结果转换为字符串
+                result = EntityUtils.toString(entity);
+                resultJson = new Gson().fromJson(result, JsonObject.class);
             } catch (Exception e) {
-                log.debug("HttpUtil parse json error: {}", result.substring(0, 100));
-            }
-            switch (responseStatusCode) {
-                case 200:
-                    break;
-                case 412:
-                    log.debug("{}", httpResponse.getStatusLine());
-                    break;
-                default:
+                log.debug("HttpUtils parse json error: {}", result.substring(0, 100));
             }
         }
         return resultJson;
     }
 
+    private static NameValuePair getNameValuePair(Map.Entry<String, JsonElement> entry) {
+        return new BasicNameValuePair(entry.getKey(), Optional.ofNullable(entry.getValue()).map(Object::toString).orElse(null));
+    }
 
-    private static void httpResource(CloseableHttpClient httpClient, CloseableHttpResponse response) {
-        if (null != response) {
-            try {
-                response.close();
-            } catch (IOException e) {
-                log.error(e);
-            }
-        }
-        if (null != httpClient) {
-            try {
-                httpClient.close();
-            } catch (IOException e) {
-                log.error(e);
-            }
+    public static NameValuePair[] getPairList(JsonObject pJson) {
+        return pJson.entrySet().parallelStream().map(HttpUtils::getNameValuePair).toArray(NameValuePair[]::new);
+    }
+
+    private static void closeResource(CloseableHttpClient httpClient, CloseableHttpResponse response) {
+        try {
+            httpClient.close();
+            response.close();
+        } catch (IOException e) {
+            log.info("释放资源失败", e);
         }
     }
 
     public static void setUserAgent(String userAgent) {
-        HttpUtil.userAgent = userAgent;
+        if (StringUtils.isNotBlank(userAgent)) {
+            HttpUtils.userAgent = userAgent;
+        }
     }
 }

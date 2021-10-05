@@ -12,7 +12,10 @@ import com.netmusic.service.NetmusicService;
 import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.log.OldwuLog;
+import com.push.PushUtil;
 import com.push.ServerPush;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -107,8 +110,7 @@ public class MiHuYouTask {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoMihayou.getWebhook());
-            msg.append("\n").append(s);
+            PushUtil.doPush(msg.toString(), autoMihayou.getWebhook(), userid);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "mihuyou", autoMihayou1.getStatus(), userid, new Date(), msg.toString());
             logDao.insertSelective(netlog);

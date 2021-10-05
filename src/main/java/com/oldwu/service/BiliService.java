@@ -8,7 +8,6 @@ import com.misec.login.Verify;
 import com.misec.pojo.userinfobean.Data;
 import com.misec.task.TaskInfoHolder;
 import com.misec.utils.HelpUtil;
-import com.misec.utils.HttpUtil;
 import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
@@ -156,13 +155,13 @@ public class BiliService {
         Map<String, String> map = new HashMap<>();
         String requestPram = "";
         Verify.verifyInit(autoBilibili.getDedeuserid(), autoBilibili.getSessdata(), autoBilibili.getBiliJct());
-        JsonObject userJson = HttpUtil.doGet(ApiList.LOGIN + requestPram);
+        JsonObject userJson = com.misec.utils.HttpUtils.doGet(ApiList.LOGIN + requestPram);
         if (userJson == null) {
             map.put("flag", "false");
             map.put("msg", "用户信息请求失败，如果是412错误，请在config.json中更换UA，412问题仅影响用户信息确认，不影响任务");
             return map;
         } else {
-            userJson = HttpUtil.doGet(ApiList.LOGIN);
+            userJson = com.misec.utils.HttpUtils.doGet(ApiList.LOGIN);
             //判断Cookies是否有效
             if (userJson.get(STATUS_CODE_STR).getAsInt() == 0
                     && userJson.get("data").getAsJsonObject().get("isLogin").getAsBoolean()) {
@@ -306,7 +305,7 @@ public class BiliService {
         }
         String webhook = autoBilibili.getWebhook();
         if (StringUtils.isBlank(webhook)) {
-            autoBilibili.setWebhook(null);
+            autoBilibili.setWebhook("");
         }
         String matchEnable = autoBilibili.getMatchEnable();
         if (StringUtils.isBlank(matchEnable) || !matchEnable.equals("true") && !matchEnable.equals("false")) {

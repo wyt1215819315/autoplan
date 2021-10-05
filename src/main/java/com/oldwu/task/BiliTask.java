@@ -10,6 +10,7 @@ import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.BiliUser;
 import com.oldwu.log.OldwuLog;
 import com.oldwu.service.BiliService;
+import com.push.PushUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -93,11 +94,13 @@ public class BiliTask {
             strings[0] = autoBilibili.getDedeuserid();
             strings[1] = autoBilibili.getSessdata();
             strings[2] = autoBilibili.getBiliJct();
+            String webhook = autoBilibili.getWebhook();
             //防止一个任务出错影响整体
             try {
-                BiliMain.run(strings, auto_id, userid);
+                BiliMain.run(strings, auto_id);
             }catch (Exception e){
                 OldwuLog.error("严重！！任务中断！！：：" + e.getMessage());
+                PushUtil.doPush(OldwuLog.getLog(), webhook, userid);
                 System.err.println(e.getMessage());
                 biliUser.setStatus("-1");
                 biliUser.setEnddate(new Date());
@@ -105,6 +108,8 @@ public class BiliTask {
                 OldwuLog.clear();
                 continue;
             }
+            //执行推送任务
+            PushUtil.doPush(OldwuLog.getLog(), autoBilibili.getWebhook(), userid);
             //写入至数据库
             AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insertSelective(bilibili);

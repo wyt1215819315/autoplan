@@ -2,18 +2,13 @@ package com.misec.task;
 
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
-import com.misec.config.Config;
-import com.misec.login.ServerVerify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.misec.utils.SleepTime;
 import com.oldwu.log.OldwuLog;
-import com.push.ServerPush;
 import lombok.extern.log4j.Log4j2;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static com.misec.task.TaskInfoHolder.STATUS_CODE_STR;
@@ -51,7 +46,7 @@ public class DailyTask {
      * @author @srcrs
      */
     public static JsonObject getDailyTaskStatus() {
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.REWARD);
+        JsonObject jsonObject = HttpUtils.doGet(ApiList.REWARD);
         int responseCode = jsonObject.get(STATUS_CODE_STR).getAsInt();
         if (responseCode == 0) {
             log.info("请求本日任务完成状态成功");
@@ -60,7 +55,7 @@ public class DailyTask {
         } else {
             log.debug(jsonObject.get("message").getAsString());
             OldwuLog.error(jsonObject.get("message").getAsString());
-            return HttpUtil.doGet(ApiList.REWARD).get("data").getAsJsonObject();
+            return HttpUtils.doGet(ApiList.REWARD).get("data").getAsJsonObject();
             //偶发性请求失败，再请求一次。
         }
     }
@@ -81,8 +76,6 @@ public class DailyTask {
         } catch (Exception e) {
             OldwuLog.error(e.getMessage());
             log.debug(e);
-        } finally {
-            ServerPush.doServerPush(OldwuLog.getLog(), ServerVerify.getFtKey());
         }
     }
 }

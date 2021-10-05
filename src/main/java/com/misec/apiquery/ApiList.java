@@ -12,8 +12,8 @@ public class ApiList {
      * 直播签到.
      */
     public static final String LIVE_CHECKING = "https://api.live.bilibili.com/xlive/web-ucenter/v1/sign/DoSign";
-    public static final String SERVER_PUSH = "https://sc.ftqq.com/";
     public static final String PUSH_PLUS = "https://www.pushplus.plus/send";
+    public static final String SERVER_PUSH = "https://sc.ftqq.com/";
     public static final String SERVER_PUSH_V2 = "https://sctapi.ftqq.com/";
     public static final String SERVER_PUSH_TELEGRAM = "https://api.telegram.org/bot";
     public static final String LOGIN = "https://api.bilibili.com/x/web-interface/nav";
@@ -24,6 +24,8 @@ public class ApiList {
     public static final String GET_REGION_RANKING = "https://api.bilibili.com/x/web-interface/ranking/region";
     public static final String REWARD = "https://api.bilibili.com/x/member/web/exp/reward";
     public static final String WECHAT_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=";
+    public static final String WECOM_APP_PUSH_GET_TOKEN = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+    public static final String WECOM_APP_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/message/send";
     /**
      * 查询获取已获取的投币经验.
      */
@@ -77,5 +79,5 @@ public class ApiList {
     public static final String QUERY_QUESTIONS = "https://api.bilibili.com/x/esports/guess/collection/question";
 
     public static final String QUERY_MATCH_INFO = "https://api.bilibili.com/x/esports/guess/collection/statis";
-    public static final String DO_ADD = "https://api.bilibili.com/x/esports/guess/add";
+    public static final String DO_MATCH_ADD = "https://api.bilibili.com/x/esports/guess/add";
 }

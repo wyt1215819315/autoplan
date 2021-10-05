@@ -11,7 +11,7 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.util.HttpUtils;
-import com.push.ServerPush;
+import com.push.PushUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,11 +224,11 @@ public class MihayouService {
                     if ((boolean) cookieToken.get("flag")) {
                         autoMihayou.setOtherKey(login_ticket);
                         autoMihayou.setStoken((String) cookieToken.get("stoken"));
-                    }else {
+                    } else {
                         map.put("flag", false);
                         map.put("msg", "login_ticket校验失败：" + cookieToken.get("msg"));
                     }
-                }else {
+                } else {
                     map.put("flag", false);
                     map.put("msg", "没有发现login_ticket字段！");
                 }
@@ -238,10 +238,10 @@ public class MihayouService {
             autoMihayou.setEnable("true");
         }
         if (StringUtils.isBlank(webhook)) {
-            autoMihayou.setWebhook(null);
+            autoMihayou.setWebhook("");
         }
         //返回ltuid和token
-        if (map.containsKey("flag") && !(boolean)map.get("flag")){
+        if (map.containsKey("flag") && !(boolean) map.get("flag")) {
             return map;
         }
         map.put("flag", true);
@@ -303,9 +303,9 @@ public class MihayouService {
             return map;
         }
         Map<String, Object> formResult = checkForm(autoMihayou1, true);
-        if (!(boolean) formResult.get("flag")){
-            map.put("code",201);
-            map.put("msg",formResult.get("msg"));
+        if (!(boolean) formResult.get("flag")) {
+            map.put("code", 201);
+            map.put("msg", formResult.get("msg"));
             return map;
         }
         int i = mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
@@ -372,8 +372,7 @@ public class MihayouService {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoMihayou.getWebhook());
-            msg.append("\n").append(s);
+            PushUtil.doPush(msg.toString(), autoMihayou.getWebhook(), userId);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "mihuyou", autoMihayou1.getStatus(), userId, new Date(), msg.toString());
             autoLogDao.insertSelective(netlog);

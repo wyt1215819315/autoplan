@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <title>生成webhook json</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <th:block th:include="include :: static"/>
+    <style type="text/css">
+
+        .layui-form-label {
+            width: 200px;
+        }
+
+        .layui-input-block {
+            margin-left: 230px;
+        }
+    </style>
+</head>
+<body style="padding-top: 0;margin: 10px">
+<ul class="layui-nav" th:include="include::header"></ul>
+
+<div class="main-container">
+
+    <div class="main-container">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>生成webhook json字符串</legend>
+        </fieldset>
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">推送类型</label>
+                <div class="layui-input-block">
+                    <select class="layui-input" id="webhook_type" lay-filter="webhook_type" name="webhook_type">
+                        <option selected value="dingtalk">钉钉</option>
+                        <option value="serverchan">Server酱</option>
+                        <option value="telegram">Telegram Bot</option>
+                        <option value="pushplus">PUSH PLUS</option>
+                        <option value="wechatcom">企业微信</option>
+                    </select>
+                </div>
+            </div>
+            <div id="dingtalk" style="display: block">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">钉钉推送方式</label>
+                    <div class="layui-input-block">
+                        <select class="layui-input" id="dingtalk_push_type" lay-filter="dingtalk_push_type"
+                                name="dingtalk_push_type">
+                            <option selected value="primary">关键字</option>
+                            <option value="secret">加签</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">钉钉推送地址</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="dingtalk_push_url"
+                               lay-verify="dingtalk_push_url"
+                               name="dingtalk_push_url" placeholder="钉钉推送地址"
+                               type="text">
+                    </div>
+                </div>
+                <div id="dingtalk_secret" style="display: none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">钉钉加签secret</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" id="dingtalk_push_secret"
+                                   lay-verify="dingtalk_push_secret"
+                                   name="dingtalk_push_secret" placeholder="钉钉加签secret"
+                                   type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="serverchan" style="display: none">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Server酱版本</label>
+                    <div class="layui-input-block">
+                        <select class="layui-input" id="serverchan_push_type" lay-filter="serverchan_push_type"
+                                name="serverchan_push_type">
+                            <option value="normal">Server酱老版本（SCU 开头的）</option>
+                            <option selected value="turbo">Server酱Turbo版本（SCT 开头的）</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Server酱推送key</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="serverchan_push_key"
+                               lay-verify="serverchan_push_key"
+                               name="serverchan_push_key" placeholder="Server酱推送key"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="telegram" style="display: none">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否开启 TGbot API 反代</label>
+                    <div class="layui-input-block">
+                        <select class="layui-input" id="telegram_push_type" lay-filter="telegram_push_type"
+                                name="telegram_push_type">
+                            <option value="true">是</option>
+                            <option selected value="false">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">TG 推送 bot_token,若开启反代，需填写完整反代 url</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="telegram_push_url"
+                               lay-verify="telegram_push_url"
+                               name="telegram_push_url" placeholder="TG 推送 bot_token,若开启反代，需填写完整反代 url"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">TG 推送的用户/群组/频道 ID</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="telegram_push_id"
+                               lay-verify="telegram_push_id"
+                               name="telegram_push_id" placeholder="TG 推送的用户/群组/频道 ID"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="pushplus" style="display: none">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">push plus++推送的token</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="pushplus_push_token"
+                               lay-verify="pushplus_push_token"
+                               name="pushplus_push_token" placeholder="push plus++推送的token"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="wechatcom" style="display: none">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业微信，群消息非应用消息</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_token"
+                               lay-verify="wechatcom_push_token"
+                               name="wechatcom_push_token" placeholder="企业微信，群消息非应用消息"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业 id</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_id"
+                               lay-verify="wechatcom_push_id"
+                               name="wechatcom_push_id" placeholder="企业 id"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">应用的凭证密钥</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_secret"
+                               lay-verify="wechatcom_push_secret"
+                               name="wechatcom_push_secret" placeholder="应用的凭证密钥"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业应用的 id，整型</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_agentid"
+                               lay-verify="wechatcom_push_agentid"
+                               name="wechatcom_push_agentid" placeholder="企业应用的 id，整型"
+                               type="number">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">指定接收消息的成员</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_user"
+                               lay-verify="wechatcom_push_user"
+                               name="wechatcom_push_user" placeholder="指定接收消息的成员"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">缩略图的 media_id(为空发送文本消息)</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="wechatcom_push_mediaid"
+                               lay-verify="wechatcom_push_mediaid"
+                               name="wechatcom_push_mediaid" placeholder="缩略图的 media_id"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" id="out" style="display: none">
+                <label class="layui-form-label">输出结果</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="result" name="desc"></textarea>
+                </div>
+            </div>
+            <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
+                    lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                输出结果
+            </button>
+            <button class="layui-input-block layui-btn layui-btn-normal" id="copy" lay-filter="copy"
+                    type="button">
+                <i class="layui-icon layui-icon-note"></i>
+                复制输出结果
+            </button>
+            <a class="layui-btn layui-btn-normal layui-btn-sm"
+               href="https://blog.oldwu.top/index.php/archives/84/#toc_12" target="_blank">
+                更多帮助请查看
+            </a>
+        </form>
+    </div>
+
+</div>
+<script> let rootPath = "[[${rootPath}]]";</script>
+<script th:include="include::layelement"></script>
+<script>
+    layui.use(['form', 'jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let MODULE_PATH = rootPath + "/api/user/bili";
+
+        //推送方式
+        form.on('select(webhook_type)', function (data) {
+            if (data.value === 'dingtalk') {
+                $("#dingtalk").css("display", "block");
+                $("#serverchan").css("display", "none");
+                $("#telegram").css("display", "none");
+                $("#pushplus").css("display", "none");
+                $("#wechatcom").css("display", "none");
+            } else if (data.value === 'serverchan') {
+                $("#serverchan").css("display", "block");
+                $("#dingtalk").css("display", "none");
+                $("#telegram").css("display", "none");
+                $("#pushplus").css("display", "none");
+                $("#wechatcom").css("display", "none");
+            } else if (data.value === 'telegram') {
+                $("#telegram").css("display", "block");
+                $("#serverchan").css("display", "none");
+                $("#dingtalk").css("display", "none");
+                $("#pushplus").css("display", "none");
+                $("#wechatcom").css("display", "none");
+            } else if (data.value === 'pushplus') {
+                $("#pushplus").css("display", "block");
+                $("#telegram").css("display", "none");
+                $("#serverchan").css("display", "none");
+                $("#dingtalk").css("display", "none");
+                $("#wechatcom").css("display", "none");
+            } else if (data.value === 'wechatcom') {
+                $("#wechatcom").css("display", "block");
+                $("#pushplus").css("display", "none");
+                $("#telegram").css("display", "none");
+                $("#serverchan").css("display", "none");
+                $("#dingtalk").css("display", "none");
+            }
+            form.render('select');
+        });
+        //钉钉推送
+        form.on('select(dingtalk_push_type)', function (data) {
+            if (data.value === 'primary') {
+                $("#dingtalk_secret").css("display", "none");
+            } else if (data.value === 'secret') {
+                $("#dingtalk_secret").css("display", "block");
+            }
+            form.render('select');
+        });
+        //生成
+        form.on('submit(user-save)', function (data) {
+            // var webhook_type = $("#webhook_type").val();
+            var obj = {};
+            if (data.field.webhook_type === 'dingtalk') {
+                obj.DING_TALK_URL = data.field.dingtalk_push_url;
+                if (data.field.dingtalk_push_type === 'secret') {
+                    obj.DING_TALK_SECRET = data.field.dingtalk_push_secret;
+                }
+            } else if (data.field.webhook_type === 'serverchan') {
+                if (data.field.serverchan_push_type === 'normal') {
+                    obj.SC_KEY = data.field.serverchan_push_key;
+                } else if (data.field.serverchan_push_type === 'turbo') {
+                    obj.SCT_KEY = data.field.serverchan_push_key;
+                }
+            } else if (data.field.webhook_type === 'telegram') {
+                obj.TG_USE_CUSTOM_URL = data.field.telegram_push_type;
+                obj.TG_BOT_TOKEN = data.field.telegram_push_url;
+                obj.TG_USER_ID = data.field.telegram_push_id;
+            } else if (data.field.webhook_type === 'pushplus') {
+                obj.PUSH_PLUS_TOKEN = data.field.pushplus_push_token;
+            } else if (data.field.webhook_type === 'wechatcom') {
+                obj.WE_COM_TOKEN = data.field.wechatcom_push_token;
+                obj.WE_COM_APP_CORPID = data.field.wechatcom_push_id;
+                obj.WE_COM_APP_CORP_SECRET = data.field.wechatcom_push_secret;
+                obj.WE_COM_APP_AGENT_ID = data.field.wechatcom_push_agentid;
+                obj.WE_COM_APP_TO_USER = data.field.wechatcom_push_user;
+                obj.WE_COM_APP_MEDIA_ID = data.field.wechatcom_push_mediaid;
+            }
+            var out = JSON.stringify(obj);
+            $("#out").css("display", "block");
+            $("#result").html(out);
+            return false;
+        });
+    })
+</script>
+<script>
+    var clipboard = new ClipboardJS('#copy', {
+        text: function (trigger) {
+            return $("#result").html();
+        }
+    });
+    clipboard.on('success', function (e) {
+        layer.msg("复制成功！");
+        e.clearSelection();
+        return false;
+        //复制成功
+    });
+    clipboard.on('error', function (e) {
+        layer.msg("复制失败，请手动复制！", {icon: 2});
+        //复制失败
+        return false;
+    });
+</script>
+<script th:include="include::layelement"></script>
+</body>
+</html>

@@ -1,21 +1,12 @@
 package com.oldwu.task;
 
-import com.misec.BiliMain;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
 import com.netmusic.util.NeteaseMusicUtil;
-import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
-import com.oldwu.dao.BiliUserDao;
-import com.oldwu.entity.AutoBilibili;
 import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
-import com.oldwu.log.OldwuLog;
-import com.oldwu.service.BiliService;
-import com.push.ServerPush;
-import org.apache.commons.lang3.StringUtils;
+import com.push.PushUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +23,7 @@ public class NetMusicTask {
     private static NetmusicService netmusicService;
 
     @Autowired
-    public void getNetService(NetmusicService service){
+    public void getNetService(NetmusicService service) {
         NetMusicTask.netmusicService = service;
     }
 
@@ -49,7 +40,7 @@ public class NetMusicTask {
     /**
      * 用于每日0点重置状态
      */
-    public void resetStatus(){
+    public void resetStatus() {
         //重置自动任务的标识
         List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
@@ -64,16 +55,16 @@ public class NetMusicTask {
     /**
      * 刷新用户的等级等信息
      */
-    public void refreshUserInfo(){
+    public void refreshUserInfo() {
         //获取数据库中所有用户
         List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
-            Map<String,String> infos = new HashMap<>();
+            Map<String, String> infos = new HashMap<>();
             infos.put("phone", autoNetmusic.getPhone());
             infos.put("password", autoNetmusic.getPassword());
             infos.put("countrycode", autoNetmusic.getCountrycode());
             Map<String, String> login = NeteaseMusicUtil.login(infos);
-            if (login.get("flag").equals("false")){
+            if (login.get("flag").equals("false")) {
                 continue;
             }
             autoNetmusic.setNetmusicName(login.get("nickname"));
@@ -97,27 +88,27 @@ public class NetMusicTask {
             Integer userid = autoNetmusic.getUserid();
             //任务未开启，下一个
             if (!Boolean.parseBoolean(autoNetmusic.getEnable())) {
-                AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId,"0",new Date());
+                AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "0", new Date());
                 netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
                 continue;
             }
             //更新任务状态
-            AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId,"1",null);
+            AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "1", null);
             netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
             //执行任务
             String phone = autoNetmusic.getPhone();
             String password = autoNetmusic.getPassword();
             String countrycode = autoNetmusic.getCountrycode();
-            Map<String,String> infos = new HashMap<>();
-            infos.put("phone",phone);
-            infos.put("password",password);
-            infos.put("countrycode",countrycode);
+            Map<String, String> infos = new HashMap<>();
+            infos.put("phone", phone);
+            infos.put("password", password);
+            infos.put("countrycode", countrycode);
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i+1).append("次任务");
+                msg.append("\n开始第").append(i + 1).append("次任务");
                 Map<String, Object> run = NeteaseMusicUtil.run(infos);
-                if (!(boolean)run.get("flag")){
-                    if (i != reconnect-1){
+                if (!(boolean) run.get("flag")) {
+                    if (i != reconnect - 1) {
                         msg.append(run.get("msg"));
                         msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
                         continue;
@@ -125,13 +116,13 @@ public class NetMusicTask {
                     autoNetmusic1.setStatus("500");
                     break;
                 }
-                if (run.get("complete")!=null && (boolean)run.get("complete")){
+                if (run.get("complete") != null && (boolean) run.get("complete")) {
                     //任务成功完成
                     msg.append("\n").append(run.get("msg")).append("\n[SUCCESS]任务全部正常完成，进程退出");
                     autoNetmusic1.setStatus("200");
                     break;
-                }else {
-                    if (i == reconnect -1){
+                } else {
+                    if (i == reconnect - 1) {
                         //任务重试失败
                         msg.append("\n").append(run.get("msg")).append("[!!FAILED!!]").append("任务异常！请查看日志！");
                         autoNetmusic1.setStatus("-1");
@@ -141,8 +132,7 @@ public class NetMusicTask {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getWebhook());
-            msg.append("\n").append(s);
+            PushUtil.doPush(msg.toString(), autoNetmusic.getWebhook(), userid);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
             logDao.insertSelective(netlog);

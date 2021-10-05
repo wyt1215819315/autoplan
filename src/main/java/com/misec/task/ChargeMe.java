@@ -6,7 +6,7 @@ import com.misec.apiquery.OftenApi;
 import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
 import com.misec.utils.HelpUtil;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 
@@ -71,7 +71,7 @@ public class ChargeMe implements Task {
         if (userInfo != null) {
             couponBalance = userInfo.getWallet().getCoupon_balance();
         } else {
-            JsonObject queryJson = HttpUtil.doGet(ApiList.CHARGE_QUERY + "?mid=" + userId);
+            JsonObject queryJson = HttpUtils.doGet(ApiList.CHARGE_QUERY + "?mid=" + userId);
             couponBalance = queryJson.getAsJsonObject("data").getAsJsonObject("bp_wallet").get("coupon_balance").getAsDouble();
         }
 
@@ -86,7 +86,7 @@ public class ChargeMe implements Task {
                     + "&oid=" + userId
                     + "&csrf=" + Verify.getInstance().getBiliJct();
 
-            JsonObject jsonObject = HttpUtil.doPost(ApiList.AUTO_CHARGE, requestBody);
+            JsonObject jsonObject = HttpUtils.doPost(ApiList.AUTO_CHARGE, requestBody);
 
             int resultCode = jsonObject.get(STATUS_CODE_STR).getAsInt();
             if (resultCode == 0) {
@@ -117,7 +117,7 @@ public class ChargeMe implements Task {
         String requestBody = "order_id=" + token
                 + "&message=" + "期待up主的新作品！"
                 + "&csrf=" + Verify.getInstance().getBiliJct();
-        JsonObject jsonObject = HttpUtil.doPost(ApiList.CHARGE_COMMENT, requestBody);
+        JsonObject jsonObject = HttpUtils.doPost(ApiList.CHARGE_COMMENT, requestBody);
 
         if (jsonObject.get(STATUS_CODE_STR).getAsInt() == 0) {
             OldwuLog.log("充电留言成功");

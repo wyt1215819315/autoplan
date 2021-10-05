@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 
 import java.util.Random;
 
@@ -52,7 +52,7 @@ public class VideoWatch implements Task {
         int playedTime = new Random().nextInt(90) + 1;
         String postBody = "bvid=" + bvid
                 + "&played_time=" + playedTime;
-        JsonObject resultJson = HttpUtil.doPost(ApiList.VIDEO_HEARTBEAT, postBody);
+        JsonObject resultJson = HttpUtils.doPost(ApiList.VIDEO_HEARTBEAT, postBody);
         String videoTitle = OftenApi.getVideoTitle(bvid);
         int responseCode = resultJson.get(STATUS_CODE_STR).getAsInt();
         if (responseCode == 0) {
@@ -69,7 +69,7 @@ public class VideoWatch implements Task {
      */
     public void dailyAvShare(String bvid) {
         String requestBody = "bvid=" + bvid + "&csrf=" + Verify.getInstance().getBiliJct();
-        JsonObject result = HttpUtil.doPost((ApiList.AV_SHARE), requestBody);
+        JsonObject result = HttpUtils.doPost((ApiList.AV_SHARE), requestBody);
 
         String videoTitle = OftenApi.getVideoTitle(bvid);
 

@@ -1,15 +1,11 @@
 package com.push.model;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author itning
  * @since 2021/3/22 17:25
  */
-@Log4j2
 @Getter
 public class RetryContext {
 
@@ -33,32 +29,10 @@ public class RetryContext {
      */
     private final long retryInterval;
 
-    /**
-     * 重试计数器
-     */
-    private int retryCount;
-
     public RetryContext(String url, String body, int numberOfRetries, long retryInterval) {
         this.url = url;
         this.body = body;
         this.numberOfRetries = numberOfRetries;
         this.retryInterval = retryInterval;
-    }
-
-    public boolean next() {
-        if (numberOfRetries <= 0) {
-            return false;
-        }
-        if (++retryCount > numberOfRetries) {
-            return false;
-        }
-        if (retryInterval > 0) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(retryInterval);
-            } catch (InterruptedException e) {
-                log.debug(e);
-            }
-        }
-        return true;
     }
 }

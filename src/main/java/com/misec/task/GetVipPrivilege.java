@@ -3,7 +3,7 @@ package com.misec.task;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.oldwu.log.OldwuLog;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -54,7 +54,7 @@ public class GetVipPrivilege implements Task {
             log.info("开始领取大会员漫画权益");
             String requestBody = "{\"reason_id\":" + reasonId + "}";
             //注意参数构造格式为json，不知道需不需要重载下面的Post函数改请求头
-            JsonObject jsonObject = HttpUtil.doPost(ApiList.MANGA_GET_VIP_REWARD, requestBody);
+            JsonObject jsonObject = HttpUtils.doPost(ApiList.MANGA_GET_VIP_REWARD, requestBody);
             if (jsonObject.get(STATUS_CODE_STR).getAsInt() == 0) {
                 /*
                   @happy888888:好像也可以getAsString或,getAsShort

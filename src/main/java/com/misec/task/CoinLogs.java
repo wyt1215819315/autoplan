@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 
@@ -16,7 +16,7 @@ public class CoinLogs implements Task {
     @Override
     public void run() {
 
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.GET_COIN_LOG);
+        JsonObject jsonObject = HttpUtils.doGet(ApiList.GET_COIN_LOG);
 
         if (jsonObject.get("code").getAsInt() == 0) {
             JsonObject data = jsonObject.getAsJsonObject("data");

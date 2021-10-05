@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="text/html;charset=UTF-8"/>
-    <title>修改网易云任务</title>
+    <title>修改个人设置</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <th:block th:include="include :: static"/>
     <style type="text/css">
@@ -22,35 +22,25 @@
 
     <div class="main-container">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>修改网易云自动任务</legend>
+            <legend>个人配置修改</legend>
         </fieldset>
         <form class="layui-form">
-            <input type="hidden" name="id" th:value="${netmusic.getId()}">
             <div class="layui-form-item">
-                <label class="layui-form-label">任务名</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="name" name="name"
-                           placeholder="输入任务名"
-                           th:value="${netmusic.getName()}"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">是否开启任务</label>
-                <div class="layui-input-block">
-                    <select class="layui-input" name="enable">
-                        <option value="false" th:selected="${netmusic.getEnable().equals('false')}">关</option>
-                        <option value="true" th:selected="${netmusic.getEnable().equals('true')}">开</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label"><a target="_blank" href="/webhook-generate">任务完成推送WebHook</a></label>
+                <label class="layui-form-label">配置全局webhook</label>
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" lay-verify="webhook" name="webhook"
-                           placeholder="输入WebHook地址，json字符串，请点击标题文字进入生成"
-                           type="text" th:value="${netmusic.getWebhook()}">
+                           placeholder="当任务单体webhook为空时，使用全局webhook"
+                           th:value="${info.getWebhook()}"
+                           type="text">
                 </div>
+                <div class="layui-input-block">
+                    <a class="layui-btn layui-btn-normal layui-btn-sm" href="webhook-generate" target="_blank">点击生成webhook json</a>
+                </div>
+                <button class="layui-input-block layui-btn layui-btn-sm" lay-filter="check-webhook"
+                        lay-submit="" type="button">
+                    <i class="layui-icon layui-icon-ok"></i>
+                    发送测试消息检查webhook
+                </button>
             </div>
             <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
                     lay-submit="" type="submit">
@@ -66,10 +56,39 @@
     layui.use(['form', 'jquery'], function () {
         let form = layui.form;
         let $ = layui.jquery;
-        let MODULE_PATH = rootPath + "/api/user/netmusic";
+        let MODULE_PATH = rootPath + "/api/user/userinfo";
 
+        //校验webhook
+        form.on('submit(check-webhook)', function (data) {
+            $.ajax({
+                url: rootPath + '/api/user/checkwebhook',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json;charset=UTF-8',
+                type: 'post',
+                beforeSend: function () {
+                    this.layerIndex = layer.load(0, {
+                        shade: [0.5, '#393D49']
+                    });
+                },
+                success: function (result) {
+                    if (result.code == 200) {
+                        layer.msg(result.msg, {icon: 1, time: 2000});
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 5000});
+                    }
+                },
+                error: function () {
+                    layer.msg("连接服务器失败！", {icon: 2, time: 2000});
+                },
+                complete: function () {
+                    layer.close(this.layerIndex);
+                }
+            })
+            return false;
+        });
 
-        //保存
+        //提交
         form.on('submit(user-save)', function (data) {
             $.ajax({
                 url: MODULE_PATH + '/edit',
@@ -88,11 +107,14 @@
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                         });
                     } else {
-                        layer.msg(result.msg, {icon: 2, time: 8000});
+                        layer.msg(result.msg, {icon: 2, time: 5000});
                     }
                 },
                 error: function () {
                     layer.msg("连接服务器失败！", {icon: 2, time: 2000});
+                },
+                complete: function () {
+                    layer.close(this.layerIndex);
                 }
             })
             return false;

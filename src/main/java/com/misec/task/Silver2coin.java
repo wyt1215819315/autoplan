@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 
@@ -24,7 +24,7 @@ public class Silver2coin implements Task {
 
     @Override
     public void run() {
-        JsonObject queryStatus = HttpUtil.doGet(ApiList.GET_SILVER_2_COIN_STATUS);
+        JsonObject queryStatus = HttpUtils.doGet(ApiList.GET_SILVER_2_COIN_STATUS);
         if (queryStatus == null || Objects.isNull(queryStatus.get("data"))) {
             log.error("获取银瓜子状态失败");
             OldwuLog.error("获取银瓜子状态失败");
@@ -41,7 +41,7 @@ public class Silver2coin implements Task {
         } else {
             String requestBody = "csrf_token=" + Verify.getInstance().getBiliJct()
                     + "&csrf=" + Verify.getInstance().getBiliJct();
-            JsonObject resultJson = HttpUtil.doPost(ApiList.SILVER_2_COIN, requestBody);
+            JsonObject resultJson = HttpUtils.doPost(ApiList.SILVER_2_COIN, requestBody);
 
             int responseCode = resultJson.get(STATUS_CODE_STR).getAsInt();
             if (responseCode == 0) {

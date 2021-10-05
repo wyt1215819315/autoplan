@@ -33,6 +33,10 @@ public class PageController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/webhook-generate")
+    public String webhookGenerate(){
+        return "webhook-generate";
+    }
 
     @GetMapping("/netmusic/index")
     public String netmusicindex(Model model){

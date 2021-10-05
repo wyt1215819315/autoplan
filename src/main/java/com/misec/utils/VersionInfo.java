@@ -29,7 +29,7 @@ public class VersionInfo {
 
     public static void printVersionInfo() {
         initInfo();
-        JsonObject jsonObject = HttpUtil.doGet("https://api.github.com/repos/JunzhouLiu/BILIBILI-HELPER-PRE/releases/latest");
+        JsonObject jsonObject = HttpUtils.doGet("https://api.github.com/repos/JunzhouLiu/BILIBILI-HELPER-PRE/releases/latest");
         log.info("-----版本信息-----");
         log.info("当前版本: {}", releaseVersion);
         try {

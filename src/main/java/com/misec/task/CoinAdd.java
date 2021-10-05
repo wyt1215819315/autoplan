@@ -5,7 +5,7 @@ import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
 import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.misec.utils.SleepTime;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
@@ -34,7 +34,7 @@ public class CoinAdd implements Task {
      */
     static boolean isCoinAdded(String bvid) {
         String urlParam = "?bvid=" + bvid;
-        JsonObject result = HttpUtil.doGet(ApiList.IS_COIN + urlParam);
+        JsonObject result = HttpUtils.doGet(ApiList.IS_COIN + urlParam);
 
         int multiply = result.getAsJsonObject("data").get("multiply").getAsInt();
         if (multiply > 0) {
@@ -152,7 +152,7 @@ public class CoinAdd implements Task {
                     + "&select_like=" + selectLike
                     + "&cross_domain=" + "true"
                     + "&csrf=" + Verify.getInstance().getBiliJct();
-            JsonObject jsonObject = HttpUtil.doPost(ApiList.COIN_ADD, requestBody, headers);
+            JsonObject jsonObject = HttpUtils.doPost(ApiList.COIN_ADD, requestBody, headers);
             if (jsonObject.get(STATUS_CODE_STR).getAsInt() == 0) {
                 log.info("为 " + videoTitle + " 投币成功");
                 OldwuLog.log("为 " + videoTitle + " 投币成功");

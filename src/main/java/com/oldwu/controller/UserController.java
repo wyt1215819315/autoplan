@@ -7,6 +7,7 @@ import com.netmusic.service.NetmusicService;
 import com.oldwu.domain.Msg;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
+import com.oldwu.entity.SysUserInfo;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.LogService;
 import com.oldwu.service.RegService;
@@ -15,19 +16,18 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangyibo on 17/1/18.
  */
 @Controller
-public class HomeController {
+public class UserController {
     @Autowired
     private RegService regService;
     @Autowired
@@ -43,8 +43,6 @@ public class HomeController {
 
     @RequestMapping("/")
     public String index(Model model) {
-//        Msg msg = new Msg("测试标题", "测试内容", "额外信息，只对管理员显示");
-//        model.addAttribute("msg", msg);
         return "index";
     }
 
@@ -62,11 +60,6 @@ public class HomeController {
     public String reg() {
         return "reg";
     }
-
-//    @GetMapping("/include")
-//    public String include() {
-//        return "include";
-//    }
 
     @PostMapping("/reg")
     public String regpo(@Param("username") String username, @Param("password") String password, Model model) {
@@ -108,5 +101,26 @@ public class HomeController {
         model.addAttribute("netlist", netplans);
         model.addAttribute("milist", mihuyouplans);
         return "my-helper";
+    }
+
+    @GetMapping("/my-edit")
+    public String myIndexEdit(Model model, Principal principal) {
+        int userId = userService.getUserId(principal.getName());
+        SysUserInfo userInfo = userService.getUserInfo(userId);
+        model.addAttribute("info",userInfo);
+        return "my-helper-edit";
+    }
+
+    @ResponseBody
+    @PostMapping("/api/user/userinfo/edit")
+    public Map<String,Object> userInfoEdit(Principal principal, @RequestBody SysUserInfo userInfo) {
+        int userId = userService.getUserId(principal.getName());
+        return userService.editUserInfo(userId,userInfo);
+    }
+
+    @ResponseBody
+    @PostMapping("/api/user/checkwebhook")
+    public Map<String,Object> checkWebhook(@RequestBody SysUserInfo userInfo) {
+        return userService.checkWebhook(userInfo.getWebhook());
     }
 }

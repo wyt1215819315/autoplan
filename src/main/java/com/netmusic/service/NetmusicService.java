@@ -7,6 +7,7 @@ import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoLog;
+import com.push.PushUtil;
 import com.push.ServerPush;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +115,7 @@ public class NetmusicService {
             autoNetmusic.setEnable("true");
         }
         if (StringUtils.isBlank(webhook)) {
-            autoNetmusic.setWebhook(null);
+            autoNetmusic.setWebhook("");
         }
         map.put("flag", true);
         map.put("msg", "check complete");
@@ -270,8 +271,7 @@ public class NetmusicService {
                 }
             }
             //执行推送任务
-            String s = ServerPush.doServerPush(msg.toString(), autoNetmusic.getWebhook());
-            msg.append("\n").append(s);
+            PushUtil.doPush(msg.toString(), autoNetmusic.getWebhook(), userid);
             //日志写入至数据库
             AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
             autoLogDao.insertSelective(netlog);

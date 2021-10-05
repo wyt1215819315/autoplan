@@ -3,6 +3,8 @@ package com.push.model;
 import lombok.Getter;
 
 /**
+ * push result .
+ *
  * @author itning
  * @since 2021/3/22 16:58
  */

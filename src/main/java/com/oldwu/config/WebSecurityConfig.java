@@ -61,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/netmusic/index").permitAll()
                 .antMatchers("/mihuyou/index").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/webhook-generate").permitAll()
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/user/**").hasRole("USER")

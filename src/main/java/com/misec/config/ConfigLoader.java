@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.google.gson.Gson;
 import com.misec.utils.GsonUtils;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.misec.utils.LoadFileResource;
 import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.entity.AutoBilibili;
@@ -50,7 +50,7 @@ public class ConfigLoader {
         mergeConfig(customConfig);
         log.info("读取数据库配置成功,若部分配置项不存在则会采用默认配置,合并后的配置为\n{}", taskConfig.toString());
         validationConfig();
-        HttpUtil.setUserAgent(taskConfig.getUserAgent());
+        HttpUtils.setUserAgent(taskConfig.getUserAgent());
     }
 
     public static TaskConfig getConfigJsonFromDateBase(int autoId) {

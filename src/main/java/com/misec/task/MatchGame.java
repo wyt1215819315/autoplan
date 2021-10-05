@@ -6,10 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
 import com.misec.apiquery.OftenApi;
-import com.misec.config.Config;
 import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 import com.misec.utils.SleepTime;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * @author junzhou
@@ -32,9 +30,10 @@ public class MatchGame implements Task {
             OldwuLog.log("赛事预测未开启");
             return;
         }
+        double currentCoin = OftenApi.getCoinBalance();
 
-        if (OftenApi.getCoinBalance() < ConfigLoader.getTaskConfig().getMinimumNumberOfCoins()) {
-            OldwuLog.log(Config.getInstance().getMinimumNumberOfCoins() + "个硬币都没有，参加你\uD83D\uDC34预测呢？任务结束");
+        if (currentCoin < ConfigLoader.getTaskConfig().getMinimumNumberOfCoins()) {
+            OldwuLog.log(ConfigLoader.getTaskConfig().getMinimumNumberOfCoins() + "个硬币都没有，参加你\uD83D\uDC34预测呢？任务结束");
             log.info("{}个硬币都没有，参加什么预测呢？任务结束", ConfigLoader.getTaskConfig().getMinimumNumberOfCoins());
             return;
         }
@@ -61,6 +60,11 @@ public class MatchGame implements Task {
                 for (JsonElement listinfo : list) {
                     log.info("-----预测开始-----");
                     OldwuLog.log("-----预测开始-----");
+                    if (currentCoin < ConfigLoader.getTaskConfig().getMinimumNumberOfCoins()) {
+                        log.info("仅剩{}个硬币，低于最低保留硬币数量，后续预测不再执行", currentCoin);
+                        OldwuLog.log("仅剩{" + currentCoin + "}个硬币，低于最低保留硬币数量，后续预测不再执行");
+                        break;
+                    }
                     JsonObject contestJson = listinfo.getAsJsonObject().getAsJsonObject("contest");
                     JsonObject questionJson = listinfo.getAsJsonObject().getAsJsonArray("questions").get(0).getAsJsonObject();
                     contestId = contestJson.get("id").getAsInt();
@@ -101,6 +105,7 @@ public class MatchGame implements Task {
                     }
                     log.info("拟预测的队伍是:{},预测硬币数为:{}", teamName, coinNumber);
                     OldwuLog.log("拟预测的队伍是:" + teamName + ",预测硬币数为:" + coinNumber);
+                    currentCoin -= coinNumber;
                     doPrediction(contestId, questionId, teamId, coinNumber);
                     new SleepTime().sleepDefault();
                 }
@@ -114,17 +119,18 @@ public class MatchGame implements Task {
     private JsonObject queryContestQuestion(String today, int pn, int ps) {
         String gid = "";
         String sids = "";
-        String urlParam = "?pn=" + pn
-                + "&ps=" + ps
-                + "&gid=" + gid
-                + "&sids=" + sids
-                + "&stime=" + today + URLEncoder.encode(" 00:00:00")
-                + "&etime=" + today + URLEncoder.encode(" 23:59:59")
-                + "&pn=" + pn
-                + "&ps=" + ps
-                + "&stime=" + today + "+00:00:00"
-                + "&etime=" + today + "+23:59:59";
-        return HttpUtil.doGet(ApiList.QUERY_QUESTIONS + urlParam);
+        String urlParam = "";
+        try {
+            urlParam = "?pn=" + pn
+                    + "&ps=" + ps
+                    + "&gid=" + gid
+                    + "&sids=" + sids
+                    + "&stime=" + today + URLEncoder.encode(" 00:00:00", "UTF-8")
+                    + "&etime=" + today + URLEncoder.encode(" 23:59:59", "UTF-8");
+        } catch (Exception ignored) {
+
+        }
+        return HttpUtils.doGet(ApiList.QUERY_QUESTIONS + urlParam);
     }
 
     private void doPrediction(int oid, int main_id, int detail_id, int count) {
@@ -135,7 +141,7 @@ public class MatchGame implements Task {
                 + "&is_fav=0"
                 + "&csrf=" + Verify.getInstance().getBiliJct();
 
-        JsonObject result = HttpUtil.doPost(ApiList.DO_ADD, requestbody);
+        JsonObject result = HttpUtils.doPost(ApiList.DO_MATCH_ADD, requestbody);
 
         if (result.get("code").getAsInt() != 0) {
             log.info(result.get("message").getAsString());

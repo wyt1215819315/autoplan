@@ -27,6 +27,12 @@
         <a class="layui-btn layui-btn-normal" href="mihuyou/add">
             添加米游社任务
         </a>
+        <button onclick="editmyinfo()" data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">
+            编辑个人信息
+        </button>
+        <a class="layui-btn layui-btn-normal" href="webhook-generate" target="_blank">
+            webhook json生成页面
+        </a>
     </div>
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
         <legend>b站任务列表</legend>
@@ -386,6 +392,21 @@
                         }
                     }
                 })
+            });
+        });
+    }
+
+    function editmyinfo(){
+        layui.use(['table', 'form', 'jquery'], function () {
+            layer.open({
+                type: 2,
+                title: '修改我的信息',
+                shade: 0.1,
+                area: ['800px', '500px'],
+                content: rootPath + '/my-edit',
+                end: function () {
+                    location.reload();
+                }
             });
         });
     }

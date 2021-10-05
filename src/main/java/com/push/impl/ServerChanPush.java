@@ -7,13 +7,12 @@ import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 
 /**
- * server酱推送
+ * server酱推送 .
+ * Server酱旧版推送渠道即将下线，使用Turbo版本{@link ServerChanTurboPush}替代 .
  *
  * @author itning
  * @since 2021/3/22 16:37
- * @deprecated Server酱旧版推送渠道即将下线，使用Turbo版本{@link ServerChanTurboPush}替代
  */
-@Deprecated
 public class ServerChanPush extends AbstractPush {
 
     @Override
@@ -28,16 +27,21 @@ public class ServerChanPush extends AbstractPush {
         }
 
         JsonElement code = jsonObject.get("code");
+        JsonElement errno = jsonObject.get("errno");
 
-        if (null == code) {
-            return false;
+        if (null != code && code.getAsInt() == 0) {
+            return true;
         }
 
-        return code.getAsInt() == 0;
+        if (null != errno && errno.getAsInt() == 0) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return "text=BILIBILI-HELPER任务简报&desp=" + content;
+        return "text=BILIBILI-HELPER任务简报&desp=" + content.replaceAll("=", ":");
     }
 }

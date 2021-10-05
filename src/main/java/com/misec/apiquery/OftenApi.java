@@ -1,9 +1,10 @@
 package com.misec.apiquery;
 
 import com.google.gson.JsonObject;
+import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
-import lombok.extern.log4j.Log4j2;
+import com.misec.utils.HttpUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 部分API简单封装.
@@ -11,14 +12,14 @@ import lombok.extern.log4j.Log4j2;
  * @author Junzhou Liu
  * @since 2020/10/14 14:27
  */
-@Log4j2
+@Slf4j
 public class OftenApi {
 
     /**
      * 返回主站查询到的硬币余额，查询失败返回0.0.
      */
     public static Double getCoinBalance() {
-        JsonObject responseJson = HttpUtil.doGet(ApiList.GET_COIN_BALANCE);
+        JsonObject responseJson = HttpUtils.doGet(ApiList.GET_COIN_BALANCE);
         int responseCode = responseJson.get("code").getAsInt();
         JsonObject dataObject = responseJson.get("data").getAsJsonObject();
         if (responseCode == 0) {
@@ -28,7 +29,7 @@ public class OftenApi {
                 return dataObject.get("money").getAsDouble();
             }
         } else {
-            log.debug("请求硬币余额接口错误，请稍后重试。错误请求信息：{}", responseJson);
+            log.warn("请求硬币余额接口错误，请稍后重试。错误请求信息：{}", responseJson);
             return 0.0;
         }
     }
@@ -39,7 +40,7 @@ public class OftenApi {
     public static void getVipPrivilege(int type) {
         String requestBody = "type=" + type
                 + "&csrf=" + Verify.getInstance().getBiliJct();
-        JsonObject jsonObject = HttpUtil.doPost(ApiList.VIP_PRIVILEGE_RECEIVE, requestBody);
+        JsonObject jsonObject = HttpUtils.doPost(ApiList.VIP_PRIVILEGE_RECEIVE, requestBody);
         int responseCode = jsonObject.get("code").getAsInt();
         if (responseCode == 0) {
             if (type == 1) {
@@ -48,7 +49,7 @@ public class OftenApi {
                 log.info("领取大会员福利/权益成功");
             }
         } else {
-            log.debug("领取年度大会员每月赠送的B币券/大会员福利失败，原因: {}", jsonObject.get("message").getAsString());
+            log.warn("领取年度大会员每月赠送的B币券/大会员福利失败，原因: {}", jsonObject.get("message").getAsString());
         }
     }
 
@@ -60,7 +61,7 @@ public class OftenApi {
     public static String getVideoTitle(String bvid) {
         String title;
         String urlParameter = "?bvid=" + bvid;
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.VIDEO_VIEW + urlParameter);
+        JsonObject jsonObject = HttpUtils.doGet(ApiList.VIDEO_VIEW + urlParameter);
 
         if (jsonObject.get("code").getAsInt() == 0) {
             title = jsonObject.getAsJsonObject("data").getAsJsonObject("owner").get("name").getAsString() + ": ";
@@ -83,7 +84,7 @@ public class OftenApi {
     public static String queryUserNameByUid(String uid) {
         String urlParameter = "?mid=" + uid + "&jsonp=jsonp";
         String userName = "1";
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.QUERY_USER_NAME + urlParameter);
+        JsonObject jsonObject = HttpUtils.doGet(ApiList.QUERY_USER_NAME + urlParameter);
         if (jsonObject.get("code").getAsInt() == 0) {
             userName = jsonObject.getAsJsonObject("data").get("name").getAsString();
         } else {

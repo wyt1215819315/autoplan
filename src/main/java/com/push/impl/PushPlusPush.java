@@ -31,7 +31,6 @@ public class PushPlusPush extends AbstractPush {
         if (null == jsonObject) {
             return false;
         }
-
         // See https://www.pushplus.plus/doc/guide/api.htm
         JsonElement code = jsonObject.get("code");
 

@@ -5,8 +5,7 @@ import com.misec.config.ConfigLoader;
 import com.oldwu.log.OldwuLog;
 import lombok.extern.log4j.Log4j2;
 import com.misec.apiquery.ApiList;
-import com.misec.config.Config;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 
 /**
  * 漫画签到
@@ -22,7 +21,7 @@ public class MangaSign implements Task {
 
         String platform = ConfigLoader.getTaskConfig().getDevicePlatform();
         String requestBody = "platform=" + platform;
-        JsonObject result = HttpUtil.doPost(ApiList.MANGA, requestBody);
+        JsonObject result = HttpUtils.doPost(ApiList.MANGA, requestBody);
 
         if (result == null) {
             OldwuLog.log("哔哩哔哩漫画已经签到过了");

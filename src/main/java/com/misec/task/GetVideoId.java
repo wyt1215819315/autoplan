@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import com.misec.apiquery.ApiList;
 import com.misec.login.Verify;
-import com.misec.utils.HttpUtil;
+import com.misec.utils.HttpUtils;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -78,7 +78,7 @@ public class GetVideoId {
                 + "&type_list=8"
                 + "&from="
                 + "&platform=web";
-        JsonObject jsonObject = HttpUtil.doGet(ApiList.QUERY_DYNAMIC_NEW + urlParameter);
+        JsonObject jsonObject = HttpUtils.doGet(ApiList.QUERY_DYNAMIC_NEW + urlParameter);
         JsonArray jsonArray = jsonObject.getAsJsonObject("data").getAsJsonArray("cards");
 
         if (jsonArray != null) {
@@ -120,7 +120,7 @@ public class GetVideoId {
 
         ArrayList<String> videoList = new ArrayList<>();
         String urlParam = "?rid=" + rid + "&day=" + day;
-        JsonObject resultJson = HttpUtil.doGet(ApiList.GET_REGION_RANKING + urlParam);
+        JsonObject resultJson = HttpUtils.doGet(ApiList.GET_REGION_RANKING + urlParam);
 
         JsonArray jsonArray = resultJson.getAsJsonArray("data");
 
@@ -135,7 +135,7 @@ public class GetVideoId {
 
     public void videoUpdate(String mid) {
         String urlParam = "?mid=" + mid + "&ps=30&tid=0&pn=1&keyword=&order=pubdate&jsonp=jsonp";
-        JsonObject resultJson = HttpUtil.doGet(ApiList.GET_BVID_BY_CREATE + urlParam);
+        JsonObject resultJson = HttpUtils.doGet(ApiList.GET_BVID_BY_CREATE + urlParam);
         JsonArray jsonArray = resultJson.getAsJsonObject("data").getAsJsonObject("list").getAsJsonArray("vlist");
 
         if (jsonArray != null) {

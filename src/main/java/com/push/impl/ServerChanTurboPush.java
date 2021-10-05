@@ -47,6 +47,6 @@ public class ServerChanTurboPush extends AbstractPush {
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return "title=BILIBILI-HELPER任务简报&desp=" + content;
+        return "title=BILIBILI-HELPER任务简报&desp=" + content.replaceAll("=", ":");
     }
 }
