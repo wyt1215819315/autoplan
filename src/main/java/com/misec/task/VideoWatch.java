@@ -78,7 +78,7 @@ public class VideoWatch implements Task {
             log.info("视频: {} 分享成功", videoTitle);
         } else {
             OldwuLog.error("视频分享失败，原因: " + result.get("message").getAsString());
-            OldwuLog.warning("开发者提示: 如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
+            OldwuLog.warning("如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
             log.debug("视频分享失败，原因: {}", result.get("message").getAsString());
             log.debug("如果是csrf校验失败请检查BILI_JCT参数是否正确或者失效");
         }

@@ -65,6 +65,7 @@
                 <span style="color: green" th:if="${plan.getStatus().equals('200')}">任务运行完毕</span>
                 <span style="color: red" th:if="${plan.getStatus().equals('-1')}">任务运行失败</span>
                 <span style="color: red" th:if="${plan.getStatus().equals('500')}">账号cookie已过期</span>
+                <span th:if="${plan.getStatus().equals('501')}" style="color: #ff851b">执行成功，账号信息更新失败</span>
                 <span style="color: yellow" th:if="${plan.getStatus().equals('0')}">任务未开启</span>
                 <span style="color: #0efade" th:if="${plan.getStatus().equals('1')}">任务运行中</span>
                 <span style="color: blue"

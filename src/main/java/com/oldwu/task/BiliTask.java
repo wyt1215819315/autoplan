@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +115,16 @@ public class BiliTask {
             AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insertSelective(bilibili);
             //更新用户信息,一并检查cookie
-            Map<String, String> map = biliService.checkUser(autoBilibili);
+            Map<String, String> map = new HashMap<>();
+            try {
+                map = biliService.checkUser(autoBilibili);
+            }catch (Exception e){
+                biliUser.setStatus("501");
+                biliUser.setEnddate(new Date());
+                biliUserDao.updateByAutoIdSelective(biliUser);
+                OldwuLog.clear();
+                continue;
+            }
             if (map.get("flag").equals("false")){
                 if (map.get("s") != null && map.get("s").equals("cookie")){
                     biliUser.setStatus("500");
