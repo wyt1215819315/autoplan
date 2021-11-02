@@ -169,7 +169,7 @@ public class HttpUtils {
 
     private static void closeResource(CloseableHttpClient httpClient, CloseableHttpResponse response) {
         try {
-            httpClient.close();
+//            httpClient.close();
             response.close();
         } catch (IOException e) {
             log.info("释放资源失败", e);
