@@ -30,10 +30,12 @@
 
 ### 使用说明
 #### bilibili
+原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
+
 支持b站签到任务以及赛事预测任务
 已实现扫码登录
 
-cookie登录请参考<a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>以获取cookie值
+cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
 #### 网易云
 都是字面意思
 
@@ -120,8 +122,7 @@ mybatis:
 
 
 ### 鸣谢
-1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
-1. <a href="https://github.com/JunzhouLiu/bilibili-match-prediction">bilibili-match-prediction</a>
+1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE（作者不干了）</a>
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
 3. <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
 4. <a href="https://github.com/y1ndan/genshinhelper">genshinhelper</a>
@@ -130,3 +131,4 @@ mybatis:
 
 [![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*y52vqx*_ga*NTE4NjY3NDA2LjE2MjY5NDU3MDk.*_ga_V0XZL7QHEB*MTYzMzE4NjE1Mi4yLjEuMTYzMzE4NjE4MS4w&_ga=2.80927447.171770786.1633179814-518667406.1626945709)](https://www.jetbrains.com/)
 
+**免责声明：请勿将本项目用于付费代挂，或者是作为骗取cookie的黑产业链，任何造成的结果均与本项目无关！**
