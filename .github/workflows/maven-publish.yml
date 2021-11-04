@@ -30,4 +30,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: artifacts
-        path: out/auto_plan.jar
+        path: target/auto_plan.jar
