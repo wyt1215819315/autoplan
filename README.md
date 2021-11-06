@@ -97,7 +97,7 @@ mybatis:
    3. 将对应行的`sys_role_id`值改为1
 5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
-**Releases中的jar不会经常更新，我已经设置的github自动构建，如果需要最新测试版，请前往 https://github.com/wyt1215819315/autoplan/actions 自行下载**
+**Releases中的jar不会经常更新，我已经设置的github自动构建，如果需要最新测试版，请前往https://github.com/wyt1215819315/autoplan/actions自行下载**
 
 ### 一些问题
 1. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
@@ -121,7 +121,6 @@ mybatis:
 * 21.10.1 layui已下线，目前将所有cdn服务换为本地文件
 * 21.10.3 修复了部分bug，更改了部分数据表字段名称使其更统一，增加bilibili反向赛事预测
 * 21.10.4 增加了全局webhook，更改webhook的传入方式为json字符串，增加生成器页面用来生成webhook.json
-* 21.11.6 修复米游币任务分享帖子失效的问题
 
 
 ### 鸣谢
