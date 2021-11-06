@@ -251,7 +251,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      * @param post
      */
     public boolean sharePost(PostResult post) {
-        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_SHARE_URL, hub.getForumId()), getHeaders());
+        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_SHARE_URL, post.getPost().getPost_id()), getHeaders());
         return "OK".equals(result.get("message"));
     }
 
