@@ -264,7 +264,7 @@ public class BiliService {
             autoBilibili.setTaskintervaltime(10);
         }
         Integer numberofcoins = autoBilibili.getNumberofcoins();
-        if (numberofcoins == null || numberofcoins > 5 || numberofcoins < 1) {
+        if (numberofcoins == null || numberofcoins > 5 || numberofcoins < 0) {
             autoBilibili.setNumberofcoins(5);
         }
         Integer reservecoins = autoBilibili.getReservecoins();
