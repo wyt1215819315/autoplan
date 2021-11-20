@@ -613,24 +613,49 @@ public class NeteaseMusicUtil {
         return null;
     }
 
-    public static String rSAencrypt(String randomStrs, String key, String f) {
-        StringBuilder stringBuilder = new StringBuilder(randomStrs);
-        randomStrs = stringBuilder.reverse().toString();
-        byte[] text = randomStrs.getBytes(StandardCharsets.UTF_8);
-        BigInteger i1 = new BigInteger(byteToHex(text), 16);
-        int i2 = Integer.parseInt(key, 16);
-        BigInteger i3 = new BigInteger(f, 16);
-        BigInteger j = i1.pow(i2);
-        BigInteger seckey = j.mod(i3);
-        String s = seckey.toString(16);
-        return String.format(s, 256);
+    /**
+     * rsa加密
+     */
+    private static String rsaEncrypt(String text, String key, String f) {
+
+        // 反转字符串
+        text = new StringBuffer(text).reverse().toString();
+        BigInteger biText = new BigInteger(strToHex(text), 16);
+        BigInteger biEx = new BigInteger(key, 16);
+        BigInteger biMod = new BigInteger(f, 16);
+        BigInteger biRet = biText.modPow(biEx, biMod);
+        return zFill(biRet.toString(16));
+
+    }
+    /**
+     * 长度不够前面补充0
+     */
+    private static String zFill(String str) {
+        StringBuilder strBuilder = new StringBuilder(str);
+        while (strBuilder.length() < 256) {
+            strBuilder.insert(0, "0");
+        }
+        str = strBuilder.toString();
+        return str;
+    }
+    /**
+     * 字符串转成16进制字符串
+     */
+    public static String strToHex(String s) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            int ch = s.charAt(i);
+            String s4 = Integer.toHexString(ch);
+            str.append(s4);
+        }
+        return str.toString();
     }
 
     public static Map<String, String> encrypt(String text) {
         String enctext = aESencrypt(text, key);
         String i = NumberUtil.generateRandomStrs(16);
         String encText = aESencrypt(enctext, i);
-        String encSecKey = rSAencrypt(i, e, f);
+        String encSecKey = rsaEncrypt(i, e, f);
         Map<String, String> map = new HashMap<>();
         map.put("encText", encText);
         map.put("encSecKey", encSecKey);
