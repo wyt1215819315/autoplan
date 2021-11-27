@@ -67,7 +67,7 @@ public class DingTalkPush extends AbstractPush {
     @Getter
     static class MessageModel {
         private final String msgtype = "text";
-        private final String title = "BILIBILI-HELPER任务简报";
+        private final String title = "Oldwu-HELPER任务简报";
         private final Text text;
 
         public MessageModel(String content) {

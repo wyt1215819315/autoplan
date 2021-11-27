@@ -48,7 +48,7 @@ public class PushPlusPush extends AbstractPush {
 
     @Getter
     static class PushModel {
-        private final String title = "BILIBILI-HELPER任务简报";
+        private final String title = "Oldwu-HELPER任务简报";
         private final String template = "txt";
         private final String token;
         private final String content;

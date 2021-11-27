@@ -35,7 +35,8 @@ public class PushUtil {
                 return false;
             }
             ServerPush serverPush = new ServerPush();
-            return serverPush.doServerPush("Oldwu-HELPER任务简报\n" + content, pushConfig);
+            return serverPush.doServerPush(content, pushConfig);
+//            return serverPush.doServerPush("Oldwu-HELPER任务简报\n" + content, pushConfig);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return false;
