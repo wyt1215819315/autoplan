@@ -2,7 +2,6 @@ package com.misec;
 
 import com.misec.config.ConfigLoader;
 import com.misec.login.Verify;
-import com.misec.org.slf4j.impl.StaticLoggerBinder;
 import com.misec.task.DailyTask;
 import com.oldwu.log.OldwuLog;
 import org.slf4j.Logger;
@@ -23,16 +22,7 @@ public class BiliMain {
 
     static {
         // 如果此标记为true，则为腾讯云函数，使用JUL作为日志输出。
-        boolean scfFlag = Boolean.getBoolean("scfFlag");
-        StaticLoggerBinder.LOG_IMPL = scfFlag ? StaticLoggerBinder.LogImpl.JUL : StaticLoggerBinder.LogImpl.LOG4J2;
         log = LoggerFactory.getLogger(BiliMain.class);
-        InputStream inputStream = BiliMain.class.getResourceAsStream("/logging.properties");
-        try {
-            LogManager.getLogManager().readConfiguration(inputStream);
-        } catch (IOException e) {
-            java.util.logging.Logger.getAnonymousLogger().severe("Could not load default logging.properties file");
-            java.util.logging.Logger.getAnonymousLogger().severe(e.getMessage());
-        }
     }
 
     public static void main(String[] args) {
