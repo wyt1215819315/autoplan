@@ -130,16 +130,16 @@
                             });
                         },
                         success: function (result) {
-                            if (result[0].code == 200 && result[1].code == 200) {
-                                layer.msg(result[0].msg + result[1].msg, {icon: 1, time: 2000}, function () {
-                                    window.location.href = rootPath + "/my";
+                            if (result.code == 200) {
+                                layer.msg(result.msg, {icon: 1, time: 2000}, function () {
+                                    window.location.href= rootPath + "/my";
                                 });
-                            } else if (result[0].code == 201 || result[1].code == 201) {
-                                layer.msg(result.msg + result[1].msg, {icon: 3, time: 5000}, function () {
-                                    window.location.href = rootPath + "/my";
+                            } else if(result.code == 201){
+                                layer.msg(result.msg, {icon: 3, time: 5000}, function () {
+                                    window.location.href= rootPath + "/my";
                                 });
-                            } else {
-                                layer.msg(result[0].msg, {icon: 2, time: 8000});
+                            }else {
+                                layer.msg(result.msg, {icon: 2, time: 8000});
                             }
                         },
                         error: function () {

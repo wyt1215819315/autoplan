@@ -122,38 +122,55 @@ public class MihayouService {
         GenShinSignMiHoYo signMiHoYo = new GenShinSignMiHoYo(autoMihayou.getCookie());
         List<Map<String, Object>> uidInfo = signMiHoYo.getUid();
 
-        for (Map<String, Object> uidInfoMap : uidInfo) {
-            if (!(boolean) uidInfoMap.get("flag")) {
-                map.put("code", "-1");
-                map.put("msg", (String) uidInfoMap.get("msg"));
-                list.add(map);
-                continue;
-            }
-            //账号验证成功,写入用户数据
-            autoMihayou.setGenshinUid((String) uidInfoMap.get("uid"));
-            autoMihayou.setMiName((String) uidInfoMap.get("nickname"));
-            autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
-            autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
-            autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
-            autoMihayou.setStatus("100");
-
-            //判断数据是否存在，使用stuid进行检索
-            AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
-            if (autoMihayou1 == null || autoMihayou1.getId() == null) {
-                //insert
-                mihayouDao.insertSelective(autoMihayou);
-            } else {
-                //update
-                autoMihayou.setId(autoMihayou1.getId());
-                mihayouDao.updateByPrimaryKeySelective(autoMihayou);
-            }
-            map.put("code", "200");
-            map.put("msg", (String) uidInfoMap.get("msg"));
-            if (!stringObjectMap.containsKey("login_ticket_str") || stringObjectMap.containsKey("login_ticket") && !(Boolean) stringObjectMap.get("login_ticket")) {
-                map.put("code", "201");
-                map.put("msg", map.get("msg") + "\n" + stringObjectMap.get("msg"));
-            }
+        //账号都是同一个，如果要错一起错，一般不会出现不一致的情况
+        if (!(boolean) uidInfo.get(0).get("flag")) {
+            map.put("code", "-1");
+            map.put("msg", (String) uidInfo.get(0).get("msg"));
             list.add(map);
+            return list;
+        }
+        //账号验证成功,写入用户数据，如果有多个数据则拿逗号分隔
+        String uid = "";
+        String nickname = "";
+        for (int i = 0; i < uidInfo.size(); i++) {
+            Map<String, Object> map1 = uidInfo.get(i);
+            if (i == 0) {
+                uid = (String) map1.get("uid");
+                nickname = (String) map1.get("nickname");
+            } else {
+                uid = uid + "," + map1.get("uid");
+                nickname = nickname + "," + map1.get("nickname");
+            }
+
+        }
+        autoMihayou.setGenshinUid(uid);
+        autoMihayou.setMiName(nickname);
+        autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
+        autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
+        autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
+        autoMihayou.setStatus("100");
+
+        //判断数据是否存在，使用stuid进行检索
+        AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
+//            AutoMihayou autoMihayou1 = mihayouDao.selectByGenshinUid(autoMihayou.getGenshinUid());
+        if (autoMihayou1 == null || autoMihayou1.getId() == null) {
+            //insert
+            mihayouDao.insertSelective(autoMihayou);
+        } else {
+            //update
+            autoMihayou.setId(autoMihayou1.getId());
+            mihayouDao.updateByPrimaryKeySelective(autoMihayou);
+        }
+        for (Map<String, Object> uidInfoMap : uidInfo) {
+            Map<String, String> map1 = new HashMap<>();
+            map1.put("code", "200");
+            map1.put("msg", (String) uidInfoMap.get("msg"));
+            if (!stringObjectMap.containsKey("login_ticket_str") || stringObjectMap.containsKey("login_ticket") && !(Boolean) stringObjectMap.get("login_ticket")) {
+                map1.put("code", "201");
+                map1.put("msg", map1.get("msg") + "<br>");
+                map1.put("msg1", (String) stringObjectMap.get("msg"));
+            }
+            list.add(map1);
         }
         return list;
     }

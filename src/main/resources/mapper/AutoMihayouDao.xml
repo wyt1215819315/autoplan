@@ -42,6 +42,11 @@
         <include refid="Base_Column_List"/>
         from auto_mihayou where suid = #{suid}
     </select>
+    <select id="selectByGenshinUid" resultType="com.miyoushe.model.AutoMihayou">
+        select
+        <include refid="Base_Column_List"/>
+        from auto_mihayou where genshin_uid = #{genshinUid}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete
         from auto_mihayou

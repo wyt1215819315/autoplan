@@ -22,4 +22,6 @@ public interface AutoMihayouDao {
     int updateByPrimaryKey(AutoMihayou record);
 
     AutoMihayou selectBystuid(String suid);
+
+    AutoMihayou selectByGenshinUid(String genshinUid);
 }
