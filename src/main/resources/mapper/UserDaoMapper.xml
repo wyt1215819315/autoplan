@@ -20,7 +20,7 @@
     <select id="findByUserName" parameterType="String" resultMap="userMap">
         select u.*
              , r.name
-        from Sys_User u
+        from sys_user u
                  LEFT JOIN sys_role_user sru on u.id = sru.sys_user_id
                  LEFT JOIN sys_role r on sru.sys_role_id = r.id
         where username = #{username}

@@ -65,7 +65,9 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
     }
 
     @Override
-    public Map<String, Object> doSign() throws Exception {
+    public List<Map<String, Object>> doSign() throws Exception {
+        List<Map<String, Object>> list = new ArrayList<>();
+
         Map<String, Object> map = new HashMap<>();
         StringBuilder msg = new StringBuilder();
         log.info("社区签到任务开始");
@@ -93,7 +95,9 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         msg.append("社区签到任务完成");
         map.put("flag", true);
         map.put("msg", msg.toString());
-        return map;
+
+        list.add(map);
+        return list;
     }
 
 

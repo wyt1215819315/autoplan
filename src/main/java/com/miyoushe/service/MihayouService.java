@@ -106,46 +106,56 @@ public class MihayouService {
         return map;
     }
 
-    public Map<String, String> addMiHuYouPlan(AutoMihayou autoMihayou) {
+    public List<Map<String, String>> addMiHuYouPlan(AutoMihayou autoMihayou) {
+        List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
+
         Map<String, Object> stringObjectMap = checkForm(autoMihayou, false);
         if (!(boolean) stringObjectMap.get("flag")) {
             map.put("code", "-1");
             map.put("msg", (String) stringObjectMap.get("msg"));
-            return map;
+            list.add(map);
+            return list;
         }
+
         //信息检查完毕后，尝试登录账号，进行验证
         GenShinSignMiHoYo signMiHoYo = new GenShinSignMiHoYo(autoMihayou.getCookie());
-        Map<String, Object> uidInfo = signMiHoYo.getUid();
-        if (!(boolean) uidInfo.get("flag")) {
-            map.put("code", "-1");
-            map.put("msg", (String) uidInfo.get("msg"));
-            return map;
+        List<Map<String, Object>> uidInfo = signMiHoYo.getUid();
+
+        for (Map<String, Object> uidInfoMap : uidInfo) {
+            if (!(boolean) uidInfoMap.get("flag")) {
+                map.put("code", "-1");
+                map.put("msg", (String) uidInfoMap.get("msg"));
+                list.add(map);
+                continue;
+            }
+            //账号验证成功,写入用户数据
+            autoMihayou.setGenshinUid((String) uidInfoMap.get("uid"));
+            autoMihayou.setMiName((String) uidInfoMap.get("nickname"));
+            autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
+            autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
+            autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
+            autoMihayou.setStatus("100");
+
+            //判断数据是否存在，使用stuid进行检索
+            AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
+            if (autoMihayou1 == null || autoMihayou1.getId() == null) {
+                //insert
+                mihayouDao.insertSelective(autoMihayou);
+            } else {
+                //update
+                autoMihayou.setId(autoMihayou1.getId());
+                mihayouDao.updateByPrimaryKeySelective(autoMihayou);
+            }
+            map.put("code", "200");
+            map.put("msg", (String) uidInfoMap.get("msg"));
+            if (!stringObjectMap.containsKey("login_ticket_str") || stringObjectMap.containsKey("login_ticket") && !(Boolean) stringObjectMap.get("login_ticket")) {
+                map.put("code", "201");
+                map.put("msg", map.get("msg") + "\n" + stringObjectMap.get("msg"));
+            }
+            list.add(map);
         }
-        //账号验证成功,写入用户数据
-        autoMihayou.setGenshinUid((String) uidInfo.get("uid"));
-        autoMihayou.setMiName((String) uidInfo.get("nickname"));
-        autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
-        autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
-        autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
-        autoMihayou.setStatus("100");
-        //判断数据是否存在，使用stuid进行检索
-        AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
-        if (autoMihayou1 == null || autoMihayou1.getId() == null) {
-            //insert
-            mihayouDao.insertSelective(autoMihayou);
-        } else {
-            //update
-            autoMihayou.setId(autoMihayou1.getId());
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou);
-        }
-        map.put("code", "200");
-        map.put("msg", (String) uidInfo.get("msg"));
-        if (!stringObjectMap.containsKey("login_ticket_str") || stringObjectMap.containsKey("login_ticket") && !(Boolean) stringObjectMap.get("login_ticket")) {
-            map.put("code", "201");
-            map.put("msg", map.get("msg") + "\n" + stringObjectMap.get("msg"));
-        }
-        return map;
+        return list;
     }
 
     public Map<String, Object> checkForm(AutoMihayou autoMihayou, boolean skipCookieCheck) {
@@ -343,14 +353,17 @@ public class MihayouService {
             //更新任务状态
             AutoMihayou autoMihayou1 = new AutoMihayou(autoId, "1", null);
             mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+
             //执行任务
             String suid = autoMihayou.getSuid();
             String stoken = autoMihayou.getStoken();
             String cookie = autoMihayou.getCookie();
+
             GenshinHelperProperties.Account account = new GenshinHelperProperties.Account();
             account.setCookie(cookie);
             account.setStuid(suid);
             account.setStoken(stoken);
+
             DailyTask dailyTask = new DailyTask(account);
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {

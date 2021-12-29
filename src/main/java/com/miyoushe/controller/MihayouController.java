@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,7 +39,7 @@ public class MihayouController {
     }
 
     @PostMapping("/add")
-    public Map<String, String> add(@RequestBody AutoMihayou autoMihayou, Principal principal) {
+    public List<Map<String, String>> add(@RequestBody AutoMihayou autoMihayou, Principal principal) {
         autoMihayou.setUserId(userService.getUserId(principal.getName()));
         return mihayouService.addMiHuYouPlan(autoMihayou);
     }

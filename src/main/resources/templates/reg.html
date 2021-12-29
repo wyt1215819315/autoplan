@@ -1,85 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html;charset=UTF-8"/>
-    <title>注册页面</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <th:block th:include="include :: static"/>
-    <style type="text/css">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>注册页面</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: static"/>
+        <style type="text/css">
 
-        .starter-template {
-            padding: 40px 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
-<div class="container">
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <ul th:include="include::header" class="layui-nav"></ul>
 
-    <div class="starter-template" style="text-align: center">
-        <p class="bg-danger" th:if="${error}" th:text="${msg}"></p>
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>注册账号（请牢记，不支持找回）</legend>
-        </fieldset>
-        <form action="/login" method="POST" name="form" th:action="@{/reg}"> <!-- 3 -->
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">用户名</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
-                               placeholder="请输入用户名" id="username"
-                               required type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">密码</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
-                               placeholder="请输入密码" id="password"
-                               required type="password">
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">密码</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="repassword"
-                               placeholder="请重新输入密码" id="repassword"
-                               required type="password">
-                    </div>
-                </div>
-            </div>
-            <input class="layui-btn layui-btn-lg" id="reg" onclick="return check()" type="submit" value="注册"/>
-        </form>
-    </div>
+        <div class="container" style="padding-top: 0;margin: 15px">
 
-</div>
-<script th:if="${error}" th:inline="javascript">
-    layer.msg("/*[[${msg}]]*/", {icon: 2, time: 5000});
-</script>
-<script>
-    function check() {
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
-        var repassword = document.getElementById("repassword").value;
-        if (username.length < 6 || username.length > 20) {
-            alert("用户名必须为6-20位！");
-            return false;
-        } else if (password !== repassword) {
-            alert("两次输入的密码不一致!")
-            return false;
-        } else if (password.length < 8 || password.length > 20) {
-            alert("密码长度需在8-20位之间！");
-            return false;
-        }
-        return true;
-    }
-</script>
-<script th:include="include::layelement"></script>
-</body>
+            <div class="starter-template" style="text-align: center">
+                <p class="bg-danger" th:if="${error}" th:text="${msg}"></p>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>注册账号（请牢记，不支持找回）</legend>
+                </fieldset>
+                <form action="/login" method="POST" name="form" th:action="@{/reg}"> <!-- 3 -->
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
+                                       placeholder="请输入用户名" id="username"
+                                       required type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
+                                       placeholder="请输入密码" id="password"
+                                       required type="password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="repassword"
+                                       placeholder="请重新输入密码" id="repassword"
+                                       required type="password">
+                            </div>
+                        </div>
+                    </div>
+                    <input class="layui-btn layui-btn-lg" id="reg" onclick="return check()" type="submit" value="注册"/>
+                </form>
+            </div>
+
+        </div>
+        <script th:if="${error}" th:inline="javascript">
+            layer.msg("/*[[${msg}]]*/", {icon: 2, time: 5000});
+        </script>
+        <script>
+            function check() {
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                var repassword = document.getElementById("repassword").value;
+                if (username.length < 6 || username.length > 20) {
+                    alert("用户名必须为6-20位！");
+                    return false;
+                } else if (password !== repassword) {
+                    alert("两次输入的密码不一致!")
+                    return false;
+                } else if (password.length < 8 || password.length > 20) {
+                    alert("密码长度需在8-20位之间！");
+                    return false;
+                }
+                return true;
+            }
+        </script>
+        <script th:include="include::layelement"></script>
+    </body>
 
 </html>

@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html;charset=UTF-8"/>
-    <title>登录页面</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <th:block th:include="include :: static"/>
-    <style type="text/css">
-        .starter-template {
-            padding: 40px 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body style="padding-top: 0;margin: 10px">
-<ul class="layui-nav" th:include="include::header"></ul>
-<div class="container">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>登录页面</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: static"/>
+        <style type="text/css">
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="layui-nav" th:include="include::header"></ul>
 
+        <div class="container" style="padding-top: 0;margin: 15px">
 
-    <div class="starter-template" style="text-align: center">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>登录</legend>
-        </fieldset>
-        <form action="/login" method="POST" name="form" th:action="@{/login}"> <!-- 3 -->
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">用户名</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
-                               placeholder="请输入用户名"
-                               required type="text">
+            <div class="starter-template" style="text-align: center">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>登录</legend>
+                </fieldset>
+                <form action="/login" method="POST" name="form" th:action="@{/login}"> <!-- 3 -->
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
+                                       placeholder="请输入用户名"
+                                       required type="text">
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">密码</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
-                               placeholder="请输入密码"
-                               required type="password">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
+                                       placeholder="请输入密码"
+                                       required type="password">
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <input class="layui-btn layui-btn-lg" id="login" type="submit" value="登录"/>
+                </form>
             </div>
-            <input class="layui-btn layui-btn-lg" id="login" type="submit" value="登录"/>
-        </form>
-    </div>
 
-</div>
-<script th:include="include::layelement"></script>
-<script th:if="${regok}" th:inline="javascript">
-    layui.use(['jquery','form'], function () {
-        layer.msg("注册成功，请登录", {icon: 1, time: 3000});
-    });
-</script>
-<script th:if="${param.logout}" th:inline="javascript">
-    layui.use(['jquery','form'], function () {
-        layer.msg("已成功注销", {icon: 1, time: 3000});
-    });
-</script>
-<script th:if="${param.error}" th:inline="javascript">
-    layui.use(['jquery','form'], function () {
-        layer.msg("登录发生错误，请检查用户名密码", {icon: 2, time: 5000});
-    });
-</script>
-</body>
+        </div>
+        <script th:include="include::layelement"></script>
+        <script th:if="${regok}" th:inline="javascript">
+            layui.use(['jquery', 'form'], function () {
+                layer.msg("注册成功，请登录", {icon: 1, time: 3000});
+            });
+        </script>
+        <script th:if="${param.logout}" th:inline="javascript">
+            layui.use(['jquery', 'form'], function () {
+                layer.msg("已成功注销", {icon: 1, time: 3000});
+            });
+        </script>
+        <script th:if="${param.error}" th:inline="javascript">
+            layui.use(['jquery', 'form'], function () {
+                layer.msg("登录发生错误，请检查用户名密码", {icon: 2, time: 5000});
+            });
+        </script>
+    </body>
 </html>

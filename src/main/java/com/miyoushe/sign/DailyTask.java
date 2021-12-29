@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,19 +54,29 @@ public class DailyTask implements Runnable {
 
     public Map<String,Object> doDailyTask() {
         Map<String,Object> result = new HashMap<>();
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         StringBuilder stringBuilder = new StringBuilder();
+
         log.info("开始执行时间[ {} ],执行环境[ {} ]", dtf.format(LocalDateTime.now()), System.getProperty(Constant.GENSHIN_EXEC));
+
         stringBuilder.append("开始执行时间[ ").append(dtf.format(LocalDateTime.now())).append(" ],执行环境[ ").append(System.getProperty(Constant.GENSHIN_EXEC)).append(" ]");
+
         if (genShinSign != null) {
-            Map<String, Object> map = genShinSign.doSign();
-            if (!(boolean) map.get("flag")){
-                //登录失败，直接返回
-                map.put("msg",stringBuilder.toString() + "\n" + map.get("msg"));
-                return map;
+            List<Map<String, Object>> list = genShinSign.doSign();
+
+            for (Map<String, Object> map : list) {
+                if (!(boolean) map.get("flag")){
+                    //登录失败，直接返回
+                    map.put("msg",stringBuilder.toString() + "\n" + map.get("msg"));
+                    return map;
+                }
+
+                stringBuilder.append("\n").append(map.get("msg"));
             }
-            stringBuilder.append("\n").append(map.get("msg"));
         }
+
         if (miHoYoSign != null) {
             try {
                 Map<String, Object> map = miHoYoSign.doSingleThreadSign();
@@ -77,8 +88,10 @@ public class DailyTask implements Runnable {
         }
         if (miHoYoSign != null) {
             try {
-                Map<String, Object> map = miHoYoSign.doSign();
-                stringBuilder.append("\n").append(map.get("msg"));
+                List<Map<String, Object>> list = miHoYoSign.doSign();
+                for (Map<String, Object> map : list) {
+                    stringBuilder.append("\n").append(map.get("msg"));
+                }
             } catch (Exception e) {
                 stringBuilder.append("\n").append("[ERROR]miHoYoSign执行异常！").append(e.getMessage());
                 e.printStackTrace();

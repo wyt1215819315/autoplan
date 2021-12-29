@@ -28,7 +28,7 @@ public abstract class MiHoYoAbstractSign implements Sign {
         this.cookie = cookie;
     }
 
-    public abstract Map<String,Object> doSign() throws Exception;
+    public abstract List<Map<String, Object>> doSign() throws Exception;
 
     @Override
     public Header[] getHeaders() {

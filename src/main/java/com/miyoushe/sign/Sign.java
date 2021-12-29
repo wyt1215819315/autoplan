@@ -2,6 +2,7 @@ package com.miyoushe.sign;
 
 import org.apache.http.Header;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Map;
  */
 public interface Sign {
 
-    Map<String, Object> doSign() throws Exception;
+    List<Map<String, Object>> doSign() throws Exception;
 
     Header[] getHeaders();
 }

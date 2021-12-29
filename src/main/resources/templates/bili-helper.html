@@ -1,67 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html;charset=UTF-8"/>
-    <title>b站任务列表</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <th:block th:include="include :: static"/>
-</head>
-<body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>b站任务列表</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: static"/>
+    </head>
+    <body>
+        <ul th:include="include::header" class="layui-nav"></ul>
 
+        <div class="container" style="padding-top: 0;margin: 15px">
+            <div class="layui-btn-container">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>b站托管任务列表</legend>
+                </fieldset>
+                <a href="add" class="layui-btn layui-btn-normal">
+                    添加b站任务
+                </a>
+                <a href="/my" class="layui-btn layui-btn-normal">
+                    查看我的任务
+                </a>
+            </div>
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>用户硬币</th>
+                    <th>用户等级</th>
+                    <th>升级还需要</th>
+                    <th>大会员情况</th>
+                    <th>任务是否开启</th>
+                    <th>任务运行状态</th>
+                    <th>任务最后运行时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="plan:${list}">
+                    <td th:text="${plan.getBiliName()}"></td>
+                    <td th:text="${plan.getBiliCoin()}"></td>
+                    <td th:text="${plan.getBiliLevel()}"></td>
+                    <td th:text="${plan.getBiliUpexp() - plan.getBiliExp()}"></td>
+                    <td th:text="${plan.getIsVip()?'大会员':'不是大会员'}"></td>
+                    <td th:text="${plan.getSkipdailytask()?'任务关闭':'任务开启'}"></td>
+                    <td>
+                        <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
+                        <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
+                        <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号cookie已过期</span>
+                        <span th:if="${plan.getStatus().equals('501')}" style="color: #ff851b">执行成功，账号信息更新失败</span>
+                        <span th:if="${plan.getStatus().equals('0')}" style="color: #c3c300">任务未开启</span>
+                        <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
+                        <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
+                    </td>
+                    <td th:text="${plan.getEndDateString()}"></td>
+                </tr>
+                </tbody>
+            </table>
 
+        </div>
 
-<div class="container">
-    <div class="layui-btn-container">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>b站托管任务列表</legend>
-        </fieldset>
-        <a href="add" class="layui-btn layui-btn-normal">
-            添加b站任务
-        </a>
-        <a href="/my" class="layui-btn layui-btn-normal">
-            查看我的任务
-        </a>
-    </div>
-    <table class="layui-table">
-        <thead>
-        <tr>
-            <th>用户名</th>
-            <th>用户硬币</th>
-            <th>用户等级</th>
-            <th>升级还需要</th>
-            <th>大会员情况</th>
-            <th>任务是否开启</th>
-            <th>任务运行状态</th>
-            <th>任务最后运行时间</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="plan:${list}">
-            <td th:text="${plan.getBiliName()}"></td>
-            <td th:text="${plan.getBiliCoin()}"></td>
-            <td th:text="${plan.getBiliLevel()}"></td>
-            <td th:text="${plan.getBiliUpexp() - plan.getBiliExp()}"></td>
-            <td th:text="${plan.getIsVip()?'大会员':'不是大会员'}"></td>
-            <td th:text="${plan.getSkipdailytask()?'任务关闭':'任务开启'}"></td>
-            <td>
-                <span th:if="${plan.getStatus().equals('200')}" style="color: green">任务运行完毕</span>
-                <span th:if="${plan.getStatus().equals('-1')}" style="color: red">任务运行失败</span>
-                <span th:if="${plan.getStatus().equals('500')}" style="color: red">账号cookie已过期</span>
-                <span th:if="${plan.getStatus().equals('501')}" style="color: #ff851b">执行成功，账号信息更新失败</span>
-                <span th:if="${plan.getStatus().equals('0')}" style="color: #c3c300">任务未开启</span>
-                <span th:if="${plan.getStatus().equals('1')}" style="color: #0efade">任务运行中</span>
-                <span th:if="${plan.getStatus() == null || plan.getStatus().equals('100')}" style="color: blue">等待运行</span>
-            </td>
-            <td th:text="${plan.getEndDateString()}"></td>
-        </tr>
-        </tbody>
-    </table>
-
-</div>
-
-<script th:include="include::layelement"></script>
-</body>
+        <script th:include="include::layelement"></script>
+    </body>
 
 </html>

@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html;charset=UTF-8"/>
-    <title>老吴的自动任务管理-首页</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <th:block th:include="include :: static"/>
-</head>
-<body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>自动任务管理-首页</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: static"/>
+    </head>
+    <body>
+        <ul th:include="include::header" class="layui-nav"></ul>
 
-<blockquote class="layui-elem-quote">
-    <h1 style="color: red">警告！！1.3版本的更新重构了推送部分的代码，之前设置的推送地址会全部失效，目前推送部分代码为json字符串形式传入，在填写webhook的页面中已经给出了
-        <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
-        页面，请使用
-        <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
-        生成之后复制到webhook一栏更新配置！！
-    </h1>
-    <h3>这是一个自动化托管系统</h3>
-    <h4>能够实现每日自动b站领经验，网易云自动签到刷300首歌</h4>
-    <h4>默认会在早上8点进行任务，暂时无法手动执行任务</h4>
-    <h4 style="font-weight: bold">项目任务部分源码来源：</h4>
-    <h4 style="color: #0a6aa1">
-        <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
-    </h4>
-    <h4 style="color: #0a6aa1">
-        <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
-    </h4>
-    <h4 style="color: #0a6aa1">
-        <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
-    </h4>
-    <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://github.com/wyt1215819315/autoplan" target="_blank">开源地址</a>
-    <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://blog.oldwu.top/index.php/archives/84/" target="_blank">使用说明</a>
-</blockquote>
+        <blockquote class="layui-elem-quote" style="padding-top: 0;margin: 15px">
+            <h1 style="color: red">
+                警告！！1.3版本的更新重构了推送部分的代码，之前设置的推送地址会全部失效，目前推送部分代码为json字符串形式传入，在填写webhook的页面中已经给出了
+                <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
+                页面，请使用
+                <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
+                生成之后复制到webhook一栏更新配置！！
+            </h1>
+            <h3>这是一个自动化托管系统</h3>
+            <h4>能够实现每日自动b站领经验，网易云自动签到刷300首歌</h4>
+            <h4>默认会在早上8点进行任务，暂时无法手动执行任务</h4>
+            <h4 style="font-weight: bold">项目任务部分源码来源：</h4>
+            <h4 style="color: #0a6aa1">
+                <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a>
+            </h4>
+            <h4 style="color: #0a6aa1">
+                <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
+            </h4>
+            <h4 style="color: #0a6aa1">
+                <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
+            </h4>
+            <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://github.com/wyt1215819315/autoplan"
+               target="_blank">开源地址</a>
+            <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://blog.oldwu.top/index.php/archives/84/"
+               target="_blank">使用说明</a>
+        </blockquote>
 
-<script th:include="include::layelement"></script>
-</body>
+        <script th:include="include::layelement"></script>
+    </body>
 
 </html>

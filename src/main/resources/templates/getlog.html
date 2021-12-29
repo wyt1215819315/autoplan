@@ -1,39 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html;charset=UTF-8"/>
-    <title>我的任务日志</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-    <th:block th:include="include :: static"/>
-</head>
-<body style="padding-top: 0;margin: 10px">
-<ul th:include="include::header" class="layui-nav"></ul>
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>我的任务日志</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: static"/>
+    </head>
+    <body>
+        <div class="container" style="padding-top: 0;margin: 15px">
+            <fieldset class="layui-elem-field layui-field-title" >
+                <legend th:text="${'日志时间：' + log.getDateString()}"></legend>
+            </fieldset>
 
+            <pre class="layui-code" lay-title="JavaScript" lay-skin="" th:text="${log.getText()}"></pre> <!-- 在里面存放任意的文本内容 -->
 
-<div class="container">
-    <div class="layui-btn-container">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>任务日志</legend>
-        </fieldset>
-    </div>
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-        <legend th:text="${'日志时间：' + log.getDateString()}"></legend>
-    </fieldset>
+        </div>
 
-    <pre class="layui-code" lay-title="JavaScript" lay-skin="" th:text="${log.getText()}">//在里面存放任意的文本内容
-
-      </pre>
-
-
-</div>
-
-<script>
-    layui.use('code', function(){ //加载code模块
-        layui.code(); //引用code方法
-    });
-</script>
-<script th:include="include::layelement"></script>
-</body>
+        <script>
+            layui.use('code', function () { //加载code模块
+                layui.code(); //引用code方法
+            });
+        </script>
+        <script th:include="include::layelement"></script>
+    </body>
 
 </html>
