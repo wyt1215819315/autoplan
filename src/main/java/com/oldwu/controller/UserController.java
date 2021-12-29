@@ -88,6 +88,8 @@ public class UserController {
             model.addAttribute("log", log1);
             return "getlog";
         }
+        String logText = log.getText();
+        log.setText(logText.substring(1, logText.length()).replace("\n", "<br/>"));
         model.addAttribute("log", log);
         return "getlog";
     }
