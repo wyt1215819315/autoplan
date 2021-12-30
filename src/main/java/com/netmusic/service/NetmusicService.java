@@ -7,13 +7,15 @@ import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoLog;
-import com.push.PushUtil;
-import com.push.ServerPush;
+import com.oldwu.task.NetMusicTask;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class NetmusicService {
@@ -230,58 +232,8 @@ public class NetmusicService {
             return map;
         }
         Thread t = new Thread(() -> {
-            //更新任务状态
-            AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "1", null);
-            netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
-
-            //执行任务
-            int reconnect = 2;//最大重试次数
-            String phone = autoNetmusic.getPhone();
-            String password = autoNetmusic.getPassword();
-            String countrycode = autoNetmusic.getCountrycode();
-
-            Map<String, String> infos = new HashMap<>();
-            infos.put("phone", phone);
-            infos.put("password", password);
-            infos.put("countrycode", countrycode);
-
-            StringBuilder msg = new StringBuilder();
-            for (int i = 0; i < reconnect; i++) {
-
-                Map<String, Object> run = NeteaseMusicUtil.run(infos);
-
-                if (!(boolean) run.get("flag")) {
-                    if (i != reconnect - 1) {
-                        msg.append(run.get("msg"));
-                        msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
-                        continue;
-                    }
-                    autoNetmusic1.setStatus("500");
-                    break;
-                }
-                if (run.get("complete") != null && (boolean) run.get("complete")) {
-                    //任务成功完成
-                    msg.append("\n").append(run.get("msg")).append("\n-----------------\n").append("[SUCCESS] 任务全部正常完成，进程退出");
-                    autoNetmusic1.setStatus("200");
-                    break;
-                } else {
-                    if (i == reconnect - 1) {
-                        //任务重试失败
-                        msg.append("\n").append(run.get("msg")).append("[!!FAILED!!]").append("任务异常！请查看日志！");
-                        autoNetmusic1.setStatus("-1");
-                        break;
-                    }
-                    msg.append("\n[!WARNING!]任务运行出现异常\n").append(run.get("msg"));
-                }
-            }
-            //执行推送任务
-            PushUtil.doPush(msg.toString(), autoNetmusic.getWebhook(), userid);
-            //日志写入至数据库
-            AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
-            autoLogDao.insertSelective(netlog);
-            //更新任务状态
-            autoNetmusic1.setEnddate(new Date());
-            netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+            NetMusicTask netMusicTask = new NetMusicTask();
+            netMusicTask.runTask(autoId, userid, autoNetmusic);
         });
         t.start();
         map.put("code", 200);

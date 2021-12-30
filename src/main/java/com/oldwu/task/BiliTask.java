@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,26 +64,34 @@ public class BiliTask {
      * b站定时签到任务
      */
     public void doAutoCheck() {
+
         List<AutoBilibili> autoBilibilis = bilibiliDao.selectAll();
+
         for (AutoBilibili autoBilibili : autoBilibilis) {
             OldwuLog.clear();
+
             Integer auto_id = autoBilibili.getId();
             Integer userid = autoBilibili.getUserid();
             BiliUser userb = biliUserDao.selectByAutoId(auto_id);
+
             //任务未开启或已经完成，下一个
             if (Boolean.parseBoolean(autoBilibili.getSkipdailytask())) {
                 BiliUser biliUser = new BiliUser(auto_id, "0", new Date());
                 biliUserDao.updateByAutoIdSelective(biliUser);
                 continue;
             }
+
             if (userb.getStatus().equals("200")){
                 continue;
             }
+
             //更新任务状态
             BiliUser biliUser = new BiliUser(auto_id, "1", null);
             biliUserDao.updateByAutoIdSelective(biliUser);
+
             //执行任务
             String[] strings = null;
+
             if (!StringUtils.isBlank(autoBilibili.getWebhook())) {
                 //有推送
                 strings = new String[4];
@@ -96,6 +103,7 @@ public class BiliTask {
             strings[1] = autoBilibili.getSessdata();
             strings[2] = autoBilibili.getBiliJct();
             String webhook = autoBilibili.getWebhook();
+
             //防止一个任务出错影响整体
             try {
                 BiliMain.run(strings, auto_id);
@@ -109,11 +117,14 @@ public class BiliTask {
                 OldwuLog.clear();
                 continue;
             }
+
             //执行推送任务
             PushUtil.doPush(OldwuLog.getLog(), autoBilibili.getWebhook(), userid);
+
             //写入至数据库
             AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insertSelective(bilibili);
+
             //更新用户信息,一并检查cookie
             Map<String, String> map;
             try {
@@ -125,6 +136,7 @@ public class BiliTask {
                 OldwuLog.clear();
                 continue;
             }
+
             if (map.get("flag").equals("false")){
                 if (map.get("s") != null && map.get("s").equals("cookie")){
                     biliUser.setStatus("500");
@@ -135,6 +147,7 @@ public class BiliTask {
                 OldwuLog.clear();
                 continue;
             }
+
             //更新任务状态
             biliUser.setEnddate(new Date());
             biliUser.setStatus("200");
