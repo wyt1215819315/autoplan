@@ -70,14 +70,13 @@ public class QuartzJobController extends BaseController{
      * @author fuce
      * @Date 2019年11月11日 下午4:00:08
      */
-	//@Log(title = "定时任务调度表新增", action = "111")
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult add(SysQuartzJob sysQuartzJob){
-		int b=sysQuartzJobService.insertSelective(sysQuartzJob);
-		if(b>0){
+		int b = sysQuartzJobService.insertSelective(sysQuartzJob);
+		if (b > 0) {
 			return success();
-		}else{
+		} else {
 			return error();
 		}
 	}
@@ -114,8 +113,7 @@ public class QuartzJobController extends BaseController{
 			return 0;
 		}
 	}
-	
-	
+
 	/**
 	 * 修改跳转
 	 * @param id
@@ -133,7 +131,6 @@ public class QuartzJobController extends BaseController{
 	/**
      * 修改保存
      */
-    //@Log(title = "定时任务调度表修改", action = "111")
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysQuartzJob record)
@@ -144,7 +141,6 @@ public class QuartzJobController extends BaseController{
     /**
      * 任务调度状态修改
      */
-	//@Log(title = "任务调度状态修改", action = "1")
     @PutMapping("/changeStatus")
     @ResponseBody
     public AjaxResult changeStatus(@RequestBody SysQuartzJob job) throws SchedulerException
@@ -158,7 +154,6 @@ public class QuartzJobController extends BaseController{
     /**
      * 任务调度立即执行一次
      */
-	//@Log(title = "任务调度立即执行一次", action = "1")
     @GetMapping("/run/{id}")
     @ResponseBody
     public AjaxResult run(@PathVariable("id") String id) throws SchedulerException

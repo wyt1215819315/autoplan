@@ -24,7 +24,8 @@ import java.util.Set;
 public class QuartzSchedulerUtil {
 
     @Autowired
-    private  Scheduler scheduler;
+    private Scheduler scheduler;
+
     @Autowired
     private SysQuartzJobService sysQuartzJobService;
 
@@ -52,31 +53,6 @@ public class QuartzSchedulerUtil {
 	            e.printStackTrace();
 	        }
 		}
-        //这一块可以从数据库中查
-//        for (int i=1;i<=1;i++)
-//        {
-//            SysQuartzJob job=new SysQuartzJob();
-//            job.setId("332182389491109888");
-//            job.setJobName("v2Task2");
-//            job.setJobGroup("SYSTEM");
-//            job.setCronExpression("*/6 * * * * ?");
-//            //并发执行
-//            job.setConcurrent("0");
-//            //0启用
-//            job.setStatus(1);
-//            //执行的job类
-//            job.setInvokeTarget("v2Task.runTask2(1,2l,'asa',true,2D)");
-//            try {
-//                //防止因为数据问题重复创建
-//                if(checkJobExists(job))
-//                {
-//                    deleteJob(job);
-//                }
-//                createSchedule(job);
-//	        } catch (SchedulerException e) {
-//	            e.printStackTrace();
-//	        }
-//        }
 
         start();
 
@@ -101,7 +77,7 @@ public class QuartzSchedulerUtil {
      * @param job
      * @throws SchedulerException
      */
-    private void createSchedule(SysQuartzJob job) throws SchedulerException {
+    public void createSchedule(SysQuartzJob job) throws SchedulerException {
         if (!checkJobExists(job)) {
             //获取指定的job工作类
             Class<? extends Job> jobClass = getQuartzJobClass(job);
