@@ -73,14 +73,14 @@ public class DailyTask implements Runnable {
                     return map;
                 }
 
-                stringBuilder.append("\n").append(map.get("msg"));
+                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
             }
         }
 
         if (miHoYoSign != null) {
             try {
                 Map<String, Object> map = miHoYoSign.doSingleThreadSign();
-                stringBuilder.append("\n").append(map.get("msg"));
+                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
             } catch (Exception e) {
                 stringBuilder.append("\n").append("[ERROR]miHoYoThreadSign执行异常！").append(e.getMessage());
                 e.printStackTrace();
@@ -90,7 +90,7 @@ public class DailyTask implements Runnable {
             try {
                 List<Map<String, Object>> list = miHoYoSign.doSign();
                 for (Map<String, Object> map : list) {
-                    stringBuilder.append("\n").append(map.get("msg"));
+                    stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
                 }
             } catch (Exception e) {
                 stringBuilder.append("\n").append("[ERROR]miHoYoSign执行异常！").append(e.getMessage());

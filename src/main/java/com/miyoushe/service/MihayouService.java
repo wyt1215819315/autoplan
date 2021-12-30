@@ -348,6 +348,7 @@ public class MihayouService {
 
     public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userId) {
         Map<String, Object> map = new HashMap<>();
+
         AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoId);
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", 500);
@@ -384,7 +385,6 @@ public class MihayouService {
             DailyTask dailyTask = new DailyTask(account);
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i + 1).append("次任务");
                 Map<String, Object> maprun = dailyTask.doDailyTask();
                 if (!(boolean) maprun.get("flag")) {
                     if (i != reconnect - 1) {
@@ -396,7 +396,7 @@ public class MihayouService {
                     break;
                 } else {
                     //任务成功完成
-                    msg.append("\n").append(maprun.get("msg")).append("\n[SUCCESS]任务全部正常完成，进程退出");
+                    msg.append("\n").append(maprun.get("msg")).append("\n-----------------\n").append("[SUCCESS] 任务全部正常完成，进程退出");
                     autoMihayou1.setStatus("200");
                     break;
                 }

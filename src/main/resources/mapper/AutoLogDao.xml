@@ -51,8 +51,7 @@
                 #{status,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, #{date,jdbcType=TIMESTAMP},
                 #{text,jdbcType=VARCHAR}, #{other,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog"
-            useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.AutoLog" useGeneratedKeys="true">
         insert into auto_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="autoId != null">

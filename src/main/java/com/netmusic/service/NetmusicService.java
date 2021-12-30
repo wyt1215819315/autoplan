@@ -233,19 +233,23 @@ public class NetmusicService {
             //更新任务状态
             AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "1", null);
             netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+
             //执行任务
             int reconnect = 2;//最大重试次数
             String phone = autoNetmusic.getPhone();
             String password = autoNetmusic.getPassword();
             String countrycode = autoNetmusic.getCountrycode();
+
             Map<String, String> infos = new HashMap<>();
             infos.put("phone", phone);
             infos.put("password", password);
             infos.put("countrycode", countrycode);
+
             StringBuilder msg = new StringBuilder();
             for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i + 1).append("次任务");
+
                 Map<String, Object> run = NeteaseMusicUtil.run(infos);
+
                 if (!(boolean) run.get("flag")) {
                     if (i != reconnect - 1) {
                         msg.append(run.get("msg"));
@@ -257,7 +261,7 @@ public class NetmusicService {
                 }
                 if (run.get("complete") != null && (boolean) run.get("complete")) {
                     //任务成功完成
-                    msg.append("\n").append(run.get("msg")).append("\n[SUCCESS]任务全部正常完成，进程退出");
+                    msg.append("\n").append(run.get("msg")).append("\n-----------------\n").append("[SUCCESS] 任务全部正常完成，进程退出");
                     autoNetmusic1.setStatus("200");
                     break;
                 } else {
