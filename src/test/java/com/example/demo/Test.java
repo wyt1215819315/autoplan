@@ -1,9 +1,5 @@
 package com.example.demo;
 
-import com.oldwu.util.HttpUtils;
-
-import java.util.Arrays;
-
 public class Test {
 
     public static void main(String[] args) {
