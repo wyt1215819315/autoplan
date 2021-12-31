@@ -95,131 +95,17 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_sys_quartz_job_log
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from t_sys_quartz_job_log
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
   <delete id="deleteByExample" parameterType="com.oldwu.domain.SysQuartzJobLogExample">
     delete from t_sys_quartz_job_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+
   <delete id="deleteAll">
     delete from t_sys_quartz_job_log
   </delete>
-
-  <insert id="insert" parameterType="com.oldwu.domain.SysQuartzJobLog">
-    insert into t_sys_quartz_job_log (
-      	  	       id,
-       	  	       job_name,
-       	  	       job_group,
-       	  	       invoke_target,
-       	  	       job_message,
-       	  	       status,
-       	  	       exception_info,
-       	  	       start_time,
-       	  	    	  end_time
-       	    )
-    values (
-	  	  	      	#{id,jdbcType=VARCHAR},
-       	  	      	#{jobName,jdbcType=VARCHAR},
-       	  	      	#{jobGroup,jdbcType=VARCHAR},
-       	  	      	#{invokeTarget,jdbcType=VARCHAR},
-       	  	      	#{jobMessage,jdbcType=VARCHAR},
-       	  	      	#{status,jdbcType=INTEGER},
-       	  	      	#{exceptionInfo,jdbcType=VARCHAR},
-       	  	      	#{startTime,jdbcType=TIMESTAMP},
-       	  	    	  #{endTime,jdbcType=TIMESTAMP}
-       	    )
-  </insert>
-  
-  <insert id="insertSelective" parameterType="com.oldwu.domain.SysQuartzJobLog">
-    insert into t_sys_quartz_job_log
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-          
-      <if test="id != null">
-        id,
-      </if>
-      
-         
-      <if test="jobName != null">
-        job_name,
-      </if>
-      
-         
-      <if test="jobGroup != null">
-        job_group,
-      </if>
-      
-         
-      <if test="invokeTarget != null">
-        invoke_target,
-      </if>
-      
-         
-      <if test="jobMessage != null">
-        job_message,
-      </if>
-      
-         
-      <if test="status != null">
-        status,
-      </if>
-      
-         
-      <if test="exceptionInfo != null">
-        exception_info,
-      </if>
-      
-         
-      <if test="startTime != null">
-        start_time,
-      </if>
-      
-         
-      <if test="endTime != null">
-        end_time,
-      </if>
-      
-         </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-          <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
-          <if test="jobName != null">
-        #{jobName,jdbcType=VARCHAR},
-      </if>
-          <if test="jobGroup != null">
-        #{jobGroup,jdbcType=VARCHAR},
-      </if>
-          <if test="invokeTarget != null">
-        #{invokeTarget,jdbcType=VARCHAR},
-      </if>
-          <if test="jobMessage != null">
-        #{jobMessage,jdbcType=VARCHAR},
-      </if>
-          <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-          <if test="exceptionInfo != null">
-        #{exceptionInfo,jdbcType=VARCHAR},
-      </if>
-          <if test="startTime != null">
-        #{startTime,jdbcType=TIMESTAMP},
-      </if>
-          <if test="endTime != null">
-        #{endTime,jdbcType=TIMESTAMP},
-      </if>
-        </trim>
-  </insert>
   
   <select id="countByExample" parameterType="com.oldwu.domain.SysQuartzJobLogExample" resultType="java.lang.Long">
     select count(*) from t_sys_quartz_job_log
@@ -282,58 +168,4 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  
-  
-      <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.domain.SysQuartzJobLog">
-    update t_sys_quartz_job_log
-    <set>
-                          <if test="jobName != null">
-        job_name = #{jobName,jdbcType=VARCHAR},
-      </if>
-                      <if test="jobGroup != null">
-        job_group = #{jobGroup,jdbcType=VARCHAR},
-      </if>
-                      <if test="invokeTarget != null">
-        invoke_target = #{invokeTarget,jdbcType=VARCHAR},
-      </if>
-                      <if test="jobMessage != null">
-        job_message = #{jobMessage,jdbcType=VARCHAR},
-      </if>
-                      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
-                      <if test="exceptionInfo != null">
-        exception_info = #{exceptionInfo,jdbcType=VARCHAR},
-      </if>
-                      <if test="startTime != null">
-        start_time = #{startTime,jdbcType=TIMESTAMP},
-      </if>
-                      <if test="endTime != null">
-        end_time = #{endTime,jdbcType=TIMESTAMP},
-      </if>
-              </set>
-    where 
-            id = #{id,jdbcType=VARCHAR}
-                                                                          
-  </update>
-
-      	      	   	      	   	      	   	      	   	      	   	      	   	      	   	      	   	      	
-
-  <update id="updateByPrimaryKey" parameterType="com.oldwu.domain.SysQuartzJobLog">
-    update t_sys_quartz_job_log
-    set 
-             	        	    	 			job_name = #{jobName,jdbcType=VARCHAR},
-		     	        	    	 			job_group = #{jobGroup,jdbcType=VARCHAR},
-		     	        	    	 			invoke_target = #{invokeTarget,jdbcType=VARCHAR},
-		     	        	    	 			job_message = #{jobMessage,jdbcType=VARCHAR},
-		     	        	    	 			status = #{status,jdbcType=INTEGER},
-		     	        	    	 			exception_info = #{exceptionInfo,jdbcType=VARCHAR},
-		     	        	    	 			start_time = #{startTime,jdbcType=TIMESTAMP},
-		     	        	    	 			end_time = #{endTime,jdbcType=TIMESTAMP}
-		     	        where 
-            id = #{id,jdbcType=VARCHAR}
-                                                                            
-  </update>
-  
-                                                 
 </mapper>

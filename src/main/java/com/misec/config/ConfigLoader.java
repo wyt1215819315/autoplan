@@ -31,6 +31,7 @@ public class ConfigLoader {
     private static String defaultConfig;
 
     private static AutoBilibiliDao bilibiliDao;
+
     @Autowired
     public void getDao(AutoBilibiliDao bilibiliDao){
         ConfigLoader.bilibiliDao = bilibiliDao;
@@ -54,7 +55,7 @@ public class ConfigLoader {
     }
 
     public static TaskConfig getConfigJsonFromDateBase(int autoId) {
-        AutoBilibili autoBilibili = bilibiliDao.selectByPrimaryKey(autoId);
+        AutoBilibili autoBilibili = bilibiliDao.selectById(autoId);
         TaskConfig config = new TaskConfig();
         config.setUpLive(autoBilibili.getUplive());
         config.setNumberOfCoins(autoBilibili.getNumberofcoins());

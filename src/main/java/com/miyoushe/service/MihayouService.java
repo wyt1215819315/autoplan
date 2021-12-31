@@ -1,6 +1,7 @@
 package com.miyoushe.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
@@ -34,7 +35,7 @@ public class MihayouService {
 
 
     public List<AutoMihayou> getAllPlan() {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectAll();
+        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
         List<AutoMihayou> result = new ArrayList<>();
         for (AutoMihayou mihayous : autoMihayous) {
             mihayous.setCookie(null);
@@ -93,7 +94,7 @@ public class MihayouService {
         autoLog.setType("mihuyou");
         try {
             autoLogDao.deleteByAutoId(autoLog);
-            int i = mihayouDao.deleteByPrimaryKey(autoid);
+            int i = mihayouDao.deleteById(autoid);
             if (i > 0) {
                 map.put("code", 200);
                 map.put("msg", "删除成功");
@@ -156,11 +157,11 @@ public class MihayouService {
 //            AutoMihayou autoMihayou1 = mihayouDao.selectByGenshinUid(autoMihayou.getGenshinUid());
         if (autoMihayou1 == null || autoMihayou1.getId() == null) {
             //insert
-            mihayouDao.insertSelective(autoMihayou);
+            mihayouDao.insert(autoMihayou);
         } else {
             //update
             autoMihayou.setId(autoMihayou1.getId());
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou);
+            mihayouDao.updateById(autoMihayou);
         }
         for (Map<String, Object> uidInfoMap : uidInfo) {
             Map<String, String> map1 = new HashMap<>();
@@ -237,7 +238,7 @@ public class MihayouService {
         } else {
             if (!StringUtils.isBlank(lcookie) && autoMihayou.getId() != null) {
                 String login_uid = HttpUtils.getCookieByName(lcookie, "login_uid");
-                String suid = mihayouDao.selectByPrimaryKey(autoMihayou.getId()).getSuid();
+                String suid = mihayouDao.selectById(autoMihayou.getId()).getSuid();
                 if (!StringUtils.isBlank(login_uid) && !StringUtils.isBlank(suid)) {
                     if (!login_uid.equals(suid)) {
                         map.put("flag", false);
@@ -303,7 +304,7 @@ public class MihayouService {
     }
 
     public AutoMihayou getMyEditPlan(AutoMihayou autoMihayou1) {
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoMihayou1.getId());
+        AutoMihayou autoMihayou = mihayouDao.selectById(autoMihayou1.getId());
         if (autoMihayou == null || autoMihayou.getId() == null) {
             return null;
         }
@@ -317,7 +318,7 @@ public class MihayouService {
 
     public Map<String, Object> editMiHuYouPlan(AutoMihayou autoMihayou1) {
         Map<String, Object> map = new HashMap<>();
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoMihayou1.getId());
+        AutoMihayou autoMihayou = mihayouDao.selectById(autoMihayou1.getId());
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", -1);
             map.put("msg", "参数错误！");
@@ -336,7 +337,7 @@ public class MihayouService {
             map.put("msg", formResult.get("msg"));
             return map;
         }
-        int i = mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+        int i = mihayouDao.updateById(autoMihayou1);
         if (i > 0) {
             map.put("code", 200);
             map.put("msg", "操作成功！");
@@ -350,7 +351,7 @@ public class MihayouService {
     public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userId) {
         Map<String, Object> map = new HashMap<>();
 
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoId);
+        AutoMihayou autoMihayou = mihayouDao.selectById(autoId);
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", 500);
             map.put("msg", "参数错误！");

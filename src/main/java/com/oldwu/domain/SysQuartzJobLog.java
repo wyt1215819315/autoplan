@@ -1,5 +1,6 @@
 package com.oldwu.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.oldwu.util.DateUtils;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * @email 115889198@qq.com
  * @date 2019-09-13 00:03:42
  */
+@TableName("t_sys_quartz_job_log")
 public class SysQuartzJobLog implements Serializable {
 
 	private static final long serialVersionUID = 1L;

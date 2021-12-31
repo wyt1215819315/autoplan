@@ -1,5 +1,8 @@
 package com.oldwu.domain;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +11,7 @@ import java.io.Serializable;
  * @email 115889198@qq.com
  * @date 2019-09-13 00:03:35
  */
+@TableName("t_sys_quartz_job")
 public class SysQuartzJob implements Serializable {
 
 	private static final long serialVersionUID = 1L;

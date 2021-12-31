@@ -31,7 +31,7 @@ public class UserService {
             //创建info
             sysUserInfo = new SysUserInfo();
             sysUserInfo.setUserId(userId);
-            userInfoDao.insertSelective(sysUserInfo);
+            userInfoDao.insert(sysUserInfo);
         }
         return sysUserInfo;
     }
@@ -42,7 +42,7 @@ public class UserService {
             return AjaxResult.doError("查询用户信息出错！");
         }
         sysUserInfo.setId(sysUserInfo1.getId());
-        int i = userInfoDao.updateByPrimaryKeySelective(sysUserInfo);
+        int i = userInfoDao.updateById(sysUserInfo);
         if (i > 0) {
             return AjaxResult.doSuccess("更新信息成功！");
         }

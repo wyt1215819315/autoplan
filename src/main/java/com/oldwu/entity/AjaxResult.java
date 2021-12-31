@@ -44,7 +44,7 @@ public class AjaxResult {
 
     public static AjaxResult doSuccess() {
         AjaxResult ajaxResult = new AjaxResult();
-        ajaxResult.setMsg("ok");
+        ajaxResult.setMsg("操作成功！");
         return ajaxResult;
     }
 
@@ -63,7 +63,7 @@ public class AjaxResult {
 
     public static AjaxResult doSuccess(Object data) {
         AjaxResult ajaxResult = new AjaxResult();
-        ajaxResult.setMsg("ok");
+        ajaxResult.setMsg("操作成功！");
         ajaxResult.setData(data);
         return ajaxResult;
     }
@@ -77,7 +77,7 @@ public class AjaxResult {
 
     public static AjaxResult doError() {
         AjaxResult ajaxResult = new AjaxResult(-1);
-        ajaxResult.setMsg("failed");
+        ajaxResult.setMsg("操作失败！");
         return ajaxResult;
     }
 

@@ -1,5 +1,6 @@
 package com.oldwu.task;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.misec.BiliMain;
 import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
@@ -65,7 +66,7 @@ public class BiliTask {
      */
     public void doAutoCheck() {
 
-        List<AutoBilibili> autoBilibilis = bilibiliDao.selectAll();
+        List<AutoBilibili> autoBilibilis = bilibiliDao.selectList(new QueryWrapper<>());
 
         for (AutoBilibili autoBilibili : autoBilibilis) {
             OldwuLog.clear();
@@ -123,7 +124,7 @@ public class BiliTask {
 
             //写入至数据库
             AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
-            logDao.insertSelective(bilibili);
+            logDao.insert(bilibili);
 
             //更新用户信息,一并检查cookie
             Map<String, String> map;

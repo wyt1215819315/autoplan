@@ -1,25 +1,15 @@
 package com.miyoushe.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.miyoushe.model.AutoMihayou;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-public interface AutoMihayouDao {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(AutoMihayou record);
-
-    int insertSelective(AutoMihayou record);
-
-    AutoMihayou selectByPrimaryKey(Integer id);
-
-    List<AutoMihayou> selectAll();
+@Mapper
+public interface AutoMihayouDao extends BaseMapper<AutoMihayou> {
 
     List<AutoMihayou> selectMine(Integer userid);
-
-    int updateByPrimaryKeySelective(AutoMihayou record);
-
-    int updateByPrimaryKey(AutoMihayou record);
 
     AutoMihayou selectBystuid(String suid);
 

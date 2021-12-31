@@ -105,7 +105,7 @@ public class BiliService {
     }
 
     public AutoBilibili getMyEditPlan(AutoBilibili autoBilibili1) {
-        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoBilibili1.getId());
         if (autoBilibili == null || autoBilibili.getId() == null) {
             return null;
         }
@@ -179,7 +179,7 @@ public class BiliService {
         BiliUser biliUser = biliUserDao.selectByMid(mid);
         if (biliUser == null || biliUser.getId() == null) {
             //将数据储存到任务表以及获取用户信息储存到biliuser表和bili任务表
-            autoBilibiliDao.insertSelective(autoBilibili);
+            autoBilibiliDao.insert(autoBilibili);
             if (autoBilibili.getId() <= 0) {
                 map.put("flag", "false");
                 map.put("msg", "数据库错误！添加任务信息失败！");
@@ -198,7 +198,7 @@ public class BiliService {
             //更新用户信息
             Integer autoId = biliUser.getAutoId();
             autoBilibili.setId(autoId);
-            int i = autoBilibiliDao.updateByPrimaryKeySelective(autoBilibili);
+            int i = autoBilibiliDao.updateById(autoBilibili);
             if (i <= 0) {
                 map.put("flag", "false");
                 map.put("msg", "数据库错误！更新任务信息失败！");
@@ -225,7 +225,7 @@ public class BiliService {
         biliUser1.setVipDueDate(new Date(userInfo.getVipDueDate()));
         if (!update) {
             //增加用户信息
-            return biliUserDao.insertSelective(biliUser1) > 0;
+            return biliUserDao.insert(biliUser1) > 0;
         } else {
             //update
             biliUser1.setAutoId(autoBilibili.getId());
@@ -359,7 +359,7 @@ public class BiliService {
             //然后删除b站用户数据
             biliUserDao.deleteByAutoId(autoid);
             //最后删除主要数据
-            int i = autoBilibiliDao.deleteByPrimaryKey(autoid);
+            int i = autoBilibiliDao.deleteById(autoid);
             if (i > 0) {
                 map.put("code", 200);
                 map.put("msg", "删除成功");
@@ -375,7 +375,7 @@ public class BiliService {
 
     public Map<String, Object> editBiliPlan(AutoBilibili autoBilibili1) {
         Map<String, Object> map = new HashMap<>();
-        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoBilibili1.getId());
         if (autoBilibili == null || autoBilibili.getId() == null) {
             map.put("code", -1);
             map.put("msg", "参数错误！");
@@ -389,7 +389,7 @@ public class BiliService {
             return map;
         }
         checkForm(autoBilibili1, true);
-        int i = autoBilibiliDao.updateByPrimaryKeySelective(autoBilibili1);
+        int i = autoBilibiliDao.updateById(autoBilibili1);
         if (i > 0) {
             map.put("code", 200);
             map.put("msg", "操作成功！");
