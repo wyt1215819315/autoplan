@@ -61,6 +61,13 @@ public class AjaxResult {
         return ajaxResult;
     }
 
+    public static AjaxResult doSuccess(Object data) {
+        AjaxResult ajaxResult = new AjaxResult();
+        ajaxResult.setMsg("ok");
+        ajaxResult.setData(data);
+        return ajaxResult;
+    }
+
     public static AjaxResult doSuccess(String msg, Object data, Integer code) {
         AjaxResult ajaxResult = new AjaxResult(code);
         ajaxResult.setMsg(msg);

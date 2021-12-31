@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/user/bili")
 public class BiliController {
 
@@ -22,23 +22,30 @@ public class BiliController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 获取这个用户的b站挂机列表
+     * @param principal user
+     * @return
+     */
+    @PostMapping("/list")
+    public AjaxResult list(Principal principal) {
+        //TODO 获取这个用户的b站挂机列表
+        return null;
+    }
 
     @PostMapping("/edit")
-    @ResponseBody
-    public Map<String, Object> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+    public Map<String, Object> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.editBiliPlan(autoBilibili);
     }
 
     @PostMapping("/add")
-    @ResponseBody
-    public Map<String, String> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+    public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.addBiliPlan(autoBilibili);
     }
 
     @PostMapping("/delete")
-    @ResponseBody
     public Map<String, Object> delete(@Param("bid") Integer bid, Principal principal) {
         AutoBilibili autoBilibili = new AutoBilibili();
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
@@ -47,13 +54,11 @@ public class BiliController {
     }
 
     @GetMapping("/qrcode")
-    @ResponseBody
     public AjaxResult getQrcode(){
         return service.getQrcodeAuth();
     }
 
     @PostMapping("/qrcode")
-    @ResponseBody
     public Map<String,Object> getQrcodeStatus(@RequestBody String oauthKey){
         return service.getQrcodeStatus(oauthKey);
     }
