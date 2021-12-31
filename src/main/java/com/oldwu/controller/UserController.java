@@ -5,6 +5,7 @@ import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
 import com.oldwu.domain.Msg;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.SysUserInfo;
@@ -115,14 +116,14 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/api/user/userinfo/edit")
-    public Map<String,Object> userInfoEdit(Principal principal, @RequestBody SysUserInfo userInfo) {
+    public AjaxResult userInfoEdit(Principal principal, @RequestBody SysUserInfo userInfo) {
         int userId = userService.getUserId(principal.getName());
         return userService.editUserInfo(userId,userInfo);
     }
 
     @ResponseBody
     @PostMapping("/api/user/checkwebhook")
-    public Map<String,Object> checkWebhook(@RequestBody SysUserInfo userInfo) {
+    public AjaxResult checkWebhook(@RequestBody SysUserInfo userInfo) {
         return userService.checkWebhook(userInfo.getWebhook());
     }
 }

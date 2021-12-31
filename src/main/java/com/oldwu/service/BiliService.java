@@ -12,10 +12,7 @@ import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
 import com.oldwu.dao.UserDao;
-import com.oldwu.entity.AutoBilibili;
-import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
+import com.oldwu.entity.*;
 import com.oldwu.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -84,17 +81,17 @@ public class BiliService {
         }
     }
 
-    public String getQrcodeAuth() {
+    public AjaxResult getQrcodeAuth() {
         try {
             HttpResponse httpResponse = HttpUtils.doGet(qrcodeUrl, null, HttpUtils.getHeaders(), null);
             JSONObject json = HttpUtils.getJson(httpResponse);
             if (json != null && json.getInteger("code") == 0) {
-                return json.getJSONObject("data").getString("oauthKey");
+                return AjaxResult.doSuccess(json.getJSONObject("data").getString("oauthKey"));
             } else {
-                return "二维码获取失败！";
+                return AjaxResult.doError("二维码获取失败！");
             }
         } catch (Exception e) {
-            return "获取二维码失败！";
+            return AjaxResult.doError("二维码获取失败！");
         }
     }
 

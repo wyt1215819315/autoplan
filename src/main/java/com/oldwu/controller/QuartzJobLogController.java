@@ -1,10 +1,10 @@
 package com.oldwu.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.oldwu.domain.AjaxResult;
 import com.oldwu.domain.ResultTable;
 import com.oldwu.domain.SysQuartzJobLog;
 import com.oldwu.domain.Tablepar;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.service.SysQuartzJobLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -313,6 +313,8 @@
                         zIndex: layer.zIndex,
                         success: function (layero) {
                             $.get(rootPath + "/api/user/bili/qrcode", {}, function (str) {
+                                var parse = JSON.parse(str);
+                                str = parse.data;
                                 $('#qrcode').html("");
                                 $('#qrcode').qrcode({
                                     render: "canvas",

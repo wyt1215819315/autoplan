@@ -16,52 +16,52 @@ public class AjaxResult {
         this.code = code;
     }
 
-    public AjaxResult doSuccess() {
+    public static AjaxResult doSuccess() {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg("ok");
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg) {
+    public static AjaxResult doSuccess(String msg) {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg(msg);
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg, Object data) {
+    public static AjaxResult doSuccess(String msg, Object data) {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg, Object data, Integer code) {
+    public static AjaxResult doSuccess(String msg, Object data, Integer code) {
         AjaxResult ajaxResult = new AjaxResult(code);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doError() {
+    public static AjaxResult doError() {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg("failed");
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg) {
+    public static AjaxResult doError(String msg) {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg(msg);
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg, Object data) {
+    public static AjaxResult doError(String msg, Object data) {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg, Object data, Integer code) {
+    public static AjaxResult doError(String msg, Object data, Integer code) {
         AjaxResult ajaxResult = new AjaxResult(code);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);

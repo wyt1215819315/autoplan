@@ -1,9 +1,9 @@
 package com.oldwu.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.oldwu.domain.AjaxResult;
 import com.oldwu.domain.ResuTree;
 import com.oldwu.domain.ResultTable;
+import com.oldwu.entity.AjaxResult;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -84,42 +84,42 @@ public class BaseController {
      * 返回成功
      */
     public AjaxResult success() {
-        return AjaxResult.success();
+        return AjaxResult.doSuccess();
     }
 
     /**
      * 返回失败消息
      */
     public AjaxResult error() {
-        return AjaxResult.error();
+        return AjaxResult.doError();
     }
 
     /**
      * 返回成功消息
      */
     public AjaxResult success(String message) {
-        return AjaxResult.success(message);
+        return AjaxResult.doSuccess(message);
     }
 
     /**
      * 返回失败消息
      */
     public AjaxResult error(String message) {
-        return AjaxResult.error(message);
+        return AjaxResult.doError(message);
     }
 
     /**
      * 返回错误码消息
      */
     public AjaxResult error(int code, String message) {
-        return AjaxResult.error(code, message);
+        return AjaxResult.doError(message, "", code);
     }
 
     /**
      * 返回object数据
      */
     public AjaxResult retobject(int code, Object data) {
-        return AjaxResult.successData(code, data);
+        return AjaxResult.doSuccess("", data, code);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.oldwu.controller;
 
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoBilibili;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.UserService;
@@ -47,7 +48,7 @@ public class BiliController {
 
     @GetMapping("/qrcode")
     @ResponseBody
-    public String getQrcode(){
+    public AjaxResult getQrcode(){
         return service.getQrcodeAuth();
     }
 
