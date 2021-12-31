@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan({"com.oldwu.dao","com.oldwu.mapper","com.netmusic.dao","com.miyoushe.mapper"})
-public class DemoApplication {
+public class AutoPlanApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(AutoPlanApplication.class, args);
     }
 
 }

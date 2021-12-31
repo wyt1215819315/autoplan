@@ -2,12 +2,8 @@ package com.oldwu.task.quartz.task;
 
 import cn.hutool.core.date.DateUtil;
 import com.oldwu.dao.BiliUserDao;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * 测试类

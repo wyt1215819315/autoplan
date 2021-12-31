@@ -4,20 +4,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
-import com.miyoushe.sign.DailyTask;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
-import com.miyoushe.sign.gs.GenshinHelperProperties;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
-import com.push.PushUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class MihayouService {
@@ -348,6 +349,7 @@ public class MihayouService {
 
     public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userId) {
         Map<String, Object> map = new HashMap<>();
+
         AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoId);
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", 500);
@@ -366,49 +368,8 @@ public class MihayouService {
             return map;
         }
         Thread t = new Thread(() -> {
-            int reconnect = 1;//最大重试次数
-            //更新任务状态
-            AutoMihayou autoMihayou1 = new AutoMihayou(autoId, "1", null);
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
-
-            //执行任务
-            String suid = autoMihayou.getSuid();
-            String stoken = autoMihayou.getStoken();
-            String cookie = autoMihayou.getCookie();
-
-            GenshinHelperProperties.Account account = new GenshinHelperProperties.Account();
-            account.setCookie(cookie);
-            account.setStuid(suid);
-            account.setStoken(stoken);
-
-            DailyTask dailyTask = new DailyTask(account);
-            StringBuilder msg = new StringBuilder();
-            for (int i = 0; i < reconnect; i++) {
-                msg.append("\n开始第").append(i + 1).append("次任务");
-                Map<String, Object> maprun = dailyTask.doDailyTask();
-                if (!(boolean) maprun.get("flag")) {
-                    if (i != reconnect - 1) {
-                        msg.append(maprun.get("msg"));
-                        msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
-                        continue;
-                    }
-                    autoMihayou1.setStatus("500");
-                    break;
-                } else {
-                    //任务成功完成
-                    msg.append("\n").append(maprun.get("msg")).append("\n[SUCCESS]任务全部正常完成，进程退出");
-                    autoMihayou1.setStatus("200");
-                    break;
-                }
-            }
-            //执行推送任务
-            PushUtil.doPush(msg.toString(), autoMihayou.getWebhook(), userId);
-            //日志写入至数据库
-            AutoLog netlog = new AutoLog(autoId, "mihuyou", autoMihayou1.getStatus(), userId, new Date(), msg.toString());
-            autoLogDao.insertSelective(netlog);
-            //更新任务状态
-            autoMihayou1.setEndate(new Date());
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+            MiHuYouTask miHuYouTask = new MiHuYouTask();
+            miHuYouTask.runTask(autoId, userId, autoMihayou);
         });
         t.start();
         map.put("code", 200);

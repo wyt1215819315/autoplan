@@ -61,24 +61,30 @@ public class NeteaseMusicUtil {
      */
     public static Map<String, Object> run(Map<String, String> userInfo) {
         int reconn = 3;
+
         Map<String, Object> map = new HashMap<>();
+
         String countrycode = userInfo.get("countrycode");
         String password = userInfo.get("password");
+
         if (countrycode == null || countrycode.equals("") || !StringUtils.isNumeric(countrycode)) {
             userInfo.put("countrycode", "86");
         }
+
         if (password.length() != 32) {
             userInfo.put("password", md532(password));
         }
+
         //登录校验
         boolean flag = false;
         StringBuilder msg = new StringBuilder();
+
         Map<String, String> login = new HashMap<>();
         for (int i = 0; i < reconn; i++) {
             login = login(userInfo);
             flag = Boolean.parseBoolean(login.get("flag"));
             if (flag) {
-                msg.append("\n").append(login.get("msg"));
+                msg.append(login.get("msg"));
                 break;
             }
             msg.append("\n").append(login.get("msg"));
@@ -103,7 +109,7 @@ public class NeteaseMusicUtil {
             Map<String, String> sign1 = sign(1, csrf, cookie);
             flag2 = Boolean.parseBoolean(sign1.get("flag"));
             if (flag1 && flag2) {
-                msg.append("\n").append(sign.get("msg")).append("\n").append(sign1.get("msg"));
+                msg.append("\n").append("-----------------\n").append(sign.get("msg")).append("\n").append(sign1.get("msg"));
                 break;
             }
             msg.append("\n").append(sign.get("msg")).append(sign1.get("msg"));
@@ -114,7 +120,7 @@ public class NeteaseMusicUtil {
             Map<String, String> shuaMap = shuaMusicTask(uid, csrf, cookie);
             flag3 = Boolean.parseBoolean(shuaMap.get("flag"));
             if (flag3) {
-                msg.append("\n").append(shuaMap.get("msg"));
+                msg.append("\n").append("-----------------\n").append(shuaMap.get("msg"));
                 break;
             }
             msg.append("\n").append(shuaMap.get("msg"));
@@ -124,7 +130,7 @@ public class NeteaseMusicUtil {
             map.put("complete", true);
         }
         map.put("flag", true);
-        map.put("msg", login.get("msg") + "\n" + msg);
+        map.put("msg", msg);
         return map;
     }
 
@@ -507,7 +513,7 @@ public class NeteaseMusicUtil {
                 String level1 = level.get("level");
                 int count = Integer.parseInt(level.get("nextPlayCount")) - Integer.parseInt(level.get("nowPlayCount"));
                 int days = Integer.parseInt(level.get("nextLoginCount")) - Integer.parseInt(level.get("nowLoginCount"));
-                String msg = nickname + " 登录成功，当前等级：" + level1 + "\n\n距离升级还需听" + count + "首歌\n\n距离升级还需登录" + days + "天";
+                String msg = nickname + " 登录成功，当前等级：" + level1 + "\n距离升级还需听" + count + "首歌\n距离升级还需登录" + days + "天";
                 result.put("level", level1);
                 result.put("days", String.valueOf(days));
                 result.put("count", String.valueOf(count));

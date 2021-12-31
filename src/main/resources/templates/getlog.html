@@ -8,19 +8,28 @@
         <th:block th:include="include :: static"/>
     </head>
     <body>
-        <div class="container" style="padding-top: 0;margin: 15px">
-            <fieldset class="layui-elem-field layui-field-title" >
-                <legend th:text="${'日志时间：' + log.getDateString()}"></legend>
-            </fieldset>
+        <div class="container" style="padding: 15px; margin: 10px; background-color: #F2F2F2;">
 
-            <pre class="layui-code" lay-title="JavaScript" lay-skin="" th:text="${log.getText()}"></pre> <!-- 在里面存放任意的文本内容 -->
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header" id="showHead"></div>
+                        <div class="layui-card-body" id="showInfo"></div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
+        <p id="dateStirng" style="display: none;">[[${log.getDateString()}]]</p>
+        <p id="text" style="display: none;">[[${log.getText()}]]</p>
+
         <script>
-            layui.use('code', function () { //加载code模块
-                layui.code(); //引用code方法
-            });
+
+            var dateStirng = $("#dateStirng").text();
+            var text = $("#text").text();
+            $("#showHead").html('日志时间：' + dateStirng);
+            $("#showInfo").html(text);
         </script>
         <script th:include="include::layelement"></script>
     </body>

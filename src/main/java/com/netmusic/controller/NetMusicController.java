@@ -2,11 +2,13 @@ package com.netmusic.controller;
 
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
-import com.oldwu.entity.AutoBilibili;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Map;

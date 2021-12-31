@@ -28,18 +28,13 @@ import java.util.List;
  **/
 @Service
 public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJobExample> {
+
     @Autowired
     private SysQuartzJobMapper sysQuartzJobMapper;
-    @Autowired
-    private QuartzSchedulerUtil scheduler;
 
-    /**
-     * 分页查询
-     *
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
+    @Autowired
+    private QuartzSchedulerUtil quartzSchedulerUtil;
+
     public PageInfo<SysQuartzJob> list(Tablepar tablepar, String name) {
         SysQuartzJobExample testExample = new SysQuartzJobExample();
         testExample.setOrderByClause("id ASC");
@@ -61,65 +56,57 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
         return sysQuartzJobMapper.deleteByExample(example);
     }
 
-
     @Override
     public SysQuartzJob selectByPrimaryKey(String id) {
-
         return sysQuartzJobMapper.selectByPrimaryKey(id);
     }
-
 
     @Override
     public int updateByPrimaryKeySelective(SysQuartzJob record) {
         int i = sysQuartzJobMapper.updateByPrimaryKeySelective(record);
         if (i > 0) {
             //修改定时器
-            scheduler.modifyJob(record);
+            quartzSchedulerUtil.modifyJob(record);
         }
         return i;
     }
 
-    /**
-     * 添加
-     */
     @Override
     public int insertSelective(SysQuartzJob record) {
-        //添加雪花主键id
-        record.setId(SnowflakeIdWorker.getUUID());
-        return sysQuartzJobMapper.insertSelective(record);
-    }
+        try {
+            //添加雪花主键id
+            record.setId(SnowflakeIdWorker.getUUID());
 
+            quartzSchedulerUtil.createSchedule(record);
+
+            return sysQuartzJobMapper.insertSelective(record);
+        } catch (SchedulerException e) {
+            return 0;
+        }
+    }
 
     @Override
     public int updateByExampleSelective(SysQuartzJob record, SysQuartzJobExample example) {
-
         return sysQuartzJobMapper.updateByExampleSelective(record, example);
     }
 
-
     @Override
     public int updateByExample(SysQuartzJob record, SysQuartzJobExample example) {
-
         return sysQuartzJobMapper.updateByExample(record, example);
     }
 
     @Override
     public List<SysQuartzJob> selectByExample(SysQuartzJobExample example) {
-
         return sysQuartzJobMapper.selectByExample(example);
     }
 
-
     @Override
     public long countByExample(SysQuartzJobExample example) {
-
         return sysQuartzJobMapper.countByExample(example);
     }
 
-
     @Override
     public int deleteByExample(SysQuartzJobExample example) {
-
         return sysQuartzJobMapper.deleteByExample(example);
     }
 
@@ -136,7 +123,6 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
         return list.size();
     }
 
-
     /**
      * 恢复任务
      *
@@ -147,11 +133,10 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
         job.setStatus(ScheduleConstants.Status.NORMAL.getValue());
         int rows = sysQuartzJobMapper.updateByPrimaryKeySelective(job);
         if (rows > 0) {
-            scheduler.resumeJob(job);
+            quartzSchedulerUtil.resumeJob(job);
         }
         return rows;
     }
-
 
     /**
      * 暂停任务
@@ -164,7 +149,7 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
         //job.setUpdateBy(ShiroUtils.getLoginName());
         int rows = sysQuartzJobMapper.updateByPrimaryKeySelective(job);
         if (rows > 0) {
-            scheduler.pauseJob(job);
+            quartzSchedulerUtil.pauseJob(job);
         }
         return rows;
     }
@@ -186,7 +171,6 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
         return rows;
     }
 
-
     /**
      * 立即运行任务
      *
@@ -194,8 +178,7 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
      */
     @Transactional
     public void run(SysQuartzJob job) throws SchedulerException {
-
-        scheduler.run(job);
+        quartzSchedulerUtil.run(job);
 
     }
 
