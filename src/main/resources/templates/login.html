@@ -42,6 +42,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">验证码</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="imageCode"
+                                       placeholder="请输入验证码"
+                                       required type="text">
+                            </div>
+                            <img src="/code/image"/>
+                        </div>
+                    </div>
+                    <br>
                     <input class="layui-btn layui-btn-lg" id="login" type="submit" value="登录"/>
                 </form>
             </div>

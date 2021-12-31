@@ -3,6 +3,7 @@ package com.oldwu.config;
 import com.oldwu.security.CustomUserService;
 import com.oldwu.security.LoginAuthenticationFailureHandler;
 import com.oldwu.security.LoginAuthenticationSuccessHandler;
+import com.oldwu.security.validate.ValidateCodeFilter;
 import com.oldwu.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Created by yangyibo on 17/1/18.
@@ -28,6 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LoginAuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
+    private ValidateCodeFilter validateCodeFilter;
 
     @Bean
     UserDetailsService customUserService() { //注册UserDetailsService 的bean
@@ -61,7 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.headers().frameOptions().disable();
-        http.authorizeRequests()
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class) // 添加验证码校验过滤器
+                .authorizeRequests()
+                .antMatchers("/code/image").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/api/reg").permitAll()
                 .antMatchers("/reg").permitAll()
