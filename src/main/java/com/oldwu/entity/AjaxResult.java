@@ -2,7 +2,7 @@ package com.oldwu.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(value= JsonInclude.Include.NON_NULL)
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class AjaxResult {
 
     public Integer code = 200;
@@ -16,52 +16,52 @@ public class AjaxResult {
         this.code = code;
     }
 
-    public AjaxResult doSuccess(){
+    public AjaxResult doSuccess() {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg("ok");
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg){
+    public AjaxResult doSuccess(String msg) {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg(msg);
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg,Object data){
+    public AjaxResult doSuccess(String msg, Object data) {
         AjaxResult ajaxResult = new AjaxResult();
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doSuccess(String msg,Object data,Integer code){
+    public AjaxResult doSuccess(String msg, Object data, Integer code) {
         AjaxResult ajaxResult = new AjaxResult(code);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doError(){
+    public AjaxResult doError() {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg("failed");
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg){
+    public AjaxResult doError(String msg) {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg(msg);
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg,Object data){
+    public AjaxResult doError(String msg, Object data) {
         AjaxResult ajaxResult = new AjaxResult(-1);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);
         return ajaxResult;
     }
 
-    public AjaxResult doError(String msg,Object data,Integer code){
+    public AjaxResult doError(String msg, Object data, Integer code) {
         AjaxResult ajaxResult = new AjaxResult(code);
         ajaxResult.setMsg(msg);
         ajaxResult.setData(data);

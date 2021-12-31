@@ -1,7 +1,10 @@
 package com.oldwu.config;
 
 import com.oldwu.security.CustomUserService;
+import com.oldwu.security.LoginAuthenticationFailureHandler;
+import com.oldwu.security.LoginAuthenticationSuccessHandler;
 import com.oldwu.util.MD5Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -19,6 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private LoginAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private LoginAuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     UserDetailsService customUserService() { //注册UserDetailsService 的bean
@@ -68,6 +77,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                //使用ajax方式返回登录结果
+//                .failureHandler(authenticationFailureHandler)
+//                .successHandler(authenticationSuccessHandler)
+//                .loginProcessingUrl("/login")
+//                .usernameParameter("username").passwordParameter("password").permitAll()
                 .loginPage("/login")
                 .failureUrl("/login?error")
                 .permitAll()
