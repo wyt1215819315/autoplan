@@ -131,8 +131,9 @@ public class GiveGift implements Task {
         JsonObject pJson = new JsonObject();
         pJson.addProperty("mid", Integer.parseInt(mid));
         String urlPram = "?mid=" + mid;
-        return HttpUtils.doGet("http://api.live.bilibili.com/room/v1/Room/getRoomInfoOld" + urlPram)
+        return HttpUtils.doGet("https://api.bilibili.com/x/space/acc/info" + urlPram)
                 .get("data").getAsJsonObject()
+                .get("live_room").getAsJsonObject()
                 .get("roomid").getAsString();
     }
 
