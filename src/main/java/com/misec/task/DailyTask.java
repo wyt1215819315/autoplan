@@ -30,7 +30,7 @@ public class DailyTask {
         dailyTasks.add(new CoinAdd());
         dailyTasks.add(new Silver2coin());
         dailyTasks.add(new LiveChecking());
-        dailyTasks.add(new GiveGift());
+        //dailyTasks.add(new GiveGift());
         dailyTasks.add(new ChargeMe());
         dailyTasks.add(new GetVipPrivilege());
         dailyTasks.add(new MatchGame());
