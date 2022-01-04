@@ -49,7 +49,7 @@ public class GetVipPrivilege implements Task {
             return;
         }
 
-        if (vipType == 1 && day == 1 || vipType == 2 && day == 1) {
+        if (vipType == 1 || vipType == 2 && (day == 1 || day % 7 == 0)) {
             OldwuLog.log("开始领取大会员漫画权益");
             log.info("开始领取大会员漫画权益");
             String requestBody = "{\"reason_id\":" + reasonId + "}";
