@@ -15,7 +15,6 @@
         <script th:src="@{/static/layui/layui.js}"></script>
         <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" type="text/css"/>
         <link rel="stylesheet" th:href="@{/static/css/myStyle.css}" type="text/css"/>
-        <link rel="shortcut icon" th:href="@{/static/image/favicon.ico}" type="image/x-icon">
     </div>
 
     <!-- 通用JS -->
@@ -49,12 +48,11 @@
         <ul class="layui-nav" th:fragment="header">
             <li class="layui-nav-item">
                 <a href="/index">
-                    <i class="layui-icon search"></i>
                     Auto_Helper
                 </a>
             </li>
             <li class="layui-nav-item">
-                <a href="javascript:"><i class="layui-icon search"></i>自动任务列表</a>
+                <a href="javascript:">自动任务列表</a>
                 <dl class="layui-nav-child">
                     <dd><a href="/bili/index">bilibili-Helper</a></dd>
                     <dd><a href="/netmusic/index">netmusic-Helper</a></dd>
@@ -62,14 +60,14 @@
                 </dl>
             </li>
             <li class="layui-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                <a href="javascript:"><i class="layui-icon search"></i>自动任务管理</a>
+                <a href="javascript:">自动任务管理</a>
                 <dl class="layui-nav-child">
                     <dd><a th:href="@{/admin/job/view}">定时任务管理</a></dd>
                     <dd><a th:href="@{/admin/joblog/view}">定时任务日志查看</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item" sec:authorize="hasRole('ROLE_USER')">
-                <a href="javascript:"><i class="layui-icon search"></i>欢迎你 [[${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}]]</a>
+                <a href="javascript:">欢迎你 [[${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}]]</a>
                 <dl class="layui-nav-child">
                     <dd><a th:href="@{/my}">我的任务</a></dd>
                     <hr>
@@ -77,10 +75,10 @@
                 </dl>
             </li>
             <li class="layui-nav-item" sec:authorize="!hasRole('ROLE_USER')">
-                <a th:href="@{/login}"><i class="layui-icon search"></i>登录</a>
+                <a th:href="@{/login}">登录</a>
             </li>
             <li class="layui-nav-item" sec:authorize="!hasRole('ROLE_USER')">
-                <a th:href="@{/reg}"><i class="layui-icon search"></i>注册</a>
+                <a th:href="@{/reg}">注册</a>
             </li>
 
         </ul>
