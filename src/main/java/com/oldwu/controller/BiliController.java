@@ -30,6 +30,7 @@ public class BiliController {
     @PostMapping("/list")
     public AjaxResult list(Principal principal) {
         //TODO 获取这个用户的b站挂机列表
+        
         return null;
     }
 

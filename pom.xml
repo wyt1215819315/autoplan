@@ -90,11 +90,17 @@
             <version>2.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.gitee.sunchenbin.mybatis.actable/mybatis-enhance-actable -->
-<!--        <dependency>-->
-<!--            <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>-->
-<!--            <artifactId>mybatis-enhance-actable</artifactId>-->
-<!--            <version>1.5.0.RELEASE</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
+            <artifactId>mybatis-enhance-actable</artifactId>
+            <version>1.5.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-annotation</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>

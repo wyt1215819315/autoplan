@@ -3,13 +3,9 @@ package com.oldwu.domain;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import lombok.Data;
 
-/**
- * Created by yangyibo on 17/1/17.
- */
-
-@Table("sys_role")
+@Table("sys_role_user")
 @Data
-public class SysRole {
+public class SysRoleUser {
 
     @IsKey
     @IsAutoIncrement
@@ -17,7 +13,11 @@ public class SysRole {
     private Integer id;
 
     @Column(isNull = false)
-    @Unique
-    private String name;
+    @IgnoreUpdate
+    private Integer sysUserId;
+
+    @Column(isNull = false)
+    @IgnoreUpdate
+    private Integer sysRoleId;
 
 }
