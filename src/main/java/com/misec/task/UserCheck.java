@@ -41,6 +41,8 @@ public class UserCheck implements Task {
                 log.debug(String.valueOf(userJson));
                 OldwuLog.error("Cookies可能失效了,请仔细检查配置中的DEDEUSERID SESSDATA BILI_JCT三项的值是否正确、过期");
                 log.warn("Cookies可能失效了,请仔细检查配置中的DEDEUSERID SESSDATA BILI_JCT三项的值是否正确、过期");
+
+                return;
             }
             OldwuLog.log("硬币余额: " + userInfo.getMoney());
             OldwuLog.log("用户名称: " + HelpUtil.userNameEncode(userInfo.getUname()));
