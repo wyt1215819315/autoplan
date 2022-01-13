@@ -30,10 +30,11 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     private LoginAuthenticationFailureHandler authenticationFailureHandler;
 
     //使用sessionStrategy将生成的验证码对象存储到Session中
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+    private final SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
     /**
      * 如果请求是/login、对图片验证码进行校验
+     *
      * @param httpServletRequest
      * @param httpServletResponse
      * @param filterChain
@@ -43,8 +44,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         //判断请求页面是否为/login、该路径对应登录form表单的action路径，请求的方法是否为POST，是的话进行验证码校验逻辑，否则直接执行filterChain.doFilter让代码往下走
-        if (StringUtils.equalsIgnoreCase("/login", httpServletRequest.getRequestURI())
-                && StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post")) {
+        String requestURI = httpServletRequest.getRequestURI();
+        boolean b = StringUtils.equalsIgnoreCase("/loginProcessing", requestURI);
+        boolean post = StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post");
+        if (b && post) {
             try {
                 //校验验证码 校验通过、继续向下执行   验证失败、抛出异常
                 validateCode(new ServletWebRequest(httpServletRequest));
@@ -59,9 +62,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 
     /**
      * 对图片验证码进行校验
+     *
      * @param servletWebRequest：请求参数 包含表单提交的图片验证码信息
      * @throws ServletRequestBindingException
-     * @throws ValidateCodeException: 验证码校验失败 抛出异常
+     * @throws ValidateCodeException:         验证码校验失败 抛出异常
      */
     private void validateCode(ServletWebRequest servletWebRequest) throws ServletRequestBindingException, ValidateCodeException {
         //从Session获取保存在服务器端的验证码
