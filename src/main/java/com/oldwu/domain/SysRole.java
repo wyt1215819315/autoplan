@@ -20,4 +20,10 @@ public class SysRole {
     @Unique
     private String name;
 
+    public SysRole() {
+    }
+
+    public SysRole(String name) {
+        this.name = name;
+    }
 }

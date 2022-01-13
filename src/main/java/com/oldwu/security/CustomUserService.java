@@ -3,8 +3,8 @@ package com.oldwu.security;
 import com.oldwu.dao.UserDao;
 import com.oldwu.domain.SysRole;
 import com.oldwu.domain.SysUser;
+import com.oldwu.security.entity.SystemUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,17 +26,16 @@ public class CustomUserService implements UserDetailsService { //自定义UserDe
     public UserDetails loadUserByUsername(String username) { //重写loadUserByUsername 方法获得 userdetails 类型用户
 
         SysUser user = userDao.findByUserName(username);
-        if(user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("用户名不存在");
         }
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        List<SysRole> authorities = new ArrayList<>();
         //用于添加用户的权限。只要把用户权限添加到authorities 就万事大吉。
-        for(SysRole role:user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        for (SysRole role : user.getRoles()) {
+            authorities.add(new SysRole(role.getName()));
             System.out.println(role.getName());
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), authorities);
+        return new SystemUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
 
     }
 
