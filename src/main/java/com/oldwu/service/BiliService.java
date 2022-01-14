@@ -72,7 +72,7 @@ public class BiliService {
                 result.put("code", 200);
                 result.put("msg", "校验成功！已自动填充");
                 result.put("dedeuserid", cookies.get("DedeUserID"));
-                result.put("sessdate", cookies.get("SESSDATA"));
+                result.put("sessdata", cookies.get("SESSDATA"));
                 result.put("bilijct", cookies.get("bili_jct"));
                 return result;
             }
