@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class SysUser {
     private String status;
 
     @Column(type = MySqlTypeConstant.DATETIME,defaultValue = "CURRENT_TIMESTAMP")
-    private String regdate;
+    private Date regdate;
 
     @TableField(exist = false)
     private List<SysRole> roles;
@@ -50,11 +51,11 @@ public class SysUser {
         this.status = status;
     }
 
-    public String getRegdate() {
+    public Date getRegdate() {
         return regdate;
     }
 
-    public void setRegdate(String regdate) {
+    public void setRegdate(Date regdate) {
         this.regdate = regdate;
     }
 
