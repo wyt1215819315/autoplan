@@ -4,7 +4,6 @@ import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
-import com.oldwu.domain.Msg;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yangyibo on 17/1/18.
@@ -49,7 +47,7 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        return "login2";
     }
 
     @GetMapping("/logout")
@@ -59,7 +57,7 @@ public class UserController {
 
     @GetMapping("/reg")
     public String reg() {
-        return "reg";
+        return "reg2";
     }
 
     @PostMapping("/reg")
