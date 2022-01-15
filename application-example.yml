@@ -17,8 +17,7 @@ actable:
     auto: update
   model:
     #分号或者逗号隔开
-    pack: com.oldwu.entity
-  #    ;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
+    pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
   database:
     type: mysql
   index:
