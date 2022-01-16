@@ -76,6 +76,7 @@ function submitform(){
             },
             success : function(d) {
                 if (d.code == 200) {
+                    alert("注册成功，请登录");
                     window.location.href = "/login";
                 }else{
                     showErrorMessage(d.msg);

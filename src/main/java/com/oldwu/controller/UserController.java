@@ -61,15 +61,10 @@ public class UserController {
     }
 
     @PostMapping("/reg")
-    public String regpo(@Param("username") String username, @Param("password") String password, Model model) {
-        String s = regService.doReg(username, password);
-        if (s == null) {
-            model.addAttribute("regok", true);
-            return "login";
-        }
-        model.addAttribute("msg", s);
-        model.addAttribute("error", true);
-        return "reg";
+    @ResponseBody
+    public AjaxResult regPost(@Param("username") String username, @Param("password") String password, Model model) {
+        //TODO 加入验证码验证
+        return regService.doReg(username, password);
     }
 
     @RequestMapping("/index")
