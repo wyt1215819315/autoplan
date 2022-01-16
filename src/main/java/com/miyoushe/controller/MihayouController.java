@@ -2,6 +2,7 @@ package com.miyoushe.controller;
 
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,26 @@ public class MihayouController {
 
     @Autowired
     private MihayouService mihayouService;
+
+    /**
+     * 根据id查询详细信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/view")
+    public AjaxResult view(@Param("id") Integer id) {
+        return mihayouService.view(id);
+    }
+
+    /**
+     * 获取当前登录用户的米哈游列表
+     * @return
+     */
+    @PostMapping("/list")
+    public Map<String, Object> list() {
+        //TODO 获取当前登录用户的米哈游列表
+        return null;
+    }
 
     @PostMapping("/edit")
     public Map<String, Object> edit(@RequestBody AutoMihayou autoMihayou, Principal principal) {

@@ -8,7 +8,9 @@ import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,27 @@ public class MihayouService {
 
     @Autowired
     private AutoLogDao autoLogDao;
+
+    /**
+     * 根据id查询
+     * @return
+     */
+    public AjaxResult view(Integer id){
+        Integer userId = SessionUtils.getPrincipal().getId();
+        AutoMihayou autoMihayou = mihayouDao.selectById(id);
+        if (autoMihayou == null){
+            return AjaxResult.doError();
+        }else {
+            //放行管理员
+            String role = userDao.getRole(userId);
+            if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")){
+                return AjaxResult.doError("你无权访问！");
+            }
+        }
+        //移除cookie
+        autoMihayou.setCookie(null);
+        return AjaxResult.doSuccess(autoMihayou);
+    }
 
 
     public List<AutoMihayou> getAllPlan() {
