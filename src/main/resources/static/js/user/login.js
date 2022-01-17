@@ -16,6 +16,11 @@ $(document).ready(function() {
     $("#login_btn").click(function () {
         submitform();
     });
+
+    //点击刷新验证码
+    $("#showImageCode").click(function (){
+        updateImageCode();
+    })
 });
 
 //回车登录
@@ -25,14 +30,11 @@ $(document).keydown(function(e){
     }
 });
 
-//点击刷新验证码
-$("#showImageCode").click(function (){
-    updateImageCode();
-})
-
 //验证码刷新函数
 function updateImageCode(){
-    $("#showImageCode")[0].src ='/code/image?'+Math.random()
+    $("#imageCode").val('');
+    var captcha = document.getElementById("showImageCode");
+    captcha.src ='/code/image?'+Math.random()
 }
 
 function showErrorMessage(text){
