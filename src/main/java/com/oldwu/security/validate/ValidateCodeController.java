@@ -5,6 +5,7 @@ import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
+import sun.font.FontDesignMetrics;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -51,10 +52,11 @@ public class ValidateCodeController {
 
         Random random = new Random();
 
+        Font font = new Font("Times New Roman", Font.ITALIC, 30);
         //设置颜色、并随机绘制直线
         g.setColor(getRandColor(200, 250));
         g.fillRect(0, 0, width, height);
-        g.setFont(new Font("Times New Roman", Font.ITALIC, 20));
+        g.setFont(font);
         g.setColor(getRandColor(160, 200));
         for (int i = 0; i < 155; i++) {
             int x = random.nextInt(width);
@@ -70,7 +72,18 @@ public class ValidateCodeController {
             String rand = String.valueOf(random.nextInt(10));
             sRand.append(rand);
             g.setColor(new Color(20 + random.nextInt(110), 20 + random.nextInt(110), 20 + random.nextInt(110)));
-            g.drawString(rand, 13 * i + 6, 16);
+
+            FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
+            int strHeight = metrics.getHeight();
+            //顶边位置+上升距离（原本字体基线位置对准画布的y坐标导致字体偏上ascent距离，加上ascent后下移刚好顶边吻合）
+            int top = (height - strHeight) / 2 + metrics.getAscent();
+
+            if (i % 2 == 0) {
+                g.drawString(rand, 18 * i + 14, top + i%3);
+            } else {
+                g.drawString(rand, 18 * i + 14, top - i%3);
+            }
+
         }
         g.dispose();
         return new ImageCode(image, sRand.toString(), expireIn);

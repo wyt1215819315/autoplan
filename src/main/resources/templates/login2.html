@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <title>登录页面</title>
     <meta content="text/html;charset=UTF-8"/>
-    <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+    <th:block th:include="include :: headerCss"/>
     <link rel="stylesheet" href="/static/layuiadmin/style/login.css" media="all">
 </head>
 <body>
@@ -58,8 +57,7 @@
     </div>
 </div>
 
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-<script src="/static/layuiadmin/layui/layui.js"></script>
+<th:block th:include="include :: footerJs"/>
 <script src="/static/js/user/login.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ public class LoginAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         httpServletResponse.setContentType("application/json;charset=utf-8");
         PrintWriter out = httpServletResponse.getWriter();
-        out.write("{\"code\": 0,\"msg\":\"登录成功\"}");
+        out.write("{\"code\": 200,\"msg\":\"登录成功\"}");
         out.flush();
         out.close();
     }

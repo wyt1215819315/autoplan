@@ -26,6 +26,18 @@
         <script th:src="@{/static/js/jquery.min.js}"></script>
     </div>
 
+    <div th:fragment="headerCss">
+        <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+        <link rel="shortcut icon" href="/static/image/favicon.ico" type="image/x-icon">
+    </div>
+
+    <!-- 通用JS -->
+    <div th:fragment="footerJs">
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script src="/static/layuiadmin/layui/layui.js"></script>
+    </div>
+
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
