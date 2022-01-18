@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-      xmlns:th="http://www.thymeleaf.org">
+<html>
     <head>
         <meta content="text/html;charset=UTF-8"/>
         <title>我的任务日志</title>
         <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-        <th:block th:include="include :: static"/>
+        <th:block th:include="include :: headerCss"/>
     </head>
     <body>
-        <div class="container" style="padding: 15px; margin: 10px; background-color: #F2F2F2;">
+        <div class="container" style="margin: 15px; ">
 
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md12">
@@ -24,14 +23,13 @@
         <p id="dateStirng" style="display: none;">[[${log.getDateString()}]]</p>
         <p id="text" style="display: none;">[[${log.getText()}]]</p>
 
+        <script th:include="include::footerJs"></script>
         <script>
-
             var dateStirng = $("#dateStirng").text();
             var text = $("#text").text();
             $("#showHead").html('日志时间：' + dateStirng);
             $("#showInfo").html(text);
         </script>
-        <script th:include="include::layelement"></script>
     </body>
 
 </html>

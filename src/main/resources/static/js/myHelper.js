@@ -3,9 +3,7 @@ layui.use(['element','layer'], function() {
     var layer = layui.layer;
 
     showUserBilibiliInfo();
-
     showUserNetmusicInfo();
-
     showUserMiyousheInfo();
 
     function showUserBilibiliInfo() {
@@ -14,7 +12,6 @@ layui.use(['element','layer'], function() {
             async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
             type: "POST",
             success: function (result) {
-
                 if (result.code === 200) {
                     var _html = bilibiliHtml(result.data);
                     $("#bilibiliShow").html(_html);
@@ -34,7 +31,6 @@ layui.use(['element','layer'], function() {
             async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
             type: "POST",
             success: function (result) {
-
                 if (result.code === 200) {
                     var _html = netmusicHtml(result.data);
                     $("#netmusicShow").html(_html);
@@ -54,9 +50,6 @@ layui.use(['element','layer'], function() {
             async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
             type: "POST",
             success: function (result) {
-
-                console.log(result);
-
                 if (result.code === 200) {
                     var _html = miyousheHtml(result.data);
                     $("#miyousheShow").html(_html);
@@ -71,6 +64,53 @@ layui.use(['element','layer'], function() {
     }
 
 })
+
+function openLog(type, id) {
+    var index = layer.open({
+        title: type + "日志查看",
+        type: 2,
+        content: "/getlog?type=" + type + "&id=" + id,
+        maxmin: true,
+        area: ['600px', '600px'],
+        end: function (index, layero) {
+            return true;
+        }
+    });
+}
+
+function runTask(name, id) {
+    layer.confirm('确定要手动运行一次' + name + '任务？', {icon: 3, title: '提示'}, function (index) {
+        layer.close(index);
+        let loading = layer.load();
+        $.ajax({
+            url: "/api/user/" + name + "/run?id=" + id,
+            type: 'post',
+            success: function (result) {
+                layer.close(loading);
+                if (result.code == 200) {
+                    layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                        window.location.href = "/my";
+                    });
+                } else {
+                    layer.msg(result.msg, {icon: 2, time: 2000});
+                }
+            }
+        })
+    });
+}
+
+function editTask(name, id) {
+    layer.open({
+        type: 2,
+        title: '修改' + name,
+        shade: 0.1,
+        area: ['800px', '500px'],
+        content: name + "/edit?id=" + id,
+        end: function (index, layero) {
+            return true;
+        }
+    });
+}
 
 //拼接米游社显示html
 function miyousheHtml(data) {
@@ -122,16 +162,16 @@ function miyousheHtml(data) {
         _miyousheHtml = addStatus(_miyousheHtml, miyousheUser.status);
 
         _miyousheHtml += '<span class="layuiadmin-span-color">';
-        _miyousheHtml += '<button class="layui-btn layui-btn-sm openLogNetmusic">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'mihuyou'," + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm editNetmusic">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'mihuyou'," + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm removeNetmusic">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeMiyoushe(' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm runNetmusic">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(' + "'mihuyou'," + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
         _miyousheHtml += '</button>';
         _miyousheHtml += '</span>';
@@ -203,16 +243,16 @@ function netmusicHtml(data) {
         _netmusicHtml = addStatus(_netmusicHtml, netmusicUser.status);
 
         _netmusicHtml += '<span class="layuiadmin-span-color">';
-        _netmusicHtml += '<button class="layui-btn layui-btn-sm openLogNetmusic">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'netmusic'," + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm editNetmusic">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'netmusic'," + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm removeNetmusic">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeNetmusic(' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm runNetmusic">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + "'netmusic'," + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
         _netmusicHtml += '</button>';
         _netmusicHtml += '</span>';
@@ -294,13 +334,13 @@ function bilibiliHtml(data) {
         _bilibiliHtml = addStatus(_bilibiliHtml, bilibiliUser.status);
 
         _bilibiliHtml += '<span class="layuiadmin-span-color">';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-sm openLogBilibili">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'bilibili'," + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm editBilibili">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'bili'," + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm removeBilibili">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeBilibili(' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _bilibiliHtml += '</button>';
         _bilibiliHtml += '</span>';
@@ -338,6 +378,10 @@ function addStatus(_html, status) {
 
     if (status === "0") {
         _html += '<button class="layui-btn layui-btn-sm layui-btn-warm">未开启</button>';
+    }
+
+    if (status === "1") {
+        _html += '<button class="layui-btn layui-btn-sm layui-btn-disabled">任务运行中</button>';
     }
 
     if (status === "100" || status == null) {
