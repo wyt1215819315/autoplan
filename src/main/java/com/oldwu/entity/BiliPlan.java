@@ -12,6 +12,7 @@ public class BiliPlan {
 
     private int autoId;
     private String biliName;
+    private String planName;
     private double biliCoin;
     private Long biliExp;
     private Long biliUpexp;

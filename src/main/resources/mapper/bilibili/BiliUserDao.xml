@@ -55,6 +55,7 @@
                bili_user.`status`          AS `status`,
                bili_user.enddate           AS enddate,
                auto_bilibili.skipDailyTask AS skipDailyTask,
+               auto_bilibili.name          AS plan_name,
                auto_bilibili.id            AS auto_id
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
