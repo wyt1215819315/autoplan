@@ -3,6 +3,7 @@ package com.miyoushe.controller;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
 import com.oldwu.entity.AjaxResult;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class MihayouController {
      * @return
      */
     @PostMapping("/list")
-    public Map<String, Object> list() {
-        //TODO 获取当前登录用户的米哈游列表
-        return null;
+    public AjaxResult list() {
+        Integer id = SessionUtils.getPrincipal().getId();
+        return mihayouService.listMine(id);
     }
 
     @PostMapping("/edit")

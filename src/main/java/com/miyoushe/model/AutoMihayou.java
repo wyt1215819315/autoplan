@@ -1,6 +1,7 @@
 package com.miyoushe.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.Date;
  */
 @Data
 @Table("auto_mihayou")
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class AutoMihayou implements Serializable {
 
     @IsKey

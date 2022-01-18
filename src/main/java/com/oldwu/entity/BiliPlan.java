@@ -1,11 +1,13 @@
 package com.oldwu.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class BiliPlan {
 
     private int autoId;

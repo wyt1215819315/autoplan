@@ -2,6 +2,8 @@ package com.netmusic.controller;
 
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
+import com.oldwu.entity.AjaxResult;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,16 @@ public class NetMusicController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * 获取这个用户的网易云托管列表
+     * @return
+     */
+    @PostMapping("/list")
+    public AjaxResult list() {
+        Integer id = SessionUtils.getPrincipal().getId();
+        return netmusicService.listMine(id);
+    }
 
     @PostMapping("/edit")
     public Map<String, Object> edit(@RequestBody AutoNetmusic autoNetmusic, Principal principal) {

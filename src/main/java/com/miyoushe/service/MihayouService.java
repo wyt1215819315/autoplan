@@ -10,6 +10,7 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.entity.BiliPlan;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
@@ -399,5 +400,10 @@ public class MihayouService {
         map.put("code", 200);
         map.put("msg", "运行指令已发送，请稍后查看运行状态");
         return map;
+    }
+
+    public AjaxResult listMine(Integer id) {
+        List<AutoMihayou> autoMihayous = mihayouDao.selectMine(id);
+        return AjaxResult.doSuccess(autoMihayous);
     }
 }

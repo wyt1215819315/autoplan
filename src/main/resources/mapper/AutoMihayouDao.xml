@@ -21,9 +21,13 @@
         id, `name`, cookie, suid, stoken, other_key, user_id, genshin_uid, mi_name, `enable`,
     `status`, endate, webhook, other
     </sql>
+    <sql id="Base_Column_List_noCookie">
+        id, `name`, user_id, genshin_uid, mi_name, `enable`,
+    `status`, endate, webhook, other
+    </sql>
     <select id="selectMine" resultType="com.miyoushe.model.AutoMihayou">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List_noCookie"/>
         from auto_mihayou where user_id = #{userid}
     </select>
     <select id="selectBystuid" resultType="com.miyoushe.model.AutoMihayou">
