@@ -22,3 +22,24 @@ ul {
     background: url(/static/image/miyoushe_logo.ico) no-repeat 0 center;
     background-size: 40px 40px;
 }
+
+.searchIcon {
+    padding: 13px 30px 13px 0px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.bilibiliIcon {
+    background: url(/static/image/bilibili_logo.svg) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.netmusicIcon {
+    background: url(/static/image/netmusic_logo.ico) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.miyousheIcon {
+    background: url(/static/image/miyoushe_logo.ico) no-repeat 0 center;
+    background-size: 30px 30px;
+}

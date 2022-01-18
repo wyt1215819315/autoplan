@@ -27,22 +27,33 @@ import java.util.List;
  */
 @Controller
 public class UserController {
+
     @Autowired
     private RegService regService;
+
     @Autowired
     private BiliService biliService;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private LogService logService;
+
     @Autowired
     private NetmusicService netmusicService;
+
     @Autowired
     private MihayouService mihayouService;
 
     @RequestMapping("/")
     public String index(Model model) {
-        return "index";
+        return "index2";
+    }
+
+    @RequestMapping("/index")
+    public String index() {
+        return "index2";
     }
 
     @GetMapping("/login")
@@ -65,11 +76,6 @@ public class UserController {
     public AjaxResult regPost(@Param("username") String username, @Param("password") String password, Model model) {
         //TODO 加入验证码验证
         return regService.doReg(username, password);
-    }
-
-    @RequestMapping("/index")
-    public String index() {
-        return "index";
     }
 
     @GetMapping("/getlog")
@@ -96,7 +102,7 @@ public class UserController {
         model.addAttribute("bililist", biliPlans);
         model.addAttribute("netlist", netplans);
         model.addAttribute("milist", mihuyouplans);
-        return "my-helper";
+        return "my-helper2";
     }
 
     @GetMapping("/my-edit")

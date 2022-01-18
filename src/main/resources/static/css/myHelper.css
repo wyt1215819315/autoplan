@@ -1,0 +1,51 @@
+.bilibili {
+    border-color: #01a2ec !important;
+}
+
+.bilibili legend,.bilibili-p-font {
+    color: #01a2ec !important;
+}
+
+.netmusic {
+    border-color: #FF5722 !important;
+}
+
+.netmusic legend,.netmusic-p-font {
+    color: #FF5722 !important;
+}
+
+.miyoushe {
+    border-color: #3285ff !important;
+}
+
+.miyoushe legend,.miyoushe-p-font {
+    color: #3285ff !important;
+}
+
+.layuiadmin-span-color i {
+    padding-left: 0;
+    margin-right: 0 !important;
+}
+
+.layui-btn+.layui-btn {
+    margin-left: 5px;
+}
+
+.layuiadmin-card-list p.layuiadmin-big-font {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 5px 0 5px;
+}
+
+.layui-btn-sm {
+    padding: 0 7px;
+    border-radius: 5px;
+}
+
+.layui-field-box {
+    margin-top: 5px;
+}
+
+.div-row {
+    margin-bottom: 20px;
+}
