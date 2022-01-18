@@ -43,6 +43,9 @@ public class AutoNetmusic implements Serializable {
     @Column(length = 50, comment = "网易云昵称")
     private String netmusicName;
 
+    @Column(length = 200, comment = "网易云头像")
+    private String avatar;
+
     @Column(length = 50, comment = "网易云等级")
     private String netmusicLevel;
 
@@ -86,9 +89,9 @@ public class AutoNetmusic implements Serializable {
 
     public String getEndDateString(){
         if (enddate == null){
-            return null;
+            return "";
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm");
         return simpleDateFormat.format(enddate);
     }
 }

@@ -506,7 +506,9 @@ public class NeteaseMusicUtil {
                 result.put("csrf", csrf);
                 result.put("data", json.toJSONString());
                 String nickname = json.getJSONObject("profile").getString("nickname");
+                String avatarUrl = json.getJSONObject("profile").getString("avatarUrl");
                 result.put("nickname", nickname);
+                result.put("avatarUrl", avatarUrl);
                 String uid = json.getJSONObject("account").getString("id");
                 result.put("uid", uid);
                 Map<String, String> level = getLevel(loginData, cookieString);

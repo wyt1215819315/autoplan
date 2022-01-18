@@ -72,6 +72,7 @@ public class NetMusicTask {
             autoNetmusic.setNetmusicId(login.get("uid"));
             autoNetmusic.setNetmusicNeedDay(login.get("days"));
             autoNetmusic.setNetmusicNeedListen(login.get("count"));
+            autoNetmusic.setAvatar(login.get("avatarUrl"));
             autoNetmusic.setNetmusicLevel(login.get("level"));
             netmusicDao.updateById(autoNetmusic);
         }
