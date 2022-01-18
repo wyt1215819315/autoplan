@@ -3,6 +3,22 @@ ul {
 }
 
 .search {
-    background: url(/static/image/favicon.ico) no-repeat 4px center;
     padding: 13px 40px 13px 0px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.bilibiliLogo {
+    background: url(/static/image/bilibili_logo.svg) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
+.netmusicLogo {
+    background: url(/static/image/netmusic_logo.ico) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
+.miyousheLogo {
+    background: url(/static/image/miyoushe_logo.ico) no-repeat 0 center;
+    background-size: 40px 40px;
 }

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>我的任务列表</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <th:block th:include="include :: headerCss"/>
+        <style>
+            .bilibili {
+                border-color: #01a2ec !important;
+            }
+
+            .bilibili legend {
+                color: #01a2ec !important;
+            }
+
+            .netmusic {
+                border-color: #FF5722 !important;
+            }
+
+            .netmusic legend {
+                color: #FF5722 !important;
+            }
+
+            .miyoushe {
+                border-color: #3285ff !important;
+            }
+
+            .miyoushe legend {
+                color: #3285ff !important;
+            }
+
+            .layuiadmin-span-color i {
+                padding-left: 0;
+                margin-right: 0 !important;
+            }
+
+            .layui-btn + .layui-btn {
+                margin-left: 0;
+            }
+
+            .layuiadmin-card-list p.layuiadmin-big-font {
+                font-size: 16px;
+                line-height: 20px;
+                padding: 5px 0 5px;
+            }
+
+            .layui-btn-sm {
+                padding: 0 7px;
+                border-radius: 5px;
+            }
+
+            .p-font {
+                color: #dd3f3f;
+            }
+
+            .layui-field-box {
+                margin-top: 5px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+
+            <fieldset class="layui-elem-field bilibili">
+                <legend>
+                    <i class="layui-icon search bilibiliLogo"></i>哔哩哔哩
+                </legend>
+                <div class="layui-field-box">
+
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-col-md3">
+                            <div class="layui-card">
+                                <div class="layui-card-header" style="font-size: 16px;">
+                                    用户设置任务名称
+                                    <span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>
+                                </div>
+                                <div class="layui-card-body layuiadmin-card-list">
+                                    <p class="layuiadmin-big-font">用户名：
+                                        <font class="p-font">_MuXia_</font>
+                                        <span class="layuiadmin-span-color">
+                                            <img src="/static/image/favicon.ico">
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">硬币：
+                                        <font class="p-font">2522.5</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">等级：
+                                        <font class="p-font">6</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">升级还需：
+                                        <font class="p-font">0</font>
+                                        <span class="layuiadmin-span-color">
+                                            最后运行于：
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">大会员情况：
+                                        <font class="p-font">大会员</font>
+                                        <span class="layuiadmin-span-color">
+                                            01月18日 08:01
+                                        </span>
+                                    </p>
+                                    <p style="margin-top: 10px;">
+                                        <button class="layui-btn layui-btn-sm">任务状态</button>
+
+                                        <span class="layuiadmin-span-color">
+                                            <button class="layui-btn layui-btn-sm">
+                                                <i class="layui-icon layui-icon-tips"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-sm">
+                                                <i class="layui-icon layui-icon-edit"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">
+                                                <i class="layui-icon layui-icon-delete"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-md3">
+                            <div class="layui-card">
+                                <div class="layui-card-header" style="font-size: 16px;">
+                                    用户设置任务名称
+                                    <span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>
+                                </div>
+                                <div class="layui-card-body layuiadmin-card-list">
+                                    <p class="layuiadmin-big-font">用户名：
+                                        <font class="p-font">_MuXia_</font>
+                                        <span class="layuiadmin-span-color">
+                                            <img src="/static/image/favicon.ico">
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">硬币：
+                                        <font class="p-font">2522.5</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">等级：
+                                        <font class="p-font">6</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">升级还需：
+                                        <font class="p-font">0</font>
+                                        <span class="layuiadmin-span-color">
+                                            最后运行于：
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">大会员情况：
+                                        <font class="p-font">大会员</font>
+                                        <span class="layuiadmin-span-color">
+                                            01月18日 08:01
+                                        </span>
+                                    </p>
+                                    <p style="margin-top: 10px;">
+                                        <button class="layui-btn layui-btn-sm">任务状态</button>
+
+                                        <span class="layuiadmin-span-color">
+                                            <button class="layui-btn layui-btn-sm">
+                                                <i class="layui-icon layui-icon-tips"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-sm">
+                                                <i class="layui-icon layui-icon-edit"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">
+                                                <i class="layui-icon layui-icon-delete"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-md3">
+                            <div class="layui-card">
+                                <div class="layui-card-header" style="font-size: 16px;">
+                                    用户设置任务名称
+                                    <span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>
+                                </div>
+                                <div class="layui-card-body layuiadmin-card-list">
+                                    <p class="layuiadmin-big-font">用户名：
+                                        <font class="p-font">_MuXia_</font>
+                                        <span class="layuiadmin-span-color">
+                                            <img src="/static/image/favicon.ico">
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">硬币：
+                                        <font class="p-font">2522.5</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">等级：
+                                        <font class="p-font">6</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">升级还需：
+                                        <font class="p-font">0</font>
+                                        <span class="layuiadmin-span-color">
+                                            最后运行于：
+                                        </span>
+                                    </p>
+                                    <p class="layuiadmin-big-font">大会员情况：
+                                        <font class="p-font">大会员</font>
+                                        <span class="layuiadmin-span-color">
+                                            01月18日 08:01
+                                        </span>
+                                    </p>
+                                    <p style="margin-top: 10px;">
+                                        <button class="layui-btn layui-btn-sm">任务状态</button>
+
+                                        <span class="layuiadmin-span-color">
+                                            <button class="layui-btn layui-btn-sm">
+                                                <i class="layui-icon layui-icon-tips"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-sm">
+                                                <i class="layui-icon layui-icon-edit"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">
+                                                <i class="layui-icon layui-icon-delete"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field netmusic">
+                <legend>
+                    <i class="layui-icon search netmusicLogo"></i>网易云
+                </legend>
+                <div class="layui-field-box">
+
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-col-md3">
+                            <div class="layui-card">
+                                <div class="layui-card-header" style="font-size: 16px;">
+                                    用户设置任务名称
+                                    <span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>
+                                </div>
+                                <div class="layui-card-body layuiadmin-card-list">
+                                    <p class="layuiadmin-big-font">用户名：
+                                        <font class="p-font">_MuXia_</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">手机号：
+                                        <font class="p-font">2522.5</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">等级：
+                                        <font class="p-font">6</font></p>
+                                    <p class="layuiadmin-big-font">升级还需：
+                                        <font class="p-font">0</font>天</p>
+                                    <p class="layuiadmin-big-font">剩余听歌数：
+                                        <font class="p-font">大会员</font></p>
+                                    <p style="margin-top: 10px;">
+                                        <button class="layui-btn layui-btn-sm">任务状态</button>
+                                        最后运行于：01月18日 08:01
+                                        <span class="layuiadmin-span-color">
+                                            <button class="layui-btn layui-btn-sm">
+                                                <i class="layui-icon layui-icon-tips"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-sm">
+                                                <i class="layui-icon layui-icon-edit"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">
+                                                <i class="layui-icon layui-icon-delete"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <fieldset class="layui-elem-field miyoushe">
+                <legend><i class="layui-icon search miyousheLogo"></i>米游社</legend>
+                <div class="layui-field-box">
+
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-col-md3">
+                            <div class="layui-card">
+                                <div class="layui-card-header" style="font-size: 16px;">
+                                    用户设置任务名称
+                                </div>
+                                <div class="layui-card-body layuiadmin-card-list">
+                                    <p class="layuiadmin-big-font">用户名：
+                                        <font class="p-font">_MuXia_</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">硬币：
+                                        <font class="p-font">2522.5</font>
+                                    </p>
+                                    <p class="layuiadmin-big-font">等级：
+                                        <font class="p-font">6</font></p>
+                                    <p class="layuiadmin-big-font">升级还需：
+                                        <font class="p-font">0</font></p>
+                                    <p class="layuiadmin-big-font">大会员情况：
+                                        <font class="p-font">大会员</font></p>
+                                    <p style="margin-top: 10px;">
+                                        <button class="layui-btn layui-btn-sm">任务状态</button>
+                                        <span class="layuiadmin-span-color">
+                                            <button class="layui-btn layui-btn-sm">
+                                                <i class="layui-icon layui-icon-tips"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-normal layui-btn-sm">
+                                                <i class="layui-icon layui-icon-edit"></i>
+                                            </button>
+                                            <button class="layui-btn layui-btn-danger layui-btn-sm">
+                                                <i class="layui-icon layui-icon-delete"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </fieldset>
+
+        </div>
+
+        <th:block th:include="include :: footerJs"/>
+        <script>
+
+        </script>
+    </body>
+
+</html>
