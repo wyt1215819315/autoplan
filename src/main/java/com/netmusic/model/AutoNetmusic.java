@@ -88,7 +88,7 @@ public class AutoNetmusic implements Serializable {
         if (enddate == null){
             return null;
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm");
         return simpleDateFormat.format(enddate);
     }
 }

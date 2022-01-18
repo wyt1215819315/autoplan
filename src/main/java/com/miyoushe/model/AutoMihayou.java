@@ -86,7 +86,7 @@ public class AutoMihayou implements Serializable {
         if (endate == null){
             return null;
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm");
         return simpleDateFormat.format(endate);
     }
 
