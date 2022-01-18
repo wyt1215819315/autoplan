@@ -399,4 +399,14 @@ public class BiliService {
         map.put("msg", "操作失败！");
         return map;
     }
+
+    /**
+     * 根据用户id查询这个用户的b站任务信息
+     * @param id
+     * @return
+     */
+    public AjaxResult listMine(Integer id) {
+        List<BiliPlan> biliPlans = biliUserDao.selectMine(id);
+        return AjaxResult.doSuccess(biliPlans);
+    }
 }

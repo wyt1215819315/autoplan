@@ -2,6 +2,7 @@ package com.oldwu.controller;
 
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoBilibili;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
@@ -24,14 +25,12 @@ public class BiliController {
 
     /**
      * 获取这个用户的b站挂机列表
-     * @param principal user
      * @return
      */
     @PostMapping("/list")
-    public AjaxResult list(Principal principal) {
-        //TODO 获取这个用户的b站挂机列表
-        
-        return null;
+    public AjaxResult list() {
+        Integer id = SessionUtils.getPrincipal().getId();
+        return service.listMine(id);
     }
 
     @PostMapping("/edit")

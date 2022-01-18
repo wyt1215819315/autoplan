@@ -2,11 +2,13 @@ package com.netmusic.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.misec.utils.HelpUtil;
+import com.miyoushe.model.AutoMihayou;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.task.NetMusicTask;
 import org.apache.commons.lang3.StringUtils;
@@ -240,5 +242,10 @@ public class NetmusicService {
         map.put("code", 200);
         map.put("msg", "运行指令已发送，请稍后查看运行状态");
         return map;
+    }
+
+    public AjaxResult listMine(Integer id) {
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(id);
+        return AjaxResult.doSuccess(autoNetmusics);
     }
 }
