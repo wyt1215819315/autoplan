@@ -78,6 +78,7 @@ public class NetmusicService {
         }
         //账号验证成功,写入用户数据
         autoNetmusic.setNetmusicName(usercheck.get("nickname"));
+        autoNetmusic.setAvatar(usercheck.get("avatarUrl"));
         autoNetmusic.setNetmusicId(usercheck.get("uid"));
         autoNetmusic.setNetmusicNeedDay(usercheck.get("days"));
         autoNetmusic.setNetmusicNeedListen(usercheck.get("count"));

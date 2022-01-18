@@ -9,6 +9,7 @@
         <result column="userid" jdbcType="INTEGER" property="userid"/>
         <result column="netmusic_id" jdbcType="VARCHAR" property="netmusicId"/>
         <result column="netmusic_name" jdbcType="VARCHAR" property="netmusicName"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="netmusic_level" jdbcType="VARCHAR" property="netmusicLevel"/>
         <result column="netmusic_need_day" jdbcType="VARCHAR" property="netmusicNeedDay"/>
         <result column="netmusic_need_listen" jdbcType="VARCHAR" property="netmusicNeedListen"/>
@@ -23,12 +24,12 @@
     <sql id="Base_Column_List">
         id, phone, `password`, countrycode, userid, netmusic_id, netmusic_name, netmusic_level,
     netmusic_need_day, netmusic_need_listen, `name`, cookie, `status`, `enable`, enddate,
-    webhook, other
+    webhook, other, avatar
     </sql>
     <sql id="Base_Column_List_noCookie">
         id, countrycode, userid, netmusic_id, netmusic_name, netmusic_level,
     netmusic_need_day, netmusic_need_listen, `name`, `status`, `enable`, enddate,
-    webhook, other
+    webhook, other, avatar
     </sql>
     <select id="selectByUid" resultType="com.netmusic.model.AutoNetmusic">
         select
