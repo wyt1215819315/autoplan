@@ -99,11 +99,10 @@ function runTask(name, id) {
             success: function (result) {
                 layer.close(loading);
                 if (result.code == 200) {
-                    layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                        window.location.href = "/my";
-                    });
+                    parent.layer.msg(result.msg);
+                    updateHtml(name);
                 } else {
-                    layer.msg(result.msg, {icon: 2, time: 2000});
+                    parent.layer.msg(result.msg);
                 }
             }
         })
@@ -115,9 +114,10 @@ function editTask(name, id) {
         type: 2,
         title: '修改' + name + '任务',
         shade: 0.1,
-        area: ['800px', '500px'],
+        area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
         content: name + "/edit?id=" + id,
         end: function (index, layero) {
+            updateHtml(name);
             return true;
         }
     });
@@ -131,9 +131,25 @@ function addTask(name) {
         area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
         content: name + "/add",
         end: function (index, layero) {
+            updateHtml(name);
             return true;
         }
     });
+}
+
+//刷新主页自己对于的内容
+function updateHtml(name){
+    if (name === "bili") {
+        showUserBilibiliInfo();
+    }
+
+    if (name === "netmusic") {
+        showUserNetmusicInfo();
+    }
+
+    if (name === "mihuyou") {
+        showUserMiyousheInfo();
+    }
 }
 
 //拼接米游社显示html

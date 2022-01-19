@@ -12,3 +12,12 @@ function screen() {
         return 0;   //超小屏幕
     }
 }
+
+function showBtnSize(){
+    if (screen() === 1) {
+        $(".layui-btn").removeClass("layui-btn-xs").addClass("layui-btn-sm");
+    }
+    if (screen() === 0) {
+        $(".layui-btn").removeClass("layui-btn-sm").addClass("layui-btn-xs");
+    }
+}
