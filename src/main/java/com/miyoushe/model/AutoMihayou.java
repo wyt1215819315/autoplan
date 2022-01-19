@@ -57,6 +57,9 @@ public class AutoMihayou implements Serializable {
     @Column(comment = "米游社昵称")
     private String miName;
 
+    @Column(comment = "米游社头像")
+    private String avatar;
+
     @Column(length = 10, defaultValue = "true", comment = "任务是否开启")
     private String enable;
 

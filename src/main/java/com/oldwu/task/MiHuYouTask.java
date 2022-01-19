@@ -55,6 +55,16 @@ public class MiHuYouTask {
     }
 
     /**
+     * 更新头像逻辑，因为数据量可能比较大，所以不用每天调用
+     */
+    public void updateAvatar(){
+        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
+        for (AutoMihayou mihayous : autoMihayous) {
+            mihayouService.setPersonInfo(mihayous.getId(),mihayous.getCookie());
+        }
+    }
+
+    /**
      * 米忽悠定时签到任务
      */
     public void doAutoCheck() {

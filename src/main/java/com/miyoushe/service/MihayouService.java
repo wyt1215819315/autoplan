@@ -15,8 +15,11 @@ import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ import java.util.Map;
 
 @Component
 public class MihayouService {
+    private final Log logger = LogFactory.getLog(MihayouService.class);
+    private final String MYS_PERSONAL_INFO_URL = "https://bbs-api.mihoyo.com/user/wapi/getUserFullInfo?gids=2";
 
     @Autowired
     private AutoMihayouDao mihayouDao;
@@ -175,7 +180,12 @@ public class MihayouService {
         autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
         autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
         autoMihayou.setStatus("100");
-
+        try {
+            Map<String, Object> personalInfo = getPersonalInfo(autoMihayou.getCookie());
+            autoMihayou.setAvatar((String) personalInfo.get("avatar_url"));
+        } catch (Exception e) {
+            logger.warn("获取头像失败！" + uidInfo);
+        }
         //判断数据是否存在，使用stuid进行检索
         AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
 //            AutoMihayou autoMihayou1 = mihayouDao.selectByGenshinUid(autoMihayou.getGenshinUid());
@@ -405,5 +415,42 @@ public class MihayouService {
     public AjaxResult listMine(Integer id) {
         List<AutoMihayou> autoMihayous = mihayouDao.selectMine(id);
         return AjaxResult.doSuccess(autoMihayous);
+    }
+
+    /**
+     * 获取米游社账号各种信息，目前仅用于头像获取
+     * @param cookie
+     */
+    public Map<String, Object> getPersonalInfo(String cookie) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> headers = HttpUtils.getHeaders();
+        headers.put("Cookie", cookie);
+        HttpResponse httpResponse = HttpUtils.doGet(MYS_PERSONAL_INFO_URL, "", headers, null);
+        JSONObject json = HttpUtils.getJson(httpResponse);
+        if (json.getInteger("retcode") != 0) {
+            return null;
+        }
+        JSONObject data = json.getJSONObject("data");
+        JSONObject userInfo = data.getJSONObject("user_info");
+        map.put("avatar_url", userInfo.getString("avatar_url"));
+        return map;
+    }
+
+    @Async
+    public void setPersonInfo(Integer id,String cookie){
+        try {
+            Map<String, Object> personalInfo = getPersonalInfo(cookie);
+            if (personalInfo == null){
+                return;
+            }
+            String avatarUrl = (String) personalInfo.get("avatar_url");
+            AutoMihayou autoMihayou = new AutoMihayou();
+            autoMihayou.setId(id);
+            autoMihayou.setAvatar(avatarUrl);
+            mihayouDao.updateById(autoMihayou);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
