@@ -107,7 +107,7 @@ public class BiliService {
             HttpResponse httpResponse = HttpUtils.doGet(qrcodeUrl, null, HttpUtils.getHeaders(), null);
             JSONObject json = HttpUtils.getJson(httpResponse);
             if (json != null && json.getInteger("code") == 0) {
-                return AjaxResult.doSuccess(json.getJSONObject("data").getString("oauthKey"));
+                return AjaxResult.doSuccess("success", json.getJSONObject("data").getString("oauthKey"));
             } else {
                 return AjaxResult.doError("二维码获取失败！");
             }

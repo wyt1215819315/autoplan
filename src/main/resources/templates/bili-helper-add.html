@@ -317,15 +317,13 @@
                     content: '<div id="qrcode">正在获取二维码</div>',
                     zIndex: layer.zIndex,
                     success: function (layero) {
-                        $.get("/api/user/bili/qrcode", {}, function (str) {
-                            var parse = JSON.parse(str);
-                            str = parse.data;
+                        $.get("/api/user/bili/qrcode", {}, function (data) {
                             $('#qrcode').html("");
                             $('#qrcode').qrcode({
                                 render: "canvas",
                                 width: 350,
                                 height: 350,
-                                text: "https://passport.bilibili.com/qrcode/h5/login?oauthKey=" + str
+                                text: "https://passport.bilibili.com/qrcode/h5/login?oauthKey=" + data.data
                             });
                             t2 = window.setInterval(function () {
                                 $.ajax({
