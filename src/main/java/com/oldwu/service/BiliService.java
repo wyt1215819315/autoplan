@@ -8,11 +8,13 @@ import com.misec.login.Verify;
 import com.misec.pojo.userinfobean.Data;
 import com.misec.task.TaskInfoHolder;
 import com.misec.utils.HelpUtil;
+import com.netmusic.model.AutoNetmusic;
 import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.*;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -40,6 +42,25 @@ public class BiliService {
 
     @Autowired
     private UserDao userDao;
+
+    public AjaxResult view(Integer id){
+        Integer userId = SessionUtils.getPrincipal().getId();
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(id);
+        if (autoBilibili == null){
+            return AjaxResult.doError();
+        }else {
+            //放行管理员
+            String role = userDao.getRole(userId);
+            if (!autoBilibili.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")){
+                return AjaxResult.doError("你无权访问！");
+            }
+        }
+        //移除cookie
+        autoBilibili.setSessdata(null);
+        autoBilibili.setBiliJct(null);
+        autoBilibili.setDedeuserid(null);
+        return AjaxResult.doSuccess(autoBilibili);
+    }
 
     public Map<String, Object> getQrcodeStatus(String oauthKey) {
         Map<String, String> headers = new HashMap<>();

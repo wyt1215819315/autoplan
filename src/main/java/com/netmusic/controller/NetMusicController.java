@@ -26,6 +26,16 @@ public class NetMusicController {
     private UserService userService;
 
     /**
+     * 根据id查询详细信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/view")
+    public AjaxResult view(@Param("id") Integer id) {
+        return netmusicService.view(id);
+    }
+
+    /**
      * 获取这个用户的网易云托管列表
      * @return
      */

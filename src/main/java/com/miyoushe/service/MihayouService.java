@@ -59,6 +59,9 @@ public class MihayouService {
         }
         //移除cookie
         autoMihayou.setCookie(null);
+        autoMihayou.setStoken(null);
+        autoMihayou.setOtherKey(null);
+        autoMihayou.setLcookie(null);
         return AjaxResult.doSuccess(autoMihayou);
     }
 
@@ -70,6 +73,7 @@ public class MihayouService {
             mihayous.setCookie(null);
             mihayous.setStoken(null);
             mihayous.setSuid(null);
+            mihayous.setLcookie(null);
             mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
             mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
             result.add(mihayous);

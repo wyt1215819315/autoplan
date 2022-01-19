@@ -24,6 +24,16 @@ public class BiliController {
     private UserService userService;
 
     /**
+     * 根据id查询详细信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/view")
+    public AjaxResult view(@Param("id") Integer id) {
+        return service.view(id);
+    }
+
+    /**
      * 获取这个用户的b站挂机列表
      * @return
      */
