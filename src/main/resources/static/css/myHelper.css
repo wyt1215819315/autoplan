@@ -1,21 +1,36 @@
 .bilibili {
-    border-color: #01a2ec !important;
+    border-color: #ff3172 !important;
+}
+
+.bilibiliBtn {
+    background-color: #ff3172 !important;
+    border-radius: 10px;
 }
 
 .bilibili legend,.bilibili-p-font {
-    color: #01a2ec !important;
+    color: #ff3172 !important;
 }
 
 .netmusic {
-    border-color: #FF5722 !important;
+    border-color: #ff1f1b !important;
+}
+
+.netmusicBtn {
+    background-color: #ff1f1b !important;
+    border-radius: 10px;
 }
 
 .netmusic legend,.netmusic-p-font {
-    color: #FF5722 !important;
+    color: #ff1f1b !important;
 }
 
 .miyoushe {
     border-color: #3285ff !important;
+}
+
+.miyousheBtn {
+    background-color: #3285ff !important;
+    border-radius: 10px;
 }
 
 .miyoushe legend,.miyoushe-p-font {

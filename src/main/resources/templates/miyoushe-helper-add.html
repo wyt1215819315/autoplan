@@ -3,66 +3,59 @@
     <head>
         <meta content="text/html;charset=UTF-8"/>
         <title>米游社任务添加</title>
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-        <script th:src="@{/static/js/md5.js}"></script>
-        <th:block th:include="include :: static"/>
-        <style type="text/css">
-
-            .layui-form-label {
-                width: 200px;
-            }
-
-            .layui-input-block {
-                margin-left: 230px;
-            }
-        </style>
+        <th:block th:include="include :: headerCss"/>
     </head>
     <body>
-        <ul th:include="include::header" class="layui-nav"></ul>
 
-        <div class="main-container" style="padding-top: 0;margin: 15px">
+        <div class="layui-fluid">
+            <div class="admin-layui-form">
 
-            <div class="main-container">
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend>添加米游社自动任务</legend>
-                    <legend>关于cookie的说明</legend>
-                    <legend>
-                        米游社中的cookie没有login_ticket字段，如果需要使用米游币任务，请前往米哈游通行证页面获取cookie
-                    </legend>
-                    <legend>
-                        电脑端可以将后面的链接拖动到书签，登录米游社点击书签即可获取：<a style="color: red"
-                                                          href="javascript:(function(){let domain=document.domain;let cookie=document.cookie;prompt('Cookies: '+domain, cookie)})();"
-                                                          target="_blank">Ganyu Cookies Getter</a>
-                    </legend>
-                    <legend>手机端请查看
-                        <a href="https://blog.oldwu.top/index.php/archives/84/#toc_9" target="_blank">使用说明</a>
-                    </legend>
-                </fieldset>
-                <form class="layui-form">
+                <form class="layui-form layui-form-pane" action="">
+
+                    <div class="layui-form-item">
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">关于cookie的说明</h2>
+                                <div class="layui-colla-content layui-show">
+                                    <p>米游社中的cookie没有login_ticket字段，如果需要使用米游币任务，请前往米哈游通行证页面获取cookie</p>
+                                    <p>
+                                        <font style="color: red;">电脑端</font>可以将后面的链接拖动到书签，登录米游社点击书签即可获取：
+                                        <a class="layui-btn layui-btn-danger layui-btn-sm"
+                                           href="javascript:(function(){let domain=document.domain;let cookie=document.cookie;prompt('Cookies: '+domain, cookie)})();"
+                                           target="_blank">Ganyu Cookies Getter
+                                        </a>
+                                        <br/>
+                                        <font style="color: red;">手机端</font>请查看
+                                        <a class="layui-btn layui-btn-normal layui-btn-sm" href="https://blog.oldwu.top/index.php/archives/84/#toc_9" target="_blank">
+                                            使用说明
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">任务名</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="name" name="name"
-                                   placeholder="输入任务名"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" lay-verify="name" name="name" placeholder="输入任务名" type="text">
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">米游社cookie</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="cookie" name="cookie"
-                                   placeholder="输入cookie，不知道怎么取请看使用教程"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" lay-verify="cookie" name="cookie" placeholder="输入cookie，不知道怎么取请看使用教程" type="text">
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">米哈游通行证cookie</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="lcookie" name="lcookie"
-                                   placeholder="输入米哈游通行证cookie，用于获取login_ticket，如果不需要使用米游币任务，请忽略"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" name="lcookie" placeholder="输入米哈游通行证cookie，用于获取login_ticket，如果不需要使用米游币任务，请忽略" type="text">
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">是否开启任务</label>
                         <div class="layui-input-block">
@@ -72,30 +65,36 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="layui-form-item">
-                        <label class="layui-form-label"><a target="_blank"
-                                                           href="/webhook-generate">任务完成推送WebHook</a></label>
+                        <label class="layui-form-label">任务完成推送WebHook</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="webhook" name="webhook"
-                                   placeholder="输入WebHook地址，json字符串，请点击标题文字进入生成"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" name="webhook" placeholder="输入WebHook地址，json字符串" type="text">
                         </div>
                     </div>
-                    <button class="layui-input-block layui-btn layui-btn-normal layui-btn-sm" lay-filter="user-save"
-                            lay-submit="" type="submit">
-                        <i class="layui-icon layui-icon-ok"></i>
-                        提交
-                    </button>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-normal" lay-filter="user-save" lay-submit type="button">
+                                <i class="layui-icon layui-icon-ok"></i>提交
+                            </button>
+                            <button class="layui-btn layui-btn-normal" type="button" id="showSendWebHook">点我生成WebHook</button>
+
+                        </div>
+                    </div>
                 </form>
             </div>
 
         </div>
-        <script> let rootPath = "[[${rootPath}]]";</script>
+        <th:block th:include="include :: footerJs"/>
+        <script src="/static/js/md5.js"></script>
+
         <script>
-            layui.use(['form', 'jquery'], function () {
+            var parentIndex = parent.layer.getFrameIndex(window.name);
+
+            layui.use(['form', 'element','layer'], function () {
+                let element = layui.element,layer = layui.layer;;
                 let form = layui.form;
-                let $ = layui.jquery;
-                let MODULE_PATH = rootPath + "/api/user/mihuyou";
 
                 //名称验证
                 form.verify({
@@ -111,48 +110,52 @@
                     }
                 });
 
+                $("#showSendWebHook").click(function () {
+                    layer.open({
+                        type: 2,
+                        title: '生成webhook json字符串',
+                        shade: 0.1,
+                        area: screen() < 2 ? ['90%', '80%'] : ['1000px', '400px'],
+                        content: "/webhook-generate",
+                        end: function (index, layero) {
+                            return true;
+                        }
+                    });
+                })
 
                 //保存
                 form.on('submit(user-save)', function (data) {
+
                     if (data.field.lcookie === undefined || data.field.lcookie === '') {
                         data.field.lcookie = data.field.cookie;
                     }
+
+                    var loadIndex = parent.layer.msg("校验用户信息中，请稍后", {icon: 3, time: 10*1000, shade: [0.7, '#393D49']});
                     $.ajax({
-                        url: MODULE_PATH + '/add',
+                        url: '/api/user/mihuyou/add',
                         data: JSON.stringify(data.field),
                         dataType: 'json',
                         contentType: 'application/json;charset=UTF-8',
                         type: 'post',
-                        beforeSend: function () {
-                            layer.msg("校验用户信息中，请稍后", {icon: 3, time: 5000});
-                            this.layerIndex = layer.load(0, {
-                                shade: [0.5, '#393D49']
-                            });
-                        },
                         success: function (result) {
                             if (result.code == 200) {
-                                layer.msg(result.msg, {icon: 1, time: 2000}, function () {
-                                    window.location.href= rootPath + "/my";
-                                });
+                                parent.layer.msg(result.msg);
+                                parent.layer.close(parentIndex);
                             } else if(result.code == 201){
-                                layer.msg(result.msg, {icon: 3, time: 5000}, function () {
-                                    window.location.href= rootPath + "/my";
-                                });
+                                parent.layer.msg(result.msg);
+                                parent.layer.close(parentIndex);
                             }else {
-                                layer.msg(result.msg, {icon: 2, time: 8000});
+                                parent.layer.msg(result.msg);
+                                parent.layer.close(loadIndex);
                             }
                         },
                         error: function () {
-                            layer.msg("连接服务器失败！", {icon: 2, time: 2000});
-                        },
-                        complete: function () {
-                            layer.close(this.layerIndex);
+                            parent.layer.msg("连接服务器失败！");
                         }
                     })
                     return false;
                 });
             })
         </script>
-        <script th:include="include::layelement"></script>
     </body>
 </html>

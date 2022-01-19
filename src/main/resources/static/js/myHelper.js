@@ -31,6 +31,7 @@ layui.use(['element','layer'], function() {
             async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
             type: "POST",
             success: function (result) {
+                console.log(result);
                 if (result.code === 200) {
                     var _html = netmusicHtml(result.data);
                     $("#netmusicShow").html(_html);
@@ -63,6 +64,16 @@ layui.use(['element','layer'], function() {
         })
     }
 
+    $("#addBilibiliTask").click(function (){
+        addTask("bili");
+    })
+    $("#addMiyousheTask").click(function (){
+        addTask("mihuyou");
+    })
+    $("#addNetmusicTask").click(function (){
+        addTask("netmusic");
+    })
+
 })
 
 function openLog(type, id) {
@@ -71,7 +82,7 @@ function openLog(type, id) {
         type: 2,
         content: "/getlog?type=" + type + "&id=" + id,
         maxmin: true,
-        area: ['600px', '600px'],
+        area: screen() < 2 ? ['90%', '80%'] : ['600px', '600px'],
         end: function (index, layero) {
             return true;
         }
@@ -102,10 +113,23 @@ function runTask(name, id) {
 function editTask(name, id) {
     layer.open({
         type: 2,
-        title: '修改' + name,
+        title: '修改' + name + '任务',
         shade: 0.1,
         area: ['800px', '500px'],
         content: name + "/edit?id=" + id,
+        end: function (index, layero) {
+            return true;
+        }
+    });
+}
+
+function addTask(name) {
+    var index = layer.open({
+        type: 2,
+        title: '添加' + name + '任务',
+        shade: 0.1,
+        area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
+        content: name + "/add",
         end: function (index, layero) {
             return true;
         }
@@ -139,7 +163,7 @@ function miyousheHtml(data) {
             _miyousheHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + miyousheUser.endDateString + '</font>'
         }
 
-        if (miyousheUser.enable) {
+        if (miyousheUser.enable == "true") {
             _miyousheHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
         } else {
             _miyousheHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
@@ -216,7 +240,7 @@ function netmusicHtml(data) {
             _netmusicHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + netmusicUser.endDateString + '</font>'
         }
 
-        if (netmusicUser.enable) {
+        if (netmusicUser.enable == "true") {
             _netmusicHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
         } else {
             _netmusicHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
@@ -297,7 +321,7 @@ function bilibiliHtml(data) {
             _bilibiliHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + bilibiliUser.endDateString + '</font>'
         }
 
-        if (bilibiliUser.skipdailytask) {
+        if (bilibiliUser.skipdailytask == "false") {
             _bilibiliHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
         } else {
             _bilibiliHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
@@ -322,7 +346,7 @@ function bilibiliHtml(data) {
         _bilibiliHtml += '</p>';
         _bilibiliHtml += '<p class="layuiadmin-big-font">大会员情况：';
 
-        if (bilibiliUser.isVip) {
+        if (bilibiliUser.isVip == "true") {
             _bilibiliHtml += '<font class="bilibili-p-font">大会员</font>';
         } else {
             _bilibiliHtml += '<font class="bilibili-p-font">不是大会员</font>';
