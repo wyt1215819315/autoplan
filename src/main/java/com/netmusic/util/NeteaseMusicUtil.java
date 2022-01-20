@@ -491,18 +491,21 @@ public class NeteaseMusicUtil {
         if (StringUtils.isBlank(info.get("phone")) || StringUtils.isBlank("password")) {
             result.put("msg", "用户名或密码不能为空！");
             result.put("flag", "false");
+            return result;
         }
         try {
             Map<String, String> loginData = getLoginData(info.get("phone"), info.get("countrycode"), info.get("password"));
-//            String s = HttpUtils.sendPost(login_url, headers, getRequestParamString(loginData), null);
-//            JSONObject json = JSON.parseObject(s);
-            HttpResponse httpResponse = HttpUtils.doPost(login_url, null, headers, null, loginData);
-            JSONObject json = HttpUtils.getJson(httpResponse);
+            Map<String, Object> map = HttpUtils.sendPost(login_url, loginData);
+            if (map == null){
+                result.put("msg", "登录失败，请求错误！");
+                result.put("flag", "false");
+                return result;
+            }
+            JSONObject json = JSON.parseObject((String) map.get("result"));
+            String cookieString = (String) map.get("cookie");
             if (json.getInteger("code") == 200) {
-                Map<String, String> cookies = HttpUtils.getCookies(httpResponse);
-                String cookieString = HttpUtils.getCookieString(httpResponse);
                 result.put("cookie", cookieString);
-                String csrf = cookies.get("__csrf");
+                String csrf = HttpUtils.getCookieByName(cookieString,"__csrf");
                 result.put("csrf", csrf);
                 result.put("data", json.toJSONString());
                 String nickname = json.getJSONObject("profile").getString("nickname");
