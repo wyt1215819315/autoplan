@@ -172,6 +172,8 @@
             layui.use(['form'], function () {
                 let form = layui.form;
 
+                showBtnSize();
+
                 //推送方式
                 form.on('select(webhook_type)', function (data) {
                     if (data.value === 'dingtalk') {

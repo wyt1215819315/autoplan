@@ -78,6 +78,8 @@
             layui.use(['form','layer'], function () {
                 var form = layui.form,layer = layui.layer;
 
+                showBtnSize();
+
                 $("#showSendWebHook").click(function () {
                     layer.open({
                         type: 2,
