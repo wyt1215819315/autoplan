@@ -13,19 +13,13 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Created by yangyibo on 17/1/18.
- */
-@Controller
+@RestController
 public class UserController {
 
     @Autowired
@@ -50,7 +44,6 @@ public class UserController {
      * @return AutoLog
      */
     @PostMapping("/api/user/getlog")
-    @ResponseBody
     public AjaxResult getLog(@RequestParam Map<String, String> params) {
         if (!params.containsKey("id") || StringUtils.isBlank(params.get("id"))){
             return AjaxResult.doError("ID不能为空！");
@@ -70,7 +63,6 @@ public class UserController {
         return AjaxResult.doSuccess(log);
     }
 
-    @ResponseBody
     @PostMapping("/api/user/me")
     public AjaxResult me(){
         if (SessionUtils.getPrincipal() == null){
@@ -81,14 +73,17 @@ public class UserController {
         return AjaxResult.doSuccess(systemUser);
     }
 
-    @ResponseBody
     @PostMapping("/api/user/userinfo/edit")
-    public AjaxResult userInfoEdit(Principal principal, @RequestBody SysUserInfo userInfo) {
-        int userId = userService.getUserId(principal.getName());
-        return userService.editUserInfo(userId,userInfo);
+    public AjaxResult userInfoEdit(@RequestBody SysUserInfo userInfo) {
+        return userService.editUserInfo(SessionUtils.getPrincipal().getId(), userInfo);
     }
 
-    @ResponseBody
+    @PostMapping("/api/user/userinfo/list")
+    public AjaxResult mySettingsList() {
+        SysUserInfo userInfo = userService.getUserInfo(SessionUtils.getPrincipal().getId());
+        return AjaxResult.doSuccess(userInfo);
+    }
+
     @PostMapping("/api/user/checkwebhook")
     public AjaxResult checkWebhook(@RequestBody SysUserInfo userInfo) {
         return userService.checkWebhook(userInfo.getWebhook());
