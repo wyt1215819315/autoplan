@@ -493,10 +493,11 @@ public class NeteaseMusicUtil {
                 return result;
             }
             JSONObject json = JSON.parseObject((String) map.get("result"));
-            String cookieString = (String) map.get("cookie");
+            Map<String, String> cookieMap = (Map<String, String>) map.get("cookie");
+            String cookieString = HttpUtils.getCookieString(cookieMap);
             if (json.getInteger("code") == 200) {
                 result.put("cookie", cookieString);
-                String csrf = HttpUtils.getCookieByName(cookieString,"__csrf");
+                String csrf = cookieMap.get("__csrf");
                 result.put("csrf", csrf);
                 result.put("data", json.toJSONString());
                 String nickname = json.getJSONObject("profile").getString("nickname");

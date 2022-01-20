@@ -198,9 +198,26 @@ public class HttpUtils {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
-            String headerField = httpConn.getHeaderField("Set-Cookie");
-            map.put("cookie",headerField);
+//            String headerField = httpConn.getHeaderField("Set-Cookie");
+            Map<String, List<String>> headerFields = httpConn.getHeaderFields();
+            List<String> cookies = headerFields.get("Set-Cookie");
+            Map<String, String> cookieMap = new HashMap<>();
+            //拼接所有cookie
+            for (String cookie : cookies) {
+                String[] one = cookie.split(";");
+                for (String s : one) {
+                    String[] split = s.split("=");
+                    if (split.length < 2) {
+                        continue;
+                    }
+                    String key = split[0].trim();
+                    String value = split[1].trim();
+                    cookieMap.put(key, value);
+                }
+            }
+//            map.put("cookie",headerField);
             map.put("result",result);
+            map.put("cookie",cookieMap);
             in.close();
         } catch (Exception e) {
 //            System.out.println(e);
@@ -580,6 +597,19 @@ public class HttpUtils {
             }
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 返回cookie
+     * @param response
+     * @return
+     */
+    public static String getCookieString(Map<String, String> cookieMap) {
+        StringBuilder sb = new StringBuilder();
+        for (String key : cookieMap.keySet()) {
+            sb.append(key).append("=").append(cookieMap.get(key)).append("; ");
+        }
+        return sb.toString();
     }
 
     /**
