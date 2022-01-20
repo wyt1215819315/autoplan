@@ -25,10 +25,10 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">Sessdate</label>
+                        <label class="layui-form-label">Sessdata</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" id="sessdate" class="layui-input" lay-verify="required" name="sessdata"
-                                   placeholder="Sessdate" type="text">
+                            <input autocomplete="off" id="sessdata" class="layui-input" lay-verify="required" name="sessdata"
+                                   placeholder="Sessdata" type="text">
                         </div>
                     </div>
 
@@ -308,7 +308,7 @@
                                         if (result.code == 200) {
                                             layer.msg(result.msg, {icon: 1, time: 2000}, function () {
                                                 $('#dedeuserid').val(result.dedeuserid);
-                                                $('#sessdate').val(result.sessdate);
+                                                $('#sessdata').val(result.sessdata);
                                                 $('#bilijct').val(result.bilijct);
                                                 window.clearInterval(t2);
                                                 layer.closeAll();
