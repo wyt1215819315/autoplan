@@ -1,5 +1,6 @@
 package com.oldwu.security.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.oldwu.domain.SysRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class SystemUser implements UserDetails {
     private Integer id;
     private String username;

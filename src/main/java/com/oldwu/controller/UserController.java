@@ -8,10 +8,13 @@ import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.BiliPlan;
 import com.oldwu.entity.SysUserInfo;
+import com.oldwu.security.entity.SystemUser;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.LogService;
 import com.oldwu.service.RegService;
 import com.oldwu.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yangyibo on 17/1/18.
@@ -111,6 +115,42 @@ public class UserController {
         SysUserInfo userInfo = userService.getUserInfo(userId);
         model.addAttribute("info",userInfo);
         return "my-helper-edit";
+    }
+
+    /**
+     * 获取执行日志，只能获取最新一条
+     * @param params id=auto_id，type=mihuyou/netmusic/bilibili
+     * @return AutoLog
+     */
+    @PostMapping("/api/user/getlog")
+    @ResponseBody
+    public AjaxResult getLog(@RequestParam Map<String, String> params) {
+        if (!params.containsKey("id") || StringUtils.isBlank(params.get("id"))){
+            return AjaxResult.doError("ID不能为空！");
+        }
+        if (!params.containsKey("type") || StringUtils.isBlank(params.get("type"))){
+            return AjaxResult.doError("TYPE不能为空！");
+        }
+        AutoLog log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), SessionUtils.getPrincipal().getId());
+        if (log == null || log.getId() == null) {
+            AutoLog log1 = new AutoLog();
+            log1.setText("当前无日志");
+            log1.setDate(new Date());
+            return AjaxResult.doSuccess(log1);
+        }
+        log.setText(log.getText().replaceAll("\n", "<br/>"));
+        return AjaxResult.doSuccess(log);
+    }
+
+    @ResponseBody
+    @PostMapping("/api/user/me")
+    public AjaxResult me(){
+        if (SessionUtils.getPrincipal() == null){
+            return AjaxResult.doError("未登录！");
+        }
+        SystemUser systemUser = SessionUtils.getPrincipal();
+        systemUser.setPassword(null);
+        return AjaxResult.doSuccess(systemUser);
     }
 
     @ResponseBody

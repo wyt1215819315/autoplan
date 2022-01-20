@@ -1,5 +1,6 @@
 package com.oldwu.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 @Data
 @Table("auto_log")
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class AutoLog implements Serializable {
 
     @IsKey
