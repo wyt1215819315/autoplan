@@ -36,3 +36,33 @@ function GetQueryString(name)
     }
     return null;
 }
+
+function getStatus(status) {
+    if (status === "200") {
+        return '<button class="layui-btn layui-btn-xs">运行完毕</button>';
+    }
+
+    if (status === "-1") {
+        return '<button class="layui-btn layui-btn-xs layui-btn-danger">运行失败</button>';
+    }
+
+    if (status === "500") {
+        return '<button class="layui-btn layui-btn-xs layui-btn-danger">账号信息已过期</button>';
+    }
+
+    if (status === "501") {
+        return '<button class="layui-btn layui-btn-xs layui-btn-normal">执行成功，账号信息更新失败</button>';
+    }
+
+    if (status === "0") {
+        return '<button class="layui-btn layui-btn-xs layui-btn-warm">未开启</button>';
+    }
+
+    if (status === "1") {
+        return '<button class="layui-btn layui-btn-xs layui-btn-disabled">任务运行中</button>';
+    }
+
+    if (status === "100" || status == null) {
+        return '<button class="layui-btn layui-btn-xs layui-btn-primary">等待运行</button>';
+    }
+}

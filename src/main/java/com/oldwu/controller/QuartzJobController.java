@@ -37,7 +37,7 @@ public class QuartzJobController extends BaseController{
 	@GetMapping("/view")
     public String view(ModelMap model)
     {
-        return "sysQuartzJoblist";
+        return "sysQuartzJob/sysQuartzJoblist";
     }
 	/**
 	 * 定时任务调度list

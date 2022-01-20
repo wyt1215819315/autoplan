@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>我的任务日志</title>
+        <th:block th:include="include :: headerCss"/>
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="admin-layui-form">
+                <div class="layui-card-header" id="showHead"></div>
+                <div class="layui-card-body" id="showInfo"></div>
+            </div>
+        </div>
+
+        <th:block th:include="include::footerJs"/>
+        <script>
+            layui.use(['element','layer'], function() {
+                var element = layui.element;
+                var layer = layui.layer;
+
+                $.ajax({
+                    url: "/api/user/getlog",
+                    data: {
+                        "id": GetQueryString("id"),
+                        "type": GetQueryString("type")
+                    },
+                    type: "POST",
+                    success: function(result) {
+                        if(result.code == 200){
+                            $("#showHead").html('日志时间：' + result.data.dateString);
+                            $("#showInfo").html(result.data.text);
+                        } else {
+                            layer.msg("获取任务日志失败");
+                        }
+                    },
+                    error: function(){
+                        layer.msg("获取任务日志失败");
+                    }
+                })
+            })
+
+        </script>
+    </body>
+
+</html>

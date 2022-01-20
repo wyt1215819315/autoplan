@@ -14,8 +14,8 @@
 
         <div class="layui-fluid">
             <div class="layui-row layui-col-space15">
-                <div class="layui-col-md2"></div>
-                <div class="layui-col-md8">
+                <div class="layui-col-xs0 layui-col-sm0 layui-col-md2 "></div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md8">
                     <div class="layui-card">
                         <div class="layui-card-header red" style="font-size: 18px; font-weight: bold;">
                             重大变更提示
@@ -26,12 +26,12 @@
                             <p>目前推送部分代码为json字符串形式传入</p>
                             <p>
                                 在填写webhook的页面中已经给出了
-                                <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
+                                <a style="color: blue" lay-href="/webhook-generate">生成器</a>
                                 按钮
                             </p>
                             <p>
                                 请使用
-                                <a style="color: blue" href="/webhook-generate" target="_blank">生成器</a>
+                                <a style="color: blue" lay-href="/webhook-generate">生成器</a>
                                 生成之后复制到webhook一栏更新配置！！
                             </p>
                         </div>
@@ -41,8 +41,8 @@
             </div>
 
             <div class="layui-row layui-col-space15">
-                <div class="layui-col-md2"></div>
-                <div class="layui-col-md8">
+                <div class="layui-col-xs0 layui-col-sm0 layui-col-md2 "></div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md8">
                     <div class="layui-card">
                         <div class="layui-card-header" style="font-size: 18px; font-weight: bold;">
                             项目介绍
@@ -52,14 +52,15 @@
                             <p>能够实现每日自动b站领经验，网易云自动签到刷300首歌</p>
                             <p>默认会在早上8点进行任务，暂时无法手动执行任务</p>
                             <p>项目任务部分源码来源：</p>
-                            <p><a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE</a></p>
-                            <p><a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a></p>
-                            <p><a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a></p>
-                            <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://github.com/wyt1215819315/autoplan"
-                               target="_blank">开源地址</a>
-                            <a class="layui-btn layui-btn-lg layui-btn-normal"
-                               href="https://blog.oldwu.top/index.php/archives/84/welcomePage.html"
-                               target="_blank">使用说明</a>
+                            <p><a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE" target="_blank">BILIBILI-HELPER-PRE</a></p>
+                            <p><a href="https://github.com/secriy/CloudMusic-LevelUp" target="_blank">CloudMusic-LevelUp</a></p>
+                            <p><a href="https://github.com/PonKing66/genshi-helper" target="_blank">genshi-helper</a></p>
+                            <a class="layui-btn layui-btn-lg layui-btn-normal" href="https://github.com/wyt1215819315/autoplan" target="_blank">
+                                开源地址
+                            </a>
+                            <a class="layui-btn layui-btn-lg layui-btn-normal" lay-href="https://blog.oldwu.top/index.php/archives/84/">
+                                使用说明
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -68,6 +69,13 @@
         </div>
 
         <th:block th:include="include :: footerJs"/>
+        <script>
+            layui.config({
+                base: '/static/layuiadmin/' //静态资源所在路径
+            }).extend({
+                index: 'lib/index' //主入口模块
+            }).use('index');
+        </script>
     </body>
 
 </html>

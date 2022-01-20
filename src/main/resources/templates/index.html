@@ -35,17 +35,24 @@
 					<ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
 
 						<li class="layui-nav-item" lay-unselect>
-							<a href="/login">
-								<cite>登录</cite>
-							</a>
-<!--							<a href="javascript:;">-->
-<!--								<cite style="margin: 0 10px 0 0;">贤心</cite>-->
-<!--							</a>-->
-<!--							<dl class="layui-nav-child">-->
-<!--								<dd style="text-align: center;">-->
-<!--									<a lay-href="/logout">注销</a>-->
-<!--								</dd>-->
-<!--							</dl>-->
+
+							<div class="noLoginShowMenu">
+								<a href="/login" >
+									<cite>登录</cite>
+								</a>
+							</div>
+
+							<div class="loginShowMenu">
+								<a href="javascript:;">
+									<cite style="margin: 0 10px 0 0;" id="loginUserName"></cite>
+								</a>
+								<dl class="layui-nav-child">
+									<dd style="text-align: center;">
+										<a lay-href="/logout">注销</a>
+									</dd>
+								</dl>
+							</div>
+
 						</li>
 
 					</ul>
@@ -62,7 +69,7 @@
 
 							<li class="layui-nav-item">
 								<a lay-href="/welcomePage">
-									<i class="layui-icon layui-icon-home"></i>
+									<i class="layui-icon layui-icon-help"></i>
 									<cite>帮助</cite>
 								</a>
 							</li>
@@ -79,9 +86,9 @@
 								</dl>
 							</li>
 
-							<li class="layui-nav-item">
+							<li class="layui-nav-item adminShowMenu">
 								<a href="javascript:;">
-									<i class="layui-icon layui-icon-template"></i>
+									<i class="layui-icon layui-icon-console"></i>
 									<cite>自动任务管理</cite>
 								</a>
 								<dl class="layui-nav-child">
@@ -90,10 +97,17 @@
 								</dl>
 							</li>
 
-							<li class="layui-nav-item">
+							<li class="layui-nav-item loginShowMenu">
 								<a lay-href="/my">
-									<i class="layui-icon layui-icon-app"></i>
+									<i class="layui-icon layui-icon-user"></i>
 									<cite>我的任务</cite>
+								</a>
+							</li>
+
+							<li class="layui-nav-item loginShowMenu">
+								<a lay-href="/my-edit">
+									<i class="layui-icon layui-icon-set"></i>
+									<cite>全局推送配置修改</cite>
 								</a>
 							</li>
 						</ul>
@@ -139,6 +153,7 @@
 		</div>
 
 		<th:block th:include="include :: footerJs"/>
+		<script src="/static/js/index.js"></script>
 		<script>
 			layui.config({
 				base: '/static/layuiadmin/' //静态资源所在路径

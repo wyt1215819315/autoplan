@@ -158,6 +158,7 @@ function updateHtml(name){
 
 //拼接米游社显示html
 function miyousheHtml(data) {
+    var name = "'mihuyou'";
 
     var _miyousheHtml = '';
 
@@ -206,16 +207,16 @@ function miyousheHtml(data) {
         _miyousheHtml = addStatus(_miyousheHtml, miyousheUser.status);
 
         _miyousheHtml += '<span class="layuiadmin-span-color">';
-        _miyousheHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'mihuyou'," + miyousheUser.id + ')">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'mihuyou'," + miyousheUser.id + ')">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _miyousheHtml += '</button>';
         _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeMiyoushe(' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(' + "'mihuyou'," + miyousheUser.id + ')">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(' + name + ',' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
         _miyousheHtml += '</button>';
         _miyousheHtml += '</span>';
@@ -235,6 +236,7 @@ function miyousheHtml(data) {
 
 //拼接网易云显示html
 function netmusicHtml(data) {
+    var name = "'netmusic'";
 
     var _netmusicHtml = '';
 
@@ -287,16 +289,16 @@ function netmusicHtml(data) {
         _netmusicHtml = addStatus(_netmusicHtml, netmusicUser.status);
 
         _netmusicHtml += '<span class="layuiadmin-span-color">';
-        _netmusicHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'netmusic'," + netmusicUser.id + ')">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'netmusic'," + netmusicUser.id + ')">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _netmusicHtml += '</button>';
         _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeNetmusic(' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + "'netmusic'," + netmusicUser.id + ')">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + name + ',' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
         _netmusicHtml += '</button>';
         _netmusicHtml += '</span>';
@@ -316,6 +318,7 @@ function netmusicHtml(data) {
 
 //拼接b站显示html
 function bilibiliHtml(data) {
+    var name = "'bili'";
 
     var _bilibiliHtml = '';
 
@@ -378,10 +381,10 @@ function bilibiliHtml(data) {
         _bilibiliHtml = addStatus(_bilibiliHtml, bilibiliUser.status);
 
         _bilibiliHtml += '<span class="layuiadmin-span-color">';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + "'bilibili'," + bilibiliUser.autoId + ')">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-tips"></i>';
         _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + "'bili'," + bilibiliUser.autoId + ')">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _bilibiliHtml += '</button>';
         _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeBilibili(' + bilibiliUser.autoId + ')">';

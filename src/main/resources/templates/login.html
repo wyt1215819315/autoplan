@@ -1,79 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta content="text/html;charset=UTF-8"/>
-        <title>登录页面</title>
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-        <th:block th:include="include :: static"/>
-        <style type="text/css">
-            .starter-template {
-                padding: 40px 15px;
-                text-align: center;
-            }
-        </style>
-    </head>
-    <body>
-        <ul class="layui-nav" th:include="include::header"></ul>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>登录页面</title>
+    <meta content="text/html;charset=UTF-8"/>
+    <th:block th:include="include :: headerCss"/>
+    <link rel="stylesheet" href="/static/layuiadmin/style/login.css" media="all">
+</head>
+<body>
+<!--<ul class="layui-nav" th:include="include::header"></ul>-->
 
-        <div class="container" style="padding-top: 0;margin: 15px">
+<div class="layadmin-user-login layadmin-user-display-show">
 
-            <div class="starter-template" style="text-align: center">
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend>登录</legend>
-                </fieldset>
-                <form action="/loginProcessing" method="POST" name="form" th:action="@{/loginProcessing}"> <!-- 3 -->
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户名</label>
-                            <div class="layui-input-inline">
-                                <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
-                                       placeholder="请输入用户名"
-                                       required type="text">
-                            </div>
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>AutoPlan 登录页面</h2>
+            <p>AutoPlan 自动化托管平台</p>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"></label>
+                <input type="text" name="username" id="username" placeholder="用户名" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"></label>
+                <input type="password" name="password" id="password" placeholder="密码" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"></label>
+                        <input type="text" name="imageCode" id="imageCode" placeholder="图形验证码" class="layui-input">
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <img src="/code/image" class="layadmin-user-login-codeimg" id="showImageCode">
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">密码</label>
-                            <div class="layui-input-inline">
-                                <input autocomplete="off" class="layui-input" lay-verify="required" name="password"
-                                       placeholder="请输入密码"
-                                       required type="password">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">验证码</label>
-                            <div class="layui-input-inline">
-                                <input autocomplete="off" class="layui-input" lay-verify="required" name="imageCode"
-                                       placeholder="请输入验证码"
-                                       required type="text">
-                            </div>
-                            <img src="/code/image"/>
-                        </div>
-                    </div>
-                    <br>
-                    <input class="layui-btn layui-btn-lg" id="login" type="submit" value="登录"/>
-                </form>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" type="button" id="login_btn">登 入</button>
             </div>
 
+            <div class="layui-trans layui-form-item layadmin-user-login-other">
+                <label id="text" style="font-size: 15px; color: #ff4d4d"></label>
+                <a href="/" class="layadmin-user-jump-change layadmin-link" style="color:#1E9FFF!important;">首页</a>
+                <a href="/reg" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
+            </div>
         </div>
-        <script th:include="include::layelement"></script>
-        <script th:if="${regok}" th:inline="javascript">
-            layui.use(['jquery', 'form'], function () {
-                layer.msg("注册成功，请登录", {icon: 1, time: 3000});
-            });
-        </script>
-        <script th:if="${param.logout}" th:inline="javascript">
-            layui.use(['jquery', 'form'], function () {
-                layer.msg("已成功注销", {icon: 1, time: 3000});
-            });
-        </script>
-        <script th:if="${param.error}" th:inline="javascript">
-            layui.use(['jquery', 'form'], function () {
-                layer.msg("登录发生错误，请检查用户名密码", {icon: 2, time: 5000});
-            });
-        </script>
-    </body>
+    </div>
+
+    <div id='maskDiv' class="maskDiv displaynone" align="center">
+        <div class="maskDivImage">
+            <img src="/static/image/waiting.gif" href="javascript:void();" style="vertical-align: middle;"/>
+            <span style="display:inline-block;margin-left:5px;color: #0C0C0C; font-weight: bold;">正在登录中....</span>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footerJs"/>
+<script src="/static/js/user/login.js"></script>
+</body>
 </html>

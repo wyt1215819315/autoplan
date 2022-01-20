@@ -37,6 +37,12 @@
     color: #3285ff !important;
 }
 
+.netmusic .layui-card,.bilibili .layui-card,.miyoushe .layui-card {
+    -webkit-box-shadow:2px 2px 5px #bbb;
+    -moz-box-shadow:2px 2px 5px #bbb;
+    box-shadow:2px 2px 5px #bbb;
+}
+
 .layuiadmin-span-color i {
     padding-left: 0;
     margin-right: 0 !important;

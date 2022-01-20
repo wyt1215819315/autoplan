@@ -72,10 +72,4 @@ public class BiliController {
         return service.getQrcodeStatus(oauthKey);
     }
 
-
-//    @RequestMapping("/add")
-//    public Map<String,String> addBiliInfo(){
-//
-//    }
-
 }
