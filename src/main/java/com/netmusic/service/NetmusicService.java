@@ -52,6 +52,8 @@ public class NetmusicService {
         }
         //移除cookie
         autoNetmusic.setCookie(null);
+        autoNetmusic.setPhone(null);
+        autoNetmusic.setPassword(null);
         return AjaxResult.doSuccess(autoNetmusic);
     }
 
