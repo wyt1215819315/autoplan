@@ -21,3 +21,18 @@ function showBtnSize(){
         $(".layui-btn").removeClass("layui-btn-sm").addClass("layui-btn-xs");
     }
 }
+
+/**
+ * 获取Get请求的参数
+ * @param name
+ * @returns
+ */
+function GetQueryString(name)
+{
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
+    if(r!=null){
+        return decodeURI(r[2]);
+    }
+    return null;
+}

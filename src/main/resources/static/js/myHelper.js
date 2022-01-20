@@ -6,64 +6,6 @@ layui.use(['element','layer'], function() {
     showUserNetmusicInfo();
     showUserMiyousheInfo();
 
-    function showUserBilibiliInfo() {
-        $.ajax({
-            url: "/api/user/bili/list",
-            async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
-            type: "POST",
-            success: function (result) {
-                if (result.code === 200) {
-                    var _html = bilibiliHtml(result.data);
-                    $("#bilibiliShow").html(_html);
-                } else {
-                    layer.msg("获取哔哩哔哩任务失败");
-                }
-            },
-            error: function () {
-                layer.msg("获取哔哩哔哩任务失败");
-            }
-        })
-    }
-
-    function showUserNetmusicInfo() {
-        $.ajax({
-            url: "/api/user/netmusic/list",
-            async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
-            type: "POST",
-            success: function (result) {
-                console.log(result);
-                if (result.code === 200) {
-                    var _html = netmusicHtml(result.data);
-                    $("#netmusicShow").html(_html);
-                } else {
-                    layer.msg("获取网易云任务失败");
-                }
-            },
-            error: function () {
-                layer.msg("获取网易云任务失败");
-            }
-        })
-    }
-
-    function showUserMiyousheInfo() {
-        $.ajax({
-            url: "/api/user/mihuyou/list",
-            async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
-            type: "POST",
-            success: function (result) {
-                if (result.code === 200) {
-                    var _html = miyousheHtml(result.data);
-                    $("#miyousheShow").html(_html);
-                } else {
-                    layer.msg("获取网易云任务失败");
-                }
-            },
-            error: function () {
-                layer.msg("获取网易云任务失败");
-            }
-        })
-    }
-
     $("#addBilibiliTask").click(function (){
         addTask("bili");
     })
@@ -76,13 +18,75 @@ layui.use(['element','layer'], function() {
 
 })
 
+function showUserBilibiliInfo() {
+    $.ajax({
+        url: "/api/user/bili/list",
+        async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+        type: "POST",
+        success: function (result) {
+            if (result.code === 200) {
+                var _html = bilibiliHtml(result.data);
+                $("#bilibiliShow").html(_html);
+            } else {
+                layer.msg("获取哔哩哔哩任务失败");
+            }
+        },
+        error: function () {
+            layer.msg("获取哔哩哔哩任务失败");
+        }
+    })
+}
+
+function showUserNetmusicInfo() {
+    $.ajax({
+        url: "/api/user/netmusic/list",
+        async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+        type: "POST",
+        success: function (result) {
+            if (result.code === 200) {
+                var _html = netmusicHtml(result.data);
+                $("#netmusicShow").html(_html);
+            } else {
+                layer.msg("获取网易云任务失败");
+            }
+        },
+        error: function () {
+            layer.msg("获取网易云任务失败");
+        }
+    })
+}
+
+function showUserMiyousheInfo() {
+    $.ajax({
+        url: "/api/user/mihuyou/list",
+        async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+        type: "POST",
+        success: function (result) {
+            if (result.code === 200) {
+                var _html = miyousheHtml(result.data);
+                $("#miyousheShow").html(_html);
+            } else {
+                layer.msg("获取网易云任务失败");
+            }
+        },
+        error: function () {
+            layer.msg("获取网易云任务失败");
+        }
+    })
+}
+
 function openLog(type, id) {
+    var boxSize = '600px';
+    if (name === "netmusic") {
+        boxSize = '450px';
+    }
+
     var index = layer.open({
         title: type + "日志查看",
         type: 2,
         content: "/getlog?type=" + type + "&id=" + id,
         maxmin: true,
-        area: screen() < 2 ? ['90%', '80%'] : ['600px', '600px'],
+        area: screen() < 2 ? ['90%', '80%'] : ['600px', boxSize],
         end: function (index, layero) {
             return true;
         }
@@ -124,7 +128,7 @@ function editTask(name, id) {
 }
 
 function addTask(name) {
-    var index = layer.open({
+    layer.open({
         type: 2,
         title: '添加' + name + '任务',
         shade: 0.1,

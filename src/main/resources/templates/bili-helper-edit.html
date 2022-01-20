@@ -12,55 +12,46 @@
 
                 <form class="layui-form layui-form-pane" action="">
 
-                    <input name="id" th:value="${bili.getId()}" type="hidden">
+                    <input name="id" id="id" type="hidden">
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">任务名</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="name"
-                                   placeholder="输入任务名"
-                                   th:value="${bili.getName()}"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" name="name" id="name"
+                                   placeholder="输入任务名" type="text">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">任务执行间隔</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="taskintervaltime"
-                                   name="taskintervaltime"
-                                   placeholder="任务执行间隔"
-                                   th:value="${bili.getTaskintervaltime()}" type="number" value="10">
+                            <input autocomplete="off" class="layui-input" name="taskintervaltime" id="taskintervaltime"
+                                   placeholder="任务执行间隔" type="text" value="10">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">每日投币数量</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="numberofcoins"
-                                   name="numberofcoins"
-                                   placeholder="每日投币数量"
-                                   th:value="${bili.getNumberofcoins()}"
-                                   type="number" value="5">
+                            <input autocomplete="off" class="layui-input" name="numberofcoins" id="numberofcoins"
+                                   placeholder="每日投币数量" type="text" value="5">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">预留的硬币数</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="reservecoins" name="reservecoins"
-                                   placeholder="预留的硬币数"
-                                   th:value="${bili.getReservecoins()}"
-                                   type="number" value="50">
+                            <input autocomplete="off" class="layui-input" name="reservecoins" id="reservecoins"
+                                   placeholder="预留的硬币数" type="text" value="50">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">投币时是否点赞</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="selectlike">
-                                <option th:selected="${bili.getSelectlike() == 0}" value="0">投币时不点赞</option>
-                                <option th:selected="${bili.getSelectlike() == 1}" value="1">投币时点赞</option>
+                            <select class="layui-input" name="selectlike" id="selectlike">
+                                <option value="0">投币时不点赞</option>
+                                <option value="1">投币时点赞</option>
                             </select>
                         </div>
                     </div>
@@ -68,11 +59,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">年度大会员月底是否用 B 币券给自己充电</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="monthendautocharge">
-                                <option th:selected="${bili.getMonthendautocharge().equals('true')}" value="true">开启
-                                </option>
-                                <option th:selected="${bili.getMonthendautocharge().equals('false')}" value="false">关闭
-                                </option>
+                            <select class="layui-input" name="monthendautocharge" id="monthendautocharge">
+                                <option value="true">开启</option>
+                                <option value="false">关闭</option>
                             </select>
                         </div>
                     </div>
@@ -80,9 +69,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">直播送出即将过期的礼物</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="givegift">
-                                <option th:selected="${bili.getGivegift()} == 'true'" value="true">开启</option>
-                                <option th:selected="${bili.getGivegift()} == 'false'" value="false">关闭</option>
+                            <select class="layui-input" name="givegift" id="givegift">
+                                <option value="true">开启</option>
+                                <option value="false">关闭</option>
                             </select>
                         </div>
                     </div>
@@ -90,29 +79,25 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">直播送出即将过期的礼物，指定 up 主，为 0 时则随随机</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="uplive" name="uplive"
-                                   placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主"
-                                   th:value="${bili.getUplive()}" type="number">
+                            <input autocomplete="off" class="layui-input" id="uplive" name="uplive"
+                                   placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主" type="number">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="chargeforlove"
-                                   name="chargeforlove"
-                                   placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电"
-                                   th:value="${bili.getChargeforlove()}" type="number">
+                            <input autocomplete="off" class="layui-input" id="chargeforlove" name="chargeforlove"
+                                   placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电" type="number">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">手机端漫画签到时的平台，建议选择你设备的平台</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="deviceplatform">
-                                <option th:selected="${bili.getDeviceplatform().equals('ios')}" value="ios">苹果</option>
-                                <option th:selected="${bili.getDeviceplatform().equals('android')}" value="android">安卓
-                                </option>
+                            <select class="layui-input" name="deviceplatform" id="deviceplatform">
+                                <option value="ios">苹果</option>
+                                <option value="android">安卓</option>
                             </select>
                         </div>
                     </div>
@@ -120,9 +105,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">投币规则</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="coinaddpriority">
-                                <option th:selected="${bili.getCoinaddpriority() == 0}" value="0">优先给热榜视频投币</option>
-                                <option th:selected="${bili.getCoinaddpriority() == 1}" value="1">优先给关注的 up 投币</option>
+                            <select class="layui-input" name="coinaddpriority" id="coinaddpriority">
+                                <option value="0">优先给热榜视频投币</option>
+                                <option value="1">优先给关注的 up 投币</option>
                             </select>
                         </div>
                     </div>
@@ -130,8 +115,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">浏览器UA</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="useragent" name="useragent"
-                                   placeholder="不知道就空着" th:value="${bili.getUseragent()}" type="text">
+                            <input autocomplete="off" class="layui-input" id="useragent" name="useragent"
+                                   placeholder="不知道就空着" type="text">
                         </div>
                     </div>
 
@@ -140,8 +125,8 @@
                         <label class="layui-form-label">赛事预测总开关</label>
                         <div class="layui-input-block">
                             <select class="layui-input" id="matchEnable" lay-filter="matchEnable" name="matchEnable">
-                                <option th:selected="${bili.getMatchEnable().equals('false')}" value="false">关</option>
-                                <option th:selected="${bili.getMatchEnable().equals('true')}" value="true">开</option>
+                                <option value="false">关</option>
+                                <option value="true">开</option>
                             </select>
                         </div>
                     </div>
@@ -150,28 +135,23 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">单次预测投注硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input"
-                                       name="matchPredictnumberofcoins"
-                                       placeholder="单次预测投注硬币"
-                                       type="number" th:value="${bili.getMatchPredictnumberofcoins()}">
+                                <input autocomplete="off" class="layui-input" name="matchPredictnumberofcoins" id="matchPredictnumberofcoins"
+                                       placeholder="单次预测投注硬币" type="text">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">预测保留硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input"
-                                       name="matchMinimumnumberofcoins"
-                                       placeholder="预测保留硬币"
-                                       type="number" th:value="${bili.getMatchMinimumnumberofcoins()}">
+                                <input autocomplete="off" class="layui-input" name="matchMinimumnumberofcoins" id="matchMinimumnumberofcoins"
+                                       placeholder="预测保留硬币" type="text">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
                             <label class="layui-form-label">赛事预测规则</label>
                             <div class="layui-input-block">
-                                <select class="layui-input" name="matchShowhandmodel"
-                                        id="matchShowhandmodel">
-                                    <option selected value="false">压倍率低的（跟着人多的压）</option>
+                                <select class="layui-input" name="matchShowhandmodel" id="matchShowhandmodel">
+                                    <option value="false">压倍率低的（跟着人多的压）</option>
                                     <option value="true">压倍率高的（赌命）</option>
                                 </select>
                             </div>
@@ -181,10 +161,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">每日任务总开关</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="skipdailytask">
-                                <option th:selected="${bili.getSkipdailytask().equals('false')}" value="false">开
-                                </option>
-                                <option th:selected="${bili.getSkipdailytask().equals('true')}" value="true">关</option>
+                            <select class="layui-input" name="skipdailytask" id="skipdailytask">
+                                <option value="false">开</option>
+                                <option value="true">关</option>
                             </select>
                         </div>
                     </div>
@@ -192,9 +171,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">任务完成推送WebHook</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="webhook"
-                                   placeholder="输入WebHook地址，json字符串"
-                                   type="text">
+                            <input autocomplete="off" class="layui-input" name="webhook" id="webhook"
+                                   placeholder="输入WebHook地址，json字符串" type="text">
                         </div>
                     </div>
 
@@ -221,7 +199,36 @@
                 let form = layui.form, layer = layui.layer;
 
                 showBtnSize();
+                showData();
 
+                function showData() {
+                    $.post("/api/user/bili/view",{id: GetQueryString("id")}, function (data) {
+                        var _data = data.data;
+
+                        $("#id").val(GetQueryString("id"));
+                        $("#name").val(_data.name);
+                        $("#taskintervaltime").val(_data.taskintervaltime);
+                        $("#numberofcoins").val(_data.numberofcoins);
+                        $("#reservecoins").val(_data.reservecoins);
+                        $("#selectlike").val(_data.selectlike);
+                        $("#monthendautocharge").val(_data.monthendautocharge);
+                        $("#givegift").val(_data.givegift);
+                        $("#uplive").val(_data.uplive);
+                        $("#chargeforlove").val(_data.chargeforlove);
+                        $("#deviceplatform").val(_data.deviceplatform);
+                        $("#coinaddpriority").val(_data.coinaddpriority);
+                        $("#useragent").val(_data.useragent);
+                        $("#matchEnable").val(_data.matchEnable);
+                        $("#matchPredictnumberofcoins").val(_data.matchPredictnumberofcoins);
+                        $("#matchMinimumnumberofcoins").val(_data.matchMinimumnumberofcoins);
+                        $("#matchShowhandmodel").val(_data.matchShowhandmodel);
+                        $("#skipdailytask").val(_data.skipdailytask);
+                        $("#webhook").val(_data.webhook);
+
+                        form.render();
+                    });
+                }
+                
                 $("#showSendWebHook").click(function () {
                     layer.open({
                         type: 2,
@@ -248,8 +255,8 @@
 
                 //保存
                 form.on('submit(user-save)', function (data) {
-                    var loadIndex = parent.layer.msg("校验用户信息中，请稍后", {icon: 3, time: 10*1000, shade: [0.7, '#393D49']});
 
+                    var loadIndex = parent.layer.load(2, {time: 10*1000});
                     $.ajax({
                         url: '/api/user/bili/edit',
                         data: JSON.stringify(data.field),
@@ -257,15 +264,16 @@
                         contentType: 'application/json;charset=UTF-8',
                         type: 'post',
                         success: function (result) {
+                            parent.layer.close(loadIndex);
                             if (result.code == 200) {
                                 parent.layer.msg(result.msg);
                                 parent.layer.close(parentIndex);
                             } else {
                                 parent.layer.msg(result.msg);
-                                parent.layer.close(loadIndex);
                             }
                         },
                         error: function () {
+                            parent.layer.close(loadIndex);
                             parent.layer.msg("连接服务器失败！");
                         }
                     })

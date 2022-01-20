@@ -55,6 +55,7 @@
                             <input autocomplete="off" class="layui-input" name="webhook" placeholder="输入WebHook地址，json字符串" type="text">
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn layui-btn-normal" lay-submit lay-filter="userSave">
@@ -110,15 +111,16 @@
                         contentType: 'application/json;charset=UTF-8',
                         type: 'post',
                         success: function (result) {
+                            parent.layer.close(loadIndex);
                             if (result.code == 200) {
                                 parent.layer.msg(result.msg);
                                 parent.layer.close(parentIndex);
                             } else {
                                 parent.layer.msg(result.msg);
-                                parent.layer.close(loadIndex);
                             }
                         },
                         error: function () {
+                            parent.layer.close(loadIndex);
                             parent.layer.msg("连接服务器失败！");
                         }
                     })

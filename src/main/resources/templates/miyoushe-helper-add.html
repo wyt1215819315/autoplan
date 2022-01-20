@@ -140,6 +140,7 @@
                         contentType: 'application/json;charset=UTF-8',
                         type: 'post',
                         success: function (result) {
+                            parent.layer.close(loadIndex);
                             if (result.code == 200) {
                                 parent.layer.msg(result.msg);
                                 parent.layer.close(parentIndex);
@@ -148,10 +149,10 @@
                                 parent.layer.close(parentIndex);
                             }else {
                                 parent.layer.msg(result.msg);
-                                parent.layer.close(loadIndex);
                             }
                         },
                         error: function () {
+                            parent.layer.close(loadIndex);
                             parent.layer.msg("连接服务器失败！");
                         }
                     })
