@@ -123,7 +123,7 @@ public class BiliTask {
             PushUtil.doPush(OldwuLog.getLog(), autoBilibili.getWebhook(), userid);
 
             //写入至数据库
-            AutoLog bilibili = new AutoLog(auto_id, "bilibili", "200", userid, new Date(), OldwuLog.getLog());
+            AutoLog bilibili = new AutoLog(auto_id, "bili", "200", userid, new Date(), OldwuLog.getLog());
             logDao.insert(bilibili);
 
             //更新用户信息,一并检查cookie

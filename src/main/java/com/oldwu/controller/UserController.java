@@ -119,7 +119,7 @@ public class UserController {
 
     /**
      * 获取执行日志，只能获取最新一条
-     * @param params id=auto_id，type=mihuyou/netmusic/bilibili
+     * @param params id=auto_id，type=mihuyou/netmusic/bili
      * @return AutoLog
      */
     @PostMapping("/api/user/getlog")
