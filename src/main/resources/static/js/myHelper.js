@@ -66,11 +66,11 @@ function showUserMiyousheInfo() {
                 var _html = miyousheHtml(result.data);
                 $("#miyousheShow").html(_html);
             } else {
-                layer.msg("获取网易云任务失败");
+                layer.msg("获取米游社任务失败");
             }
         },
         error: function () {
-            layer.msg("获取网易云任务失败");
+            layer.msg("获取米游社任务失败");
         }
     })
 }
@@ -195,9 +195,9 @@ function miyousheHtml(data) {
         _miyousheHtml += '<p class="layuiadmin-big-font">用户名：';
         _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.miName + '</font>';
 
-        // _miyousheHtml += '<span class="layuiadmin-span-color">';
-        // _miyousheHtml += '<img src="' + miyousheUser.faceImg + '" alt="头像" style="width: 60px; height: 60px">';
-        // _miyousheHtml += '</span>';
+        _miyousheHtml += '<span class="layuiadmin-span-color">';
+        _miyousheHtml += '<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+        _miyousheHtml += '</span>';
 
         _miyousheHtml += '<p class="layuiadmin-big-font">原神UID：';
         _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.genshinUid + '</font>';
@@ -272,9 +272,9 @@ function netmusicHtml(data) {
         _netmusicHtml += '<div class="layui-card-body layuiadmin-card-list">';
         _netmusicHtml += '<p class="layuiadmin-big-font">用户名：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicName + '</font>';
-        // _netmusicHtml += '<span class="layuiadmin-span-color">';
-        // _netmusicHtml += '<img src="' + netmusicUser.faceImg + '" alt="头像" style="width: 60px; height: 60px">';
-        // _netmusicHtml += '</span>';
+        _netmusicHtml += '<span class="layuiadmin-span-color">';
+        _netmusicHtml += '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+        _netmusicHtml += '</span>';
         _netmusicHtml += '<p class="layuiadmin-big-font">等级：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicLevel + '</font>';
         _netmusicHtml += '</p>';
