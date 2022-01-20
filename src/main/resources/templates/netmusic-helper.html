@@ -4,12 +4,9 @@
     <head>
         <meta content="text/html;charset=UTF-8"/>
         <title>网易云任务列表</title>
-        <!--    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>-->
-        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-        <th:block th:include="include :: static"/>
+        <th:block th:include="include :: headerCss"/>
     </head>
     <body>
-        <ul th:include="include::header" class="layui-nav"></ul>
 
         <div class="container" style="padding-top: 0;margin: 15px">
             <div class="layui-btn-container">
@@ -57,7 +54,7 @@
 
         </div>
 
-        <script th:include="include::layelement"></script>
+        <th:block th:include="include :: footerJs"/>
     </body>
 
 </html>

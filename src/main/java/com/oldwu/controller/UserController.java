@@ -47,13 +47,13 @@ public class UserController {
     private MihayouService mihayouService;
 
     @RequestMapping("/")
-    public String index(Model model) {
-        return "index2";
+    public String index() {
+        return "index";
     }
 
-    @RequestMapping("/index")
-    public String index() {
-        return "index2";
+    @RequestMapping("/welcomePage")
+    public String welcomePage() {
+        return "welcomePage";
     }
 
     @GetMapping("/login")

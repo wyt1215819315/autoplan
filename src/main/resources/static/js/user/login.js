@@ -77,7 +77,7 @@ function submitform(){
             success : function(d) {
                 $("#maskDiv").hide();
                 if (d.code == 200) {
-                    window.location.href = "/index";
+                    window.location.href = "/";
                 }else{
                     showErrorMessage(d.msg);
                     updateImageCode();

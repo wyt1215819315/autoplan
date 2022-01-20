@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/api/reg").permitAll()
                 .antMatchers("/reg").permitAll()
-                .antMatchers("/index").permitAll()
+                .antMatchers("/welcomePage").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/webhook-generate").permitAll()
                 .antMatchers("/bili/index").permitAll()
