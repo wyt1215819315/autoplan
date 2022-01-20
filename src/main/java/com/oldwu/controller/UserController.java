@@ -32,7 +32,6 @@ public class UserController {
     private LogService logService;
 
     @PostMapping("/reg")
-    @ResponseBody
     public AjaxResult regPost(@Param("username") String username, @Param("password") String password, Model model) {
         //TODO 加入验证码验证
         return regService.doReg(username, password);
@@ -58,8 +57,7 @@ public class UserController {
             log1.setDate(new Date());
             return AjaxResult.doSuccess(log1);
         }
-        String logText = log.getText();
-        log.setText(logText.substring(1, logText.length()).replace("\n", "<br/>"));
+        log.setText(log.getText().replaceAll("\n", "<br/>"));
         return AjaxResult.doSuccess(log);
     }
 

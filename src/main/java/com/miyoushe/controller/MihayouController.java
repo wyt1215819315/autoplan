@@ -5,6 +5,7 @@ import com.miyoushe.service.MihayouService;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,7 +79,7 @@ public class MihayouController {
             if (map.get("code").equals("201")) {
                 flag = i;
             }
-            data.put("msg", data.get("msg") + "<br>" + map.get("msg"));
+            data.put("msg", data.get("msg") + (StringUtils.isBlank(data.get("msg")) ? "" : "<br>" ) + map.get("msg"));
         }
         //感叹号201特殊处理
         if (flag != -1) {

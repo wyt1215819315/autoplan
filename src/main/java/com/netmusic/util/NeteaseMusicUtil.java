@@ -79,17 +79,8 @@ public class NeteaseMusicUtil {
         boolean flag = false;
         StringBuilder msg = new StringBuilder();
 
-        Map<String, String> login = new HashMap<>();
-        for (int i = 0; i < reconn; i++) {
-            login = login(userInfo);
-            flag = Boolean.parseBoolean(login.get("flag"));
-            if (flag) {
-                msg.append(login.get("msg"));
-                break;
-            }
-            msg.append("\n").append(login.get("msg"));
-            msg.append("\n[WARNING]登录失败，开始第").append(i + 1).append("次尝试");
-        }
+        Map<String, String> login = login(userInfo);
+        flag = Boolean.parseBoolean(login.get("flag"));
         if (!flag || !login.containsKey("uid")) {
             map.put("flag", false);
             map.put("msg", msg.toString());

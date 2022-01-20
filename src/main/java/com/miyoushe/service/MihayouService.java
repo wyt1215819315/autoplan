@@ -6,6 +6,7 @@ import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
+import com.oldwu.constant.URLConstant;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
@@ -30,7 +31,7 @@ import java.util.Map;
 @Component
 public class MihayouService {
     private final Log logger = LogFactory.getLog(MihayouService.class);
-    private final String MYS_PERSONAL_INFO_URL = "https://bbs-api.mihoyo.com/user/wapi/getUserFullInfo?gids=2";
+
 
     @Autowired
     private AutoMihayouDao mihayouDao;
@@ -76,18 +77,6 @@ public class MihayouService {
             mihayous.setLcookie(null);
             mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
             mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
-            result.add(mihayous);
-        }
-        return result;
-    }
-
-    public List<AutoMihayou> getMyPlan(Integer userId) {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectMine(userId);
-        List<AutoMihayou> result = new ArrayList<>();
-        for (AutoMihayou mihayous : autoMihayous) {
-            mihayous.setCookie(null);
-            mihayous.setStoken(null);
-            mihayous.setSuid(null);
             result.add(mihayous);
         }
         return result;
@@ -317,8 +306,7 @@ public class MihayouService {
 
     public Map<String, Object> getCookieToken(String login_ticket, String accountId) {
         Map<String, Object> map = new HashMap<>();
-        String token_url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket?login_ticket=%s&token_types=3&uid=%s";
-        token_url = String.format(token_url, login_ticket, accountId);
+        String token_url = String.format(URLConstant.MYS_TOKEN_URL, login_ticket, accountId);
         HttpResponse httpResponse = null;
         try {
             httpResponse = HttpUtils.doGet(token_url, null, HttpUtils.getHeaders(), null);
@@ -339,19 +327,6 @@ public class MihayouService {
             map.put("msg", "服务端请求失败！" + e.getMessage());
             return map;
         }
-    }
-
-    public AutoMihayou getMyEditPlan(AutoMihayou autoMihayou1) {
-        AutoMihayou autoMihayou = mihayouDao.selectById(autoMihayou1.getId());
-        if (autoMihayou == null || autoMihayou.getId() == null) {
-            return null;
-        }
-        //放行管理员
-        String role = userDao.getRole(autoMihayou1.getUserId());
-        if (!autoMihayou.getUserId().equals(autoMihayou1.getUserId()) && !role.equals("ROLE_ADMIN")) {
-            return null;
-        }
-        return autoMihayou;
     }
 
     public Map<String, Object> editMiHuYouPlan(AutoMihayou autoMihayou1) {
@@ -429,7 +404,7 @@ public class MihayouService {
         Map<String, Object> map = new HashMap<>();
         Map<String, String> headers = HttpUtils.getHeaders();
         headers.put("Cookie", cookie);
-        HttpResponse httpResponse = HttpUtils.doGet(MYS_PERSONAL_INFO_URL, "", headers, null);
+        HttpResponse httpResponse = HttpUtils.doGet(URLConstant.MYS_PERSONAL_INFO_URL, "", headers, null);
         JSONObject json = HttpUtils.getJson(httpResponse);
         if (json.getInteger("retcode") != 0) {
             return null;
