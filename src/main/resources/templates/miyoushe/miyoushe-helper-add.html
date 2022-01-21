@@ -26,7 +26,7 @@
                                         </a>
                                         <br/>
                                         <font style="color: red;">手机端</font>请查看
-                                        <a class="layui-btn layui-btn-normal layui-btn-sm" href="https://blog.oldwu.top/index.php/archives/84/#toc_9" target="_blank">
+                                        <a class="layui-btn layui-btn-normal layui-btn-sm" lay-href="https://blog.oldwu.top/index.php/archives/84/#toc_9" target="_blank">
                                             使用说明
                                         </a>
                                     </p>
@@ -90,6 +90,12 @@
         <script src="/static/js/md5.js"></script>
 
         <script>
+            layui.config({
+                base: '/static/layuiadmin/' //静态资源所在路径
+            }).extend({
+                index: 'lib/index' //主入口模块
+            }).use('index');
+
             var parentIndex = parent.layer.getFrameIndex(window.name);
 
             layui.use(['form', 'element','layer'], function () {
