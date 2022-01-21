@@ -45,8 +45,6 @@
         <title>Title</title>
     </head>
     <body>
-
-
         <script th:fragment="layelement">
             layui.use('element', function () {
                 var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
@@ -58,71 +56,5 @@
                 });
             });
         </script>
-
-
-        <ul class="layui-nav" th:fragment="header">
-            <li class="layui-nav-item"><a href="/index">Auto_Helper</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:">自动任务列表</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="/bili/index">bilibili-Helper</a></dd>
-                    <dd><a href="/netmusic/index">netmusic-Helper</a></dd>
-                    <dd><a href="/mihuyou/index">genshin-helper</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                <a href="javascript:">自动任务管理</a>
-                <dl class="layui-nav-child">
-                    <dd><a th:href="@{/admin/job/view}">定时任务管理</a></dd>
-                    <dd><a th:href="@{/admin/joblog/view}">定时任务日志查看</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item" sec:authorize="hasRole('ROLE_USER')">
-                <a href="javascript:"
-                   th:text="欢迎你 + ${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}"></a>
-                <dl class="layui-nav-child">
-                    <dd><a th:href="@{/my}">我的任务</a></dd>
-                    <hr>
-                    <dd><a th:href="@{/logout}">注销</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item" sec:authorize="!hasRole('ROLE_USER')">
-                <a th:href="@{/login}">登录</a>
-            </li>
-            <li class="layui-nav-item" sec:authorize="!hasRole('ROLE_USER')">
-                <a th:href="@{/reg}">注册</a>
-            </li>
-
-        </ul>
-
-
-        <!--<div class="container" >-->
-        <!--    <div class="navbar-header">-->
-        <!--        <a class="navbar-brand" href="#">oldwu Auto_Helper</a>-->
-        <!--    </div>-->
-        <!--    <div class="collapse navbar-collapse" id="navbar">-->
-        <!--        <ul class="nav navbar-nav">-->
-        <!--            <li><a th:href="@{/index}"> 首页 </a></li>-->
-        <!--            <li><a th:href="@{/bili/index}"> bilibili-Helper </a></li>-->
-        <!--            <li><a th:href="@{/netmusic/index}"> netmusic-Helper </a></li>-->
-        <!--            <li sec:authorize="hasRole('ROLE_ADMIN')">-->
-        <!--                <a th:href="@{/admin/job/view}"> 定时任务管理 </a>-->
-        <!--            </li>-->
-        <!--            <li sec:authorize="hasRole('ROLE_ADMIN')">-->
-        <!--                <a th:href="@{/admin/joblog/view}"> 定时任务日志查看 </a>-->
-        <!--            </li>-->
-        <!--        </ul>-->
-        <!--        <ul sec:authorize="!hasRole('ROLE_USER')" class="nav navbar-nav pull-right">-->
-        <!--            <li><a th:href="@{/login}"> 登录 </a></li>-->
-        <!--            <li><a th:href="@{/reg}"> 注册 </a></li>-->
-        <!--        </ul>-->
-        <!--        <ul sec:authorize="hasRole('ROLE_USER')" class="nav navbar-nav pull-right">-->
-        <!--            <li>-->
-        <!--                <a th:text="欢迎你 + ${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}" href="my"></a>-->
-        <!--            </li>-->
-        <!--            <li><a href="/logout"> 注销 </a></li>-->
-        <!--        </ul>-->
-        <!--    </div>-->
-        <!--</div>-->
     </body>
 </html>

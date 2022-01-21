@@ -3,7 +3,6 @@ $.ajax({
     async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
     type: "POST",
     success: function(result) {
-        console.log(result);
 
         $(".noLoginShowMenu").show();
         $(".loginShowMenu").hide();
