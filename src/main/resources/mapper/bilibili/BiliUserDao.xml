@@ -17,16 +17,19 @@
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="other" jdbcType="VARCHAR" property="other"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id, auto_id, `uid`, bili_name, bili_coin, bili_exp, bili_upexp, bili_level, face_img,
     is_vip, vip_due_date, other, `status`
     </sql>
+
     <select id="selectByMid" resultType="com.oldwu.entity.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
         where uid = #{id}
     </select>
+
     <select id="selectAll" resultType="com.oldwu.entity.BiliPlan">
         SELECT bili_user.bili_name         AS bili_name,
                bili_user.bili_coin         AS bili_coin,
@@ -43,6 +46,25 @@
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
     </select>
+
+    <select id="selectPageList" resultType="com.oldwu.entity.BiliPlan">
+        SELECT bili_user.bili_name         AS bili_name,
+               bili_user.bili_coin         AS bili_coin,
+               bili_user.bili_exp          AS bili_exp,
+               bili_user.bili_upexp        AS bili_upexp,
+               bili_user.bili_level        AS bili_level,
+               bili_user.face_img          AS face_img,
+               bili_user.is_vip            AS is_vip,
+               bili_user.vip_due_date      AS vip_due_date,
+               bili_user.`status`          AS `status`,
+               bili_user.enddate           AS enddate,
+               auto_bilibili.skipDailyTask AS skipDailyTask,
+               auto_bilibili.id            AS auto_id
+        FROM auto_bilibili
+                     INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
+        limit #{page}, #{limit}
+    </select>
+
     <select id="selectMine" resultType="com.oldwu.entity.BiliPlan">
         SELECT bili_user.bili_name         AS bili_name,
                bili_user.bili_coin         AS bili_coin,
@@ -61,17 +83,20 @@
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
         WHERE auto_bilibili.userid = #{userid}
     </select>
+
     <select id="selectByAutoId" resultType="com.oldwu.entity.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
         where auto_id = #{autoId}
     </select>
+
     <delete id="deleteByAutoId">
         delete
         from bili_user
         where auto_id = #{id}
     </delete>
+
     <update id="updateByAutoIdSelective">
         update bili_user
         <set>
@@ -117,4 +142,5 @@
         </set>
         where auto_id = #{autoId,jdbcType=INTEGER}
     </update>
+
 </mapper>

@@ -2,6 +2,8 @@ package com.miyoushe.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
@@ -11,10 +13,10 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,19 +69,26 @@ public class MihayouService {
     }
 
 
-    public List<AutoMihayou> getAllPlan() {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
-        List<AutoMihayou> result = new ArrayList<>();
-        for (AutoMihayou mihayous : autoMihayous) {
+    public PageDataVO<AutoMihayou> queryPageList(Integer page, Integer limit) {
+
+        QueryWrapper<AutoMihayou> queryWrapper = new QueryWrapper<>();
+        Page<AutoMihayou> pageObj = new Page<>(page, limit);
+        IPage<AutoMihayou> data = mihayouDao.selectPage(pageObj, queryWrapper);
+
+        List<AutoMihayou> autoMihayouList = data.getRecords();
+
+        for (AutoMihayou mihayous : autoMihayouList) {
             mihayous.setCookie(null);
             mihayous.setStoken(null);
             mihayous.setSuid(null);
             mihayous.setLcookie(null);
             mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
             mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
-            result.add(mihayous);
         }
-        return result;
+
+        data.setRecords(autoMihayouList);
+
+        return new PageDataVO<>(data.getTotal(), data.getRecords());
     }
 
     public Map<String, Object> deleteMiHuYouPlan(AutoMihayou autoMihayou) {

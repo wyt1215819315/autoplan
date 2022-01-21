@@ -47,6 +47,8 @@
                     url: "/api/index/bili/list",
                     toolbar: '#toolbarButton',
                     defaultToolbar:[],
+                    page: true,
+                    limit: 20,
                     cellMinWidth: 100,
                     cols: [ [
                         {field:'biliName',title:'用户名', align:"center"},
@@ -81,8 +83,8 @@
                         return {
                             "code": 200, //解析接口状态
                             "msg": "", //解析提示文本
-                            "count": res.data.length, //解析数据长度
-                            "data": res.data //解析数据列表
+                            "count": res.total, //解析数据长度
+                            "data": res.rows //解析数据列表
                         };
                     }
                 });
@@ -98,7 +100,12 @@
                                 area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
                                 content: "/bili/add",
                                 end: function (index, layero) {
-                                    table.reload('tableRenderId');
+                                    table.reload('tableRenderId', {
+                                            page: {
+                                                //重新从第 1 页开始
+                                                curr: 1
+                                            }
+                                        });
                                     return true;
                                 }
                             });

@@ -4,15 +4,12 @@ import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
-import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.BiliPlan;
 import com.oldwu.service.BiliService;
-import com.oldwu.service.UserService;
+import com.oldwu.vo.PageDataVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/index")
@@ -27,37 +24,37 @@ public class IndexApiController {
     @Autowired
     private MihayouService mihayouService;
 
-    @Autowired
-    private UserService userService;
-
     /**
      * 获取b站任务列表
-     * @return
+     * @param page 页码
+     * @param limit 每页数
+     * @return PageDataVO<BiliPlan>
      */
     @RequestMapping("/bili/list")
-    public AjaxResult biliList(){
-        List<BiliPlan> allPlan = biliService.getAllPlan();
-        return AjaxResult.doSuccess(allPlan);
+    public PageDataVO<BiliPlan> biliList(Integer page, Integer limit){
+        return biliService.queryPageList(page, limit);
     }
 
     /**
      * 获取网易云任务列表
-     * @return
+     * @param page 页码
+     * @param limit 每页数
+     * @return PageDataVO<BiliPlan>
      */
     @RequestMapping("/netmusic/list")
-    public AjaxResult netmusicList(){
-        List<AutoNetmusic> allPlan = netmusicService.getAllPlan();
-        return AjaxResult.doSuccess(allPlan);
+    public PageDataVO<AutoNetmusic> netmusicList(Integer page, Integer limit){
+        return netmusicService.queryPageList(page, limit);
     }
 
     /**
      * 获取米游社任务列表
-     * @return
+     * @param page 页码
+     * @param limit 每页数
+     * @return PageDataVO<BiliPlan>
      */
     @RequestMapping("/mihuyou/list")
-    public AjaxResult mihuyouList(){
-        List<AutoMihayou> allPlan = mihayouService.getAllPlan();
-        return AjaxResult.doSuccess(allPlan);
+    public PageDataVO<AutoMihayou> mihuyouList(Integer page, Integer limit){
+        return mihayouService.queryPageList(page, limit);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.oldwu.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
@@ -8,7 +9,6 @@ import com.misec.login.Verify;
 import com.misec.pojo.userinfobean.Data;
 import com.misec.task.TaskInfoHolder;
 import com.misec.utils.HelpUtil;
-import com.netmusic.model.AutoNetmusic;
 import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
@@ -16,6 +16,7 @@ import com.oldwu.dao.UserDao;
 import com.oldwu.entity.*;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.util.HttpUtils;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,20 @@ public class BiliService {
         } catch (Exception e) {
             return AjaxResult.doError("二维码获取失败！");
         }
+    }
+
+    public PageDataVO<BiliPlan> queryPageList(Integer page, Integer limit) {
+        List<BiliPlan> biliPlans = biliUserDao.selectPageList((page - 1) * limit, limit);
+
+        for (BiliPlan biliPlan : biliPlans) {
+            biliPlan.setBiliName(HelpUtil.userNameEncode(biliPlan.getBiliName()));
+        }
+
+        QueryWrapper<BiliUser> queryWrapper = new QueryWrapper<>();
+
+        Long count = biliUserDao.selectCount(queryWrapper);
+
+        return new PageDataVO<>(count, biliPlans);
     }
 
     public List<BiliPlan> getAllPlan() {

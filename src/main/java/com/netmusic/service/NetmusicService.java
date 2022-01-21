@@ -1,8 +1,9 @@
 package com.netmusic.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.misec.utils.HelpUtil;
-import com.miyoushe.model.AutoMihayou;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
@@ -12,6 +13,7 @@ import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.NetMusicTask;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,17 +59,24 @@ public class NetmusicService {
         return AjaxResult.doSuccess(autoNetmusic);
     }
 
-    public List<AutoNetmusic> getAllPlan() {
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectList(new QueryWrapper<>());
-        List<AutoNetmusic> result = new ArrayList<>();
-        for (AutoNetmusic autoNetmusic : autoNetmusics) {
+    public PageDataVO<AutoNetmusic> queryPageList(Integer page, Integer limit) {
+
+        QueryWrapper<AutoNetmusic> queryWrapper = new QueryWrapper<>();
+        Page<AutoNetmusic> pageObj = new Page<>(page, limit);
+        IPage<AutoNetmusic> data = netmusicDao.selectPage(pageObj, queryWrapper);
+
+        List<AutoNetmusic> autoNetmusicList = data.getRecords();
+
+        for (AutoNetmusic autoNetmusic : autoNetmusicList) {
             autoNetmusic.setPassword(null);
             autoNetmusic.setNetmusicId(null);
             autoNetmusic.setPhone(null);
             autoNetmusic.setNetmusicName(HelpUtil.userNameEncode(autoNetmusic.getNetmusicName()));
-            result.add(autoNetmusic);
         }
-        return result;
+
+        data.setRecords(autoNetmusicList);
+
+        return new PageDataVO<>(data.getTotal(), data.getRecords());
     }
 
 

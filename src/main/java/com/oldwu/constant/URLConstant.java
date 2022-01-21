@@ -2,9 +2,6 @@ package com.oldwu.constant;
 
 public class URLConstant {
 
-
-
-
     /**
      * 米游社字段 start
      */

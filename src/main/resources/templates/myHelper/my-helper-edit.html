@@ -48,6 +48,17 @@
                 let form = layui.form;
 
                 showBtnSize();
+                showData();
+
+                function showData() {
+                    $.post("/api/user/userinfo/list", function (data) {
+                        var _data = data.data;
+
+                        $("#webhook").val(_data.webhook);
+
+                        form.render();
+                    });
+                }
 
                 $("#showSendWebHook").click(function () {
                     layer.open({
