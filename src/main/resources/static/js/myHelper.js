@@ -196,7 +196,7 @@ function miyousheHtml(data) {
         _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.miName + '</font>';
 
         _miyousheHtml += '<span class="layuiadmin-span-color">';
-        _miyousheHtml += '<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+        _miyousheHtml += miyousheUser.avatar === undefined ? "" :'<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
         _miyousheHtml += '</span>';
 
         _miyousheHtml += '<p class="layuiadmin-big-font">原神UID：';
@@ -273,7 +273,7 @@ function netmusicHtml(data) {
         _netmusicHtml += '<p class="layuiadmin-big-font">用户名：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicName + '</font>';
         _netmusicHtml += '<span class="layuiadmin-span-color">';
-        _netmusicHtml += '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+        _netmusicHtml += netmusicUser.avatar === undefined ? "" : '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
         _netmusicHtml += '</span>';
         _netmusicHtml += '<p class="layuiadmin-big-font">等级：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicLevel + '</font>';

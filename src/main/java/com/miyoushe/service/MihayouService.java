@@ -82,6 +82,8 @@ public class MihayouService {
             mihayous.setStoken(null);
             mihayous.setSuid(null);
             mihayous.setLcookie(null);
+            mihayous.setWebhook(null);
+            mihayous.setOtherKey(null);
             mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
             mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
         }

@@ -71,6 +71,8 @@ public class NetmusicService {
             autoNetmusic.setPassword(null);
             autoNetmusic.setNetmusicId(null);
             autoNetmusic.setPhone(null);
+            autoNetmusic.setCookie(null);
+            autoNetmusic.setWebhook(null);
             autoNetmusic.setNetmusicName(HelpUtil.userNameEncode(autoNetmusic.getNetmusicName()));
         }
 
@@ -79,16 +81,6 @@ public class NetmusicService {
         return new PageDataVO<>(data.getTotal(), data.getRecords());
     }
 
-
-    public List<AutoNetmusic> getMyPlan(int userid) {
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(userid);
-        List<AutoNetmusic> result = new ArrayList<>();
-        for (AutoNetmusic autoNetmusic : autoNetmusics) {
-            autoNetmusic.setPassword(null);
-            result.add(autoNetmusic);
-        }
-        return result;
-    }
 
     public Map<String, String> addNetMusicPlan(AutoNetmusic autoNetmusic) {
         Map<String, String> map = new HashMap<>();
