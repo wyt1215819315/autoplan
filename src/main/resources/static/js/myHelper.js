@@ -195,10 +195,13 @@ function miyousheHtml(data) {
         _miyousheHtml += '<p class="layuiadmin-big-font">用户名：';
         _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.miName + '</font>';
 
-        _miyousheHtml += '<span class="layuiadmin-span-color">';
-        _miyousheHtml += miyousheUser.avatar === undefined ? "" :'<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
-        _miyousheHtml += '</span>';
+        if (miyousheUser.avatar !== undefined && miyousheUser.avatar != null && miyousheUser.avatar !== "") {
+            _miyousheHtml += '<span class="layuiadmin-span-color">';
+            _miyousheHtml += '<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+            _miyousheHtml += '</span>';
+        }
 
+        _miyousheHtml += '</p>';
         _miyousheHtml += '<p class="layuiadmin-big-font">原神UID：';
         _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.genshinUid + '</font>';
         _miyousheHtml += '</p>';
@@ -272,9 +275,14 @@ function netmusicHtml(data) {
         _netmusicHtml += '<div class="layui-card-body layuiadmin-card-list">';
         _netmusicHtml += '<p class="layuiadmin-big-font">用户名：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicName + '</font>';
-        _netmusicHtml += '<span class="layuiadmin-span-color">';
-        _netmusicHtml += netmusicUser.avatar === undefined ? "" : '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
-        _netmusicHtml += '</span>';
+
+        if (netmusicUser.avatar !== undefined && netmusicUser.avatar != null && netmusicUser.avatar !== ""){
+            _netmusicHtml += '<span class="layuiadmin-span-color">';
+            _netmusicHtml += '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
+            _netmusicHtml += '</span>';
+        }
+
+        _netmusicHtml += '</p>';
         _netmusicHtml += '<p class="layuiadmin-big-font">等级：';
         _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicLevel + '</font>';
         _netmusicHtml += '</p>';
@@ -354,9 +362,13 @@ function bilibiliHtml(data) {
         _bilibiliHtml += '<div class="layui-card-body layuiadmin-card-list">';
         _bilibiliHtml += '<p class="layuiadmin-big-font">用户名：';
         _bilibiliHtml += '<font class="bilibili-p-font">' + bilibiliUser.biliName + '</font>';
-        _bilibiliHtml += '<span class="layuiadmin-span-color">';
-        _bilibiliHtml += '<img src="' + bilibiliUser.faceImg + '" alt="头像" style="width: 60px; height: 60px">';
-        _bilibiliHtml += '</span>';
+
+        if (bilibiliUser.faceImg !== undefined && bilibiliUser.faceImg != null && bilibiliUser.faceImg !== ""){
+            _bilibiliHtml += '<span class="layuiadmin-span-color">';
+            _bilibiliHtml += '<img src="' + bilibiliUser.faceImg + '" alt="头像" style="width: 60px; height: 60px">';
+            _bilibiliHtml += '</span>';
+        }
+
         _bilibiliHtml += '</p>';
         _bilibiliHtml += '<p class="layuiadmin-big-font">硬币：';
         _bilibiliHtml += '<font class="bilibili-p-font">' + bilibiliUser.biliCoin + '</font>';
