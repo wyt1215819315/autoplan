@@ -1,15 +1,24 @@
 package com.example.demo;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Test {
+@SpringBootTest
+public class AutoPlanApplicationTests {
 
     public static void main(String[] args) {
         Date date = new Date();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(simpleDateFormat.format(date));
+    }
+
+    @Test
+    void test() {
+
     }
 
     /**
