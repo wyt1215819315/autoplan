@@ -58,12 +58,12 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
 
     @Override
     public SysQuartzJob selectByPrimaryKey(String id) {
-        return sysQuartzJobMapper.selectByPrimaryKey(id);
+        return sysQuartzJobMapper.selectById(id);
     }
 
     @Override
     public int updateByPrimaryKeySelective(SysQuartzJob record) {
-        int i = sysQuartzJobMapper.updateByPrimaryKeySelective(record);
+        int i = sysQuartzJobMapper.updateById(record);
         if (i > 0) {
             //修改定时器
             quartzSchedulerUtil.modifyJob(record);
@@ -79,7 +79,7 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
 
             quartzSchedulerUtil.createSchedule(record);
 
-            return sysQuartzJobMapper.insertSelective(record);
+            return sysQuartzJobMapper.insert(record);
         } catch (SchedulerException e) {
             return 0;
         }
@@ -131,7 +131,7 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
     @Transactional
     public int resumeJob(SysQuartzJob job) throws SchedulerException {
         job.setStatus(ScheduleConstants.Status.NORMAL.getValue());
-        int rows = sysQuartzJobMapper.updateByPrimaryKeySelective(job);
+        int rows = sysQuartzJobMapper.updateById(job);
         if (rows > 0) {
             quartzSchedulerUtil.resumeJob(job);
         }
@@ -147,7 +147,7 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
     public int pauseJob(SysQuartzJob job) throws SchedulerException {
         job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
         //job.setUpdateBy(ShiroUtils.getLoginName());
-        int rows = sysQuartzJobMapper.updateByPrimaryKeySelective(job);
+        int rows = sysQuartzJobMapper.updateById(job);
         if (rows > 0) {
             quartzSchedulerUtil.pauseJob(job);
         }

@@ -1,18 +1,28 @@
 package com.miyoushe.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
+import com.oldwu.constant.URLConstant;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.MiHuYouTask;
 import com.oldwu.util.HttpUtils;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,6 +32,8 @@ import java.util.Map;
 
 @Component
 public class MihayouService {
+    private final Log logger = LogFactory.getLog(MihayouService.class);
+
 
     @Autowired
     private AutoMihayouDao mihayouDao;
@@ -32,31 +44,53 @@ public class MihayouService {
     @Autowired
     private AutoLogDao autoLogDao;
 
-
-    public List<AutoMihayou> getAllPlan() {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectAll();
-        List<AutoMihayou> result = new ArrayList<>();
-        for (AutoMihayou mihayous : autoMihayous) {
-            mihayous.setCookie(null);
-            mihayous.setStoken(null);
-            mihayous.setSuid(null);
-            mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
-            mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
-            result.add(mihayous);
+    /**
+     * 根据id查询
+     * @return
+     */
+    public AjaxResult view(Integer id){
+        Integer userId = SessionUtils.getPrincipal().getId();
+        AutoMihayou autoMihayou = mihayouDao.selectById(id);
+        if (autoMihayou == null){
+            return AjaxResult.doError();
+        }else {
+            //放行管理员
+            String role = userDao.getRole(userId);
+            if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")){
+                return AjaxResult.doError("你无权访问！");
+            }
         }
-        return result;
+        //移除cookie
+        autoMihayou.setCookie(null);
+        autoMihayou.setStoken(null);
+        autoMihayou.setOtherKey(null);
+        autoMihayou.setLcookie(null);
+        return AjaxResult.doSuccess(autoMihayou);
     }
 
-    public List<AutoMihayou> getMyPlan(Integer userId) {
-        List<AutoMihayou> autoMihayous = mihayouDao.selectMine(userId);
-        List<AutoMihayou> result = new ArrayList<>();
-        for (AutoMihayou mihayous : autoMihayous) {
+
+    public PageDataVO<AutoMihayou> queryPageList(Integer page, Integer limit) {
+
+        QueryWrapper<AutoMihayou> queryWrapper = new QueryWrapper<>();
+        Page<AutoMihayou> pageObj = new Page<>(page, limit);
+        IPage<AutoMihayou> data = mihayouDao.selectPage(pageObj, queryWrapper);
+
+        List<AutoMihayou> autoMihayouList = data.getRecords();
+
+        for (AutoMihayou mihayous : autoMihayouList) {
             mihayous.setCookie(null);
             mihayous.setStoken(null);
             mihayous.setSuid(null);
-            result.add(mihayous);
+            mihayous.setLcookie(null);
+            mihayous.setWebhook(null);
+            mihayous.setOtherKey(null);
+            mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
+            mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
         }
-        return result;
+
+        data.setRecords(autoMihayouList);
+
+        return new PageDataVO<>(data.getTotal(), data.getRecords());
     }
 
     public Map<String, Object> deleteMiHuYouPlan(AutoMihayou autoMihayou) {
@@ -93,7 +127,7 @@ public class MihayouService {
         autoLog.setType("mihuyou");
         try {
             autoLogDao.deleteByAutoId(autoLog);
-            int i = mihayouDao.deleteByPrimaryKey(autoid);
+            int i = mihayouDao.deleteById(autoid);
             if (i > 0) {
                 map.put("code", 200);
                 map.put("msg", "删除成功");
@@ -150,17 +184,22 @@ public class MihayouService {
         autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
         autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));
         autoMihayou.setStatus("100");
-
+        try {
+            Map<String, Object> personalInfo = getPersonalInfo(autoMihayou.getCookie());
+            autoMihayou.setAvatar((String) personalInfo.get("avatar_url"));
+        } catch (Exception e) {
+            logger.warn("获取头像失败！" + uidInfo);
+        }
         //判断数据是否存在，使用stuid进行检索
         AutoMihayou autoMihayou1 = mihayouDao.selectBystuid(autoMihayou.getSuid());
 //            AutoMihayou autoMihayou1 = mihayouDao.selectByGenshinUid(autoMihayou.getGenshinUid());
         if (autoMihayou1 == null || autoMihayou1.getId() == null) {
             //insert
-            mihayouDao.insertSelective(autoMihayou);
+            mihayouDao.insert(autoMihayou);
         } else {
             //update
             autoMihayou.setId(autoMihayou1.getId());
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou);
+            mihayouDao.updateById(autoMihayou);
         }
         for (Map<String, Object> uidInfoMap : uidInfo) {
             Map<String, String> map1 = new HashMap<>();
@@ -237,7 +276,7 @@ public class MihayouService {
         } else {
             if (!StringUtils.isBlank(lcookie) && autoMihayou.getId() != null) {
                 String login_uid = HttpUtils.getCookieByName(lcookie, "login_uid");
-                String suid = mihayouDao.selectByPrimaryKey(autoMihayou.getId()).getSuid();
+                String suid = mihayouDao.selectById(autoMihayou.getId()).getSuid();
                 if (!StringUtils.isBlank(login_uid) && !StringUtils.isBlank(suid)) {
                     if (!login_uid.equals(suid)) {
                         map.put("flag", false);
@@ -278,8 +317,7 @@ public class MihayouService {
 
     public Map<String, Object> getCookieToken(String login_ticket, String accountId) {
         Map<String, Object> map = new HashMap<>();
-        String token_url = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket?login_ticket=%s&token_types=3&uid=%s";
-        token_url = String.format(token_url, login_ticket, accountId);
+        String token_url = String.format(URLConstant.MYS_TOKEN_URL, login_ticket, accountId);
         HttpResponse httpResponse = null;
         try {
             httpResponse = HttpUtils.doGet(token_url, null, HttpUtils.getHeaders(), null);
@@ -302,22 +340,9 @@ public class MihayouService {
         }
     }
 
-    public AutoMihayou getMyEditPlan(AutoMihayou autoMihayou1) {
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoMihayou1.getId());
-        if (autoMihayou == null || autoMihayou.getId() == null) {
-            return null;
-        }
-        //放行管理员
-        String role = userDao.getRole(autoMihayou1.getUserId());
-        if (!autoMihayou.getUserId().equals(autoMihayou1.getUserId()) && !role.equals("ROLE_ADMIN")) {
-            return null;
-        }
-        return autoMihayou;
-    }
-
     public Map<String, Object> editMiHuYouPlan(AutoMihayou autoMihayou1) {
         Map<String, Object> map = new HashMap<>();
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoMihayou1.getId());
+        AutoMihayou autoMihayou = mihayouDao.selectById(autoMihayou1.getId());
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", -1);
             map.put("msg", "参数错误！");
@@ -336,7 +361,7 @@ public class MihayouService {
             map.put("msg", formResult.get("msg"));
             return map;
         }
-        int i = mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+        int i = mihayouDao.updateById(autoMihayou1);
         if (i > 0) {
             map.put("code", 200);
             map.put("msg", "操作成功！");
@@ -350,7 +375,7 @@ public class MihayouService {
     public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userId) {
         Map<String, Object> map = new HashMap<>();
 
-        AutoMihayou autoMihayou = mihayouDao.selectByPrimaryKey(autoId);
+        AutoMihayou autoMihayou = mihayouDao.selectById(autoId);
         if (autoMihayou == null || autoMihayou.getId() == null) {
             map.put("code", 500);
             map.put("msg", "参数错误！");
@@ -375,5 +400,47 @@ public class MihayouService {
         map.put("code", 200);
         map.put("msg", "运行指令已发送，请稍后查看运行状态");
         return map;
+    }
+
+    public AjaxResult listMine(Integer id) {
+        List<AutoMihayou> autoMihayous = mihayouDao.selectMine(id);
+        return AjaxResult.doSuccess(autoMihayous);
+    }
+
+    /**
+     * 获取米游社账号各种信息，目前仅用于头像获取
+     * @param cookie
+     */
+    public Map<String, Object> getPersonalInfo(String cookie) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, String> headers = HttpUtils.getHeaders();
+        headers.put("Cookie", cookie);
+        HttpResponse httpResponse = HttpUtils.doGet(URLConstant.MYS_PERSONAL_INFO_URL, "", headers, null);
+        JSONObject json = HttpUtils.getJson(httpResponse);
+        if (json.getInteger("retcode") != 0) {
+            return null;
+        }
+        JSONObject data = json.getJSONObject("data");
+        JSONObject userInfo = data.getJSONObject("user_info");
+        map.put("avatar_url", userInfo.getString("avatar_url"));
+        return map;
+    }
+
+    @Async
+    public void setPersonInfo(Integer id,String cookie){
+        try {
+            Map<String, Object> personalInfo = getPersonalInfo(cookie);
+            if (personalInfo == null){
+                return;
+            }
+            String avatarUrl = (String) personalInfo.get("avatar_url");
+            AutoMihayou autoMihayou = new AutoMihayou();
+            autoMihayou.setId(id);
+            autoMihayou.setAvatar(avatarUrl);
+            mihayouDao.updateById(autoMihayou);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

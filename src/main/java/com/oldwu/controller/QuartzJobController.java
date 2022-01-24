@@ -1,10 +1,10 @@
 package com.oldwu.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.oldwu.domain.AjaxResult;
 import com.oldwu.domain.ResultTable;
 import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.Tablepar;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.service.SysQuartzJobService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class QuartzJobController extends BaseController{
 	@GetMapping("/view")
     public String view(ModelMap model)
     {
-        return "sysQuartzJoblist";
+        return "sysQuartzJob/sysQuartzJoblist";
     }
 	/**
 	 * 定时任务调度list

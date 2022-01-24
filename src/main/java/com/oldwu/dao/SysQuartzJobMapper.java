@@ -1,7 +1,9 @@
 package com.oldwu.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.SysQuartzJobExample;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,28 +14,17 @@ import java.util.List;
  * @email 115889198@qq.com
  * @date 2019-09-13 00:03:35
  */
-public interface SysQuartzJobMapper {
+@Mapper
+public interface SysQuartzJobMapper extends BaseMapper<SysQuartzJob> {
       	      	   	      	   	      	   	      	   	      	   	      	   	      	   	      
     long countByExample(SysQuartzJobExample example);
 
     int deleteByExample(SysQuartzJobExample example);
-		
-    int deleteByPrimaryKey(String id);
-		
-    int insert(SysQuartzJob record);
-
-    int insertSelective(SysQuartzJob record);
 
     List<SysQuartzJob> selectByExample(SysQuartzJobExample example);
-		
-    SysQuartzJob selectByPrimaryKey(String id);
-		
+
     int updateByExampleSelective(@Param("record") SysQuartzJob record, @Param("example") SysQuartzJobExample example);
 
-    int updateByExample(@Param("record") SysQuartzJob record, @Param("example") SysQuartzJobExample example); 
-		
-    int updateByPrimaryKeySelective(SysQuartzJob record);
-
-    int updateByPrimaryKey(SysQuartzJob record);
+    int updateByExample(@Param("record") SysQuartzJob record, @Param("example") SysQuartzJobExample example);
   	  	
 }

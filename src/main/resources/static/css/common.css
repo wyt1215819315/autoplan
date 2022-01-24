@@ -1,0 +1,71 @@
+ul {
+    z-index: 999;
+}
+
+.admin-layui-form {
+    position: relative;
+    padding: 10px 15px;
+    line-height: 24px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+    margin-bottom: 10px;
+}
+
+.search {
+    padding: 13px 40px 13px 0px;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+.bilibiliLogo {
+    background: url(/static/image/bilibili_logo.png) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
+.netmusicLogo {
+    background: url(/static/image/netmusic_logo.ico) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
+.miyousheLogo {
+    background: url(/static/image/miyoushe_logo.ico) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
+.searchIcon {
+    padding: 13px 30px 13px 0px;
+    margin-right: 5px;
+}
+
+.bilibiliIcon {
+    background: url(/static/image/bilibili.svg) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.netmusicIcon {
+    background: url(/static/image/netmusic.svg) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.miyousheIcon {
+    background: url(/static/image/miyoushe.png) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.layui-form-pane .layui-form-label {
+    height: 36px;
+    width: 200px;
+}
+.layui-input, .layui-select, .layui-textarea {
+    height: 36px;
+}
+.layui-form-pane .layui-input-block {
+    margin-left: 200px;
+}
+.layui-area-0 {
+    width: 600px !important;
+}
+.layui-form-label {
+    color: #666!important;
+}

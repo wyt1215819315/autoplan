@@ -1,104 +1,164 @@
 package com.oldwu.controller;
 
-import com.miyoushe.model.AutoMihayou;
-import com.miyoushe.service.MihayouService;
-import com.netmusic.model.AutoNetmusic;
-import com.netmusic.service.NetmusicService;
-import com.oldwu.dao.UserDao;
-import com.oldwu.entity.AutoBilibili;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.service.BiliService;
-import com.oldwu.service.UserService;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.security.Principal;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PageController {
 
-    @Autowired
-    private BiliService biliService;
+    /**
+     * 首页
+     * @return ModelAndView
+     */
+    @RequestMapping("/")
+    public ModelAndView index() {
+        return new ModelAndView("index");
+    }
 
-    @Autowired
-    private NetmusicService netmusicService;
+    /**
+     * 欢迎页
+     * @return ModelAndView
+     */
+    @RequestMapping("/welcomePage")
+    public ModelAndView welcomePage() {
+        return new ModelAndView("welcomePage");
+    }
 
-    @Autowired
-    private MihayouService mihayouService;
+    /**
+     * 登录页
+     * @return ModelAndView
+     */
+    @GetMapping("/login")
+    public ModelAndView login() {
+        return new ModelAndView("login");
+    }
 
-    @Autowired
-    private UserService userService;
+    /**
+     * 注册页
+     * @return ModelAndView
+     */
+    @GetMapping("/reg")
+    public ModelAndView reg() {
+        return new ModelAndView("reg");
+    }
 
+    /**
+     * 日志查看页
+     * @return ModelAndView
+     */
+    @GetMapping("/getlog")
+    public ModelAndView getLog() {
+        return new ModelAndView("myHelper/getlog");
+    }
+
+    /**
+     * 我的任务页
+     * @return ModelAndView
+     */
+    @GetMapping("/my")
+    public ModelAndView myPage() {
+        return new ModelAndView("myHelper/my-helper");
+    }
+
+    /**
+     * 全局推送配置页
+     * @return ModelAndView
+     */
+    @GetMapping("/my-edit")
+    public ModelAndView myEditPage() {
+        return new ModelAndView("myHelper/my-helper-edit");
+    }
+
+    /**
+     * 推送地址生成器页面
+     * @return ModelAndView
+     */
     @GetMapping("/webhook-generate")
-    public String webhookGenerate(){
-        return "webhook-generate";
+    public ModelAndView webhookGeneratePage(){
+        return new ModelAndView("myHelper/webhook-generate");
     }
 
-    @GetMapping("/netmusic/index")
-    public String netmusicindex(Model model){
-        List<AutoNetmusic> allPlan = netmusicService.getAllPlan();
-        model.addAttribute("list",allPlan);
-        return "netmusic-helper";
-    }
-
-    @GetMapping("/netmusic/add")
-    public String netmusicaddPage(){
-        return "netmusic-helper-add";
-    }
-
+    /**
+     * 哔哩哔哩任务表格显示页
+     * @return ModelAndView
+     */
     @GetMapping("/bili/index")
-    public String index(Model model){
-        List<BiliPlan> allPlan = biliService.getAllPlan();
-        model.addAttribute("list",allPlan);
-        return "bili-helper";
+    public ModelAndView biliIndexPage(){
+        return new ModelAndView("bili/bili-helper");
     }
 
+    /**
+     * 哔哩哔哩任务修改页
+     * @return ModelAndView
+     */
     @GetMapping("/bili/edit")
-    public String getMyBiliEditPage(@Param("id") Integer id, Principal principal,Model model){
-        AutoBilibili autoBilibili = new AutoBilibili();
-        autoBilibili.setUserid(userService.getUserId(principal.getName()));
-        autoBilibili.setId(id);
-        model.addAttribute("bili",biliService.getMyEditPlan(autoBilibili));
-        return "bili-helper-edit";
+    public ModelAndView biliEditPage(){
+        return new ModelAndView("bili/bili-helper-edit");
     }
 
-    @GetMapping("/netmusic/edit")
-    public String getMyNetmusicEditPage(@Param("id") Integer id, Principal principal,Model model){
-        AutoNetmusic autoNetmusic = new AutoNetmusic();
-        autoNetmusic.setUserid(userService.getUserId(principal.getName()));
-        autoNetmusic.setId(id);
-        model.addAttribute("netmusic",netmusicService.getMyEditPlan(autoNetmusic));
-        return "netmusic-helper-edit";
-    }
-
-    @GetMapping("/mihuyou/edit")
-    public String getMyMihuYouEditPage(@Param("id") Integer id, Principal principal,Model model){
-        AutoMihayou autoMihayou = new AutoMihayou();
-        autoMihayou.setUserId(userService.getUserId(principal.getName()));
-        autoMihayou.setId(id);
-        model.addAttribute("mihuyou",mihayouService.getMyEditPlan(autoMihayou));
-        return "miyoushe-helper-edit";
-    }
-
+    /**
+     * 哔哩哔哩任务添加页
+     * @return ModelAndView
+     */
     @GetMapping("/bili/add")
-    public String addPage(){
-        return "bili-helper-add";
+    public ModelAndView biliAddPage(){
+        return new ModelAndView("bili/bili-helper-add");
     }
 
+    /**
+     * 网易云任务表格显示页
+     * @return ModelAndView
+     */
+    @GetMapping("/netmusic/index")
+    public ModelAndView netmusicIndexPage(){
+        return new ModelAndView("netmusic/netmusic-helper");
+    }
+
+    /**
+     * 网易云任务添加页
+     * @return ModelAndView
+     */
+    @GetMapping("/netmusic/add")
+    public ModelAndView netmusicAddPage(){
+        return new ModelAndView("netmusic/netmusic-helper-add");
+    }
+
+    /**
+     * 网易云任务修改页
+     * @return ModelAndView
+     */
+    @GetMapping("/netmusic/edit")
+    public ModelAndView netmusicEditPage(){
+        return new ModelAndView("netmusic/netmusic-helper-edit");
+    }
+
+    /**
+     * 米哈游任务表格显示页
+     * @return ModelAndView
+     */
     @GetMapping("/mihuyou/index")
-    public String miyousheindex(Model model){
-        List<AutoMihayou> allPlan = mihayouService.getAllPlan();
-        model.addAttribute("list",allPlan);
-        return "miyoushe-helper";
+    public ModelAndView miyousheIndexPage(){
+        return new ModelAndView("miyoushe/miyoushe-helper");
     }
 
+    /**
+     * 米哈游任务添加页
+     * @return ModelAndView
+     */
     @GetMapping("/mihuyou/add")
-    public String miyousheaddPage(){
-        return "miyoushe-helper-add";
+    public ModelAndView miyousheAddPage(){
+        return new ModelAndView("miyoushe/miyoushe-helper-add");
+    }
+
+    /**
+     * 米哈游任务修改页
+     * @return ModelAndView
+     */
+    @GetMapping("/mihuyou/edit")
+    public ModelAndView mihuYouEditPage(){
+        return new ModelAndView("miyoushe/miyoushe-helper-edit");
     }
 
 }

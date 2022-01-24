@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>修改个人设置</title>
+        <th:block th:include="include :: headerCss"/>
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="admin-layui-form">
+
+                <form class="layui-form layui-form-pane" action="">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">配置全局webhook</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="webhook" id="webhook"
+                                   placeholder="当任务单体webhook为空时，使用全局webhook" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+
+                            <button class="layui-btn layui-btn-normal" lay-filter="userSave" lay-submit type="button">
+                                <i class="layui-icon layui-icon-ok"></i> 提交
+                            </button>
+
+                            <button class="layui-btn" lay-filter="checkWebhook" lay-submit type="button">
+                                <i class="layui-icon layui-icon-ok"></i>发送测试消息检查webhook
+                            </button>
+
+                            <button class="layui-btn layui-btn-normal" type="button" id="showSendWebHook">点我生成WebHook</button>
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+        <th:block th:include="include :: footerJs"/>
+
+        <script>
+            layui.use(['form'], function () {
+                let form = layui.form;
+
+                showBtnSize();
+                showData();
+
+                function showData() {
+                    $.post("/api/user/userinfo/list", function (data) {
+                        var _data = data.data;
+
+                        $("#webhook").val(_data.webhook);
+
+                        form.render();
+                    });
+                }
+
+                $("#showSendWebHook").click(function () {
+                    layer.open({
+                        type: 2,
+                        title: '生成webhook json字符串',
+                        shade: 0.1,
+                        area: screen() < 2 ? ['90%', '80%'] : ['1000px', '400px'],
+                        content: "/webhook-generate",
+                        end: function (index, layero) {
+                            return true;
+                        }
+                    });
+                })
+
+                //校验webhook
+                form.on('submit(checkWebhook)', function (data) {
+                    var loadIndex = parent.layer.load(2, {time: 10*1000});
+
+                    $.ajax({
+                        url: '/api/user/checkwebhook',
+                        data: JSON.stringify(data.field),
+                        dataType: 'json',
+                        contentType: 'application/json;charset=UTF-8',
+                        type: 'post',
+                        success: function (result) {
+                            parent.layer.close(loadIndex);
+                            if (result.code == 200) {
+                                parent.layer.msg(result.msg);
+                            } else {
+                                parent.layer.msg(result.msg);
+                            }
+                        },
+                        error: function () {
+                            parent.layer.close(loadIndex);
+                            parent.layer.msg("连接服务器失败！");
+                        }
+                    })
+                    return false;
+                });
+
+                //提交
+                form.on('submit(userSave)', function (data) {
+                    var loadIndex = parent.layer.load(2, {time: 10*1000});
+
+                    $.ajax({
+                        url: '/api/user/userinfo/edit',
+                        data: JSON.stringify(data.field),
+                        dataType: 'json',
+                        contentType: 'application/json;charset=UTF-8',
+                        type: 'post',
+                        success: function (result) {
+                            parent.layer.close(loadIndex);
+                            if (result.code == 200) {
+                                parent.layer.msg(result.msg);
+                            } else {
+                                parent.layer.msg(result.msg);
+                            }
+                        },
+                        error: function () {
+
+                            parent.layer.close(loadIndex);
+                            parent.layer.msg("连接服务器失败！");
+                        }
+                    })
+                    return false;
+                });
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,72 @@
+.bilibili {
+    border-color: #ff3172 !important;
+}
+
+.bilibiliBtn {
+    background-color: #ff3172 !important;
+    border-radius: 10px;
+}
+
+.bilibili legend,.bilibili-p-font {
+    color: #ff3172 !important;
+}
+
+.netmusic {
+    border-color: #ff1f1b !important;
+}
+
+.netmusicBtn {
+    background-color: #ff1f1b !important;
+    border-radius: 10px;
+}
+
+.netmusic legend,.netmusic-p-font {
+    color: #ff1f1b !important;
+}
+
+.miyoushe {
+    border-color: #3285ff !important;
+}
+
+.miyousheBtn {
+    background-color: #3285ff !important;
+    border-radius: 10px;
+}
+
+.miyoushe legend,.miyoushe-p-font {
+    color: #3285ff !important;
+}
+
+.netmusic .layui-card,.bilibili .layui-card,.miyoushe .layui-card {
+    -webkit-box-shadow:2px 2px 5px #bbb;
+    -moz-box-shadow:2px 2px 5px #bbb;
+    box-shadow:2px 2px 5px #bbb;
+}
+
+.layuiadmin-span-color i {
+    padding-left: 0;
+    margin-right: 0 !important;
+}
+
+.layui-btn+.layui-btn {
+    margin-left: 5px;
+}
+
+.layuiadmin-card-list p.layuiadmin-big-font {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 5px 0 5px;
+}
+
+.layui-btn-sm {
+    padding: 0 7px;
+    border-radius: 5px;
+}
+
+.layui-field-box {
+    margin-top: 5px;
+}
+
+.div-row {
+    margin-bottom: 20px;
+}

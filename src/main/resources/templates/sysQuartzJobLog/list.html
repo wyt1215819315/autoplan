@@ -6,7 +6,6 @@
         <th:block th:include="include :: headerr('定时任务日志列表')"/>
     </head>
     <body class="pear-container">
-        <ul th:include="include::header" class="layui-nav"></ul>
 
         <div style="padding-top: 0;margin: 15px">
             <div class="layui-card" >
@@ -97,7 +96,7 @@
                 url: MODULE_PATH + '/list',
                 page: true,
                 method: 'get',
-                height: 'full-210',
+                height: 'full-150',
                 cols: cols,
                 skin: 'line',
                 toolbar: '#role-toolbar',

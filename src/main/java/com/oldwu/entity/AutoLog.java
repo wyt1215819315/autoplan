@@ -1,32 +1,52 @@
 package com.oldwu.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gitee.sunchenbin.mybatis.actable.annotation.*;
+import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * auto_log
  * @author 
  */
 @Data
+@Table("auto_log")
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class AutoLog implements Serializable {
+
+    @IsKey
+    @IsAutoIncrement
+    @IgnoreUpdate
     private Long id;
 
+    @Column(comment = "任务id")
+    @IgnoreUpdate
     private Integer autoId;
 
+    @Column
     private String name;
 
+    @Column(comment = "任务类型")
     private String type;
 
+    @Column(comment = "任务状态")
     private String status;
 
+    @Column(comment = "任务所属的用户id")
+    @IgnoreUpdate
     private Integer userid;
 
+    @Column(type = MySqlTypeConstant.DATETIME, comment = "记录时间", defaultValue = "CURRENT_TIMESTAMP")
     private Date date;
 
+    @Column(type = MySqlTypeConstant.LONGTEXT, comment = "日志内容")
     private String text;
 
+    @Column
     private String other;
 
     private static final long serialVersionUID = 1L;

@@ -35,8 +35,8 @@ layui.config({
 	json: 'json',
 	cropper:"cropper",
 	yaml: "yaml",
-	theme: "theme",
+	// theme: "theme",
 	message: "message"		// 通知组件
-}).use(['layer', 'theme'], function () {
-	layui.theme.changeTheme(window, false);
+}).use(['layer'], function () {
+	// layui.theme.changeTheme(window, false);
 });

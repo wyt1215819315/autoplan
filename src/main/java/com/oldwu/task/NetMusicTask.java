@@ -1,5 +1,6 @@
 package com.oldwu.task;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
@@ -42,13 +43,13 @@ public class NetMusicTask {
      */
     public void resetStatus() {
         //重置自动任务的标识
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectList(new QueryWrapper<>());
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
             int autoId = autoNetmusic.getId();
             AutoNetmusic autoNetmusic1 = new AutoNetmusic();
             autoNetmusic1.setId(autoId);
             autoNetmusic1.setStatus("100");
-            netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+            netmusicDao.updateById(autoNetmusic1);
         }
     }
 
@@ -57,7 +58,7 @@ public class NetMusicTask {
      */
     public void refreshUserInfo() {
         //获取数据库中所有用户
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectList(new QueryWrapper<>());
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
             Map<String, String> infos = new HashMap<>();
             infos.put("phone", autoNetmusic.getPhone());
@@ -71,8 +72,9 @@ public class NetMusicTask {
             autoNetmusic.setNetmusicId(login.get("uid"));
             autoNetmusic.setNetmusicNeedDay(login.get("days"));
             autoNetmusic.setNetmusicNeedListen(login.get("count"));
+            autoNetmusic.setAvatar(login.get("avatarUrl"));
             autoNetmusic.setNetmusicLevel(login.get("level"));
-            netmusicDao.updateByPrimaryKeySelective(autoNetmusic);
+            netmusicDao.updateById(autoNetmusic);
         }
     }
 
@@ -82,7 +84,7 @@ public class NetMusicTask {
      */
     public void doAutoCheck() {
 
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectList(new QueryWrapper<>());
 
         for (AutoNetmusic autoNetmusic : autoNetmusics) {
             Integer autoId = autoNetmusic.getId();
@@ -91,7 +93,7 @@ public class NetMusicTask {
             //任务未开启，下一个
             if (!Boolean.parseBoolean(autoNetmusic.getEnable())) {
                 AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "0", new Date());
-                netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+                netmusicDao.updateById(autoNetmusic1);
                 continue;
             }
 
@@ -105,7 +107,7 @@ public class NetMusicTask {
 
         //更新任务状态
         AutoNetmusic autoNetmusic1 = new AutoNetmusic(autoId, "1", null);
-        netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+        netmusicDao.updateById(autoNetmusic1);
 
         String phone = autoNetmusic.getPhone();
         String password = autoNetmusic.getPassword();
@@ -149,9 +151,9 @@ public class NetMusicTask {
         PushUtil.doPush(msg.toString(), autoNetmusic.getWebhook(), userid);
         //日志写入至数据库
         AutoLog netlog = new AutoLog(autoId, "netmusic", autoNetmusic1.getStatus(), userid, new Date(), msg.toString());
-        logDao.insertSelective(netlog);
+        logDao.insert(netlog);
         //更新任务状态
         autoNetmusic1.setEnddate(new Date());
-        netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+        netmusicDao.updateById(autoNetmusic1);
     }
 }

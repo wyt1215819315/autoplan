@@ -1,13 +1,19 @@
 package com.netmusic.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.misec.utils.HelpUtil;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.NetMusicTask;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,29 +36,51 @@ public class NetmusicService {
     private AutoLogDao autoLogDao;
 
 
-    public List<AutoNetmusic> getAllPlan() {
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectAll();
-        List<AutoNetmusic> result = new ArrayList<>();
-        for (AutoNetmusic autoNetmusic : autoNetmusics) {
+    /**
+     * 根据id查询
+     * @return
+     */
+    public AjaxResult view(Integer id){
+        Integer userId = SessionUtils.getPrincipal().getId();
+        AutoNetmusic autoNetmusic = netmusicDao.selectById(id);
+        if (autoNetmusic == null){
+            return AjaxResult.doError();
+        }else {
+            //放行管理员
+            String role = userDao.getRole(userId);
+            if (!autoNetmusic.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")){
+                return AjaxResult.doError("你无权访问！");
+            }
+        }
+        //移除cookie
+        autoNetmusic.setCookie(null);
+        autoNetmusic.setPhone(null);
+        autoNetmusic.setPassword(null);
+        return AjaxResult.doSuccess(autoNetmusic);
+    }
+
+    public PageDataVO<AutoNetmusic> queryPageList(Integer page, Integer limit) {
+
+        QueryWrapper<AutoNetmusic> queryWrapper = new QueryWrapper<>();
+        Page<AutoNetmusic> pageObj = new Page<>(page, limit);
+        IPage<AutoNetmusic> data = netmusicDao.selectPage(pageObj, queryWrapper);
+
+        List<AutoNetmusic> autoNetmusicList = data.getRecords();
+
+        for (AutoNetmusic autoNetmusic : autoNetmusicList) {
             autoNetmusic.setPassword(null);
             autoNetmusic.setNetmusicId(null);
             autoNetmusic.setPhone(null);
+            autoNetmusic.setCookie(null);
+            autoNetmusic.setWebhook(null);
             autoNetmusic.setNetmusicName(HelpUtil.userNameEncode(autoNetmusic.getNetmusicName()));
-            result.add(autoNetmusic);
         }
-        return result;
+
+        data.setRecords(autoNetmusicList);
+
+        return new PageDataVO<>(data.getTotal(), data.getRecords());
     }
 
-
-    public List<AutoNetmusic> getMyPlan(int userid) {
-        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(userid);
-        List<AutoNetmusic> result = new ArrayList<>();
-        for (AutoNetmusic autoNetmusic : autoNetmusics) {
-            autoNetmusic.setPassword(null);
-            result.add(autoNetmusic);
-        }
-        return result;
-    }
 
     public Map<String, String> addNetMusicPlan(AutoNetmusic autoNetmusic) {
         Map<String, String> map = new HashMap<>();
@@ -75,6 +103,7 @@ public class NetmusicService {
         }
         //账号验证成功,写入用户数据
         autoNetmusic.setNetmusicName(usercheck.get("nickname"));
+        autoNetmusic.setAvatar(usercheck.get("avatarUrl"));
         autoNetmusic.setNetmusicId(usercheck.get("uid"));
         autoNetmusic.setNetmusicNeedDay(usercheck.get("days"));
         autoNetmusic.setNetmusicNeedListen(usercheck.get("count"));
@@ -84,11 +113,11 @@ public class NetmusicService {
         AutoNetmusic autoNetmusic1 = netmusicDao.selectByUid(autoNetmusic.getNetmusicId());
         if (autoNetmusic1 == null || autoNetmusic1.getId() == null) {
             //insert
-            netmusicDao.insertSelective(autoNetmusic);
+            netmusicDao.insert(autoNetmusic);
         } else {
             //update
             autoNetmusic.setId(autoNetmusic1.getId());
-            netmusicDao.updateByPrimaryKeySelective(autoNetmusic);
+            netmusicDao.updateById(autoNetmusic);
         }
         map.put("code", "200");
         map.put("msg", usercheck.get("msg"));
@@ -158,7 +187,7 @@ public class NetmusicService {
         autoLog.setType("netmusic");
         try {
             autoLogDao.deleteByAutoId(autoLog);
-            int i = netmusicDao.deleteByPrimaryKey(autoid);
+            int i = netmusicDao.deleteById(autoid);
             if (i > 0) {
                 map.put("code", 200);
                 map.put("msg", "删除成功");
@@ -173,7 +202,7 @@ public class NetmusicService {
     }
 
     public AutoNetmusic getMyEditPlan(AutoNetmusic autoNetmusic1) {
-        AutoNetmusic autoNetmusic = netmusicDao.selectByPrimaryKey(autoNetmusic1.getId());
+        AutoNetmusic autoNetmusic = netmusicDao.selectById(autoNetmusic1.getId());
         if (autoNetmusic == null || autoNetmusic.getId() == null) {
             return null;
         }
@@ -187,7 +216,7 @@ public class NetmusicService {
 
     public Map<String, Object> editNetMusicPlan(AutoNetmusic autoNetmusic1) {
         Map<String, Object> map = new HashMap<>();
-        AutoNetmusic autoNetmusic = netmusicDao.selectByPrimaryKey(autoNetmusic1.getId());
+        AutoNetmusic autoNetmusic = netmusicDao.selectById(autoNetmusic1.getId());
         if (autoNetmusic == null || autoNetmusic.getId() == null) {
             map.put("code", -1);
             map.put("msg", "参数错误！");
@@ -201,7 +230,7 @@ public class NetmusicService {
             return map;
         }
         checkForm(autoNetmusic1, true);
-        int i = netmusicDao.updateByPrimaryKeySelective(autoNetmusic1);
+        int i = netmusicDao.updateById(autoNetmusic1);
         if (i > 0) {
             map.put("code", 200);
             map.put("msg", "操作成功！");
@@ -214,7 +243,7 @@ public class NetmusicService {
 
     public Map<String, Object> doDailyTaskPersonal(Integer autoId,Integer userid) {
         Map<String, Object> map = new HashMap<>();
-        AutoNetmusic autoNetmusic = netmusicDao.selectByPrimaryKey(autoId);
+        AutoNetmusic autoNetmusic = netmusicDao.selectById(autoId);
         if (autoNetmusic == null || autoNetmusic.getId() == null) {
             map.put("code", 500);
             map.put("msg", "参数错误！");
@@ -239,5 +268,10 @@ public class NetmusicService {
         map.put("code", 200);
         map.put("msg", "运行指令已发送，请稍后查看运行状态");
         return map;
+    }
+
+    public AjaxResult listMine(Integer id) {
+        List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(id);
+        return AjaxResult.doSuccess(autoNetmusics);
     }
 }

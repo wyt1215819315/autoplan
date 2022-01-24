@@ -1,19 +1,12 @@
 package com.oldwu.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.oldwu.entity.SysUserInfo;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface SysUserInfoDao {
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(SysUserInfo record);
-
-    int insertSelective(SysUserInfo record);
-
-    SysUserInfo selectByPrimaryKey(Integer id);
+@Mapper
+public interface SysUserInfoDao extends BaseMapper<SysUserInfo> {
 
     SysUserInfo selectByUserId(Integer id);
 
-    int updateByPrimaryKeySelective(SysUserInfo record);
-
-    int updateByPrimaryKey(SysUserInfo record);
 }

@@ -1,15 +1,18 @@
 package com.oldwu.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class BiliPlan {
 
     private int autoId;
     private String biliName;
+    private String planName;
     private double biliCoin;
     private Long biliExp;
     private Long biliUpexp;
@@ -23,7 +26,7 @@ public class BiliPlan {
 
     public String getEndDateString(){
         if (enddate == null){
-            return null;
+            return "";
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm");
         return simpleDateFormat.format(enddate);

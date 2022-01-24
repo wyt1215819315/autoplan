@@ -1,17 +1,18 @@
 package com.oldwu.controller;
 
+import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoBilibili;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.service.BiliService;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/user/bili")
 public class BiliController {
 
@@ -21,23 +22,39 @@ public class BiliController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 根据id查询详细信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/view")
+    public AjaxResult view(@Param("id") Integer id) {
+        return service.view(id);
+    }
+
+    /**
+     * 获取这个用户的b站挂机列表
+     * @return
+     */
+    @PostMapping("/list")
+    public AjaxResult list() {
+        Integer id = SessionUtils.getPrincipal().getId();
+        return service.listMine(id);
+    }
 
     @PostMapping("/edit")
-    @ResponseBody
-    public Map<String, Object> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+    public Map<String, Object> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.editBiliPlan(autoBilibili);
     }
 
     @PostMapping("/add")
-    @ResponseBody
-    public Map<String, String> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
+    public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
         return service.addBiliPlan(autoBilibili);
     }
 
     @PostMapping("/delete")
-    @ResponseBody
     public Map<String, Object> delete(@Param("bid") Integer bid, Principal principal) {
         AutoBilibili autoBilibili = new AutoBilibili();
         autoBilibili.setUserid(userService.getUserId(principal.getName()));
@@ -46,21 +63,13 @@ public class BiliController {
     }
 
     @GetMapping("/qrcode")
-    @ResponseBody
-    public String getQrcode(){
+    public AjaxResult getQrcode(){
         return service.getQrcodeAuth();
     }
 
     @PostMapping("/qrcode")
-    @ResponseBody
     public Map<String,Object> getQrcodeStatus(@RequestBody String oauthKey){
         return service.getQrcodeStatus(oauthKey);
     }
-
-
-//    @RequestMapping("/add")
-//    public Map<String,String> addBiliInfo(){
-//
-//    }
 
 }

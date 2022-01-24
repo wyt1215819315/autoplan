@@ -26,13 +26,7 @@ public class SysQuartzJobLogService implements BaseService<SysQuartzJobLog, SysQ
 	@Autowired
 	private SysQuartzJobLogMapper sysQuartzJobLogMapper;
 	
-      	   	      	      	      	      	      	      	      	      	      	
-	/**
-	 * 分页查询
-	 * @param pageNum
-	 * @param pageSize
-	 * @return
-	 */
+
 	 public PageInfo<SysQuartzJobLog> list(Tablepar tablepar, String name){
 	        SysQuartzJobLogExample testExample=new SysQuartzJobLogExample();
 	        testExample.setOrderByClause("id DESC");
@@ -58,13 +52,13 @@ public class SysQuartzJobLogService implements BaseService<SysQuartzJobLog, SysQ
 	@Override
 	public SysQuartzJobLog selectByPrimaryKey(String id) {
 		
-		return sysQuartzJobLogMapper.selectByPrimaryKey(id);
+		return sysQuartzJobLogMapper.selectById(id);
 	}
 
 	
 	@Override
 	public int updateByPrimaryKeySelective(SysQuartzJobLog record) {
-		return sysQuartzJobLogMapper.updateByPrimaryKeySelective(record);
+		return sysQuartzJobLogMapper.updateById(record);
 	}
 	
 	/**
@@ -74,7 +68,7 @@ public class SysQuartzJobLogService implements BaseService<SysQuartzJobLog, SysQ
 	public int insertSelective(SysQuartzJobLog record) {
 		//添加雪花主键id
 		record.setId(SnowflakeIdWorker.getUUID());
-		return sysQuartzJobLogMapper.insertSelective(record);
+		return sysQuartzJobLogMapper.insert(record);
 	}
 	
 	

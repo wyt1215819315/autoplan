@@ -3,6 +3,8 @@ package com.oldwu.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.AuthSchemes;
@@ -34,18 +36,22 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * http请求工具类
  */
 public class HttpUtils {
+    private static final Log logger = LogFactory.getLog(HttpUtils.class);
 
     /**
      * get
@@ -138,8 +144,7 @@ public class HttpUtils {
             // flush输出流的缓冲
             out.flush();
             // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;
@@ -159,6 +164,67 @@ public class HttpUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * 发送post请求，x-www-form-urlencoded
+     * @param url 请求url
+     * @param param 表单信息，内部会自动urlEncode
+     * @return cookie,result
+     */
+    public static Map<String, Object> sendPost(String url, Map<String, String> param) {
+        Map<String, Object> map = new HashMap<>();
+        String result = "";
+        try {
+            String paramString = null;
+            for (String s : param.keySet()) {
+                if (paramString == null){
+                    paramString = s + "=" + URLEncoder.encode(param.get(s),"UTF-8");
+                }else {
+                    paramString += "&" + s + "=" + URLEncoder.encode(param.get(s),"UTF-8");
+                }
+            }
+            URL httpurl = new URL(url);
+            HttpURLConnection httpConn = (HttpURLConnection) httpurl.openConnection();
+            httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            httpConn.setDoOutput(true);
+            httpConn.setDoInput(true);
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(httpConn.getOutputStream(), StandardCharsets.UTF_8));
+            out.print(paramString);
+            out.flush();
+            out.close();
+            BufferedReader in = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), StandardCharsets.UTF_8));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+//            String headerField = httpConn.getHeaderField("Set-Cookie");
+            Map<String, List<String>> headerFields = httpConn.getHeaderFields();
+            List<String> cookies = headerFields.get("Set-Cookie");
+            Map<String, String> cookieMap = new HashMap<>();
+            //拼接所有cookie
+            for (String cookie : cookies) {
+                String[] one = cookie.split(";");
+                for (String s : one) {
+                    String[] split = s.split("=");
+                    if (split.length < 2) {
+                        continue;
+                    }
+                    String key = split[0].trim();
+                    String value = split[1].trim();
+                    cookieMap.put(key, value);
+                }
+            }
+//            map.put("cookie",headerField);
+            map.put("result",result);
+            map.put("cookie",cookieMap);
+            in.close();
+        } catch (Exception e) {
+//            System.out.println(e);
+            logger.error(e);
+            return null;
+        }
+        return map;
     }
 
     /**
@@ -531,6 +597,19 @@ public class HttpUtils {
             }
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 返回cookie
+     * @param response
+     * @return
+     */
+    public static String getCookieString(Map<String, String> cookieMap) {
+        StringBuilder sb = new StringBuilder();
+        for (String key : cookieMap.keySet()) {
+            sb.append(key).append("=").append(cookieMap.get(key)).append("; ");
+        }
+        return sb.toString();
     }
 
     /**

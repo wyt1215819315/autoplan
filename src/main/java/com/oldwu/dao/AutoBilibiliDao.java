@@ -1,21 +1,12 @@
 package com.oldwu.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.oldwu.entity.AutoBilibili;
+import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
+@Mapper
+public interface AutoBilibiliDao extends BaseMapper<AutoBilibili> {
 
-public interface AutoBilibiliDao {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(AutoBilibili record);
 
-    int insertSelective(AutoBilibili record);
-
-    AutoBilibili selectByPrimaryKey(Integer id);
-
-    List<AutoBilibili> selectAll();
-
-    int updateByPrimaryKeySelective(AutoBilibili record);
-
-    int updateByPrimaryKey(AutoBilibili record);
 }

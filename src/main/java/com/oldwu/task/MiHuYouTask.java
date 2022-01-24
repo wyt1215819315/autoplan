@@ -1,5 +1,6 @@
 package com.oldwu.task;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
@@ -43,13 +44,23 @@ public class MiHuYouTask {
      */
     public void resetStatus(){
         //重置自动任务的标识
-        List<AutoMihayou> autoMihayous = mihayouDao.selectAll();
+        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
         for (AutoMihayou autoMihayou : autoMihayous) {
             int autoId = autoMihayou.getId();
             AutoMihayou autoMihayou1 = new AutoMihayou();
             autoMihayou1.setId(autoId);
             autoMihayou1.setStatus("100");
-            mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+            mihayouDao.updateById(autoMihayou1);
+        }
+    }
+
+    /**
+     * 更新头像逻辑，因为数据量可能比较大，所以不用每天调用
+     */
+    public void updateAvatar(){
+        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
+        for (AutoMihayou mihayous : autoMihayous) {
+            mihayouService.setPersonInfo(mihayous.getId(),mihayous.getCookie());
         }
     }
 
@@ -59,7 +70,7 @@ public class MiHuYouTask {
     public void doAutoCheck() {
         System.setProperty(Constant.GENSHIN_EXEC, System.getProperty("os.name"));
 
-        List<AutoMihayou> autoMihayous = mihayouDao.selectAll();
+        List<AutoMihayou> autoMihayous = mihayouDao.selectList(new QueryWrapper<>());
 
         for (AutoMihayou autoMihayou : autoMihayous) {
             Integer autoId = autoMihayou.getId();
@@ -68,7 +79,7 @@ public class MiHuYouTask {
             //任务未开启，下一个
             if (!Boolean.parseBoolean(autoMihayou.getEnable())) {
                 AutoMihayou autoMihayou1 = new AutoMihayou(autoId,"0",new Date());
-                mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+                mihayouDao.updateById(autoMihayou1);
                 continue;
             }
 
@@ -87,7 +98,7 @@ public class MiHuYouTask {
 
         //更新任务状态
         AutoMihayou autoMihayou1 = new AutoMihayou(autoId,"1",null);
-        mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+        mihayouDao.updateById(autoMihayou1);
 
         //执行任务
         String suid = autoMihayou.getSuid();
@@ -122,10 +133,10 @@ public class MiHuYouTask {
         PushUtil.doPush(msg.toString(), autoMihayou.getWebhook(), userid);
         //日志写入至数据库
         AutoLog netlog = new AutoLog(autoId, "mihuyou", autoMihayou1.getStatus(), userid, new Date(), msg.toString());
-        logDao.insertSelective(netlog);
+        logDao.insert(netlog);
         //更新任务状态
         autoMihayou1.setEndate(new Date());
-        mihayouDao.updateByPrimaryKeySelective(autoMihayou1);
+        mihayouDao.updateById(autoMihayou1);
     }
 
 }

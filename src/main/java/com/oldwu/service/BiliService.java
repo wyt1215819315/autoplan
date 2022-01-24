@@ -1,6 +1,7 @@
 package com.oldwu.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.misec.apiquery.ApiList;
@@ -12,11 +13,10 @@ import com.oldwu.dao.AutoBilibiliDao;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.BiliUserDao;
 import com.oldwu.dao.UserDao;
-import com.oldwu.entity.AutoBilibili;
-import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
+import com.oldwu.entity.*;
+import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.util.HttpUtils;
+import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,25 @@ public class BiliService {
 
     @Autowired
     private UserDao userDao;
+
+    public AjaxResult view(Integer id){
+        Integer userId = SessionUtils.getPrincipal().getId();
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(id);
+        if (autoBilibili == null){
+            return AjaxResult.doError();
+        }else {
+            //放行管理员
+            String role = userDao.getRole(userId);
+            if (!autoBilibili.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")){
+                return AjaxResult.doError("你无权访问！");
+            }
+        }
+        //移除cookie
+        autoBilibili.setSessdata(null);
+        autoBilibili.setBiliJct(null);
+        autoBilibili.setDedeuserid(null);
+        return AjaxResult.doSuccess(autoBilibili);
+    }
 
     public Map<String, Object> getQrcodeStatus(String oauthKey) {
         Map<String, String> headers = new HashMap<>();
@@ -72,7 +91,7 @@ public class BiliService {
                 result.put("code", 200);
                 result.put("msg", "校验成功！已自动填充");
                 result.put("dedeuserid", cookies.get("DedeUserID"));
-                result.put("sessdate", cookies.get("SESSDATA"));
+                result.put("sessdata", cookies.get("SESSDATA"));
                 result.put("bilijct", cookies.get("bili_jct"));
                 return result;
             }
@@ -84,18 +103,32 @@ public class BiliService {
         }
     }
 
-    public String getQrcodeAuth() {
+    public AjaxResult getQrcodeAuth() {
         try {
             HttpResponse httpResponse = HttpUtils.doGet(qrcodeUrl, null, HttpUtils.getHeaders(), null);
             JSONObject json = HttpUtils.getJson(httpResponse);
             if (json != null && json.getInteger("code") == 0) {
-                return json.getJSONObject("data").getString("oauthKey");
+                return AjaxResult.doSuccess("success", json.getJSONObject("data").getString("oauthKey"));
             } else {
-                return "二维码获取失败！";
+                return AjaxResult.doError("二维码获取失败！");
             }
         } catch (Exception e) {
-            return "获取二维码失败！";
+            return AjaxResult.doError("二维码获取失败！");
         }
+    }
+
+    public PageDataVO<BiliPlan> queryPageList(Integer page, Integer limit) {
+        List<BiliPlan> biliPlans = biliUserDao.selectPageList((page - 1) * limit, limit);
+
+        for (BiliPlan biliPlan : biliPlans) {
+            biliPlan.setBiliName(HelpUtil.userNameEncode(biliPlan.getBiliName()));
+        }
+
+        QueryWrapper<BiliUser> queryWrapper = new QueryWrapper<>();
+
+        Long count = biliUserDao.selectCount(queryWrapper);
+
+        return new PageDataVO<>(count, biliPlans);
     }
 
     public List<BiliPlan> getAllPlan() {
@@ -108,7 +141,7 @@ public class BiliService {
     }
 
     public AutoBilibili getMyEditPlan(AutoBilibili autoBilibili1) {
-        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoBilibili1.getId());
         if (autoBilibili == null || autoBilibili.getId() == null) {
             return null;
         }
@@ -182,7 +215,7 @@ public class BiliService {
         BiliUser biliUser = biliUserDao.selectByMid(mid);
         if (biliUser == null || biliUser.getId() == null) {
             //将数据储存到任务表以及获取用户信息储存到biliuser表和bili任务表
-            autoBilibiliDao.insertSelective(autoBilibili);
+            autoBilibiliDao.insert(autoBilibili);
             if (autoBilibili.getId() <= 0) {
                 map.put("flag", "false");
                 map.put("msg", "数据库错误！添加任务信息失败！");
@@ -201,7 +234,7 @@ public class BiliService {
             //更新用户信息
             Integer autoId = biliUser.getAutoId();
             autoBilibili.setId(autoId);
-            int i = autoBilibiliDao.updateByPrimaryKeySelective(autoBilibili);
+            int i = autoBilibiliDao.updateById(autoBilibili);
             if (i <= 0) {
                 map.put("flag", "false");
                 map.put("msg", "数据库错误！更新任务信息失败！");
@@ -228,7 +261,7 @@ public class BiliService {
         biliUser1.setVipDueDate(new Date(userInfo.getVipDueDate()));
         if (!update) {
             //增加用户信息
-            return biliUserDao.insertSelective(biliUser1) > 0;
+            return biliUserDao.insert(biliUser1) > 0;
         } else {
             //update
             biliUser1.setAutoId(autoBilibili.getId());
@@ -362,7 +395,7 @@ public class BiliService {
             //然后删除b站用户数据
             biliUserDao.deleteByAutoId(autoid);
             //最后删除主要数据
-            int i = autoBilibiliDao.deleteByPrimaryKey(autoid);
+            int i = autoBilibiliDao.deleteById(autoid);
             if (i > 0) {
                 map.put("code", 200);
                 map.put("msg", "删除成功");
@@ -378,7 +411,7 @@ public class BiliService {
 
     public Map<String, Object> editBiliPlan(AutoBilibili autoBilibili1) {
         Map<String, Object> map = new HashMap<>();
-        AutoBilibili autoBilibili = autoBilibiliDao.selectByPrimaryKey(autoBilibili1.getId());
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoBilibili1.getId());
         if (autoBilibili == null || autoBilibili.getId() == null) {
             map.put("code", -1);
             map.put("msg", "参数错误！");
@@ -392,7 +425,7 @@ public class BiliService {
             return map;
         }
         checkForm(autoBilibili1, true);
-        int i = autoBilibiliDao.updateByPrimaryKeySelective(autoBilibili1);
+        int i = autoBilibiliDao.updateById(autoBilibili1);
         if (i > 0) {
             map.put("code", 200);
             map.put("msg", "操作成功！");
@@ -401,5 +434,15 @@ public class BiliService {
         map.put("code", 0);
         map.put("msg", "操作失败！");
         return map;
+    }
+
+    /**
+     * 根据用户id查询这个用户的b站任务信息
+     * @param id
+     * @return
+     */
+    public AjaxResult listMine(Integer id) {
+        List<BiliPlan> biliPlans = biliUserDao.selectMine(id);
+        return AjaxResult.doSuccess(biliPlans);
     }
 }

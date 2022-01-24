@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <title>b站任务添加</title>
+        <th:block th:include="include :: headerCss"/>
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="admin-layui-form">
+
+                <form class="layui-form layui-form-pane" action="">
+
+                    <div class="layui-form-item">
+                        <button type="button" onclick="qrcode()" data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">扫🐴登录</button>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">任务名</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" lay-verify="required" name="name"
+                                   placeholder="输入任务名" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Sessdata</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" id="sessdata" class="layui-input" lay-verify="required" name="sessdata"
+                                   placeholder="Sessdata" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">biliJct</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" id="bilijct" class="layui-input" lay-verify="required" name="biliJct"
+                                   placeholder="biliJct" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">dedeuserid</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" id="dedeuserid" class="layui-input" lay-verify="required" name="dedeuserid"
+                                   placeholder="dedeuserid" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">任务执行间隔</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="taskintervaltime"
+                                   placeholder="任务执行间隔" type="text" value="10">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">每日投币数量</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="numberofcoins"
+                                   placeholder="每日投币数量" type="text" value="5">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">预留的硬币数</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="reservecoins"
+                                   placeholder="预留的硬币数" type="text" value="50">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">投币时是否点赞</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="selectlike">
+                                <option selected value="0">投币时不点赞</option>
+                                <option value="1">投币时点赞</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">年度大会员月底是否用 B 币券给自己充电</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="monthendautocharge">
+                                <option selected value="true">开启</option>
+                                <option value="false">关闭</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">直播送出即将过期的礼物</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="givegift">
+                                <option selected value="true">开启</option>
+                                <option value="false">关闭</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">直播送出即将过期的礼物，指定 up 主，为 0 时则随随机</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="uplive"
+                                   placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主" type="text" value="0">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
+                                   placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电" type="text" value="0">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机端漫画签到时的平台，建议选择你设备的平台</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="deviceplatform">
+                                <option selected value="ios">苹果</option>
+                                <option value="android">安卓</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">投币规则</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="coinaddpriority">
+                                <option value="0">优先给热榜视频投币</option>
+                                <option selected value="1">优先给关注的 up 投币</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">浏览器UA</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" lay-verify="useragent" name="useragent"
+                                   placeholder="不知道就空着" type="text">
+                        </div>
+                    </div>
+
+                    <!--预测部分-->
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赛事预测总开关</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="matchEnable" lay-filter="matchEnable" id="matchEnable">
+                                <option selected value="false">关</option>
+                                <option value="true">开</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="match_rule" style="display: none;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单次预测投注硬币</label>
+                            <div class="layui-input-block">
+                                <input autocomplete="off" class="layui-input" name="matchPredictnumberofcoins"
+                                       placeholder="单次预测投注硬币" type="text" value="10">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">预测保留硬币</label>
+                            <div class="layui-input-block">
+                                <input autocomplete="off" class="layui-input" name="matchMinimumnumberofcoins"
+                                       placeholder="预测保留硬币" type="text" value="200">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">赛事预测规则</label>
+                            <div class="layui-input-block">
+                                <select class="layui-input" name="matchShowhandmodel" id="matchShowhandmodel">
+                                    <option selected value="false">压倍率低的（跟着人多的压）</option>
+                                    <option value="true">压倍率高的（赌命）</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">每日任务总开关</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="skipdailytask">
+                                <option selected value="false">开</option>
+                                <option value="true">关</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">任务完成推送WebHook</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="webhook"
+                                   placeholder="输入WebHook地址，json字符串" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-normal" lay-filter="user-save" lay-submit type="button">
+                                <i class="layui-icon layui-icon-ok"></i> 提交
+                            </button>
+                            <button class="layui-btn layui-btn-normal" type="button" id="showSendWebHook">点我生成WebHook</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <th:block th:include="include :: footerJs"/>
+        <script src="/static/js/qrcode.js"></script>
+
+        <script>
+            var parentIndex = parent.layer.getFrameIndex(window.name);
+
+            layui.use(['form','layer'], function () {
+                let form = layui.form, layer = layui.layer;
+
+                showBtnSize();
+
+                $("#showSendWebHook").click(function () {
+                    layer.open({
+                        type: 2,
+                        title: '生成webhook json字符串',
+                        shade: 0.1,
+                        area: screen() < 2 ? ['90%', '80%'] : ['1000px', '400px'],
+                        content: "/webhook-generate",
+                        end: function (index, layero) {
+                            return true;
+                        }
+                    });
+                })
+
+                form.on('select(matchEnable)', function (data) {
+                    if (data.value == 'false') {
+                        $("#match_rule").css("display", "none");
+                        form.render('select');
+                    } else {
+                        $("#match_rule").css("display", "block");
+                        form.render('select');
+                    }
+                });
+
+
+                //保存
+                form.on('submit(user-save)', function (data) {
+
+                    var loadIndex = parent.layer.msg("校验用户信息中，请稍后", {icon: 3, time: 10*1000, shade: [0.7, '#393D49']});
+                    $.ajax({
+                        url: '/api/user/bili/add',
+                        data: JSON.stringify(data.field),
+                        dataType: 'json',
+                        contentType: 'application/json;charset=UTF-8',
+                        type: 'post',
+                        success: function (result) {
+                            parent.layer.close(loadIndex);
+                            if (result.code == 200) {
+                                parent.layer.msg(result.msg);
+                                parent.layer.close(parentIndex);
+                            } else {
+                                parent.layer.msg(result.msg);
+                            }
+                        },
+                        error: function () {
+                            parent.layer.close(loadIndex);
+                            parent.layer.msg("连接服务器失败！");
+                        }
+                    })
+                    return false;
+                });
+
+            })
+
+            function qrcode() {
+                var t2;
+                layer.open({
+                    type: 1,
+                    title: '扫码后自动填充前三项',
+                    area: ["400px", "443px"],
+                    shade: 0.7,
+                    id: 'LAY_layuipro',
+                    maxmin: false,
+                    offset: [80, 0],
+                    content: '<div id="qrcode" style="margin: 10px; 10px">正在获取二维码</div>',
+                    zIndex: layer.zIndex,
+                    success: function (layero) {
+                        $.get("/api/user/bili/qrcode", {}, function (data) {
+                            $('#qrcode').html("");
+                            $('#qrcode').qrcode({
+                                render: "canvas",
+                                width: 375,
+                                height: 375,
+                                text: "https://passport.bilibili.com/qrcode/h5/login?oauthKey=" + data.data
+                            });
+                            t2 = window.setInterval(function () {
+                                $.ajax({
+                                    url: '/api/user/bili/qrcode',
+                                    data: data.data,
+                                    contentType: 'text/html;charset=UTF-8',
+                                    type: 'post',
+                                    success: function (result) {
+                                        if (result.code == 200) {
+                                            layer.msg(result.msg, {icon: 1, time: 2000}, function () {
+                                                $('#dedeuserid').val(result.dedeuserid);
+                                                $('#sessdata').val(result.sessdata);
+                                                $('#bilijct').val(result.bilijct);
+                                                window.clearInterval(t2);
+                                                layer.closeAll();
+                                            });
+                                        } else if (result.code == -1 || result.code == -2) {
+                                            layer.msg(result.msg, {icon: 2, time: 5000}, function () {
+                                                $('#qrcode').html(result.msg);
+                                                window.clearInterval(t2);
+                                            });
+                                        }
+                                    }
+                                });
+                            }, 2000)
+                        });
+                    },
+                    end: function () {
+                        window.clearInterval(t2);
+                    }
+                });
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,21 +1,14 @@
 package com.oldwu.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.oldwu.entity.AutoLog;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface AutoLogDao {
-    int deleteByPrimaryKey(Long id);
+@Mapper
+public interface AutoLogDao extends BaseMapper<AutoLog> {
 
     int deleteByAutoId(AutoLog autoLog);
 
-    int insert(AutoLog record);
-
-    int insertSelective(AutoLog record);
-
-    AutoLog selectByPrimaryKey(Long id);
-
     AutoLog selectByCondition(AutoLog autoLog);
 
-    int updateByPrimaryKeySelective(AutoLog record);
-
-    int updateByPrimaryKey(AutoLog record);
 }

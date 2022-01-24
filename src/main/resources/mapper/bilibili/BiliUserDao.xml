@@ -17,22 +17,19 @@
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="other" jdbcType="VARCHAR" property="other"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id, auto_id, `uid`, bili_name, bili_coin, bili_exp, bili_upexp, bili_level, face_img,
     is_vip, vip_due_date, other, `status`
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bili_user
-        where id = #{id,jdbcType=INTEGER}
-    </select>
+
     <select id="selectByMid" resultType="com.oldwu.entity.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
         where uid = #{id}
     </select>
+
     <select id="selectAll" resultType="com.oldwu.entity.BiliPlan">
         SELECT bili_user.bili_name         AS bili_name,
                bili_user.bili_coin         AS bili_coin,
@@ -49,7 +46,8 @@
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
     </select>
-    <select id="selectMine" resultType="com.oldwu.entity.BiliPlan">
+
+    <select id="selectPageList" resultType="com.oldwu.entity.BiliPlan">
         SELECT bili_user.bili_name         AS bili_name,
                bili_user.bili_coin         AS bili_coin,
                bili_user.bili_exp          AS bili_exp,
@@ -63,170 +61,42 @@
                auto_bilibili.skipDailyTask AS skipDailyTask,
                auto_bilibili.id            AS auto_id
         FROM auto_bilibili
+                     INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
+        limit #{page}, #{limit}
+    </select>
+
+    <select id="selectMine" resultType="com.oldwu.entity.BiliPlan">
+        SELECT bili_user.bili_name         AS bili_name,
+               bili_user.bili_coin         AS bili_coin,
+               bili_user.bili_exp          AS bili_exp,
+               bili_user.bili_upexp        AS bili_upexp,
+               bili_user.bili_level        AS bili_level,
+               bili_user.face_img          AS face_img,
+               bili_user.is_vip            AS is_vip,
+               bili_user.vip_due_date      AS vip_due_date,
+               bili_user.`status`          AS `status`,
+               bili_user.enddate           AS enddate,
+               auto_bilibili.skipDailyTask AS skipDailyTask,
+               auto_bilibili.name          AS plan_name,
+               auto_bilibili.id            AS auto_id
+        FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
         WHERE auto_bilibili.userid = #{userid}
     </select>
+
     <select id="selectByAutoId" resultType="com.oldwu.entity.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
         where auto_id = #{autoId}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        delete
-        from bili_user
-        where id = #{id,jdbcType=INTEGER}
-    </delete>
+
     <delete id="deleteByAutoId">
         delete
         from bili_user
         where auto_id = #{id}
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.BiliUser"
-            useGeneratedKeys="true">
-        insert into bili_user (auto_id, `uid`, bili_name,
-                               bili_coin, bili_exp, bili_upexp,
-                               bili_level, face_img, is_vip,
-                               vip_due_date, other)
-        values (#{autoId,jdbcType=INTEGER}, #{uid,jdbcType=BIGINT}, #{biliName,jdbcType=VARCHAR},
-                #{biliCoin,jdbcType=BIGINT}, #{biliExp,jdbcType=BIGINT}, #{biliUpexp,jdbcType=BIGINT},
-                #{biliLevel,jdbcType=INTEGER}, #{faceImg,jdbcType=VARCHAR}, #{isVip,jdbcType=VARCHAR},
-                #{vipDueDate,jdbcType=TIMESTAMP}, #{other,jdbcType=VARCHAR})
-    </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.oldwu.entity.BiliUser"
-            useGeneratedKeys="true">
-        insert into bili_user
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="autoId != null">
-                auto_id,
-            </if>
-            <if test="uid != null">
-                `uid`,
-            </if>
-            <if test="biliName != null">
-                bili_name,
-            </if>
-            <if test="biliCoin != null">
-                bili_coin,
-            </if>
-            <if test="biliExp != null">
-                bili_exp,
-            </if>
-            <if test="biliUpexp != null">
-                bili_upexp,
-            </if>
-            <if test="biliLevel != null">
-                bili_level,
-            </if>
-            <if test="faceImg != null">
-                face_img,
-            </if>
-            <if test="isVip != null">
-                is_vip,
-            </if>
-            <if test="vipDueDate != null">
-                vip_due_date,
-            </if>
-            <if test="other != null">
-                other,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="autoId != null">
-                #{autoId,jdbcType=INTEGER},
-            </if>
-            <if test="uid != null">
-                #{uid,jdbcType=BIGINT},
-            </if>
-            <if test="biliName != null">
-                #{biliName,jdbcType=VARCHAR},
-            </if>
-            <if test="biliCoin != null">
-                #{biliCoin,jdbcType=DECIMAL},
-            </if>
-            <if test="biliExp != null">
-                #{biliExp,jdbcType=BIGINT},
-            </if>
-            <if test="biliUpexp != null">
-                #{biliUpexp,jdbcType=BIGINT},
-            </if>
-            <if test="biliLevel != null">
-                #{biliLevel,jdbcType=INTEGER},
-            </if>
-            <if test="faceImg != null">
-                #{faceImg,jdbcType=VARCHAR},
-            </if>
-            <if test="isVip != null">
-                #{isVip,jdbcType=VARCHAR},
-            </if>
-            <if test="vipDueDate != null">
-                #{vipDueDate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="other != null">
-                #{other,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.oldwu.entity.BiliUser">
-        update bili_user
-        <set>
-            <if test="autoId != null">
-                auto_id = #{autoId,jdbcType=INTEGER},
-            </if>
-            <if test="uid != null">
-                `uid` = #{uid,jdbcType=BIGINT},
-            </if>
-            <if test="biliName != null">
-                bili_name = #{biliName,jdbcType=VARCHAR},
-            </if>
-            <if test="biliCoin != null">
-                bili_coin = #{biliCoin,jdbcType=DECIMAL},
-            </if>
-            <if test="biliExp != null">
-                bili_exp = #{biliExp,jdbcType=BIGINT},
-            </if>
-            <if test="biliUpexp != null">
-                bili_upexp = #{biliUpexp,jdbcType=BIGINT},
-            </if>
-            <if test="biliLevel != null">
-                bili_level = #{biliLevel,jdbcType=INTEGER},
-            </if>
-            <if test="faceImg != null">
-                face_img = #{faceImg,jdbcType=VARCHAR},
-            </if>
-            <if test="isVip != null">
-                is_vip = #{isVip,jdbcType=VARCHAR},
-            </if>
-            <if test="vipDueDate != null">
-                vip_due_date = #{vipDueDate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="enddate != null">
-                enddate = #{enddate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="status != null">
-                status = #{status,jdbcType=VARCHAR},
-            </if>
-            <if test="other != null">
-                other = #{other,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.oldwu.entity.BiliUser">
-        update bili_user
-        set auto_id      = #{autoId,jdbcType=INTEGER},
-            `uid`        = #{uid,jdbcType=BIGINT},
-            bili_name    = #{biliName,jdbcType=VARCHAR},
-            bili_coin    = #{biliCoin,jdbcType=DECIMAL},
-            bili_exp     = #{biliExp,jdbcType=BIGINT},
-            bili_upexp   = #{biliUpexp,jdbcType=BIGINT},
-            bili_level   = #{biliLevel,jdbcType=INTEGER},
-            face_img     = #{faceImg,jdbcType=VARCHAR},
-            is_vip       = #{isVip,jdbcType=VARCHAR},
-            vip_due_date = #{vipDueDate,jdbcType=TIMESTAMP},
-            other        = #{other,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=INTEGER}
-    </update>
+
     <update id="updateByAutoIdSelective">
         update bili_user
         <set>
@@ -272,4 +142,5 @@
         </set>
         where auto_id = #{autoId,jdbcType=INTEGER}
     </update>
+
 </mapper>

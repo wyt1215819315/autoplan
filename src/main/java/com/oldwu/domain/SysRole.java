@@ -1,26 +1,29 @@
 package com.oldwu.domain;
 
+import com.gitee.sunchenbin.mybatis.actable.annotation.*;
+import lombok.Data;
+
 /**
  * Created by yangyibo on 17/1/17.
  */
 
+@Table("sys_role")
+@Data
 public class SysRole {
 
+    @IsKey
+    @IsAutoIncrement
+    @IgnoreUpdate
     private Integer id;
+
+    @Column(isNull = false)
+    @Unique
     private String name;
-    public Integer getId() {
-        return id;
+
+    public SysRole() {
     }
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
+
+    public SysRole(String name) {
         this.name = name;
     }
-
-
-
 }

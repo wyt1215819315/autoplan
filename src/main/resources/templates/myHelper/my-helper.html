@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta content="text/html;charset=UTF-8"/>
+        <meta name="referrer" content="no-referrer" />
+        <title>我的任务列表</title>
+        <th:block th:include="include :: headerCss"/>
+        <link rel="stylesheet" href="/static/css/myHelper.css" media="all">
+        </style>
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="admin-layui-form">
+                <div class="layui-row ">
+                    <div class="layui-col-md12 div-row">
+                        <button class="layui-btn bilibiliBtn" id="addBilibiliTask">
+                            <i class="layui-icon searchIcon bilibiliIcon"></i>添加任务
+                        </button>
+                        <button class="layui-btn netmusicBtn" id="addNetmusicTask">
+                            <i class="layui-icon searchIcon netmusicIcon"></i>添加任务
+                        </button>
+                        <button class="layui-btn miyousheBtn" id="addMiyousheTask">
+                            <i class="layui-icon searchIcon miyousheIcon"></i>添加任务
+                        </button>
+                    </div>
+
+                    <!--哔哩哔哩任务显示部分-->
+                    <div class="layui-col-md12 div-row" id="bilibiliShow"></div>
+
+                    <!--网易云任务显示部分-->
+                    <div class="layui-col-md12 div-row" id="netmusicShow"></div>
+
+                    <!--米游社任务显示部分-->
+                    <div class="layui-col-md12 div-row" id="miyousheShow"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <th:block th:include="include :: footerJs"/>
+        <script src="/static/js/myHelper.js?v=2"></script>
+    </body>
+
+</html>
