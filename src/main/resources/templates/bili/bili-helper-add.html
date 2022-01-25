@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">年度大会员月底是否用 B 币券给自己充电</label>
+                        <label class="layui-form-label">年费大会员B币券用于充电</label>
                         <div class="layui-input-block">
                             <select class="layui-input" name="monthendautocharge">
                                 <option selected value="true">开启</option>
@@ -93,7 +93,15 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">直播送出即将过期的礼物</label>
+                        <label class="layui-form-label">指定充电up主uid</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
+                                   placeholder="输入up主uid（输入0选择自己），默认为0，即给自己充电" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">直播间送出即将过期的礼物</label>
                         <div class="layui-input-block">
                             <select class="layui-input" name="givegift">
                                 <option selected value="true">开启</option>
@@ -103,26 +111,19 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">直播送出即将过期的礼物，指定 up 主，为 0 时则随随机</label>
+                        <label class="layui-form-label">指定送礼物up主uid</label>
                         <div class="layui-input-block">
                             <input autocomplete="off" class="layui-input" name="uplive"
-                                   placeholder="直播送出即将过期的礼物，指定 up 主，为 0 时则随随机选取一个 up 主" type="text" value="0">
+                                   placeholder="输入up主uid（输入0随机选取一个up主），在其直播间送出即将过期的礼物" type="text">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电</label>
+                        <label class="layui-form-label">漫画签到的平台</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
-                                   placeholder="给指定 up 主充电，值为 0 或者充电对象的 uid，默认为 0，即给自己充电" type="text" value="0">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">手机端漫画签到时的平台，建议选择你设备的平台</label>
-                        <div class="layui-input-block">
-                            <select class="layui-input" name="deviceplatform">
-                                <option selected value="ios">苹果</option>
+                            <select class="layui-input" name="deviceplatform" lay-verify="required">
+                                <option value="">建议选择你设备的平台</option>
+                                <option value="ios">苹果</option>
                                 <option value="android">安卓</option>
                             </select>
                         </div>
