@@ -1,7 +1,7 @@
 # AutoPlan_Helper
 这是一个自动化的托管系统，目前支持网易云签到刷歌，bilibili赚经验+自动赛事预测，米游社原神签到，部署至服务器和你的小伙伴一起赚经验吧
 
-目前项目属于测试阶段，可能会有些莫名其妙的bug，敬请谅解
+2.0版本已更新，带来全新的界面体验，感谢@MuXia-0326大佬的辛勤付出
 
 如果觉得好用，点个**star**吧
 
@@ -48,27 +48,44 @@ cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_
 1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，或者可以直接复制以下内容：
 ```yaml
 server:
-  #服务器端口
-  port: 26666
+   #服务器端口
+   port: 26666
 spring:
-  #数据库连接配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: 数据库用户名
-    password: 数据库密码
-  main:
-    allow-bean-definition-overriding: true
-  mvc: #静态文件
-    static-path-pattern: /static/**
-mybatis:
-  #mapper配置文件
-  mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml
-  type-aliases-package: com.oldwu.entity
-  #开启驼峰命名
-  configuration:
-    map-underscore-to-camel-case: true
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+   #数据库连接配置
+   datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: 数据库用户名
+      password: 数据库密码
+   main:
+      allow-bean-definition-overriding: true
+   mvc: #静态文件
+      static-path-pattern: /static/**
+# actable自动建表
+actable:
+   table:
+      auto: update
+   model:
+      #分号或者逗号隔开
+      pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
+   database:
+      type: mysql
+   index:
+      #自己定义的索引前缀#该配置项不设置默认使用actable_idx_
+      prefix: INDEX_
+   unique:
+      #自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
+      prefix: INDEX_UNIQUE_
+   # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
+mybatis-plus:
+   #mapper配置文件
+   mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+   type-aliases-package: com.oldwu.entity
+   #开启驼峰命名
+   configuration:
+      map-underscore-to-camel-case: true
+      #输出mybatis日志
+#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 ```
 2. 在mysql中创建数据库并导入sql
 3. 接下来你可以选择两种方式部署：
@@ -107,12 +124,9 @@ mybatis:
 1. 管理员功能：查看日志，删除任务等
 2. go-cqhttp推送（需要加机器人为好友）
 3. 手动执行b站任务（咕咕咕）
-4. 重做界面计划
-5. 后台接口改为api方式请求，以实现前后端完全分离
 6. 推送测试回显错误信息（提交返回的response ）
-7. 建表方式改为mybatis-enhance-actable，可以实现像hibernate一样的表关系对应，以后仅需在实体上做更改就行，使用者也无需手动建表
-8. mybatis框架换为mybatis-plus，移除赘余xml
-9. 加入登录、注册 请求验证码，防止被恶意请求，虽然就算凑对了登进去，后台也不会返回cookie，这个可以先放一放
+7. 主页说明支持markdown格式动态编辑
+8. 推送生成器支持自动填充json至推送框
 
 ### 更新日志
 * 21.8.29 更新了b站二维码登录以及任务删除功能
@@ -130,6 +144,13 @@ mybatis:
 * 21.11.6 修复米游币任务分享帖子失效的问题
 * 21.12.11 修复log4j2漏洞
 * 21.12.29 修改米游社原神签到逻辑，适配米游社账号下多角色不同服的签到处理，并修改一些页面显示，使其更美观（感谢@MuXia-0326）
+* 22.1.26 **（2.0版本重大更新）**
+   1. 重构了所有页面，所有请求均改为前后端分离
+   2. 增加登录注册验证码校验
+   3. 修复网易云登录时可能出现的乱码问题
+   4. 个人任务管理支持头像展示
+   5. 增加actable自动建表，以后更改表结构时无需手动更改（第一次使用时还是需要导入sql）
+   6. 将mybatis换为mybatis-plus，精简了大量xml文件
 
 
 ### 鸣谢
