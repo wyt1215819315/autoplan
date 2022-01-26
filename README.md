@@ -3,6 +3,11 @@
 
 2.0版本已更新，带来全新的界面体验，感谢@MuXia-0326大佬的辛勤付出
 
+1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
+```mysql
+INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
+```
+
 如果觉得好用，点个**star**吧
 
 ### 开源地址
@@ -115,6 +120,10 @@ mybatis-plus:
 5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
 **Releases中的jar不会经常更新，我已经设置的github自动构建，如果需要最新测试版，请前往 https://github.com/wyt1215819315/autoplan/actions 自行下载**
+
+**版本更新时，请务必备份数据库，以免未知的后果造成影响**
+
+如果你不需要自动建表，请将配置文件中的actable有关的项全都注释掉即可
 
 ### 一些问题
 1. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
