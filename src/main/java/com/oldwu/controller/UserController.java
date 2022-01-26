@@ -33,7 +33,6 @@ public class UserController {
 
     @PostMapping("/reg")
     public AjaxResult regPost(@Param("username") String username, @Param("password") String password) {
-        //TODO 加入验证码验证
         return regService.doReg(username, password);
     }
 

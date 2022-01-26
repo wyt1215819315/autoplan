@@ -45,7 +45,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         //判断请求页面是否为/login、该路径对应登录form表单的action路径，请求的方法是否为POST，是的话进行验证码校验逻辑，否则直接执行filterChain.doFilter让代码往下走
         String requestURI = httpServletRequest.getRequestURI();
-        boolean b = StringUtils.equalsIgnoreCase("/loginProcessing", requestURI);
+        //拦截登录和注册api请求
+        String[] validateUrl = {"/loginProcessing", "/reg"};
+        boolean b = StringUtils.equalsAnyIgnoreCase(requestURI, validateUrl);
+        //只对post提交类型做出处理
         boolean post = StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post");
         if (b && post) {
             try {
