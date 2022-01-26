@@ -1,5 +1,6 @@
 package com.oldwu.task.quartz;
 
+import com.oldwu.dao.SysQuartzJobMapper;
 import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.SysQuartzJobExample;
 import com.oldwu.service.SysQuartzJobService;
@@ -27,7 +28,7 @@ public class QuartzSchedulerUtil {
     private Scheduler scheduler;
 
     @Autowired
-    private SysQuartzJobService sysQuartzJobService;
+    private SysQuartzJobMapper sysQuartzJobMapper;
 
     //这个东西可以放在配置文件中
     //cron表达式 一分钟执行一次
@@ -39,8 +40,7 @@ public class QuartzSchedulerUtil {
      */
     @PostConstruct
     public void init() throws SchedulerException {
-    	
-    	List<SysQuartzJob> quartzJobs=sysQuartzJobService.selectByExample(new SysQuartzJobExample());
+    	List<SysQuartzJob> quartzJobs = sysQuartzJobMapper.selectByExample(new SysQuartzJobExample());
     	for (SysQuartzJob job : quartzJobs) {
     		try {
                 //防止因为数据问题重复创建
@@ -91,7 +91,7 @@ public class QuartzSchedulerUtil {
             }else {
             	cronScheduleBuilder = CronScheduleBuilder.cronSchedule(TEST_CRON);
             }
-           
+
             // CronTrigger表达式触发器 继承于Trigger  //cronScheduleBuilder.withMisfireHandlingInstructionDoNothing()错过60分钟后不在补偿 拉下的执行次数
             // TriggerBuilder 用于构建触发器实例
             CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(ScheduleConstants.TASK_CLASS_NAME+job.getId(),job.getJobGroup())
@@ -99,7 +99,7 @@ public class QuartzSchedulerUtil {
             //放入参数，运行时的方法可以获取
             jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
             scheduler.scheduleJob(jobDetail, cronTrigger);
-            
+
             //如果这个工作的状态为1
             if (job.getStatus().equals(1))
             {
@@ -179,7 +179,7 @@ public class QuartzSchedulerUtil {
         }
         return bl;
     }
-    
+
     /**
      * 获取jobKey
      */
@@ -187,7 +187,7 @@ public class QuartzSchedulerUtil {
     {
         return JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(),job.getJobGroup());
     }
-    
+
     /**
      * 立即执行任务
      */
@@ -243,14 +243,14 @@ public class QuartzSchedulerUtil {
         boolean isConcurrent = "0".equals(sysJob.getConcurrent());
         return isConcurrent ? QuartzJobExecution.class : QuartzDisallowConcurrentExecution.class;
     }
-    
-    
+
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public void getquartzList() throws SchedulerException {
 
         List<String> triggerGroupNames = scheduler.getTriggerGroupNames();
         for (String groupName : triggerGroupNames) {
-        	 //组装group的匹配，为了模糊获取所有的triggerKey或者jobKey 
+        	 //组装group的匹配，为了模糊获取所有的triggerKey或者jobKey
         	GroupMatcher groupMatcher = GroupMatcher.groupEquals(groupName);
         	//获取所有的triggerKey
         	 Set<TriggerKey> triggerKeySet = scheduler.getTriggerKeys(groupMatcher);
