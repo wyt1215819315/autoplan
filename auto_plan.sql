@@ -354,4 +354,22 @@ CREATE TABLE `t_sys_quartz_job_log`
 -- Records of t_sys_quartz_job_log
 -- ----------------------------
 
+-- ----------------------------
+-- Table structure for sys_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config`  (
+                               `id` int NOT NULL AUTO_INCREMENT,
+                               `value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'value',
+                               `bond` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'key',
+                               PRIMARY KEY (`id`) USING BTREE,
+                               UNIQUE INDEX `INDEX_UNIQUE_bond`(`bond`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_config
+-- ----------------------------
+INSERT INTO `sys_config` VALUES (1, '<p class=\"red\">警告！！</p>\r\n<p>1.3版本的更新重构了推送部分的代码，之前设置的推送地址会全部失效</p>\r\n<p>目前推送部分代码为json字符串形式传入</p>\r\n<p>\r\n在填写webhook的页面中已经给出了\r\n<a style=\"color: blue\" lay-href=\"/webhook-generate\">生成器</a>\r\n按钮\r\n</p>\r\n<p>\r\n请使用\r\n<a style=\"color: blue\" lay-href=\"/webhook-generate\">生成器</a>\r\n生成之后复制到webhook一栏更新配置！！\r\n</p>', 'system_notice_content');
+
+
 SET FOREIGN_KEY_CHECKS = 1;

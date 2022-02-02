@@ -4,6 +4,7 @@
         <meta content="text/html;charset=UTF-8"/>
         <title>自动任务管理-首页</title>
         <th:block th:include="include :: headerCss"/>
+        <link href="/static/css/markdown.css">
         <style>
             .red {
                 color: red;
@@ -17,10 +18,13 @@
                 <div class="layui-col-xs0 layui-col-sm0 layui-col-md2 "></div>
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md8">
                     <div class="layui-card">
+<!--                        <div class="layui-card-header red" style="font-size: 18px; font-weight: bold;">-->
+<!--                            重大变更提示-->
+<!--                        </div>-->
                         <div class="layui-card-header red" style="font-size: 18px; font-weight: bold;">
-                            重大变更提示
+                            公告栏
                         </div>
-                        <div class="layui-card-body layui-text layadmin-text">
+                        <div class="layui-card-body markdown" id="notice_content">
                             <p class="red">警告！！</p>
                             <p>1.3版本的更新重构了推送部分的代码，之前设置的推送地址会全部失效</p>
                             <p>目前推送部分代码为json字符串形式传入</p>
@@ -76,6 +80,7 @@
                 index: 'lib/index' //主入口模块
             }).use('index');
         </script>
+        <script src="/static/js/welcome.js?v=1"></script>
     </body>
 
 </html>
