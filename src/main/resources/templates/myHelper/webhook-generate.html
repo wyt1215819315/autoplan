@@ -155,6 +155,9 @@
                             <button class="layui-btn layui-btn-normal" id="copy" type="button">
                                 <i class="layui-icon layui-icon-note"></i> 复制输出结果
                             </button>
+                            <button class="layui-btn layui-btn-container" lay-filter="auto-generate" lay-submit="" type="button">
+                                <i class="layui-icon layui-icon-ok"></i> 自动填充
+                            </button>
                             <a class="layui-btn layui-btn-normal" href="https://blog.oldwu.top/index.php/archives/84/#toc_12" target="_blank">
                                 更多帮助请查看
                             </a>
@@ -220,8 +223,7 @@
                     form.render('select');
                 });
 
-                //生成
-                form.on('submit(user-save)', function (data) {
+                function generateWebhookJson(data) {
                     // var webhook_type = $("#webhook_type").val();
                     var obj = {};
                     if (data.field.webhook_type === 'dingtalk') {
@@ -249,9 +251,25 @@
                         obj.WE_COM_APP_TO_USER = data.field.wechatcom_push_user;
                         obj.WE_COM_APP_MEDIA_ID = data.field.wechatcom_push_mediaid;
                     }
-                    var out = JSON.stringify(obj);
+                    return JSON.stringify(obj);
+                }
+
+                //生成
+                form.on('submit(user-save)', function (data) {
+                    let out = generateWebhookJson(data);
                     $("#out").css("display", "block");
                     $("#result").html(out);
+                    return false;
+                });
+
+                //自动填充
+                form.on('submit(auto-generate)', function (data) {
+                    let out = generateWebhookJson(data);
+                    //寻找父窗口的id=webhook的元素并填充值
+                    $(window.parent.document).find("#webhook").val(out);
+                    //关闭窗口
+                    var parentIndex = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(parentIndex);
                     return false;
                 });
             })
