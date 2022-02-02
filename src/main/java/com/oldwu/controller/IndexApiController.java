@@ -13,7 +13,9 @@ import com.oldwu.service.BiliService;
 import com.oldwu.service.SysService;
 import com.oldwu.vo.PageDataVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,9 +38,18 @@ public class IndexApiController {
      * 获取系统首页公告
      * @return AjaxResult 公告内容
      */
-    @RequestMapping("/welcome-notice")
+    @RequestMapping("/welcome-notice/list")
     public AjaxResult getSystemNoticeContent(){
         return sysService.getSystemNoticeContent();
+    }
+
+    /**
+     * 编辑系统首页公告
+     * @return AjaxResult 公告内容
+     */
+    @PostMapping("/welcome-notice/edit")
+    public AjaxResult editSystemNoticeContent(@RequestParam String text){
+        return sysService.setSystemNoticeContent(text);
     }
 
 

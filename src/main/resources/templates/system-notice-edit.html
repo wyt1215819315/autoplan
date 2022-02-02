@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>md转换为html</title>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/markdown.css">
+    <style>
+        #area>table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        #area table tr td {
+            margin: 0;
+            padding: 6px;
+            border: 0;
+
+        }
+
+        #md-area {
+            width: 100%;
+            height: 600px;
+            font-size: 18px;
+            overflow: hidden;
+            font-weight: bold;
+            outline: none;
+        }
+
+        #show-area {
+            height: 600px;
+            background-color: #FCF6E5;
+            overflow:scroll;
+        }
+
+        .clearfix:before {
+            content: "";
+            display: table;
+        }
+    </style>
+</head>
+
+<body>
+<!--<div style="font-size: 20px;height: 30px; text-align: center;color: #009689; font-weight: bold;">Markdown转换为HTML的Demo</div>-->
+<div id="area">
+    <table>
+        <tr>
+            <td>
+                <textarea class="markdown" name="" id="md-area" onkeyup=mdSwitch()></textarea>
+            </td>
+            <td>
+                <div id="show-area" class="clearfix"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+<button id="edit-notice-button" style="font-size: 20px;height: 30px; text-align: center;color: #009689; font-weight: bold;">修改公告</button>
+</body>
+<th:block th:include="include :: footerJs"/>
+<script>
+    layui.use(['form','layer'], function () {
+        //首先获取之前的公告内容在textarea中
+        showNoticeContent();
+        //刷新右边的预览框
+        mdSwitch();
+
+        $("#edit-notice-button").click(function (){
+            editNoticeContent();
+        });
+        function editNoticeContent() {
+            $.post("/api/index/welcome-notice/edit",{text: $("#md-area").val()}, function (result) {
+                if (result.code === 200) {
+                    var parentIndex = parent.layer.getFrameIndex(window.name);
+                    parent.layer.msg(result.msg);
+                    parent.layer.close(parentIndex);
+                } else {
+                    parent.layer.msg(result.msg);
+                }
+            });
+        }
+        function showNoticeContent() {
+            $.ajax({
+                url: "/api/index/welcome-notice/list",
+                async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+                type: "POST",
+                success: function (result) {
+                    if (result.code === 200) {
+                        var _markdown_text = result.data;
+                        $("#md-area").val(_markdown_text);
+                    } else {
+                        layer.msg("获取公告失败！" + result.msg);
+                    }
+                },
+                error: function () {
+                    layer.msg("获取公告失败！");
+                }
+            })
+        }
+    });
+    function mdSwitch() {
+        var mdValue = document.getElementById("md-area").value;
+        // var converter = new showdown.Converter();
+        // document.getElementById("show-area").innerHTML = converter.makeHtml(mdValue);
+        document.getElementById("show-area").innerHTML = marked.parse(mdValue);
+    }
+</script>
+
+</html>

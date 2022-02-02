@@ -27,6 +27,15 @@ public class PageController {
     }
 
     /**
+     * 公告编辑页
+     * @return ModelAndView
+     */
+    @RequestMapping("/system-notice-edit")
+    public ModelAndView editSystemNotice() {
+        return new ModelAndView("system-notice-edit");
+    }
+
+    /**
      * 登录页
      * @return ModelAndView
      */

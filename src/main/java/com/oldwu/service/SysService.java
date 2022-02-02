@@ -17,7 +17,7 @@ public class SysService {
 
     public QueryWrapper<SysConfig> getSystemConfigKeyValueQueryWrapper() {
         queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("value").eq("bond", SystemConstant.SYSTEM_NOTICE_CONTENT);
+        queryWrapper.select("id","value").eq("bond", SystemConstant.SYSTEM_NOTICE_CONTENT);
         return queryWrapper;
     }
 
