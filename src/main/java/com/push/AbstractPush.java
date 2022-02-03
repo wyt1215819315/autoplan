@@ -75,6 +75,8 @@ public abstract class AbstractPush implements Push, RetryListener {
                     TimeUnit.MILLISECONDS.sleep(1500);
                 } catch (InterruptedException ignore) {
                 }
+            }else {
+                pushResult = result;
             }
         }
         return pushResult;
@@ -84,7 +86,7 @@ public abstract class AbstractPush implements Push, RetryListener {
         try {
             JsonObject jsonObject = retryer.call(() -> post(url, pushContent));
             log.info("推送结果：{}", jsonObject.toString());
-            return PushResult.success();
+            return PushResult.success(jsonObject.toString());
         } catch (RetryException e) {
             log.error("重试最终失败：{}", this.getClass().getSimpleName(), e);
         } catch (ExecutionException e) {

@@ -25,4 +25,15 @@ public class ServerPush {
             return false;
         }
     }
+
+    public PushResult doServerPushWithResult(String content,PushConfig pushConfig) {
+        PushConfig.PushInfo pushInfo = pushConfig.getPushInfo();
+        if (null != pushInfo) {
+            return pushInfo.getTarget().doPush(pushInfo.getMetaInfo(), content);
+        } else {
+            log.info("未配置正确的ftKey和chatId,本次执行将不推送日志");
+            return null;
+        }
+    }
+
 }

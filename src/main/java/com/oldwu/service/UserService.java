@@ -8,10 +8,9 @@ import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.SysUserInfo;
 import com.push.ServerPush;
 import com.push.config.PushConfig;
+import com.push.model.PushResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -50,19 +49,23 @@ public class UserService {
     }
 
     public AjaxResult checkWebhook(String webhook) {
+        if (!webhook.startsWith("{")){
+            return AjaxResult.doError("非法数据格式！需要为json字符串，请使用生成器生成");
+        }
         try {
             PushConfig pushConfig = GsonUtils.fromJson(webhook, PushConfig.class);
             if (pushConfig.getPushInfo().getMetaInfo() == null) {
                 return AjaxResult.doError("json校验失败，null");
             }
             ServerPush serverPush = new ServerPush();
-            boolean b = serverPush.doServerPush("Oldwu-HELPER测试专用\n" + "这是一条测试消息用于检测webhook，如果您收到了此消息，证明你的webhook可以使用", pushConfig);
-            if (b){
-                return AjaxResult.doSuccess("推送成功，请检查是否正常收到推送！");
+            PushResult pushResult = serverPush.doServerPushWithResult("Oldwu-HELPER测试专用\n" + "这是一条测试消息用于检测webhook，如果您收到了此消息，证明你的webhook可以使用", pushConfig);
+
+            if (pushResult != null && pushResult.isSuccess()) {
+                return AjaxResult.doSuccess("推送成功，请检查是否正常收到推送！服务器返回信息：" + pushResult.getResult());
             }
             return AjaxResult.doError("推送失败！");
-        }catch (Exception e){
-            return AjaxResult.doError("推送失败！程序异常："+e.getMessage());
+        } catch (Exception e) {
+            return AjaxResult.doError("推送失败！程序异常：" + e.getMessage());
         }
     }
 }
