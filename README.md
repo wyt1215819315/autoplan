@@ -83,6 +83,9 @@ actable:
       prefix: INDEX_UNIQUE_
    # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
 mybatis-plus:
+   global-config:
+     db-config:
+       id-type: auto
    #mapper配置文件
    mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
    type-aliases-package: com.oldwu.entity
@@ -133,7 +136,7 @@ mybatis-plus:
 1. 管理员功能：查看日志，删除任务等
 2. go-cqhttp推送（需要加机器人为好友）
 3. 手动执行b站任务（咕咕咕）
-5. 主页说明支持markdown格式动态编辑（开发中..）
+5. 主页说明支持markdown格式动态编辑（功能已实现，界面待优化..）
 7. 修改密码功能
 
 ### 更新日志
@@ -161,6 +164,7 @@ mybatis-plus:
    6. 将mybatis换为mybatis-plus，精简了大量xml文件
 * 22.2.2 推送生成器支持自动填充json至推送框，首页公告改为从后台读取并且支持编辑功能
 * 22.2.3 推送测试支持回显错误信息便于用户排查
+* 22.2.3 **2.0版本必更！** 修改了mybatis-plus的配置，需要修改配置文件，详情请查看`application-example`
 
 
 ### 鸣谢

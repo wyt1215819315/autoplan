@@ -36,6 +36,9 @@ actable:
     prefix: INDEX_UNIQUE_
   # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
 mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
   type-aliases-package: com.oldwu.entity
