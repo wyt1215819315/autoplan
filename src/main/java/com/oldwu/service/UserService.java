@@ -58,7 +58,7 @@ public class UserService {
             ServerPush serverPush = new ServerPush();
             boolean b = serverPush.doServerPush("Oldwu-HELPER测试专用\n" + "这是一条测试消息用于检测webhook，如果您收到了此消息，证明你的webhook可以使用", pushConfig);
             if (b){
-                return AjaxResult.doError("推送成功，请检查是否正常收到推送！");
+                return AjaxResult.doSuccess("推送成功，请检查是否正常收到推送！");
             }
             return AjaxResult.doError("推送失败！");
         }catch (Exception e){
