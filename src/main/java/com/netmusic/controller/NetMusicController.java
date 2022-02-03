@@ -52,11 +52,12 @@ public class NetMusicController {
     }
 
     @PostMapping("/delete")
-    public Map<String, Object> delete(@Param("nid") Integer nid, Principal principal) {
-        AutoNetmusic autoNetmusic = new AutoNetmusic();
-        autoNetmusic.setUserid(userService.getUserId(principal.getName()));
-        autoNetmusic.setId(nid);
-        return netmusicService.deleteNetMusicPlan(autoNetmusic);
+    public AjaxResult delete(@Param("id") Integer id) {
+        try {
+            return netmusicService.deleteNetMusicPlan(id);
+        } catch (Exception e) {
+            return AjaxResult.doError(e.getMessage());
+        }
     }
 
     @PostMapping("/add")

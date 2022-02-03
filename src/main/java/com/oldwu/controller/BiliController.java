@@ -55,11 +55,12 @@ public class BiliController {
     }
 
     @PostMapping("/delete")
-    public Map<String, Object> delete(@Param("bid") Integer bid, Principal principal) {
-        AutoBilibili autoBilibili = new AutoBilibili();
-        autoBilibili.setUserid(userService.getUserId(principal.getName()));
-        autoBilibili.setId(bid);
-        return service.deleteBiliPlan(autoBilibili);
+    public AjaxResult delete(@Param("bid") Integer id) {
+        try {
+            return service.deleteBiliPlan(id);
+        } catch (Exception e) {
+            return AjaxResult.doError(e.getMessage());
+        }
     }
 
     @GetMapping("/qrcode")

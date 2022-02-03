@@ -11,12 +11,14 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
+import com.oldwu.entity.BiliPlan;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.NetMusicTask;
 import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,21 +155,23 @@ public class NetmusicService {
         return map;
     }
 
-    public Map<String, Object> deleteNetMusicPlan(AutoNetmusic autoNetmusic) {
-        Map<String, Object> map = new HashMap<>();
+    /**
+     * 删除网易云任务，开启事务
+     * @param id 传入要删除的autoId
+     * @return AjaxResult 删除结果
+     */
+    @Transactional
+    public AjaxResult deleteNetMusicPlan(Integer id) throws Exception{
         //校验用户id
-        Integer userid = autoNetmusic.getUserid();
-        Integer autoid = autoNetmusic.getId();
-        if (autoid == null || autoid == 0) {
-            map.put("code", -1);
-            map.put("msg", "传参不能为空！");
-            return map;
+        Integer userid = SessionUtils.getPrincipal().getId();
+        if (id == null || id == 0) {
+            return AjaxResult.doError("传参不能为空！");
         }
         List<AutoNetmusic> autoNetmusics = netmusicDao.selectMine(userid);
         boolean flag = false;
         for (AutoNetmusic netmusic : autoNetmusics) {
             int autoId = netmusic.getId();
-            if (autoId == autoid) {
+            if (autoId == id) {
                 flag = true;
                 break;
             }
@@ -176,29 +180,21 @@ public class NetmusicService {
             flag = true;
         }
         if (!flag) {
-            map.put("code", 403);
-            map.put("msg", "你没有权限删除这条或数据不存在！");
-            return map;
+            return AjaxResult.doError("你没有权限删除这条或数据不存在！");
         }
         //首先删除日志
         AutoLog autoLog = new AutoLog();
-        autoLog.setUserid(autoNetmusic.getUserid());
-        autoLog.setAutoId(autoNetmusic.getId());
+        autoLog.setUserid(userid);
+        autoLog.setAutoId(id);
         autoLog.setType("netmusic");
-        try {
-            autoLogDao.deleteByAutoId(autoLog);
-            int i = netmusicDao.deleteById(autoid);
-            if (i > 0) {
-                map.put("code", 200);
-                map.put("msg", "删除成功");
-                return map;
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        autoLogDao.deleteByAutoId(autoLog);
+        //最后删除主要数据
+        int i = netmusicDao.deleteById(id);
+        if (i > 0) {
+            return AjaxResult.doSuccess("删除成功");
         }
-        map.put("code", -1);
-        map.put("msg", "删除失败！");
-        return map;
+        //删除失败后回滚
+        throw new Exception("删除失败！");
     }
 
     public AutoNetmusic getMyEditPlan(AutoNetmusic autoNetmusic1) {

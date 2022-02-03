@@ -18,9 +18,12 @@ import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -29,6 +32,7 @@ import static com.misec.task.TaskInfoHolder.userInfo;
 
 @Service
 public class BiliService {
+    private static final Log logger = LogFactory.getLog(BiliService.class);
     private static final String qrcodeUrl = "http://passport.bilibili.com/qrcode/getLoginUrl";
     private static final String qrcodeStatusUrl = "http://passport.bilibili.com/qrcode/getLoginInfo";
 
@@ -358,21 +362,23 @@ public class BiliService {
         return map;
     }
 
-    public Map<String, Object> deleteBiliPlan(AutoBilibili autoBilibili) {
-        Map<String, Object> map = new HashMap<>();
+    /**
+     * 删除b站任务，开启事务
+     * @param id 传入要删除的autoId
+     * @return AjaxResult 删除结果
+     */
+    @Transactional
+    public AjaxResult deleteBiliPlan(Integer id) throws Exception{
         //校验用户id
-        Integer userid = autoBilibili.getUserid();
-        Integer autoid = autoBilibili.getId();
-        if (autoid == null || autoid == 0) {
-            map.put("code", -1);
-            map.put("msg", "传参不能为空！");
-            return map;
+        Integer userid = SessionUtils.getPrincipal().getId();
+        if (id == null || id == 0) {
+            return AjaxResult.doError("传参不能为空！");
         }
         List<BiliPlan> biliPlans = biliUserDao.selectMine(userid);
         boolean flag = false;
         for (BiliPlan biliPlan : biliPlans) {
             int autoId = biliPlan.getAutoId();
-            if (autoId == autoid) {
+            if (autoId == id) {
                 flag = true;
                 break;
             }
@@ -381,32 +387,23 @@ public class BiliService {
             flag = true;
         }
         if (!flag) {
-            map.put("code", 403);
-            map.put("msg", "你没有权限删除这条或数据不存在！");
-            return map;
+            return AjaxResult.doError("你没有权限删除这条或数据不存在！");
         }
         //首先删除日志
         AutoLog autoLog = new AutoLog();
-        autoLog.setUserid(autoBilibili.getUserid());
-        autoLog.setAutoId(autoBilibili.getId());
-        autoLog.setType("bilibili");
-        try {
-            autoLogDao.deleteByAutoId(autoLog);
-            //然后删除b站用户数据
-            biliUserDao.deleteByAutoId(autoid);
-            //最后删除主要数据
-            int i = autoBilibiliDao.deleteById(autoid);
-            if (i > 0) {
-                map.put("code", 200);
-                map.put("msg", "删除成功");
-                return map;
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        autoLog.setUserid(userid);
+        autoLog.setAutoId(id);
+        autoLog.setType("bili");
+        autoLogDao.deleteByAutoId(autoLog);
+        //然后删除b站用户数据
+        biliUserDao.deleteByAutoId(id);
+        //最后删除主要数据
+        int i = autoBilibiliDao.deleteById(id);
+        if (i > 0) {
+            return AjaxResult.doSuccess("删除成功");
         }
-        map.put("code", -1);
-        map.put("msg", "删除失败！");
-        return map;
+        //删除失败后回滚
+        throw new Exception("删除失败！");
     }
 
     public Map<String, Object> editBiliPlan(AutoBilibili autoBilibili1) {

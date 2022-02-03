@@ -55,11 +55,12 @@ public class MihayouController {
     }
 
     @PostMapping("/delete")
-    public Map<String, Object> delete(@Param("id") Integer id, Principal principal) {
-        AutoMihayou autoMihayou = new AutoMihayou();
-        autoMihayou.setUserId(userService.getUserId(principal.getName()));
-        autoMihayou.setId(id);
-        return mihayouService.deleteMiHuYouPlan(autoMihayou);
+    public AjaxResult delete(@Param("id") Integer id) {
+        try {
+            return mihayouService.deleteMiHuYouPlan(id);
+        } catch (Exception e) {
+            return AjaxResult.doError(e.getMessage());
+        }
     }
 
     @PostMapping("/add")

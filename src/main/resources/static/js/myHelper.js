@@ -216,7 +216,7 @@ function miyousheHtml(data) {
         _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeMiyoushe(' + miyousheUser.id + ')">';
+        _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'mihuyou\', ' + miyousheUser.id + ')">';
         _miyousheHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _miyousheHtml += '</button>';
         _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(' + name + ',' + miyousheUser.id + ')">';
@@ -303,7 +303,7 @@ function netmusicHtml(data) {
         _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeNetmusic(' + netmusicUser.id + ')">';
+        _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'netmusic\' ,' + netmusicUser.id + ')">';
         _netmusicHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _netmusicHtml += '</button>';
         _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + name + ',' + netmusicUser.id + ')">';
@@ -399,7 +399,7 @@ function bilibiliHtml(data) {
         _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-edit"></i>';
         _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removeBilibili(' + bilibiliUser.autoId + ')">';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'bili\',' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-delete"></i>';
         _bilibiliHtml += '</button>';
         _bilibiliHtml += '</span>';
@@ -449,3 +449,22 @@ function addStatus(_html, status) {
 
     return _html;
 }
+
+function removePlan(name, autoId) {
+    layer.confirm('确定要删除该任务?删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
+        layer.close(index);
+        let loading = layer.load();
+        $.post("/api/user/" + name + "/delete", {id: autoId}, function (result) {
+            layer.close(loading);
+            if (result.code == 200) {
+                layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                    updateHtml(name);
+                });
+            } else {
+                layer.msg(result.msg, {icon: 2, time: 1000});
+            }
+        });
+    });
+}
+
+
