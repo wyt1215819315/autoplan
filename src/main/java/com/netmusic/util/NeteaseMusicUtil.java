@@ -82,6 +82,7 @@ public class NeteaseMusicUtil {
         Map<String, String> login = login(userInfo);
         flag = Boolean.parseBoolean(login.get("flag"));
         if (!flag || !login.containsKey("uid")) {
+            msg.append(login.get("msg"));
             map.put("flag", false);
             map.put("msg", msg.toString());
             return map;
