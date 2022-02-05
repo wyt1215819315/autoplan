@@ -13,6 +13,8 @@ import com.oldwu.log.OldwuLog;
 import com.oldwu.service.BiliService;
 import com.push.PushUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @Component("biliTask")
 public class BiliTask {
+    private final Log logger = LogFactory.getLog(BiliTask.class);
 
     private static AutoBilibiliDao bilibiliDao;
     private static BiliUserDao biliUserDao;
@@ -88,6 +91,7 @@ public class BiliTask {
                 continue;
             }
 
+            //已完成的任务不再重复执行
             if (userb.getStatus().equals("200")){
                 continue;
             }
@@ -111,13 +115,22 @@ public class BiliTask {
             strings[2] = autoBilibili.getBiliJct();
             String webhook = autoBilibili.getWebhook();
 
+            //校验用户信息
+            boolean b = biliService.userCheck(autoBilibili);
+            if (!b){
+                biliUser.setStatus("500");
+                biliUser.setEnddate(new Date());
+                biliUserDao.updateByAutoIdSelective(biliUser);
+                continue;
+            }
+
             //防止一个任务出错影响整体
             try {
                 BiliMain.run(strings, auto_id);
             }catch (Exception e){
                 OldwuLog.error("严重！！任务中断！！：：" + e.getMessage());
                 PushUtil.doPush(OldwuLog.getLog(), webhook, userid);
-                System.err.println(e.getMessage());
+                logger.error(e.getMessage());
                 biliUser.setStatus("-1");
                 biliUser.setEnddate(new Date());
                 biliUserDao.updateByAutoIdSelective(biliUser);

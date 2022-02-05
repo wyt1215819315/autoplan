@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.util.NumberUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 
 import java.util.Base64;
@@ -26,6 +28,7 @@ import java.util.Map;
  * 网易云音乐解析
  */
 public class NeteaseMusicUtil {
+    private static final Log logger = LogFactory.getLog(NeteaseMusicUtil.class);
     private static final String key = "0CoJUm6Qyw8W8jud";
     private static final String f = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7";
     private static final String e = "010001";
@@ -46,7 +49,9 @@ public class NeteaseMusicUtil {
         infos.put("phone", "");
         infos.put("countrycode", "86");
         infos.put("password", "");
-        Map<String, String> login = login(infos);
+        Map<String, Object> login = run(infos);
+//        Map<String, String> login = login(infos);
+        System.out.println(login);
 //        shuaMusicTask();
 //        sign(0);
 //        Map<String, String> mlist = getUserSubscribePlayLists();

@@ -121,6 +121,7 @@ public class NetMusicTask {
         StringBuilder msg = new StringBuilder();
         for (int i = 0; i < reconnect; i++) {
 
+            //flag = false仅为登录失败的情况，complete标识为任务完成情况，登录成功时，flag恒为true
             Map<String, Object> run = NeteaseMusicUtil.run(infos);
 
             if (!(boolean) run.get("flag")) {

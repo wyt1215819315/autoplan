@@ -182,6 +182,18 @@ public class BiliService {
         return map;
     }
 
+    public boolean userCheck(AutoBilibili autoBilibili){
+        Verify.verifyInit(autoBilibili.getDedeuserid(), autoBilibili.getSessdata(), autoBilibili.getBiliJct());
+        JsonObject userJson = com.misec.utils.HttpUtils.doGet(ApiList.LOGIN);
+        if (userJson == null) {
+            return false;
+        } else {
+            userJson = com.misec.utils.HttpUtils.doGet(ApiList.LOGIN);
+            return userJson.get(STATUS_CODE_STR).getAsInt() == 0
+                    && userJson.get("data").getAsJsonObject().get("isLogin").getAsBoolean();
+        }
+    }
+
     /**
      * 校验用户，成功写入任务数据，失败返回msg
      *
