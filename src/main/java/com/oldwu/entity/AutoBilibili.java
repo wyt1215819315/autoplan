@@ -32,15 +32,15 @@ public class AutoBilibili implements Serializable {
     @IsNotNull
     private String name;
 
-    @Column(type = MySqlTypeConstant.LONGTEXT)
+    @Column(type = MySqlTypeConstant.TEXT)
     @IsNotNull
     private String sessdata;
 
-    @Column(type = MySqlTypeConstant.LONGTEXT)
+    @Column(type = MySqlTypeConstant.TEXT)
     @IsNotNull
     private String biliJct;
 
-    @Column(type = MySqlTypeConstant.LONGTEXT)
+    @Column(type = MySqlTypeConstant.TEXT)
     @IsNotNull
     private String dedeuserid;
 
@@ -172,8 +172,8 @@ public class AutoBilibili implements Serializable {
     @IsNotNull
     private String matchShowhandmodel;
 
-    @Column
-    private String other;
+    @Column(length = 3000,defaultValue = "{}",comment = "任务配置JSON")
+    private String taskConfig;
 
     private static final long serialVersionUID = 1L;
 }

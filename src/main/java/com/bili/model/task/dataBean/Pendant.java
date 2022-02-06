@@ -1,4 +1,4 @@
-package com.misec.pojo.userinfobean;
+package com.bili.model.task.dataBean;
 
 import lombok.Data;
 

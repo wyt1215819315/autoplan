@@ -1,8 +1,7 @@
-package com.misec.pojo.userinfobean;
+package com.bili.model.task;
 
 import com.bili.model.task.dataBean.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Auto-generated
@@ -10,9 +9,8 @@ import lombok.Setter;
  * @author Junzhou Liu
  * @create 2020/10/11 4:21
  */
-@Getter
-@Setter
-public class Data {
+@Data
+public class BiliData {
 
     private boolean isLogin;
     private int email_verified;

@@ -135,32 +135,6 @@ public class BiliService {
         return new PageDataVO<>(count, biliPlans);
     }
 
-    public List<BiliPlan> getAllPlan() {
-        List<BiliPlan> newPlans = new ArrayList<>();
-        for (BiliPlan biliPlan : biliUserDao.selectAll()) {
-            biliPlan.setBiliName(HelpUtil.userNameEncode(biliPlan.getBiliName()));
-            newPlans.add(biliPlan);
-        }
-        return newPlans;
-    }
-
-    public AutoBilibili getMyEditPlan(AutoBilibili autoBilibili1) {
-        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoBilibili1.getId());
-        if (autoBilibili == null || autoBilibili.getId() == null) {
-            return null;
-        }
-        //放行管理员
-        String role = userDao.getRole(autoBilibili1.getUserid());
-        if (!autoBilibili.getUserid().equals(autoBilibili1.getUserid()) && !role.equals("ROLE_ADMIN")) {
-            return null;
-        }
-        return autoBilibili;
-    }
-
-    public List<BiliPlan> getMyPlan(Integer userid) {
-        return biliUserDao.selectMine(userid);
-    }
-
     public Map<String, String> addBiliPlan(AutoBilibili autoBilibili) {
         Map<String, String> map = new HashMap<>();
         Map<String, Object> stringObjectMap = checkForm(autoBilibili, false);
