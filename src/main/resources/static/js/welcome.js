@@ -32,7 +32,7 @@ function setEditButtonCondition() {
         success: function(result) {
             if(result.code == 200){
                 if (result.data.authorities[0].authority === "ROLE_ADMIN"){
-                    $("#content_header").append('<a id="notice_content_edit" class="" style="float: right">编辑</a>');
+                    $("#content_header").append('<button id="notice_content_edit" class="layui-btn layui-btn-sm layuiadmin-badge" style="color: #fff; margin-top: -14px">编辑</button>');
                 }
             }
         },
@@ -65,7 +65,7 @@ function editNoticeContent() {
         type: 2,
         title: '编辑系统公告',
         shade: 0.1,
-        area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
+        area: screen() < 2 ? ['90%', '80%'] : ['1200px', '640px'],
         content: "/system-notice-edit",
         end: function () {
             showNoticeContent();

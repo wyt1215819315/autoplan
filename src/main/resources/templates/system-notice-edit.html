@@ -1,110 +1,154 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <title>md转换为html</title>
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="/static/css/markdown.css">
-    <style>
-        #area>table {
-            width: 100%;
-            table-layout: fixed;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <title>md转换为html</title>
+        <th:block th:include="include :: headerCss"/>
+        <link rel="stylesheet" href="/static/css/markdown.css">
 
-        #area table tr td {
-            margin: 0;
-            padding: 6px;
-            border: 0;
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/base16/solarized-light.min.css">
+        <script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
 
-        }
+        <style>
+            .showDiv {
+                height: 500px;
+            }
 
-        #md-area {
-            width: 100%;
-            height: 600px;
-            font-size: 18px;
-            overflow: hidden;
-            font-weight: bold;
-            outline: none;
-        }
+            .showInfo {
+                height: 500px;
+            }
 
-        #show-area {
-            height: 600px;
-            background-color: #FCF6E5;
-            overflow:scroll;
-        }
+            .body-div {
+                background-color: #fff;
+                padding: 10px 15px;
+            }
 
-        .clearfix:before {
-            content: "";
-            display: table;
-        }
-    </style>
-</head>
+            .clearfix {
+                background-color: #FCF6E5;
+                overflow: auto;
+            }
 
-<body>
-<!--<div style="font-size: 20px;height: 30px; text-align: center;color: #009689; font-weight: bold;">Markdown转换为HTML的Demo</div>-->
-<div id="area">
-    <table>
-        <tr>
-            <td>
-                <textarea class="markdown" name="" id="md-area" onkeyup=mdSwitch()></textarea>
-            </td>
-            <td>
-                <div id="show-area" class="clearfix"></div>
-            </td>
-        </tr>
-    </table>
-</div>
-<button id="edit-notice-button" style="font-size: 20px;height: 30px; text-align: center;color: #009689; font-weight: bold;">修改公告</button>
-</body>
-<th:block th:include="include :: footerJs"/>
-<script>
-    layui.use(['form','layer'], function () {
-        //首先获取之前的公告内容在textarea中
-        showNoticeContent();
-        //刷新右边的预览框
-        mdSwitch();
+            .clearfix::-webkit-scrollbar {
+                /*滚动条整体样式*/
+                width : 5px;  /*高宽分别对应横竖滚动条的尺寸*/
+                height: 1px;
+            }
+            .clearfix::-webkit-scrollbar-thumb {
+                /*滚动条里面小方块*/
+                border-radius: 10px;
+                box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);
+                background   : #535353;
+            }
+            .clearfix::-webkit-scrollbar-track {
+                /*滚动条里面轨道*/
+                box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);
+                border-radius: 10px;
+                background   : #ededed;
+            }
 
-        $("#edit-notice-button").click(function (){
-            editNoticeContent();
-        });
-        function editNoticeContent() {
-            $.post("/api/index/welcome-notice/edit",{text: $("#md-area").val()}, function (result) {
-                if (result.code === 200) {
-                    var parentIndex = parent.layer.getFrameIndex(window.name);
-                    parent.layer.msg(result.msg);
-                    parent.layer.close(parentIndex);
-                } else {
-                    parent.layer.msg(result.msg);
-                }
+            .layui-border-green {
+                border-color: #009688 !important;
+                color: #009688 !important;
+            }
+
+            .layadmin-text * {
+                margin-bottom: 10px;
+            }
+
+            .layadmin-text *:not(h1,h2,h3,h4,h5,h6) {
+                text-indent: 2em;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="body-div">
+
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <div class="layui-card showDiv">
+                        <textarea class="layui-textarea showDiv markdown" name=""
+                                  style="font-size: 16px;" id="md-area"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <div class="layui-card showInfo clearfix">
+                            <div class="layui-card-body layui-text layadmin-text showInfo" style="padding: 10px;" id="show-area"></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;">
+                        <button id="edit-notice-button" class="layui-btn layui-btn-primary layui-border-green layui-btn-sm">确认修改公告</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </body>
+
+    <th:block th:include="include :: footerJs"/>
+
+    <script>
+        layui.use(['form', 'layer'], function () {
+
+            //首先获取之前的公告内容在textarea中
+            showNoticeContent();
+            //刷新右边的预览框
+            mdSwitch();
+            hljs.initHighlightingOnLoad();
+
+            $("#edit-notice-button").click(function () {
+                editNoticeContent();
             });
-        }
-        function showNoticeContent() {
-            $.ajax({
-                url: "/api/index/welcome-notice/list",
-                async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
-                type: "POST",
-                success: function (result) {
+
+            function editNoticeContent() {
+                $.post("/api/index/welcome-notice/edit", {text: $("#md-area").val()}, function (result) {
                     if (result.code === 200) {
-                        var _markdown_text = result.data;
-                        $("#md-area").val(_markdown_text);
+                        var parentIndex = parent.layer.getFrameIndex(window.name);
+                        parent.layer.msg(result.msg);
+                        parent.layer.close(parentIndex);
                     } else {
-                        layer.msg("获取公告失败！" + result.msg);
+                        parent.layer.msg(result.msg);
                     }
-                },
-                error: function () {
-                    layer.msg("获取公告失败！");
-                }
-            })
+                });
+            }
+
+            function showNoticeContent() {
+                $.ajax({
+                    url: "/api/index/welcome-notice/list",
+                    async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+                    type: "POST",
+                    success: function (result) {
+                        if (result.code === 200) {
+                            var _markdown_text = result.data;
+                            $("#md-area").val(_markdown_text);
+                        } else {
+                            layer.msg("获取公告失败！" + result.msg);
+                        }
+                    },
+                    error: function () {
+                        layer.msg("获取公告失败！");
+                    }
+                })
+            }
+        });
+
+        $("#md-area").on("keyup blur",function () {
+            mdSwitch();
+
+            hljs.initHighlighting();
+        })
+
+        function mdSwitch() {
+            var _html = $("#md-area").val();
+            $("#show-area").html(marked.parse(_html));
         }
-    });
-    function mdSwitch() {
-        var mdValue = document.getElementById("md-area").value;
-        // var converter = new showdown.Converter();
-        // document.getElementById("show-area").innerHTML = converter.makeHtml(mdValue);
-        document.getElementById("show-area").innerHTML = marked.parse(mdValue);
-    }
-</script>
+    </script>
 
 </html>
