@@ -5,7 +5,7 @@ import com.bili.model.task.BiliTaskInfo;
 import com.bili.model.task.config.BiliTaskConfig;
 import com.bili.util.BiliTaskUtil;
 import com.oldwu.constant.SystemConstant;
-import com.oldwu.entity.AutoBilibili;
+import com.bili.model.AutoBilibili;
 import com.oldwu.entity.TaskResult;
 import com.oldwu.util.DateUtils;
 import com.oldwu.util.NumberUtil;

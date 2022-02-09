@@ -1,7 +1,7 @@
 package com.oldwu.task.quartz.task;
 
 import cn.hutool.core.date.DateUtil;
-import com.oldwu.dao.BiliUserDao;
+import com.bili.dao.BiliUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

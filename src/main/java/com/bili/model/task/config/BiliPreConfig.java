@@ -20,7 +20,7 @@ public class BiliPreConfig {
     /**
      * 单次预测硬币
      * [1-10]
-     * default=1
+     * default=5
      */
     private Integer preCoin;
 
@@ -47,7 +47,7 @@ public class BiliPreConfig {
 
     public Integer getPreCoin() {
         if (preCoin == null){
-            return 1;
+            return 5;
         }
         return preCoin;
     }

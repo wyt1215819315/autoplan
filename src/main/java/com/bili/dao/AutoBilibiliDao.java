@@ -1,7 +1,7 @@
-package com.oldwu.dao;
+package com.bili.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.oldwu.entity.AutoBilibili;
+import com.bili.model.AutoBilibili;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

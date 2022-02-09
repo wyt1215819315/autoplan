@@ -2,12 +2,11 @@ package com.misec.config;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.google.gson.Gson;
 import com.misec.utils.GsonUtils;
 import com.misec.utils.HttpUtils;
 import com.misec.utils.LoadFileResource;
-import com.oldwu.dao.AutoBilibiliDao;
-import com.oldwu.entity.AutoBilibili;
+import com.bili.dao.AutoBilibiliDao;
+import com.bili.model.AutoBilibili;
 import com.oldwu.log.OldwuLog;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;

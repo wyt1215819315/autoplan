@@ -1,9 +1,9 @@
-package com.oldwu.controller;
+package com.bili.controller;
 
 import com.oldwu.entity.AjaxResult;
-import com.oldwu.entity.AutoBilibili;
+import com.bili.model.AutoBilibili;
 import com.oldwu.security.utils.SessionUtils;
-import com.oldwu.service.BiliService;
+import com.bili.service.BiliService;
 import com.oldwu.service.UserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,15 +43,13 @@ public class BiliController {
     }
 
     @PostMapping("/edit")
-    public Map<String, Object> edit(@RequestBody AutoBilibili autoBilibili, Principal principal) {
-        autoBilibili.setUserid(userService.getUserId(principal.getName()));
-        return service.editBiliPlan(autoBilibili);
+    public AjaxResult edit(@RequestBody String json) {
+        return service.editBiliPlan(json);
     }
 
     @PostMapping("/add")
-    public Map<String, String> add(@RequestBody AutoBilibili autoBilibili, Principal principal) {
-        autoBilibili.setUserid(userService.getUserId(principal.getName()));
-        return service.addBiliPlan(autoBilibili);
+    public AjaxResult add(@RequestBody String json) {
+        return service.addBiliPlan(json);
     }
 
     @PostMapping("/delete")

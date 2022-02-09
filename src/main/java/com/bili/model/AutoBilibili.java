@@ -1,4 +1,4 @@
-package com.oldwu.entity;
+package com.bili.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,6 +14,15 @@ import lombok.Data;
 @Data
 @Table(name = "auto_bilibili")
 public class AutoBilibili implements Serializable {
+
+    public AutoBilibili(String sessdata, String biliJct, String dedeuserid) {
+        this.sessdata = sessdata;
+        this.biliJct = biliJct;
+        this.dedeuserid = dedeuserid;
+    }
+
+    public AutoBilibili() {
+    }
 
     @IsKey
     @IsAutoIncrement
@@ -171,6 +180,9 @@ public class AutoBilibili implements Serializable {
     @Column(length = 10,defaultValue = "false",comment = "押注形式")
     @IsNotNull
     private String matchShowhandmodel;
+
+    @Column(length = 10,defaultValue = "true",comment = "任务是否开启")
+    private String enable;
 
     @Column(length = 3000,defaultValue = "{}",comment = "任务配置JSON")
     private String taskConfig;

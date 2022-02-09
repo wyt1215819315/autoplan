@@ -44,7 +44,7 @@ public class BiliTaskUtil {
      *
      * @throws Exception exception
      */
-    public void userCheck() throws Exception {
+    public BiliData userCheck() throws Exception {
         JSONObject userJson = biliWebUtil.doGet(URLConstant.BILI_LOGIN);
         if (userJson == null) {
             logger.error("b站用户信息校验失败：" + taskInfo.toString());
@@ -61,6 +61,7 @@ public class BiliTaskUtil {
             appendLog("硬币余额: " + data.getMoney());
             appendLog("用户名称: " + StringUtils.userNameEncode(data.getUname()));
         }
+        return data;
     }
 
     /**

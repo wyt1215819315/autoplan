@@ -1,4 +1,4 @@
-package com.oldwu.dao;
+package com.bili.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.oldwu.entity.BiliPlan;
