@@ -9,6 +9,14 @@
             .red {
                 color: red;
             }
+
+            .layadmin-text * {
+                margin-bottom: 10px;
+            }
+
+            .layadmin-text *:not(h1,h2,h3,h4,h5,h6) {
+                text-indent: 2em;
+            }
         </style>
     </head>
     <body>
@@ -18,27 +26,10 @@
                 <div class="layui-col-xs0 layui-col-sm0 layui-col-md2 "></div>
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md8">
                     <div class="layui-card">
-<!--                        <div class="layui-card-header red" style="font-size: 18px; font-weight: bold;">-->
-<!--                            重大变更提示-->
-<!--                        </div>-->
                         <div class="layui-card-header red" style="font-size: 18px; font-weight: bold;" id="content_header">
                             公告栏
                         </div>
-                        <div class="layui-card-body markdown" id="notice_content">
-                            <p class="red">警告！！</p>
-                            <p>1.3版本的更新重构了推送部分的代码，之前设置的推送地址会全部失效</p>
-                            <p>目前推送部分代码为json字符串形式传入</p>
-                            <p>
-                                在填写webhook的页面中已经给出了
-                                <a style="color: blue" lay-href="/webhook-generate">生成器</a>
-                                按钮
-                            </p>
-                            <p>
-                                请使用
-                                <a style="color: blue" lay-href="/webhook-generate">生成器</a>
-                                生成之后复制到webhook一栏更新配置！！
-                            </p>
-                        </div>
+                        <div class="layui-card-body layui-text layadmin-text markdown" id="notice_content"></div>
                     </div>
                 </div>
 

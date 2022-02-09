@@ -11,10 +11,7 @@ import com.push.PushUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("netTask")
 public class NetMusicTask {
@@ -120,6 +117,17 @@ public class NetMusicTask {
 
         StringBuilder msg = new StringBuilder();
         for (int i = 0; i < reconnect; i++) {
+
+            if (i == 1) {
+                Random random = new Random();
+                int sleepTime = (int) ((random.nextDouble() + 0.5) * 10 * 1000);
+                msg.append("随机暂停").append(sleepTime).append("ms\n");
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    msg.append("延时异常").append(e);
+                }
+            }
 
             //flag = false仅为登录失败的情况，complete标识为任务完成情况，登录成功时，flag恒为true
             Map<String, Object> run = NeteaseMusicUtil.run(infos);
