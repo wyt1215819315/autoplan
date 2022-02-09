@@ -163,6 +163,9 @@ public class BiliTaskUtil {
         }
     }
 
+    /**
+     * 投币功能
+     */
     public void coinAdd() throws Exception {
         //投币最多操作数 解决csrf校验失败时死循环的问题
         int addCoinOperateCount = 0;
@@ -246,6 +249,9 @@ public class BiliTaskUtil {
         appendLog("投币任务完成后余额为: %s", getCoinBalance());
     }
 
+    /**
+     * 观看视频功能
+     */
     public void watchVideo() throws Exception {
         String flag = "";
         VideoWatch videoWatch = new VideoWatch(biliWebUtil, taskInfo);

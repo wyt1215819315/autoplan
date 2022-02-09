@@ -10,6 +10,12 @@ public class SystemConstant {
     public static final int reasonId = 1;
 
     /**
+     * 定义bili默认单个任务执行间隔时间，单位s
+     * 此延迟由系统从数据库中读取，不由用户指定，防止任务队列执行缓慢
+     */
+    public static final Integer BILI_DEFAULT_DELAY = 2;
+
+    /**
      * 公告内容字段
      */
     public static final String SYSTEM_NOTICE_CONTENT = "system_notice_content";
