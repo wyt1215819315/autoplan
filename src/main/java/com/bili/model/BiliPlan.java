@@ -1,4 +1,4 @@
-package com.oldwu.entity;
+package com.bili.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

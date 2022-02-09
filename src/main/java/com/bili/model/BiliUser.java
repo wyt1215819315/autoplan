@@ -1,4 +1,4 @@
-package com.oldwu.entity;
+package com.bili.model;
 
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;

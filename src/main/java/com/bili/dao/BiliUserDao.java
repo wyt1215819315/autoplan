@@ -1,8 +1,8 @@
 package com.bili.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
+import com.bili.model.BiliPlan;
+import com.bili.model.BiliUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

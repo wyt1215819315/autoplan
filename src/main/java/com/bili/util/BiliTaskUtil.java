@@ -355,6 +355,10 @@ public class BiliTaskUtil {
             appendLog("直播签到成功，本次签到获得%s,%s", data.getString("text"), data.getString("specialText"));
         } else {
             String message = liveCheckInResponse.getString("message");
+            if (message.contains("已签到")){
+                appendLog("今日已经进行过直播签到");
+                return;
+            }
             message = String.format("直播签到失败: %s", message);
             appendLog(message);
             throw new Exception(message);
@@ -609,11 +613,11 @@ public class BiliTaskUtil {
     /**
      * 最后步骤：统计数值
      */
-    public void calculateUpgradeDays() throws Exception {
-        if (data == null) {
-            appendLog("未请求到用户信息，暂无法计算等级相关数据");
-            return;
-        }
+    public BiliData calculateUpgradeDays() throws Exception {
+//        if (data == null) {
+//            appendLog("未请求到用户信息，暂无法计算等级相关数据");
+//            throw new Exception("未请求到用户信息，暂无法计算等级相关数据");
+//        }
 
         int todayExp = 15;
         todayExp += BiliHelpUtil.expConfirm(biliWebUtil) * 10;
@@ -626,6 +630,7 @@ public class BiliTaskUtil {
         } else {
             appendLog("当前等级Lv6，经验值为：%s", data.getLevel_info().getCurrent_exp());
         }
+        return data;
     }
 
 

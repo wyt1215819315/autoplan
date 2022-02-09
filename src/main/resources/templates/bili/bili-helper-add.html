@@ -49,17 +49,9 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">任务执行间隔</label>
-                        <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="taskintervaltime"
-                                   placeholder="任务执行间隔" type="text" value="10">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
                         <label class="layui-form-label">每日投币数量</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="numberofcoins"
+                            <input autocomplete="off" class="layui-input" name="dailyCoin"
                                    placeholder="每日投币数量" type="text" value="5">
                         </div>
                     </div>
@@ -67,7 +59,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">预留的硬币数</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="reservecoins"
+                            <input autocomplete="off" class="layui-input" name="reserveCoins"
                                    placeholder="预留的硬币数" type="text" value="50">
                         </div>
                     </div>
@@ -75,9 +67,19 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">投币时是否点赞</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="selectlike">
-                                <option selected value="0">投币时不点赞</option>
-                                <option value="1">投币时点赞</option>
+                            <select class="layui-input" name="enableClickLike">
+                                <option value="false">投币时不点赞</option>
+                                <option selected value="true">投币时点赞</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">投币规则</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="coinRules">
+                                <option value="0">优先给热榜视频投币</option>
+                                <option selected value="1">优先给关注的 up 投币</option>
                             </select>
                         </div>
                     </div>
@@ -85,7 +87,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">年费大会员B币券用于充电</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="monthendautocharge">
+                            <select class="layui-input" name="enableAutoCharge">
                                 <option selected value="true">开启</option>
                                 <option value="false">关闭</option>
                             </select>
@@ -95,15 +97,23 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">指定充电up主uid</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="chargeforlove" name="chargeforlove"
+                            <input autocomplete="off" class="layui-input" name="chargeObject"
                                    placeholder="输入up主uid（输入0选择自己），默认为0，即给自己充电" type="text">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">自动充电时间</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input" name="chargeDay"
+                                   placeholder="自动充电时间" type="text" value="28">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">直播间送出即将过期的礼物</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="givegift">
+                            <select class="layui-input" name="enableGiveGift">
                                 <option selected value="true">开启</option>
                                 <option value="false">关闭</option>
                             </select>
@@ -113,7 +123,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">指定送礼物up主uid</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="uplive"
+                            <input autocomplete="off" class="layui-input" name="giveGiftRoomID"
                                    placeholder="输入up主uid（输入0随机选取一个up主），在其直播间送出即将过期的礼物" type="text">
                         </div>
                     </div>
@@ -121,29 +131,11 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">漫画签到的平台</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="deviceplatform" lay-verify="required">
+                            <select class="layui-input" name="cartoonSignOS" lay-verify="required">
                                 <option value="">建议选择你设备的平台</option>
                                 <option value="ios">苹果</option>
-                                <option value="android">安卓</option>
+                                <option selected value="android">安卓</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">投币规则</label>
-                        <div class="layui-input-block">
-                            <select class="layui-input" name="coinaddpriority">
-                                <option value="0">优先给热榜视频投币</option>
-                                <option selected value="1">优先给关注的 up 投币</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">浏览器UA</label>
-                        <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" lay-verify="useragent" name="useragent"
-                                   placeholder="不知道就空着" type="text">
                         </div>
                     </div>
 
@@ -151,7 +143,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">赛事预测总开关</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="matchEnable" lay-filter="matchEnable" id="matchEnable">
+                            <select class="layui-input" name="enablePre" id="enablePre">
                                 <option selected value="false">关</option>
                                 <option value="true">开</option>
                             </select>
@@ -162,21 +154,21 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">单次预测投注硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input" name="matchPredictnumberofcoins"
-                                       placeholder="单次预测投注硬币" type="text" value="10">
+                                <input autocomplete="off" class="layui-input" name="preCoin"
+                                       placeholder="单次预测投注硬币[1-10]" type="text" value="5">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">预测保留硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input" name="matchMinimumnumberofcoins"
+                                <input autocomplete="off" class="layui-input" name="preKeepCoin"
                                        placeholder="预测保留硬币" type="text" value="200">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">赛事预测规则</label>
                             <div class="layui-input-block">
-                                <select class="layui-input" name="matchShowhandmodel" id="matchShowhandmodel">
+                                <select class="layui-input" name="enableReversePre">
                                     <option selected value="false">压倍率低的（跟着人多的压）</option>
                                     <option value="true">压倍率高的（赌命）</option>
                                 </select>
@@ -187,7 +179,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">每日任务总开关</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="skipdailytask">
+                            <select class="layui-input" name="enable">
                                 <option selected value="false">开</option>
                                 <option value="true">关</option>
                             </select>
@@ -238,7 +230,7 @@
                     });
                 })
 
-                form.on('select(matchEnable)', function (data) {
+                form.on('select(enablePre)', function (data) {
                     if (data.value == 'false') {
                         $("#match_rule").css("display", "none");
                         form.render('select');

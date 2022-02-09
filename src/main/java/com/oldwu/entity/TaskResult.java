@@ -30,11 +30,17 @@ public class TaskResult {
      */
     private String log;
 
-    public TaskResult(boolean isUserCheckSuccess, int isTaskSuccess, String msg, String log) {
+    /**
+     * 任务输出的数据
+     */
+    private Object data;
+
+    public TaskResult(boolean isUserCheckSuccess, int isTaskSuccess, String msg, String log, Object data) {
         this.isUserCheckSuccess = isUserCheckSuccess;
         this.isTaskSuccess = isTaskSuccess;
         this.msg = msg;
         this.log = log;
+        this.data = data;
     }
 
     /**
@@ -45,7 +51,18 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doAllSuccess(String msg, String log) {
-        return new TaskResult(true, 1, msg, log);
+        return new TaskResult(true, 1, msg, log, null);
+    }
+
+    /**
+     * 任务正常执行
+     *
+     * @param msg 任务输出信息
+     * @param log 任务输出日志
+     * @return TaskResult
+     */
+    public static TaskResult doAllSuccess(String msg, String log, Object data) {
+        return new TaskResult(true, 1, msg, log, data);
     }
 
     /**
@@ -55,7 +72,16 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doAllSuccess(String log) {
-        return new TaskResult(true, 1, "任务执行成功", log);
+        return new TaskResult(true, 1, "任务执行成功", log, null);
+    }
+
+    /**
+     * 登录成功，但是任务执行失败
+     *
+     * @return TaskResult
+     */
+    public static TaskResult doTaskError(String msg, String log, Object data) {
+        return new TaskResult(true, -1, msg, log, data);
     }
 
     /**
@@ -64,7 +90,7 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doTaskError(String msg, String log) {
-        return new TaskResult(true, -1, msg, log);
+        return new TaskResult(true, -1, msg, log, null);
     }
 
     /**
@@ -73,7 +99,7 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doTaskError(String log) {
-        return new TaskResult(true, -1, "登录成功，但是任务执行失败", log);
+        return new TaskResult(true, -1, "登录成功，但是任务执行失败", log, null);
     }
 
     /**
@@ -82,7 +108,16 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doLoginError(String msg, String log) {
-        return new TaskResult(false, -1, msg, log);
+        return new TaskResult(false, -1, msg, log, null);
+    }
+
+    /**
+     * 登录失败
+     *
+     * @return TaskResult
+     */
+    public static TaskResult doLoginError(String msg, String log, Object data) {
+        return new TaskResult(false, -1, msg, log, data);
     }
 
     /**
@@ -91,7 +126,16 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doLoginError(String log) {
-        return new TaskResult(false, -1, "登录失败", log);
+        return new TaskResult(false, -1, "登录失败", log, null);
+    }
+
+    /**
+     * 登录成功，但是任务执行【部分】失败
+     *
+     * @return TaskResult
+     */
+    public static TaskResult doTaskPartError(String msg, String log, Object data) {
+        return new TaskResult(true, 0, msg, log, data);
     }
 
     /**
@@ -100,7 +144,7 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doTaskPartError(String msg, String log) {
-        return new TaskResult(true, 0, msg, log);
+        return new TaskResult(true, 0, msg, log, null);
     }
 
     /**
@@ -109,6 +153,6 @@ public class TaskResult {
      * @return TaskResult
      */
     public static TaskResult doTaskPartError(String log) {
-        return new TaskResult(true, 0, "登录成功，但是任务执行【部分】失败", log);
+        return new TaskResult(true, 0, "登录成功，但是任务执行【部分】失败", log, null);
     }
 }

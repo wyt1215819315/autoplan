@@ -11,7 +11,6 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.NetMusicTask;
 import com.oldwu.vo.PageDataVO;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

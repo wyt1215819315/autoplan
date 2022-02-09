@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bili.dao.AutoBilibiliDao;
 import com.bili.dao.BiliUserDao;
 import com.bili.model.AutoBilibili;
+import com.bili.model.BiliPlan;
+import com.bili.model.BiliUser;
 import com.bili.model.task.BiliData;
 import com.bili.model.task.BiliTaskInfo;
 import com.bili.model.task.config.*;
@@ -16,8 +18,6 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.BiliUser;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.vo.PageDataVO;
@@ -144,6 +144,7 @@ public class BiliService {
             return AjaxResult.doError((String) stringObjectMap.get("msg"));
         }
         AutoBilibili autoBilibili = (AutoBilibili)stringObjectMap.get("data");
+        autoBilibili.setUserid(SessionUtils.getPrincipal().getId());
         //信息检查完毕后，使用cookie尝试登录账号，进行验证
         try {
             return checkUser(autoBilibili);
@@ -193,7 +194,7 @@ public class BiliService {
             if (autoBilibili.getId() <= 0) {
                 return AjaxResult.doError("数据库错误！添加任务信息失败！");
             }
-            boolean b = updateUserInfo(autoBilibili, biliData, false);
+            boolean b = updateUserInfo(autoBilibili.getId(), biliData, false);
             if (!b) {
                 //此处出错需要事务回滚，防止数据库中内容被污染
                 throw new Exception("数据库错误！添加用户信息失败！");
@@ -207,7 +208,7 @@ public class BiliService {
             if (i <= 0) {
                 return AjaxResult.doError("");
             }
-            boolean b = updateUserInfo(autoBilibili, biliData, true);
+            boolean b = updateUserInfo(autoBilibili.getId(), biliData, true);
             if (b) {
                 return AjaxResult.doSuccess("更新原有登录信息成功：" + s);
             }
@@ -215,9 +216,9 @@ public class BiliService {
         }
     }
 
-    public boolean updateUserInfo(AutoBilibili autoBilibili, BiliData userInfo, boolean update) {
+    public boolean updateUserInfo(Integer autoId, BiliData userInfo, boolean update) {
         BiliUser biliUser1 = new BiliUser();
-        biliUser1.setAutoId(autoBilibili.getId());
+        biliUser1.setAutoId(autoId);
         biliUser1.setBiliCoin(userInfo.getMoney());
         biliUser1.setUid(userInfo.getMid());
         biliUser1.setBiliName(userInfo.getUname());
@@ -232,7 +233,7 @@ public class BiliService {
             return biliUserDao.insert(biliUser1) > 0;
         } else {
             //update
-            biliUser1.setAutoId(autoBilibili.getId());
+            biliUser1.setAutoId(autoId);
             return biliUserDao.updateByAutoIdSelective(biliUser1) > 0;
         }
     }
@@ -344,6 +345,9 @@ public class BiliService {
         //任务信息转换部分
         if (jsonObject.containsKey("id")){
             autoBilibili.setId(jsonObject.getInteger("id"));
+        }
+        if (jsonObject.containsKey("name")){
+            autoBilibili.setName(jsonObject.getString("name"));
         }
 
         taskConfig.setBiliCoinConfig(biliCoinConfig);

@@ -1,11 +1,12 @@
 package com.bili;
 
 import com.alibaba.fastjson.JSON;
+import com.bili.model.AutoBilibili;
+import com.bili.model.task.BiliData;
 import com.bili.model.task.BiliTaskInfo;
 import com.bili.model.task.config.BiliTaskConfig;
 import com.bili.util.BiliTaskUtil;
 import com.oldwu.constant.SystemConstant;
-import com.bili.model.AutoBilibili;
 import com.oldwu.entity.TaskResult;
 import com.oldwu.util.DateUtils;
 import com.oldwu.util.NumberUtil;
@@ -27,12 +28,7 @@ public class BiliTaskMain {
         autoBilibili.setDedeuserid("");
         autoBilibili.setSessdata("");
         autoBilibili.setTaskConfig("");
-        TaskResult run = null;
-        try {
-            run = biliTaskMain.run(autoBilibili);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        TaskResult run = biliTaskMain.run(autoBilibili);
         System.out.println(run.toString());
     }
 
@@ -42,7 +38,7 @@ public class BiliTaskMain {
      * @param autoBilibili 任务参数
      * @return 任务结果
      */
-    public TaskResult run(AutoBilibili autoBilibili) throws InterruptedException {
+    public TaskResult run(AutoBilibili autoBilibili) {
         //加载taskConfig任务配置
         String taskConfigJsonStr = autoBilibili.getTaskConfig();
         BiliTaskConfig taskConfig = JSON.parseObject(taskConfigJsonStr, BiliTaskConfig.class);
@@ -109,17 +105,18 @@ public class BiliTaskMain {
             DateUtils.threadSleep(SystemConstant.BILI_DEFAULT_DELAY);
         }
         //执行最后的统计任务
+        BiliData biliData = null;
         try {
-            biliTaskUtil.calculateUpgradeDays();
+            biliData = biliTaskUtil.calculateUpgradeDays();
         } catch (Exception e) {
             simpleLog.append(e.getMessage()).append("\n");
         }
         //判断任务是否部分失败
         if (!flag) {
-            return TaskResult.doTaskPartError(simpleLog.toString(), biliTaskUtil.getLog());
+            return TaskResult.doTaskPartError(simpleLog.toString(), biliTaskUtil.getLog(), biliData);
         }
         //任务执行成功
-        return TaskResult.doAllSuccess(simpleLog.toString(), biliTaskUtil.getLog());
+        return TaskResult.doAllSuccess(simpleLog.toString(), biliTaskUtil.getLog(), biliData);
     }
 
 }
