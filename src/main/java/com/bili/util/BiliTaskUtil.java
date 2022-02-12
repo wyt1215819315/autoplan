@@ -507,9 +507,9 @@ public class BiliTaskUtil {
         map.put("ep_id", "381662");
 
         JSONObject result = biliWebUtil.doPost(ApiList.MANGA_READ, JSON.toJSONString(map));
-        int code = result.getInteger("code");
+        String code = result.getString("code");
 
-        if (code == 0) {
+        if (code.equals("0")) {
             appendLog("本日漫画自动阅读1章节成功！，阅读漫画为：堀与宫村");
         } else {
             String msg = String.format("阅读失败,错误信息为\n```json\n%s\n```", result);
