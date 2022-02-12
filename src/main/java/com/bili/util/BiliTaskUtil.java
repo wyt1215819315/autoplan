@@ -99,7 +99,12 @@ public class BiliTaskUtil {
         //被充电用户的userID
         String userId = taskConfig.getBiliChargeConfig().getChargeObject();
 
-        Map<String, String> map = BiliHelpUtil.queryUserNameByUid(userId,biliWebUtil);
+        //0为给自己充电
+        if (userId.equals("0")){
+            userId = String.valueOf(data.getMid());
+        }
+
+        Map<String, String> map = BiliHelpUtil.queryUserNameByUid(userId, biliWebUtil);
         if (map.containsKey("msg")) {
             appendLog(map.get("msg"));
         }
@@ -355,7 +360,7 @@ public class BiliTaskUtil {
             appendLog("直播签到成功，本次签到获得%s,%s", data.getString("text"), data.getString("specialText"));
         } else {
             String message = liveCheckInResponse.getString("message");
-            if (message.contains("已签到")){
+            if (message.contains("已签到")) {
                 appendLog("今日已经进行过直播签到");
                 return;
             }
