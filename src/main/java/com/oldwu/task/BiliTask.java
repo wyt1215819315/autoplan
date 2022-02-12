@@ -76,7 +76,7 @@ public class BiliTask {
             BiliUser userb = biliUserDao.selectByAutoId(auto_id);
 
             //任务未开启或已经完成，下一个
-            if (Boolean.parseBoolean(autoBilibili.getSkipdailytask())) {
+            if (!Boolean.parseBoolean(autoBilibili.getEnable())) {
                 BiliUser biliUser = new BiliUser(auto_id, "0", new Date());
                 biliUserDao.updateByAutoIdSelective(biliUser);
                 continue;
