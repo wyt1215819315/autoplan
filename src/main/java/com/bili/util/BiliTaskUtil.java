@@ -662,7 +662,11 @@ public class BiliTaskUtil {
         if (objects.size() == 0) {
             log.append(text).append("\n");
         } else {
-            log.append(String.format(text, objects)).append("\n");
+            Object[] objs = new Object[objects.size()];
+            for (int i = 0; i < objects.size(); i++) {
+                objs[i] = objects.get(i);
+            }
+            log.append(String.format(text, objs)).append("\n");
         }
     }
 
