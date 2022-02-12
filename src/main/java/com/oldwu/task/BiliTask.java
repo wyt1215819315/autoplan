@@ -91,15 +91,6 @@ public class BiliTask {
             BiliUser biliUser = new BiliUser(auto_id, "1", null);
             biliUserDao.updateByAutoIdSelective(biliUser);
 
-            //校验用户信息
-            boolean b = biliService.userCheck(autoBilibili);
-            if (!b) {
-                biliUser.setStatus("500");
-                biliUser.setEnddate(new Date());
-                biliUserDao.updateByAutoIdSelective(biliUser);
-                continue;
-            }
-
             BiliTaskMain biliTaskMain = new BiliTaskMain();
             TaskResult taskResult = biliTaskMain.run(autoBilibili);
             if (taskResult.getIsTaskSuccess() == 1) {
@@ -112,12 +103,12 @@ public class BiliTask {
             //执行推送任务，推送使用简易消息，而不是长篇大论
             PushUtil.doPush(taskResult.getMsg(), autoBilibili.getWebhook(), userid);
 
-            AutoLog bilibili = new AutoLog(auto_id, "bili", taskResult.getIsTaskSuccess() == 1 ? "200" : taskResult.isUserCheckSuccess() ? "500" : "501", userid, new Date(), taskResult.getLog());
+            AutoLog bilibili = new AutoLog(auto_id, "bili", taskResult.getIsTaskSuccess() == 1 ? "200" : taskResult.isUserCheckSuccess() ? "-1" : "500", userid, new Date(), taskResult.getLog());
             logDao.insert(bilibili);
 
             //更新任务状态
             biliUser.setEnddate(new Date());
-            biliUser.setStatus(taskResult.getIsTaskSuccess() == 1 ? "200" : taskResult.isUserCheckSuccess() ? "500" : "501");
+            biliUser.setStatus(taskResult.getIsTaskSuccess() == 1 ? "200" : taskResult.isUserCheckSuccess() ? "-1" : "500");
             biliUserDao.updateByAutoIdSelective(biliUser);
         }
     }
