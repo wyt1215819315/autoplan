@@ -1,9 +1,8 @@
 package com.push.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 import lombok.Getter;
@@ -18,25 +17,26 @@ public class WeComPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.WECHAT_PUSH + metaInfo.getToken();
+        return URLConstant.PUSH_WECHAT_PUSH + metaInfo.getToken();
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (jsonObject == null) {
             return false;
         }
-        JsonElement errcode = jsonObject.get("errcode");
-        JsonElement errmsg = jsonObject.get("errmsg");
+        Integer errcode = jsonObject.getInteger("errcode");
+        String errmsg = jsonObject.getString("errmsg");
         if (null == errcode || null == errmsg) {
             return false;
         }
-        return errcode.getAsInt() == 0 && "ok".equals(errmsg.getAsString());
+
+        return errcode == 0 && "ok".equals(errmsg);
     }
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return new Gson().toJson(new MessageModel(content));
+        return JSON.toJSONString(new MessageModel(content));
     }
 
     @Getter

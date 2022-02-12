@@ -15,10 +15,6 @@ public class URLConstant {
      * 直播签到
      */
     public static final String BILI_LIVE_CHECKING = "https://api.live.bilibili.com/xlive/web-ucenter/v1/sign/DoSign";
-    public static final String BILI_PUSH_PLUS = "https://www.pushplus.plus/send";
-    public static final String BILI_SERVER_PUSH = "https://sc.ftqq.com/";
-    public static final String BILI_SERVER_PUSH_V2 = "https://sctapi.ftqq.com/";
-    public static final String BILI_SERVER_PUSH_TELEGRAM = "https://api.telegram.org/bot";
     public static final String BILI_LOGIN = "https://api.bilibili.com/x/web-interface/nav";
     public static final String BILI_MANGA = "https://manga.bilibili.com/twirp/activity.v1.Activity/ClockIn";
     public static final String BILI_AV_SHARE = "https://api.bilibili.com/x/web-interface/share/add";
@@ -26,9 +22,6 @@ public class URLConstant {
     public static final String BILI_IS_COIN = "https://api.bilibili.com/x/web-interface/archive/coins";
     public static final String BILI_GET_REGION_RANKING = "https://api.bilibili.com/x/web-interface/ranking/region";
     public static final String BILI_REWARD = "https://api.bilibili.com/x/member/web/exp/reward";
-    public static final String BILI_WECHAT_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=";
-    public static final String BILI_WECOM_APP_PUSH_GET_TOKEN = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
-    public static final String BILI_WECOM_APP_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/message/send";
     /**
      * 查询获取已获取的投币经验.
      */
@@ -82,6 +75,16 @@ public class URLConstant {
     //-------------bili url end
     //-------------bili url end
     //-------------bili url end
+
+    //-------------push url start
+    public static final String PUSH_WECHAT_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=";
+    public static final String PUSH_WECOM_APP_PUSH_GET_TOKEN = "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+    public static final String PUSH_WECOM_APP_PUSH = "https://qyapi.weixin.qq.com/cgi-bin/message/send";
+    public static final String PUSH_PUSH_PLUS = "https://www.pushplus.plus/send";
+    public static final String PUSH_SERVER_PUSH = "https://sc.ftqq.com/";
+    public static final String PUSH_SERVER_PUSH_V2 = "https://sctapi.ftqq.com/";
+    public static final String PUSH_SERVER_PUSH_TELEGRAM = "https://api.telegram.org/bot";
+    //-------------push url end
 
     //-------------mys url start
     //-------------mys url start

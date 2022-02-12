@@ -205,9 +205,11 @@ public class BiliHelpUtil {
      */
     public static Map<String, String> queryUserNameByUid(String uid,BiliWebUtil biliWebUtil) throws Exception {
         Map<String, String> map = new HashMap<>();
-        String urlParameter = "?mid=" + uid + "&jsonp=jsonp";
+        Map<String, String> params = new HashMap<>();
+        params.put("mid", uid);
+        params.put("jsonp", "jsonp");
         String userName = "1";
-        JSONObject jsonObject = biliWebUtil.doGet(URLConstant.BILI_QUERY_USER_NAME + urlParameter);
+        JSONObject jsonObject = biliWebUtil.doGet(URLConstant.BILI_QUERY_USER_NAME, params);
         if (jsonObject.getInteger("code") == 0) {
             userName = jsonObject.getJSONObject("data").getString("name");
         } else {

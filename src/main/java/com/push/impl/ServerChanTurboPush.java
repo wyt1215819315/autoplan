@@ -1,8 +1,7 @@
 package com.push.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -18,30 +17,30 @@ public class ServerChanTurboPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.SERVER_PUSH_V2 + metaInfo.getToken() + ".send";
+        return URLConstant.PUSH_SERVER_PUSH_V2 + metaInfo.getToken() + ".send";
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (null == jsonObject) {
             return false;
         }
         // {"code":0,"message":"","data":{"pushid":"XXX","readkey":"XXX","error":"SUCCESS","errno":0}}
-        JsonElement code = jsonObject.get("code");
+        Integer code = jsonObject.getInteger("code");
 
         if (null == code) {
             return false;
         }
 
         // FIX #380
-        switch (code.getAsInt()) {
+        switch (code) {
             case 0:
                 return true;
             case 40001:
                 log.info("超过当天的发送次数限制[10]，请稍后再试");
                 return true;
             default:
-                return code.getAsInt() == 0;
+                return false;
         }
     }
 

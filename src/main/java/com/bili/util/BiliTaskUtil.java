@@ -10,8 +10,6 @@ import com.bili.util.task.GetVideoId;
 import com.bili.util.task.GiveGift;
 import com.bili.util.task.MatchGame;
 import com.bili.util.task.VideoWatch;
-import com.misec.apiquery.ApiList;
-import com.misec.config.ConfigLoader;
 import com.oldwu.constant.SystemConstant;
 import com.oldwu.constant.URLConstant;
 import com.oldwu.util.StringUtils;
@@ -100,7 +98,7 @@ public class BiliTaskUtil {
         String userId = taskConfig.getBiliChargeConfig().getChargeObject();
 
         //0为给自己充电
-        if (userId.equals("0")){
+        if (userId.equals("0")) {
             userId = String.valueOf(data.getMid());
         }
 
@@ -459,7 +457,7 @@ public class BiliTaskUtil {
             appendLog("开始领取大会员漫画权益");
             String requestBody = "{\"reason_id\":" + SystemConstant.reasonId + "}";
             //注意参数构造格式为json，不知道需不需要重载下面的Post函数改请求头
-            JSONObject jsonObject = biliWebUtil.doPost(ApiList.MANGA_GET_VIP_REWARD, requestBody);
+            JSONObject jsonObject = biliWebUtil.doPost(URLConstant.BILI_MANGA_GET_VIP_REWARD, requestBody);
             if (jsonObject.getInteger("code") == 0) {
                 int num = jsonObject.getJSONObject("data").getInteger("amount");
                 appendLog("大会员成功领取%s张漫读劵", num);
@@ -511,7 +509,7 @@ public class BiliTaskUtil {
         map.put("comic_id", "27355");
         map.put("ep_id", "381662");
 
-        JSONObject result = biliWebUtil.doPost(ApiList.MANGA_READ, JSON.toJSONString(map));
+        JSONObject result = biliWebUtil.doPost(URLConstant.BILI_MANGA_READ, JSON.toJSONString(map));
         String code = result.getString("code");
 
         if (code.equals("0")) {
@@ -527,15 +525,15 @@ public class BiliTaskUtil {
      * 赛事预测
      */
     public void matchGame() throws Exception {
-        if (!ConfigLoader.getTaskConfig().getMatchGame()) {
+        if (!taskConfig.getBiliPreConfig().getEnablePre()) {
             appendLog("赛事预测未开启");
             return;
         }
 
         double currentCoin = getCoinBalance();
 
-        if (currentCoin < ConfigLoader.getTaskConfig().getMinimumNumberOfCoins()) {
-            appendLog("%s个硬币都没有，参加\uD83D\uDC34预测呢？任务结束", ConfigLoader.getTaskConfig().getMinimumNumberOfCoins());
+        if (currentCoin < taskConfig.getBiliPreConfig().getKeepCoin()) {
+            appendLog("%s个硬币都没有，参加\uD83D\uDC34预测呢？任务结束", taskConfig.getBiliPreConfig().getKeepCoin());
             return;
         }
 
@@ -550,7 +548,7 @@ public class BiliTaskUtil {
                 return;
             }
             if (list != null) {
-                int coinNumber = ConfigLoader.getTaskConfig().getPredictNumberOfCoins();
+                int coinNumber = taskConfig.getBiliPreConfig().getPreCoin();
                 int contestId;
                 String contestName;
                 int questionId;
@@ -563,7 +561,7 @@ public class BiliTaskUtil {
                 for (int i = 0; i < list.size(); i++) {
                     JSONObject listInfo = list.getJSONObject(i);
                     appendLog("-----预测开始-----");
-                    if (currentCoin < ConfigLoader.getTaskConfig().getMinimumNumberOfCoins()) {
+                    if (currentCoin < taskConfig.getBiliPreConfig().getKeepCoin()) {
                         appendLog("仅剩%s个硬币，低于最低保留硬币数量，后续预测不再执行", currentCoin);
                         break;
                     }
@@ -585,7 +583,7 @@ public class BiliTaskUtil {
                     JSONObject teamB = questionJson.getJSONArray("details").getJSONObject(1);
                     appendLog("当前赔率为:  %s:%s", teamA.getDouble("odds"), teamB.getDouble("odds"));
 
-                    if (ConfigLoader.getTaskConfig().getShowHandModel()) {
+                    if (taskConfig.getBiliPreConfig().getEnableReversePre()) {
                         if (teamA.getDouble("odds") <= teamB.getDouble("odds")) {
                             teamId = teamB.getInteger("detail_id");
                             teamName = teamB.getString("option");

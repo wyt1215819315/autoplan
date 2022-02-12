@@ -3,11 +3,7 @@ package com.bili.util.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bili.util.BiliWebUtil;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
-import com.misec.login.Verify;
-import com.misec.utils.HttpUtils;
-import com.oldwu.log.OldwuLog;
+import com.oldwu.constant.URLConstant;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -30,10 +26,10 @@ public class MatchGame {
         params.put("sids", "");
         params.put("stime", today + URLEncoder.encode(" 00:00:00", "UTF-8"));
         params.put("etime", today + URLEncoder.encode(" 23:59:59", "UTF-8"));
-        return biliWebUtil.doGet(ApiList.QUERY_QUESTIONS, params);
+        return biliWebUtil.doGet(URLConstant.BILI_QUERY_QUESTIONS, params);
     }
 
-    public String doPrediction(int oid, int main_id, int detail_id, int count,String biliJct) throws Exception {
+    public String doPrediction(int oid, int main_id, int detail_id, int count, String biliJct) throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("oid", String.valueOf(oid));
         params.put("main_id", String.valueOf(main_id));
@@ -42,7 +38,7 @@ public class MatchGame {
         params.put("is_fav", "0");
         params.put("csrf", biliJct);
 
-        JSONObject result = biliWebUtil.doPost(ApiList.DO_MATCH_ADD, params);
+        JSONObject result = biliWebUtil.doPost(URLConstant.BILI_DO_MATCH_ADD, params);
 
         if (result.getInteger("code") != 0) {
             return result.getString("message");

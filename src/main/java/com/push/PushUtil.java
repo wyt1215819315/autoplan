@@ -1,6 +1,6 @@
 package com.push;
 
-import com.misec.utils.GsonUtils;
+import com.alibaba.fastjson.JSON;
 import com.oldwu.entity.SysUserInfo;
 import com.oldwu.service.UserService;
 import com.push.config.PushConfig;
@@ -14,15 +14,15 @@ public class PushUtil {
 
     public static boolean doPush(String content, String webhook, Integer userId) {
         boolean b = doPush(content, webhook);
-        if (b){
+        if (b) {
             return true;
         }
         SysUserInfo userInfo = userService.getUserInfo(userId);
-        if (userInfo == null || StringUtils.isBlank(userInfo.getWebhook())){
+        if (userInfo == null || StringUtils.isBlank(userInfo.getWebhook())) {
             return false;
         }
         String globalWebhook = userInfo.getWebhook();
-        return doPush(content,globalWebhook);
+        return doPush(content, globalWebhook);
     }
 
     public static boolean doPush(String content, String webhook) {
@@ -30,7 +30,7 @@ public class PushUtil {
             return false;
         }
         try {
-            PushConfig pushConfig = GsonUtils.fromJson(webhook, PushConfig.class);
+            PushConfig pushConfig = JSON.parseObject(webhook, PushConfig.class);
             if (pushConfig.getPushInfo().getMetaInfo() == null) {
                 return false;
             }
@@ -38,7 +38,7 @@ public class PushUtil {
 //            return serverPush.doServerPush(content, pushConfig);
             //为了适配钉钉关键字
             return serverPush.doServerPush("【HELPER】\n" + content, pushConfig);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             return false;
         }

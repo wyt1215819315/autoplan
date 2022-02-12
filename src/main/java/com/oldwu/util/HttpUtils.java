@@ -2,7 +2,6 @@ package com.oldwu.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +45,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * http请求工具类
@@ -103,7 +101,7 @@ public class HttpUtils {
             for (String key : bodys.keySet()) {
                 nameValuePairList.add(new BasicNameValuePair(key, bodys.get(key)));
             }
-            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList,"utf-8");
+            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList, "utf-8");
 //            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(nameValuePairList, "gbk");
             formEntity.setContentType("application/x-www-form-urlencoded; charset=UTF-8");
             request.setEntity(formEntity);
@@ -118,7 +116,7 @@ public class HttpUtils {
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    public static String sendPost(String url, Map<String,String> headers,String param, String cookie) {
+    public static String sendPost(String url, Map<String, String> headers, String param, String cookie) {
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -130,7 +128,7 @@ public class HttpUtils {
             Set<String> strings = headers.keySet();
             for (String string : strings) {
                 String s = headers.get(string);
-                conn.setRequestProperty(string,s);
+                conn.setRequestProperty(string, s);
             }
             // 发送POST请求必须设置如下两行
             if (cookie != null) {
@@ -169,9 +167,10 @@ public class HttpUtils {
 
     /**
      * 发送post请求，x-www-form-urlencoded
-     * @param url 请求url
+     *
+     * @param url   请求url
      * @param param 表单信息，内部会自动urlEncode
-     * @return cookie,result
+     * @return cookie, result
      */
     public static Map<String, Object> sendPost(String url, Map<String, String> param) {
         Map<String, Object> map = new HashMap<>();
@@ -179,10 +178,10 @@ public class HttpUtils {
         try {
             String paramString = null;
             for (String s : param.keySet()) {
-                if (paramString == null){
-                    paramString = s + "=" + URLEncoder.encode(param.get(s),"UTF-8");
-                }else {
-                    paramString += "&" + s + "=" + URLEncoder.encode(param.get(s),"UTF-8");
+                if (paramString == null) {
+                    paramString = s + "=" + URLEncoder.encode(param.get(s), "UTF-8");
+                } else {
+                    paramString += "&" + s + "=" + URLEncoder.encode(param.get(s), "UTF-8");
                 }
             }
             URL httpurl = new URL(url);
@@ -217,8 +216,8 @@ public class HttpUtils {
                 }
             }
 //            map.put("cookie",headerField);
-            map.put("result",result);
-            map.put("cookie",cookieMap);
+            map.put("result", result);
+            map.put("cookie", cookieMap);
             in.close();
         } catch (Exception e) {
 //            System.out.println(e);
@@ -578,6 +577,7 @@ public class HttpUtils {
 
     /**
      * 返回cookie
+     *
      * @param response
      * @return
      */
@@ -590,7 +590,7 @@ public class HttpUtils {
                 if ("Set-Cookie".equals(responseHeader[i].getName())) {
                     int index = responseHeader[i].getValue().indexOf(";");
                     if (i == length - 1) {
-                        stringBuilder.append(responseHeader[i].getValue().substring(0, index));
+                        stringBuilder.append(responseHeader[i].getValue(), 0, index);
                     } else {
                         stringBuilder.append(responseHeader[i].getValue().substring(0, index) + "; ");
                     }
@@ -602,6 +602,7 @@ public class HttpUtils {
 
     /**
      * 返回cookie
+     *
      * @param response
      * @return
      */
@@ -618,8 +619,8 @@ public class HttpUtils {
      *
      * @param httpResponse
      */
-    public static Map<String,String> getCookies(HttpResponse httpResponse) {
-        Map<String,String> cookieContiner = new HashMap<>();
+    public static Map<String, String> getCookies(HttpResponse httpResponse) {
+        Map<String, String> cookieContiner = new HashMap<>();
         Header[] headers = httpResponse.getHeaders("Set-Cookie");
         for (int i = 0; i < headers.length; i++) {
             String cookie = headers[i].getValue();
