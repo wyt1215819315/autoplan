@@ -35,6 +35,12 @@ public class BiliWebUtil {
         resHeaders.put("Cookie", cookie);
         if (headers == null) {
             resHeaders.put("Referer", "https://www.bilibili.com/");
+        }else {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                resHeaders.put(key, value);
+            }
         }
         return resHeaders;
     }
