@@ -71,4 +71,8 @@ public class BiliController {
         return service.getQrcodeStatus(oauthKey);
     }
 
+    @PostMapping("/run")
+    public AjaxResult run(@Param("id") Integer id) {
+        return service.doDailyTaskPersonal(id);
+    }
 }

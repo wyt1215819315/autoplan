@@ -19,6 +19,7 @@ import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.security.utils.SessionUtils;
+import com.oldwu.task.BiliTask;
 import com.oldwu.util.HttpUtils;
 import com.oldwu.vo.PageDataVO;
 import org.apache.commons.lang3.StringUtils;
@@ -51,15 +52,15 @@ public class BiliService {
     @Autowired
     private UserDao userDao;
 
-    public AjaxResult view(Integer id){
+    public AjaxResult view(Integer id) {
         Integer userId = SessionUtils.getPrincipal().getId();
         AutoBilibili autoBilibili = autoBilibiliDao.selectById(id);
-        if (autoBilibili == null){
+        if (autoBilibili == null) {
             return AjaxResult.doError();
-        }else {
+        } else {
             //放行管理员
             String role = userDao.getRole(userId);
-            if (!autoBilibili.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")){
+            if (!autoBilibili.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")) {
                 return AjaxResult.doError("你无权访问！");
             }
         }
@@ -143,7 +144,7 @@ public class BiliService {
         if (!(boolean) stringObjectMap.get("flag")) {
             return AjaxResult.doError((String) stringObjectMap.get("msg"));
         }
-        AutoBilibili autoBilibili = (AutoBilibili)stringObjectMap.get("data");
+        AutoBilibili autoBilibili = (AutoBilibili) stringObjectMap.get("data");
         autoBilibili.setUserid(SessionUtils.getPrincipal().getId());
         //信息检查完毕后，使用cookie尝试登录账号，进行验证
         try {
@@ -343,10 +344,10 @@ public class BiliService {
         }
 
         //任务信息转换部分
-        if (jsonObject.containsKey("id")){
+        if (jsonObject.containsKey("id")) {
             autoBilibili.setId(jsonObject.getInteger("id"));
         }
-        if (jsonObject.containsKey("name")){
+        if (jsonObject.containsKey("name")) {
             autoBilibili.setName(jsonObject.getString("name"));
         }
 
@@ -366,11 +367,12 @@ public class BiliService {
 
     /**
      * 删除b站任务，开启事务
+     *
      * @param id 传入要删除的autoId
      * @return AjaxResult 删除结果
      */
     @Transactional
-    public AjaxResult deleteBiliPlan(Integer id) throws Exception{
+    public AjaxResult deleteBiliPlan(Integer id) throws Exception {
         //校验用户id
         Integer userid = SessionUtils.getPrincipal().getId();
         if (id == null || id == 0) {
@@ -410,7 +412,7 @@ public class BiliService {
 
     public AjaxResult editBiliPlan(String json) {
         Map<String, Object> stringObjectMap = checkForm(json, true);
-        if (stringObjectMap.get("flag").equals("false")){
+        if (stringObjectMap.get("flag").equals("false")) {
             return AjaxResult.doError((String) stringObjectMap.get("msg"));
         }
         AutoBilibili autoBilibili1 = (AutoBilibili) stringObjectMap.get("data");
@@ -433,11 +435,35 @@ public class BiliService {
 
     /**
      * 根据用户id查询这个用户的b站任务信息
+     *
      * @param id
      * @return
      */
     public AjaxResult listMine(Integer id) {
         List<BiliPlan> biliPlans = biliUserDao.selectMine(id);
         return AjaxResult.doSuccess(biliPlans);
+    }
+
+    public AjaxResult doDailyTaskPersonal(Integer autoId) {
+        Integer userId = SessionUtils.getPrincipal().getId();
+
+        AutoBilibili autoBilibili = autoBilibiliDao.selectById(autoId);
+        if (autoBilibili == null || autoBilibili.getId() == null) {
+            return AjaxResult.doError("参数错误！");
+        }
+        String role = userDao.getRole(autoBilibili.getUserid());
+        if (!autoBilibili.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")) {
+            return AjaxResult.doError("你没有权限执行！");
+        }
+        BiliUser biliUser = biliUserDao.selectByAutoId(autoBilibili.getId());
+        if (biliUser.getStatus().equals("1")) {
+            return AjaxResult.doError("任务已经在运行啦~请不要重复执行");
+        }
+        Thread t = new Thread(() -> {
+            BiliTask biliTask = new BiliTask();
+            biliTask.runTask(autoBilibili);
+        });
+        t.start();
+        return AjaxResult.doSuccess("运行指令已发送，请稍后查看运行状态");
     }
 }

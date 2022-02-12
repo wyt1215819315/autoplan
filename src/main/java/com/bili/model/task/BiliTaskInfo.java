@@ -1,8 +1,6 @@
 package com.bili.model.task;
 
 import com.bili.model.task.config.BiliTaskConfig;
-import com.google.gson.JsonObject;
-import com.misec.config.TaskConfig;
 import lombok.Data;
 
 @Data
