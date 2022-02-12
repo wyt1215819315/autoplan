@@ -53,7 +53,9 @@ public class BiliWebUtil {
     }
 
     public JSONObject doPost(String url, String body) throws Exception {
-        HttpResponse httpResponse = HttpUtils.doPost(url, null, getHeaders(null), null, body);
+        Map<String, String> headers = getHeaders(null);
+        headers.put("Content-Type", "application/json");
+        HttpResponse httpResponse = HttpUtils.doPost(url, null, headers, null, body);
         return HttpUtils.getJson(httpResponse);
     }
 
