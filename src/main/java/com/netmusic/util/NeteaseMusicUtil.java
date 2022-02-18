@@ -10,8 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 
-import java.util.Base64;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,6 +19,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class NeteaseMusicUtil {
     private static final String f = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7";
     private static final String e = "010001";
     private static final String url = "https://music.163.com/weapi/song/enhance/player/url/v1?csrf_token=";
-    private static final String login_url = "https://music.163.com/weapi/w/login/cellphone?csrf_token=";
+    private static final String login_url = "https://music.163.com/weapi/login/cellphone?csrf_token=";
     private static final String level_url = "https://music.163.com/weapi/user/level";
     private static final String sign_url = "https://music.163.com/weapi/point/dailyTask?";
     private static final String recommend_url = "https://music.163.com/weapi/v1/discovery/recommend/resource";
@@ -492,8 +491,8 @@ public class NeteaseMusicUtil {
         }
         try {
             Map<String, String> loginData = getLoginData(info.get("phone"), info.get("countrycode"), info.get("password"));
-            Map<String, Object> map = HttpUtils.sendPost(login_url, loginData);
-            if (map == null){
+            Map<String, Object> map = HttpUtils.sendPost(login_url, headers, loginData);
+            if (map == null) {
                 result.put("msg", "登录失败，请求错误！");
                 result.put("flag", "false");
                 return result;
@@ -686,11 +685,11 @@ public class NeteaseMusicUtil {
 
     public static Map<String, String> getNetMusicLoginHeaders() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        headers.put("Origin", "https://music.163.com");
-        headers.put("Referer", "https://music.163.com/");
+//        headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//        headers.put("Origin", "https://music.163.com");
+//        headers.put("Referer", "https://music.163.com/");
         headers.put("Cookie", "os=pc; osver=Microsoft-Windows-10-Professional-build-10586-64bit; appver=2.0.3.131777; channel=netease; __remember_me=true;");
-        headers.put("Accept-Encoding", "gzip, deflate, br");
+//        headers.put("Accept-Encoding", "gzip, deflate, br");
         return headers;
     }
 

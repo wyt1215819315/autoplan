@@ -45,7 +45,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * http请求工具类
@@ -172,7 +171,7 @@ public class HttpUtils {
      * @param param 表单信息，内部会自动urlEncode
      * @return cookie,result
      */
-    public static Map<String, Object> sendPost(String url, Map<String, String> param) {
+    public static Map<String, Object> sendPost(String url,Map<String, String> headers, Map<String, String> param) {
         Map<String, Object> map = new HashMap<>();
         String result = "";
         try {
@@ -187,6 +186,9 @@ public class HttpUtils {
             URL httpurl = new URL(url);
             HttpURLConnection httpConn = (HttpURLConnection) httpurl.openConnection();
             httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            for (String key : headers.keySet()) {
+                httpConn.setRequestProperty(key, headers.get(key));
+            }
             httpConn.setDoOutput(true);
             httpConn.setDoInput(true);
             PrintWriter out = new PrintWriter(new OutputStreamWriter(httpConn.getOutputStream(), StandardCharsets.UTF_8));
@@ -225,6 +227,16 @@ public class HttpUtils {
             return null;
         }
         return map;
+    }
+
+    /**
+     * 发送post请求，x-www-form-urlencoded
+     * @param url 请求url
+     * @param param 表单信息，内部会自动urlEncode
+     * @return cookie,result
+     */
+    public static Map<String, Object> sendPost(String url, Map<String, String> param) {
+        return sendPost(url, null, param);
     }
 
     /**
@@ -601,7 +613,7 @@ public class HttpUtils {
 
     /**
      * 返回cookie
-     * @param response
+     * @param cookieMap
      * @return
      */
     public static String getCookieString(Map<String, String> cookieMap) {
