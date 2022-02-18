@@ -32,4 +32,12 @@ public class BiliGiveGiftConfig {
         }
         return giveGiftRoomID;
     }
+
+    public BiliGiveGiftConfig() {
+    }
+
+    public BiliGiveGiftConfig(Boolean enableGiveGift, String giveGiftRoomID) {
+        this.enableGiveGift = enableGiveGift;
+        this.giveGiftRoomID = giveGiftRoomID;
+    }
 }

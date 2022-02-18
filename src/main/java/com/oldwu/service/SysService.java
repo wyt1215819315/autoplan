@@ -1,6 +1,10 @@
 package com.oldwu.service;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bili.dao.AutoBilibiliDao;
+import com.bili.model.AutoBilibili;
+import com.bili.model.task.config.*;
 import com.oldwu.constant.SystemConstant;
 import com.oldwu.dao.SysConfigDao;
 import com.oldwu.dao.UserDao;
@@ -9,6 +13,9 @@ import com.oldwu.entity.SysConfig;
 import com.oldwu.security.utils.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 public class SysService {
@@ -23,6 +30,9 @@ public class SysService {
 
     @Autowired
     private SysConfigDao sysConfigDao;
+
+    @Autowired
+    private AutoBilibiliDao autoBilibiliDao;
 
     @Autowired
     private UserDao userDao;
@@ -72,7 +82,34 @@ public class SysService {
      * 用于转换老版本的字段到json
      * @return AjaxResult
      */
+    @Transactional
     public AjaxResult turnBiliPlan2Json(){
+        //只需要操作auto_bilibili表中的数据
+        List<AutoBilibili> autoBilibilis = autoBilibiliDao.selectList(new QueryWrapper<>());
+        for (AutoBilibili autoBilibili : autoBilibilis) {
+            Integer numberofcoins = autoBilibili.getNumberofcoins();
+            Integer reservecoins = autoBilibili.getReservecoins();
+            Integer selectlike = autoBilibili.getSelectlike();
+            String monthendautocharge = autoBilibili.getMonthendautocharge();
+            String givegift = autoBilibili.getGivegift();
+            String uplive = autoBilibili.getUplive();
+            String chargeforlove = autoBilibili.getChargeforlove();
+            String deviceplatform = autoBilibili.getDeviceplatform();
+            Integer coinaddpriority = autoBilibili.getCoinaddpriority();
+            String skipdailytask = autoBilibili.getSkipdailytask();
+            String matchEnable = autoBilibili.getMatchEnable();
+            Integer matchMinimumnumberofcoins = autoBilibili.getMatchMinimumnumberofcoins();
+            Integer matchPredictnumberofcoins = autoBilibili.getMatchPredictnumberofcoins();
+            String matchShowhandmodel = autoBilibili.getMatchShowhandmodel();
+            BiliCoinConfig biliCoinConfig = new BiliCoinConfig(numberofcoins, reservecoins, selectlike != 0, coinaddpriority);
+            BiliChargeConfig biliChargeConfig = new BiliChargeConfig(chargeforlove, Boolean.parseBoolean(monthendautocharge));
+            BiliGiveGiftConfig biliGiveGiftConfig = new BiliGiveGiftConfig(Boolean.parseBoolean(givegift),uplive);
+            BiliPreConfig biliPreConfig = new BiliPreConfig(Boolean.parseBoolean(matchEnable),Boolean.parseBoolean(matchShowhandmodel),matchPredictnumberofcoins,matchMinimumnumberofcoins);
+            BiliTaskConfig biliTaskConfig = new BiliTaskConfig(biliPreConfig,biliCoinConfig,biliChargeConfig,biliGiveGiftConfig,deviceplatform);
+            autoBilibili.setEnable(skipdailytask.equals("false") ? "true" : "false");
+            autoBilibili.setTaskConfig(JSON.toJSONString(biliTaskConfig));
+            autoBilibiliDao.updateById(autoBilibili);
+        }
         return AjaxResult.doSuccess();
     }
 

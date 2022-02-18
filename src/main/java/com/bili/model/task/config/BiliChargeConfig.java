@@ -43,4 +43,12 @@ public class BiliChargeConfig {
         }
         return enableAutoCharge;
     }
+
+    public BiliChargeConfig() {
+    }
+
+    public BiliChargeConfig(String chargeObject, Boolean enableAutoCharge) {
+        this.chargeObject = chargeObject;
+        this.enableAutoCharge = enableAutoCharge;
+    }
 }

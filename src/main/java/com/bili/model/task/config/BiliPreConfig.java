@@ -58,4 +58,14 @@ public class BiliPreConfig {
         }
         return keepCoin;
     }
+
+    public BiliPreConfig() {
+    }
+
+    public BiliPreConfig(Boolean enablePre, Boolean enableReversePre, Integer preCoin, Integer keepCoin) {
+        this.enablePre = enablePre;
+        this.enableReversePre = enableReversePre;
+        this.preCoin = preCoin;
+        this.keepCoin = keepCoin;
+    }
 }

@@ -36,4 +36,14 @@ public class BiliTaskConfig {
      */
     private String cartoonSignOS;
 
+    public BiliTaskConfig(BiliPreConfig biliPreConfig, BiliCoinConfig biliCoinConfig, BiliChargeConfig biliChargeConfig, BiliGiveGiftConfig biliGiveGiftConfig, String cartoonSignOS) {
+        this.biliPreConfig = biliPreConfig;
+        this.biliCoinConfig = biliCoinConfig;
+        this.biliChargeConfig = biliChargeConfig;
+        this.biliGiveGiftConfig = biliGiveGiftConfig;
+        this.cartoonSignOS = cartoonSignOS;
+    }
+
+    public BiliTaskConfig() {
+    }
 }

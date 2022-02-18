@@ -23,8 +23,8 @@ public class SystemController {
     }
 
     /**
-     * 编辑系统首页公告
-     * @return AjaxResult 公告内容
+     * 用于转换老版本的字段到json
+     * @return AjaxResult
      */
     @PostMapping("/api/admin/turnbiliplan2json")
     public AjaxResult turnBiliPlan2Json(){

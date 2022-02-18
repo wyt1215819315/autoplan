@@ -60,4 +60,14 @@ public class BiliCoinConfig {
         }
         return coinRules;
     }
+
+    public BiliCoinConfig() {
+    }
+
+    public BiliCoinConfig(Integer dailyCoin, Integer reserveCoins, Boolean enableClickLike, Integer coinRules) {
+        this.dailyCoin = dailyCoin;
+        this.reserveCoins = reserveCoins;
+        this.enableClickLike = enableClickLike;
+        this.coinRules = coinRules;
+    }
 }
