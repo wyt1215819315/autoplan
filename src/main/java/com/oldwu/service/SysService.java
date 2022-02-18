@@ -84,6 +84,10 @@ public class SysService {
      */
     @Transactional
     public AjaxResult turnBiliPlan2Json(){
+        Integer userid = SessionUtils.getPrincipal().getId();
+        if (!userDao.getRole(userid).equals("ROLE_ADMIN")) {
+            return AjaxResult.doError("你没有权限操作");
+        }
         //只需要操作auto_bilibili表中的数据
         List<AutoBilibili> autoBilibilis = autoBilibiliDao.selectList(new QueryWrapper<>());
         for (AutoBilibili autoBilibili : autoBilibilis) {
