@@ -41,16 +41,6 @@ public class IndexApiController {
     }
 
     /**
-     * 编辑系统首页公告
-     * @return AjaxResult 公告内容
-     */
-    @PostMapping("/welcome-notice/edit")
-    public AjaxResult editSystemNoticeContent(@RequestParam String text){
-        return sysService.setSystemNoticeContent(text);
-    }
-
-
-    /**
      * 获取b站任务列表
      * @param page 页码
      * @param limit 每页数

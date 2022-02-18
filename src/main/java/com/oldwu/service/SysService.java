@@ -68,4 +68,12 @@ public class SysService {
         return AjaxResult.doError("修改失败！");
     }
 
+    /**
+     * 用于转换老版本的字段到json
+     * @return AjaxResult
+     */
+    public AjaxResult turnBiliPlan2Json(){
+        return AjaxResult.doSuccess();
+    }
+
 }
