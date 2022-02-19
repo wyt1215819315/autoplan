@@ -4,12 +4,13 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.text.StrBuilder;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 
 /**
  * 字符串工具类
- * 
+ *
  * @author fc
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils
@@ -22,7 +23,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * 获取参数不为空值
-     * 
+     *
      * @param value defaultValue 要判断的value
      * @return value 返回值
      */
@@ -33,7 +34,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个Collection是否为空， 包含List，Set，Queue
-     * 
+     *
      * @param coll 要判断的Collection
      * @return true：为空 false：非空
      */
@@ -44,7 +45,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个Collection是否非空，包含List，Set，Queue
-     * 
+     *
      * @param coll 要判断的Collection
      * @return true：非空 false：空
      */
@@ -55,7 +56,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个对象数组是否为空
-     * 
+     *
      * @param objects 要判断的对象数组
      ** @return true：为空 false：非空
      */
@@ -66,7 +67,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个对象数组是否非空
-     * 
+     *
      * @param objects 要判断的对象数组
      * @return true：非空 false：空
      */
@@ -77,7 +78,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个Map是否为空
-     * 
+     *
      * @param map 要判断的Map
      * @return true：为空 false：非空
      */
@@ -88,7 +89,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个Map是否为空
-     * 
+     *
      * @param map 要判断的Map
      * @return true：非空 false：空
      */
@@ -99,7 +100,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个字符串是否为空串
-     * 
+     *
      * @param str String
      * @return true：为空 false：非空
      */
@@ -110,7 +111,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个字符串是否为非空串
-     * 
+     *
      * @param str String
      * @return true：非空串 false：空串
      */
@@ -121,7 +122,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个对象是否为空
-     * 
+     *
      * @param object Object
      * @return true：为空 false：非空
      */
@@ -132,7 +133,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个对象是否非空
-     * 
+     *
      * @param object Object
      * @return true：非空 false：空
      */
@@ -143,7 +144,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * * 判断一个对象是否是数组类型（Java基本型别的数组）
-     * 
+     *
      * @param object 对象
      * @return true：是数组 false：不是数组
      */
@@ -162,7 +163,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * 截取字符串
-     * 
+     *
      * @param str 字符串
      * @param start 开始
      * @return 结果
@@ -193,7 +194,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * 截取字符串
-     * 
+     *
      * @param str 字符串
      * @param start 开始
      * @param end 结束
@@ -294,7 +295,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * 是否包含字符串
-     * 
+     *
      * @param str 验证字符串
      * @param strs 字符串组
      * @return 包含返回true
@@ -313,11 +314,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         }
         return false;
     }
-   
-    
+
+
     /**
      * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：HELLO_WORLD->HelloWorld
-     * 
+     *
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
      */
@@ -371,7 +372,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         return name;
 
     }
-    
+
     /**
      * 将下划线转化为大写
      *
@@ -393,7 +394,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         }
         return stringBuffer.toString();
     }
-    
+
     /**
      * get方法名字转成 t_b_abc>>tBAbc
      * @param str
@@ -408,7 +409,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     		// 用下划线将原始字符串分割
             String[] camels = name.split("_");
             boolean b=true;
-            
+
             for (String str1 : camels) {
             	if(str1.length()==1&&b) {
             		b=false;
@@ -416,7 +417,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             	}else {
             		buffer.append(StringUtils.firstUpperCase(str1));
             	}
-				
+
 			}
     	}else {
     		buffer.append(StringUtils.firstUpperCase(name));
@@ -430,8 +431,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static String columnToJava(String columnName) {
         return WordUtils.capitalizeFully(columnName, new char[]{'_'}).replace("_", "" );
     }
-    
-    
+
+
     /**
      * 表名转换成Java类名
      */
@@ -440,5 +441,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             tableName = tableName.replaceFirst(tablePrefix, "" );
         }
         return columnToJava(tableName);
+    }
+
+    public static String userNameEncode(String userName) {
+        int s1 = userName.length() / 2;
+        int s2 = (s1 + 1) / 2;
+        return userName.substring(0, s2)
+                + String.join("", Collections.nCopies(s1, "*"))
+                + userName.substring(s1 + s2);
     }
 }

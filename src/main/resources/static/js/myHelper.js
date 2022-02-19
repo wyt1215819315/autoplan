@@ -401,6 +401,9 @@ function bilibiliHtml(data) {
         _bilibiliHtml += '</button>';
         _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'bili\',' + bilibiliUser.autoId + ')">';
         _bilibiliHtml += '<i class="layui-icon layui-icon-delete"></i>';
+        _bilibiliHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + name + ',' + bilibiliUser.autoId + ')">';
+        _bilibiliHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
+        _bilibiliHtml += '</button>';
         _bilibiliHtml += '</button>';
         _bilibiliHtml += '</span>';
         _bilibiliHtml += '</p>';

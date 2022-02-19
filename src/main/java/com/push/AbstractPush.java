@@ -1,7 +1,7 @@
 package com.push;
 
-import com.google.gson.JsonObject;
-import com.misec.utils.HttpUtils;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.util.HttpUtils;
 import com.push.model.PushMetaInfo;
 import com.push.model.PushResult;
 import io.github.itning.retry.Attempt;
@@ -13,10 +13,12 @@ import io.github.itning.retry.strategy.limit.AttemptTimeLimiters;
 import io.github.itning.retry.strategy.stop.StopStrategies;
 import io.github.itning.retry.strategy.wait.WaitStrategies;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractPush implements Push, RetryListener {
 
     protected final RequestConfig requestConfig;
-    private final Retryer<JsonObject> retryer;
+    private final Retryer<JSONObject> retryer;
 
     public AbstractPush() {
 
@@ -40,7 +42,7 @@ public abstract class AbstractPush implements Push, RetryListener {
                 .setSocketTimeout(10000);
         requestConfig = builder.build();
 
-        retryer = RetryerBuilder.<JsonObject>newBuilder()
+        retryer = RetryerBuilder.<JSONObject>newBuilder()
                 // 出现异常进行重试
                 .retryIfException()
                 // 检查结果进行重试
@@ -75,7 +77,7 @@ public abstract class AbstractPush implements Push, RetryListener {
                     TimeUnit.MILLISECONDS.sleep(1500);
                 } catch (InterruptedException ignore) {
                 }
-            }else {
+            } else {
                 pushResult = result;
             }
         }
@@ -84,7 +86,7 @@ public abstract class AbstractPush implements Push, RetryListener {
 
     private PushResult push2Target(String url, String pushContent) {
         try {
-            JsonObject jsonObject = retryer.call(() -> post(url, pushContent));
+            JSONObject jsonObject = retryer.call(() -> post(url, pushContent));
             log.info("推送结果：{}", jsonObject.toString());
             return PushResult.success(jsonObject.toString());
         } catch (RetryException e) {
@@ -95,8 +97,16 @@ public abstract class AbstractPush implements Push, RetryListener {
         return PushResult.failed();
     }
 
-    private JsonObject post(String url, String content) {
-        return HttpUtils.doPost(url, content, null, requestConfig);
+    private JSONObject post(String url, String content) {
+        try {
+            Map<String, String> headers = HttpUtils.getHeaders();
+            headers.put("Content-Type", "application/json");
+            HttpResponse httpResponse = HttpUtils.doPost(url, null, headers, null, content);
+            return HttpUtils.getJson(httpResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -113,7 +123,7 @@ public abstract class AbstractPush implements Push, RetryListener {
      * @param jsonObject HTTP结果，可能为<code>null</code>
      * @return 推送成功，返回<code>true</code>
      */
-    protected abstract boolean checkPushStatus(final JsonObject jsonObject);
+    protected abstract boolean checkPushStatus(final JSONObject jsonObject);
 
     /**
      * 生成要推送的内容信息

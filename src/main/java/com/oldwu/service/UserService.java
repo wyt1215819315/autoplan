@@ -1,6 +1,6 @@
 package com.oldwu.service;
 
-import com.misec.utils.GsonUtils;
+import com.alibaba.fastjson.JSON;
 import com.oldwu.dao.SysUserInfoDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.domain.SysUser;
@@ -19,14 +19,14 @@ public class UserService {
     @Autowired
     private SysUserInfoDao userInfoDao;
 
-    public int getUserId(String username){
+    public int getUserId(String username) {
         SysUser byUserName = userDao.findByUserName(username);
         return byUserName.getId();
     }
 
-    public SysUserInfo getUserInfo(int userId){
+    public SysUserInfo getUserInfo(int userId) {
         SysUserInfo sysUserInfo = userInfoDao.selectByUserId(userId);
-        if (sysUserInfo == null){
+        if (sysUserInfo == null) {
             //创建info
             sysUserInfo = new SysUserInfo();
             sysUserInfo.setUserId(userId);
@@ -35,7 +35,7 @@ public class UserService {
         return sysUserInfo;
     }
 
-    public AjaxResult editUserInfo(int userId,SysUserInfo sysUserInfo){
+    public AjaxResult editUserInfo(int userId, SysUserInfo sysUserInfo) {
         SysUserInfo sysUserInfo1 = userInfoDao.selectByUserId(userId);
         if (sysUserInfo1 == null || sysUserInfo1.getUserId() == null) {
             return AjaxResult.doError("查询用户信息出错！");
@@ -49,11 +49,11 @@ public class UserService {
     }
 
     public AjaxResult checkWebhook(String webhook) {
-        if (!webhook.startsWith("{")){
+        if (!webhook.startsWith("{")) {
             return AjaxResult.doError("非法数据格式！需要为json字符串，请使用生成器生成");
         }
         try {
-            PushConfig pushConfig = GsonUtils.fromJson(webhook, PushConfig.class);
+            PushConfig pushConfig = JSON.parseObject(webhook, PushConfig.class);
             if (pushConfig.getPushInfo().getMetaInfo() == null) {
                 return AjaxResult.doError("json校验失败，null");
             }

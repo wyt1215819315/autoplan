@@ -1,8 +1,7 @@
 package com.push.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 import lombok.Getter;
@@ -31,25 +30,26 @@ public class DingTalkPush extends AbstractPush {
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (jsonObject == null) {
             return false;
         }
-        JsonElement errcode = jsonObject.get("errcode");
-        JsonElement errmsg = jsonObject.get("errmsg");
+        Integer errcode = jsonObject.getInteger("errcode");
+        String errmsg = jsonObject.getString("errmsg");
         if (null == errcode || null == errmsg) {
             return false;
         }
-        return errcode.getAsInt() == 0 && "ok".equals(errmsg.getAsString());
+
+        return errcode == 0 && "ok".equals(errmsg);
     }
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return new Gson().toJson(new MessageModel(content));
+        return JSON.toJSONString(new MessageModel(content));
     }
 
     @Override
-    protected List<String> segmentation(PushMetaInfo metaInfo,String pushBody) {
+    protected List<String> segmentation(PushMetaInfo metaInfo, String pushBody) {
         if (StringUtils.isBlank(pushBody)) {
             return Collections.emptyList();
         }

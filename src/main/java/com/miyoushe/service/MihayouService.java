@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.misec.utils.HelpUtil;
 import com.miyoushe.mapper.AutoMihayouDao;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.sign.gs.GenShinSignMiHoYo;
-import com.netmusic.model.AutoNetmusic;
 import com.oldwu.constant.URLConstant;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
@@ -48,17 +46,18 @@ public class MihayouService {
 
     /**
      * 根据id查询
+     *
      * @return
      */
-    public AjaxResult view(Integer id){
+    public AjaxResult view(Integer id) {
         Integer userId = SessionUtils.getPrincipal().getId();
         AutoMihayou autoMihayou = mihayouDao.selectById(id);
-        if (autoMihayou == null){
+        if (autoMihayou == null) {
             return AjaxResult.doError();
-        }else {
+        } else {
             //放行管理员
             String role = userDao.getRole(userId);
-            if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")){
+            if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")) {
                 return AjaxResult.doError("你无权访问！");
             }
         }
@@ -86,8 +85,8 @@ public class MihayouService {
             mihayous.setLcookie(null);
             mihayous.setWebhook(null);
             mihayous.setOtherKey(null);
-            mihayous.setGenshinUid(HelpUtil.userNameEncode(mihayous.getGenshinUid()));
-            mihayous.setMiName(HelpUtil.userNameEncode(mihayous.getMiName()));
+            mihayous.setGenshinUid(com.oldwu.util.StringUtils.userNameEncode(mihayous.getGenshinUid()));
+            mihayous.setMiName(com.oldwu.util.StringUtils.userNameEncode(mihayous.getMiName()));
         }
 
         data.setRecords(autoMihayouList);
@@ -97,11 +96,12 @@ public class MihayouService {
 
     /**
      * 删除米游社任务，开启事务
+     *
      * @param id 传入要删除的autoId
      * @return AjaxResult 删除结果
      */
     @Transactional
-    public AjaxResult deleteMiHuYouPlan(Integer id) throws Exception{
+    public AjaxResult deleteMiHuYouPlan(Integer id) throws Exception {
         //校验用户id
         Integer userid = SessionUtils.getPrincipal().getId();
         if (id == null || id == 0) {
@@ -368,34 +368,26 @@ public class MihayouService {
         return map;
     }
 
-    public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userId) {
-        Map<String, Object> map = new HashMap<>();
+    public AjaxResult doDailyTaskPersonal(Integer autoId) {
+        Integer userId = SessionUtils.getPrincipal().getId();
 
         AutoMihayou autoMihayou = mihayouDao.selectById(autoId);
         if (autoMihayou == null || autoMihayou.getId() == null) {
-            map.put("code", 500);
-            map.put("msg", "参数错误！");
-            return map;
+            return AjaxResult.doError("参数错误！");
         }
         String role = userDao.getRole(autoMihayou.getUserId());
         if (!autoMihayou.getUserId().equals(userId) && !role.equals("ROLE_ADMIN")) {
-            map.put("code", 403);
-            map.put("msg", "你没有权限执行！");
-            return map;
+            return AjaxResult.doError("你没有权限执行！");
         }
         if (autoMihayou.getStatus().equals("1")) {
-            map.put("code", 1);
-            map.put("msg", "任务已经在运行啦~请不要重复执行");
-            return map;
+            return AjaxResult.doError("任务已经在运行啦~请不要重复执行");
         }
         Thread t = new Thread(() -> {
             MiHuYouTask miHuYouTask = new MiHuYouTask();
             miHuYouTask.runTask(autoId, userId, autoMihayou);
         });
         t.start();
-        map.put("code", 200);
-        map.put("msg", "运行指令已发送，请稍后查看运行状态");
-        return map;
+        return AjaxResult.doSuccess("运行指令已发送，请稍后查看运行状态");
     }
 
     public AjaxResult listMine(Integer id) {
@@ -405,6 +397,7 @@ public class MihayouService {
 
     /**
      * 获取米游社账号各种信息，目前仅用于头像获取
+     *
      * @param cookie
      */
     public Map<String, Object> getPersonalInfo(String cookie) throws Exception {
@@ -423,10 +416,10 @@ public class MihayouService {
     }
 
     @Async
-    public void setPersonInfo(Integer id,String cookie){
+    public void setPersonInfo(Integer id, String cookie) {
         try {
             Map<String, Object> personalInfo = getPersonalInfo(cookie);
-            if (personalInfo == null){
+            if (personalInfo == null) {
                 return;
             }
             String avatarUrl = (String) personalInfo.get("avatar_url");

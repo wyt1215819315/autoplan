@@ -23,17 +23,9 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">任务执行间隔</label>
-                        <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="taskintervaltime" id="taskintervaltime"
-                                   placeholder="任务执行间隔" type="text" value="10">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
                         <label class="layui-form-label">每日投币数量</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="numberofcoins" id="numberofcoins"
+                            <input autocomplete="off" class="layui-input" name="dailyCoin" id="dailyCoin"
                                    placeholder="每日投币数量" type="text" value="5">
                         </div>
                     </div>
@@ -41,7 +33,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">预留的硬币数</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" name="reservecoins" id="reservecoins"
+                            <input autocomplete="off" class="layui-input" name="reserveCoins" id="reserveCoins"
                                    placeholder="预留的硬币数" type="text" value="50">
                         </div>
                     </div>
@@ -49,9 +41,19 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">投币时是否点赞</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="selectlike" id="selectlike">
-                                <option value="0">投币时不点赞</option>
-                                <option value="1">投币时点赞</option>
+                            <select class="layui-input" name="enableClickLike" id="enableClickLike">
+                                <option value="false">投币时不点赞</option>
+                                <option selected value="true">投币时点赞</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">投币规则</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="coinRules" id="coinRules">
+                                <option value="0">优先给热榜视频投币</option>
+                                <option selected value="1">优先给关注的 up 投币</option>
                             </select>
                         </div>
                     </div>
@@ -59,8 +61,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">年费大会员B币券用于充电</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="monthendautocharge" id="monthendautocharge">
-                                <option value="true">开启</option>
+                            <select class="layui-input" name="enableAutoCharge" id="enableAutoCharge">
+                                <option selected value="true">开启</option>
                                 <option value="false">关闭</option>
                             </select>
                         </div>
@@ -69,16 +71,24 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">指定充电up主uid</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" id="chargeforlove" name="chargeforlove"
-                                   placeholder="输入up主uid（输入0选择自己），默认为0，即给自己充电" type="number">
+                            <input autocomplete="off" class="layui-input" name="chargeObject" id="chargeObject"
+                                   placeholder="输入up主uid（输入0选择自己），默认为0，即给自己充电" type="text">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">直播送出即将过期的礼物</label>
+                        <label class="layui-form-label">自动充电时间</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="givegift" id="givegift">
-                                <option value="true">开启</option>
+                            <input autocomplete="off" class="layui-input" name="chargeDay" id="chargeDay"
+                                   placeholder="自动充电时间" type="text" value="28">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">直播间送出即将过期的礼物</label>
+                        <div class="layui-input-block">
+                            <select class="layui-input" name="enableGiveGift">
+                                <option selected value="true">开启</option>
                                 <option value="false">关闭</option>
                             </select>
                         </div>
@@ -87,46 +97,28 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">指定送礼物up主uid</label>
                         <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" id="uplive" name="uplive"
-                                   placeholder="输入up主uid（输入0随机选取一个up主），在其直播间送出即将过期的礼物" type="number">
+                            <input autocomplete="off" class="layui-input" name="giveGiftRoomID" id="giveGiftRoomID"
+                                   placeholder="输入up主uid（输入0随机选取一个up主），在其直播间送出即将过期的礼物" type="text">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">漫画签到的平台</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="deviceplatform" id="deviceplatform" lay-verify="required">
+                            <select class="layui-input" name="cartoonSignOS" id="cartoonSignOS" lay-verify="required">
                                 <option value="">建议选择你设备的平台</option>
                                 <option value="ios">苹果</option>
-                                <option value="android">安卓</option>
+                                <option selected value="android">安卓</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">投币规则</label>
-                        <div class="layui-input-block">
-                            <select class="layui-input" name="coinaddpriority" id="coinaddpriority">
-                                <option value="0">优先给热榜视频投币</option>
-                                <option value="1">优先给关注的 up 投币</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">浏览器UA</label>
-                        <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input" id="useragent" name="useragent"
-                                   placeholder="不知道就空着" type="text">
-                        </div>
-                    </div>
-
-                    <!--            预测部分-->
+                    <!--预测部分-->
                     <div class="layui-form-item">
                         <label class="layui-form-label">赛事预测总开关</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" id="matchEnable" lay-filter="matchEnable" name="matchEnable">
-                                <option value="false">关</option>
+                            <select class="layui-input" name="enablePre" id="enablePre" lay-filter="enablePre">
+                                <option selected value="false">关</option>
                                 <option value="true">开</option>
                             </select>
                         </div>
@@ -136,23 +128,22 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">单次预测投注硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input" name="matchPredictnumberofcoins" id="matchPredictnumberofcoins"
-                                       placeholder="单次预测投注硬币" type="text">
+                                <input autocomplete="off" class="layui-input" name="preCoin" id="preCoin"
+                                       placeholder="单次预测投注硬币[1-10]" type="text" value="5">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">预测保留硬币</label>
                             <div class="layui-input-block">
-                                <input autocomplete="off" class="layui-input" name="matchMinimumnumberofcoins" id="matchMinimumnumberofcoins"
-                                       placeholder="预测保留硬币" type="text">
+                                <input autocomplete="off" class="layui-input" name="preKeepCoin" id="preKeepCoin"
+                                       placeholder="预测保留硬币" type="text" value="200">
                             </div>
                         </div>
-
                         <div class="layui-form-item">
                             <label class="layui-form-label">赛事预测规则</label>
                             <div class="layui-input-block">
-                                <select class="layui-input" name="matchShowhandmodel" id="matchShowhandmodel">
-                                    <option value="false">压倍率低的（跟着人多的压）</option>
+                                <select class="layui-input" name="enableReversePre" id="enableReversePre">
+                                    <option selected value="false">压倍率低的（跟着人多的压）</option>
                                     <option value="true">压倍率高的（赌命）</option>
                                 </select>
                             </div>
@@ -162,9 +153,9 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">每日任务总开关</label>
                         <div class="layui-input-block">
-                            <select class="layui-input" name="skipdailytask" id="skipdailytask">
-                                <option value="false">开</option>
-                                <option value="true">关</option>
+                            <select class="layui-input" name="enable" id="enable">
+                                <option selected value="true">开</option>
+                                <option value="false">关</option>
                             </select>
                         </div>
                     </div>
@@ -205,31 +196,33 @@
                 function showData() {
                     $.post("/api/user/bili/view",{id: GetQueryString("id")}, function (data) {
                         var _data = data.data;
+                        var taskConfig = JSON.parse(_data.taskConfig);
+                        console.log(taskConfig.biliPreConfig.enablePre)
 
                         $("#id").val(GetQueryString("id"));
                         $("#name").val(_data.name);
-                        $("#taskintervaltime").val(_data.taskintervaltime);
-                        $("#numberofcoins").val(_data.numberofcoins);
-                        $("#reservecoins").val(_data.reservecoins);
-                        $("#selectlike").val(_data.selectlike);
-                        $("#monthendautocharge").val(_data.monthendautocharge);
-                        $("#givegift").val(_data.givegift);
-                        $("#uplive").val(_data.uplive);
-                        $("#chargeforlove").val(_data.chargeforlove);
-                        $("#deviceplatform").val(_data.deviceplatform);
-                        $("#coinaddpriority").val(_data.coinaddpriority);
-                        $("#useragent").val(_data.useragent);
-                        $("#matchEnable").val(_data.matchEnable);
-                        $("#matchPredictnumberofcoins").val(_data.matchPredictnumberofcoins);
-                        $("#matchMinimumnumberofcoins").val(_data.matchMinimumnumberofcoins);
-                        $("#matchShowhandmodel").val(_data.matchShowhandmodel);
-                        $("#skipdailytask").val(_data.skipdailytask);
+                        $("#dailyCoin").val(taskConfig.biliCoinConfig.dailyCoin);
+                        $("#reserveCoins").val(taskConfig.biliCoinConfig.reserveCoins);
+                        $("#enableClickLike").val(taskConfig.biliCoinConfig.enableClickLike.toString());
+                        $("#coinRules").val(taskConfig.biliCoinConfig.coinRules);
+                        $("#enableAutoCharge").val(taskConfig.biliChargeConfig.enableAutoCharge.toString());
+                        $("#chargeObject").val(taskConfig.biliChargeConfig.chargeObject);
+                        $("#chargeDay").val(taskConfig.biliChargeConfig.chargeDay);
+                        $("#enableGiveGift").val(taskConfig.biliGiveGiftConfig.enableGiveGift.toString());
+                        $("#giveGiftRoomID").val(taskConfig.biliGiveGiftConfig.giveGiftRoomID);
+                        $("#cartoonSignOS").val(taskConfig.cartoonSignOS);
+                        $("#enablePre").val(taskConfig.biliPreConfig.enablePre.toString());
+                        changePreStatus(taskConfig.biliPreConfig.enablePre.toString());
+                        $("#preCoin").val(taskConfig.biliPreConfig.preCoin);
+                        $("#preKeepCoin").val(taskConfig.biliPreConfig.keepCoin);
+                        $("#enableReversePre").val(taskConfig.biliPreConfig.enableReversePre.toString());
+                        $("#enable").val(_data.enable);
                         $("#webhook").val(_data.webhook);
 
                         form.render();
                     });
                 }
-                
+
                 $("#showSendWebHook").click(function () {
                     layer.open({
                         type: 2,
@@ -243,14 +236,18 @@
                     });
                 })
 
-                form.on('select(matchEnable)', function (data) {
-                    if (data.value == 'false') {
+                function changePreStatus(value) {
+                    if (value == 'false') {
                         $("#match_rule").css("display", "none");
                         form.render('select');
                     } else {
                         $("#match_rule").css("display", "block");
                         form.render('select');
                     }
+                }
+
+                form.on('select(enablePre)', function (data) {
+                    changePreStatus(data.value);
                 });
 
 

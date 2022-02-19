@@ -1,9 +1,8 @@
 package com.push.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 import lombok.Getter;
@@ -23,27 +22,27 @@ public class PushPlusPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.PUSH_PLUS;
+        return URLConstant.PUSH_PUSH_PLUS;
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (null == jsonObject) {
             return false;
         }
         // See https://www.pushplus.plus/doc/guide/api.htm
-        JsonElement code = jsonObject.get("code");
+        Integer code = jsonObject.getInteger("code");
 
         if (code == null) {
             return false;
         }
 
-        return code.getAsInt() == 200;
+        return code == 200;
     }
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return new Gson().toJson(new PushModel(metaInfo.getToken(), content));
+        return JSON.toJSONString(new PushModel(metaInfo.getToken(), content));
     }
 
     @Getter

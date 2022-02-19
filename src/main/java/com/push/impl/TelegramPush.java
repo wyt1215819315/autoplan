@@ -1,8 +1,7 @@
 package com.push.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 
@@ -16,21 +15,21 @@ public class TelegramPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.SERVER_PUSH_TELEGRAM + metaInfo.getToken() + "/sendMessage";
+        return URLConstant.PUSH_SERVER_PUSH_TELEGRAM + metaInfo.getToken() + "/sendMessage";
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (null == jsonObject) {
             return false;
         }
 
-        JsonElement ok = jsonObject.get("ok");
+        String ok = jsonObject.getString("ok");
         if (null == ok) {
             return false;
         }
 
-        return "true".equals(ok.getAsString());
+        return "true".equals(ok);
     }
 
     @Override
