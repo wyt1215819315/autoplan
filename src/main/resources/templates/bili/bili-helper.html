@@ -16,6 +16,10 @@
                 <a class="layui-btn layui-btn-sm layui-btn-normal" lay-href="/my" style="margin-bottom: 10px;">
                     <i class="layui-icon layui-icon-search"></i>我的任务
                 </a>
+
+                <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="toJson" id="toJson" style="margin-bottom: 10px; display: none;">
+                    <i class="layui-icon layui-icon-fonts-code"></i>转json
+                </a>
             </div>
         </script>
 
@@ -39,6 +43,23 @@
             layui.use(['table','layer'], function() {
 
                 var table = layui.table,layer = layui.layer;
+
+
+                $.ajax({
+                    url: "/api/user/me",
+                    async: true,//关键是这个参数 是否异步请求=>false:使用同步请求
+                    type: "POST",
+                    success: function(result) {
+
+                        if(result.code == 200){
+                            var data = result.data;
+                            if (data.authorities[0].authority === "ROLE_ADMIN"){
+                                $("#toJson").css("display","");
+                            }
+                        }
+                    },
+                    error: function(){}
+                })
 
                 table.render({
                     id: 'tableRenderId',
@@ -109,6 +130,22 @@
                                     return true;
                                 }
                             });
+                            break;
+                        case 'toJson':
+                            $.ajax({
+                                url: "/api/admin/turnbiliplan2json",
+                                type: "POST",
+                                success: function(result) {
+                                    layer.ready(function(){
+                                        layer.msg(result.msg);
+                                    });
+                                },
+                                error: function(){
+                                    layer.ready(function(){
+                                        layer.msg('网络异常');
+                                    });
+                                }
+                            })
                             break;
                     };
                 });
