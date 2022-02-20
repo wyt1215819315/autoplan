@@ -21,7 +21,7 @@ public class BiliPlan {
     private String isVip;
     private Date vipDueDate;
     private String status;
-    private String skipdailytask;
+    private String enable;
     private Date enddate;
 
     public String getEndDateString(){
