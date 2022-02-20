@@ -106,8 +106,8 @@ public class BiliTask {
             biliService.updateUserInfo(autoBilibili.getId(), biliData, true);
         }
 
-        //执行推送任务，推送使用简易消息，而不是长篇大论
-        PushUtil.doPush(taskResult.getMsg(), autoBilibili.getWebhook(), autoBilibili.getUserid());
+        //执行推送任务
+        PushUtil.doPush(taskResult.getLog(), autoBilibili.getWebhook(), autoBilibili.getUserid());
 
         AutoLog bilibili = new AutoLog(autoBilibili.getId(), "bili", taskResult.getIsTaskSuccess() == 1 ? "200" : taskResult.isUserCheckSuccess() ? "-1" : "500", autoBilibili.getUserid(), new Date(), taskResult.getLog());
         logDao.insert(bilibili);
