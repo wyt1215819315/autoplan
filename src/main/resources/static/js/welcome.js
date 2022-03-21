@@ -1,13 +1,3 @@
-function addScriptTag(src) {
-    var script = document.createElement("script");
-    script.setAttribute("type", "text/javascript");
-    script.src = src;
-    document.body.appendChild(script);
-}
-
-//方法调用值为需要引入js的路径
-addScriptTag("https://cdn.jsdelivr.net/npm/marked/marked.min.js");
-
 layui.use(['element','layer'], function() {
     var element = layui.element;
     var layer = layui.layer;

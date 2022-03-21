@@ -10,6 +10,8 @@ import com.miyoushe.sign.gs.GenshinHelperProperties;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.entity.AutoLog;
 import com.push.PushUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ public class MiHuYouTask {
     private static AutoMihayouDao mihayouDao;
     private static AutoLogDao logDao;
     private static MihayouService mihayouService;
+    private final Log logger = LogFactory.getLog(MiHuYouTask.class);
 
     @Autowired
     public void getMihuyouService(MihayouService service){
@@ -113,20 +116,27 @@ public class MiHuYouTask {
         DailyTask dailyTask = new DailyTask(account);
         StringBuilder msg = new StringBuilder();
         for (int i = 0; i < reconnect; i++) {
-            Map<String, Object> maprun = dailyTask.doDailyTask();
-            if (!(boolean) maprun.get("flag")) {
-                if (i != reconnect - 1) {
-                    msg.append(maprun.get("msg"));
-                    msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
-                    continue;
+            Map<String, Object> maprun;
+            try {
+                maprun = dailyTask.doDailyTask();
+                if (!(boolean) maprun.get("flag")) {
+                    if (i != reconnect - 1) {
+                        msg.append(maprun.get("msg"));
+                        msg.append("\n").append("用户登录失败！，尝试第").append(i + 1).append("次重试");
+                        continue;
+                    }
+                    autoMihayou1.setStatus("500");
+                    break;
+                } else {
+                    //任务成功完成
+                    msg.append("\n").append(maprun.get("msg")).append("\n-----------------\n").append("[SUCCESS] 任务全部正常完成，进程退出");
+                    autoMihayou1.setStatus("200");
+                    break;
                 }
-                autoMihayou1.setStatus("500");
-                break;
-            } else {
-                //任务成功完成
-                msg.append("\n").append(maprun.get("msg")).append("\n-----------------\n").append("[SUCCESS] 任务全部正常完成，进程退出");
-                autoMihayou1.setStatus("200");
-                break;
+            }catch (Exception e){
+                logger.error("！米游社任务运行出错" + e.getMessage());
+                msg.append("！米游社任务运行出错：").append(e.getMessage());
+                autoMihayou1.setStatus("-1");
             }
         }
         //执行推送任务
