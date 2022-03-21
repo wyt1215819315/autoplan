@@ -462,6 +462,10 @@ public class BiliTaskUtil {
                 int num = jsonObject.getJSONObject("data").getInteger("amount");
                 appendLog("大会员成功领取%s张漫读劵", num);
             } else {
+                if ("不能重复领取".equals(jsonObject.getString("msg"))){
+                    appendLog("大会员领取漫读劵失败，不能重复领取");
+                    return;
+                }
                 String msg = String.format("大会员领取漫读劵失败，原因为:%s", jsonObject.getString("msg"));
                 appendLog(msg);
                 throw new Exception(msg);

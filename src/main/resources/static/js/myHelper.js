@@ -352,7 +352,7 @@ function bilibiliHtml(data) {
             _bilibiliHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + bilibiliUser.endDateString + '</font>'
         }
 
-        if (bilibiliUser.skipdailytask == "false") {
+        if (bilibiliUser.enable == "true") {
             _bilibiliHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
         } else {
             _bilibiliHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';

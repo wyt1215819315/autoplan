@@ -24,8 +24,8 @@ public class MatchGame {
         params.put("ps", String.valueOf(ps));
         params.put("gid", "");
         params.put("sids", "");
-        params.put("stime", today + URLEncoder.encode(" 00:00:00", "UTF-8"));
-        params.put("etime", today + URLEncoder.encode(" 23:59:59", "UTF-8"));
+        params.put("stime", today + " 00:00:00");
+        params.put("etime", today + " 23:59:59");
         return biliWebUtil.doGet(URLConstant.BILI_QUERY_QUESTIONS, params);
     }
 
