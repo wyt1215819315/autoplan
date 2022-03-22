@@ -1,3 +1,6 @@
+//判断是否部署在https页面，并动态添加mate
+httpsAddMeta();
+
 // 判断页面大小,
 function screen() {
     //获取当前窗口的宽度
@@ -64,5 +67,14 @@ function getStatus(status) {
 
     if (status === "100" || status == null) {
         return '<button class="layui-btn layui-btn-xs layui-btn-primary">等待运行</button>';
+    }
+}
+
+function httpsAddMeta() {
+    if (/^https:\/\//.test(location.href)) {
+        var oMeta = document.createElement('meta');
+        oMeta.httpEquiv = 'Content-Security-Policy';
+        oMeta.content = 'upgrade-insecure-requests';
+        document.getElementsByTagName('head')[0].appendChild(oMeta);
     }
 }
