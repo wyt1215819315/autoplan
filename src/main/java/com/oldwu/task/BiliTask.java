@@ -74,6 +74,12 @@ public class BiliTask {
             Integer auto_id = autoBilibili.getId();
             BiliUser userb = biliUserDao.selectByAutoId(auto_id);
 
+            //判断任务表存在数据，但是用户表中没有数据的情况，为无效数据，需要从任务表中清除！
+            if (userb == null) {
+                bilibiliDao.deleteById(auto_id);
+                continue;
+            }
+
             //任务未开启或已经完成，下一个
             if (!Boolean.parseBoolean(autoBilibili.getEnable())) {
                 BiliUser biliUser = new BiliUser(auto_id, "0", new Date());
