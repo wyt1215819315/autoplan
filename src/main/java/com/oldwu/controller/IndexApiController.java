@@ -1,18 +1,16 @@
 package com.oldwu.controller;
 
 import com.bili.model.BiliPlan;
+import com.bili.service.BiliService;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
 import com.oldwu.entity.AjaxResult;
-import com.bili.service.BiliService;
 import com.oldwu.service.SysService;
 import com.oldwu.vo.PageDataVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,10 +31,11 @@ public class IndexApiController {
 
     /**
      * 获取系统首页公告
+     *
      * @return AjaxResult 公告内容
      */
     @RequestMapping("/welcome-notice/list")
-    public AjaxResult getSystemNoticeContent(){
+    public AjaxResult getSystemNoticeContent() {
         return sysService.getSystemNoticeContent();
     }
 
