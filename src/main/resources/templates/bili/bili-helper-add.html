@@ -203,7 +203,7 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <div class="layui-input-block">
+                        <div class="layui-input-block layui-btn-container">
                             <button class="layui-btn layui-btn-normal" lay-filter="user-save" lay-submit type="button">
                                 <i class="layui-icon layui-icon-ok"></i> 提交
                             </button>
@@ -283,7 +283,7 @@
                 layer.open({
                     type: 1,
                     title: '扫码后自动填充前三项',
-                    area: ["400px", "443px"],
+                    area: screen() < 2 ? ['65%', '50%'] : ["400px", "443px"],
                     shade: 0.7,
                     id: 'LAY_layuipro',
                     maxmin: false,
@@ -291,12 +291,13 @@
                     content: '<div id="qrcode" style="margin: 10px; 10px">正在获取二维码</div>',
                     zIndex: layer.zIndex,
                     success: function (layero) {
+                        var width = $("#qrcode").width();
                         $.get("/api/user/bili/qrcode", {}, function (data) {
                             $('#qrcode').html("");
                             $('#qrcode').qrcode({
                                 render: "canvas",
-                                width: 375,
-                                height: 375,
+                                width: screen() < 2 ? Math.ceil(width * 0.75) : 375,
+                                height: screen() < 2 ? Math.ceil(width * 0.75) : 375,
                                 text: "https://passport.bilibili.com/qrcode/h5/login?oauthKey=" + data.data
                             });
                             t2 = window.setInterval(function () {

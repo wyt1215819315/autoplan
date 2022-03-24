@@ -176,7 +176,7 @@ function miyousheHtml(data) {
 
     data.forEach(function(miyousheUser) {
 
-        _miyousheHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
+        _miyousheHtml += '<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">';
         _miyousheHtml += '<div class="layui-card">';
         _miyousheHtml += '<div class="layui-card-header" style="font-size: 16px;">' + miyousheUser.name;
 
@@ -257,7 +257,7 @@ function netmusicHtml(data) {
 
     data.forEach(function(netmusicUser) {
 
-        _netmusicHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
+        _netmusicHtml += '<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">';
         _netmusicHtml += '<div class="layui-card">';
         _netmusicHtml += '<div class="layui-card-header" style="font-size: 16px;">' + netmusicUser.name;
 
@@ -344,7 +344,7 @@ function bilibiliHtml(data) {
 
     data.forEach(function(bilibiliUser) {
 
-        _bilibiliHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
+        _bilibiliHtml += '<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">';
         _bilibiliHtml += '<div class="layui-card">';
         _bilibiliHtml += '<div class="layui-card-header" style="font-size: 16px;">' + bilibiliUser.planName;
 
