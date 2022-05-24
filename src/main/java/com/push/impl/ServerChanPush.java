@@ -1,8 +1,7 @@
 package com.push.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.misec.apiquery.ApiList;
+import com.alibaba.fastjson.JSONObject;
+import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 
@@ -17,27 +16,23 @@ public class ServerChanPush extends AbstractPush {
 
     @Override
     protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return ApiList.SERVER_PUSH + metaInfo.getToken() + ".send";
+        return URLConstant.PUSH_SERVER_PUSH + metaInfo.getToken() + ".send";
     }
 
     @Override
-    protected boolean checkPushStatus(JsonObject jsonObject) {
+    protected boolean checkPushStatus(JSONObject jsonObject) {
         if (null == jsonObject) {
             return false;
         }
 
-        JsonElement code = jsonObject.get("code");
-        JsonElement errno = jsonObject.get("errno");
+        Integer code = jsonObject.getInteger("code");
+        Integer errno = jsonObject.getInteger("errno");
 
-        if (null != code && code.getAsInt() == 0) {
+        if (null != code && code == 0) {
             return true;
         }
 
-        if (null != errno && errno.getAsInt() == 0) {
-            return true;
-        }
-
-        return false;
+        return null != errno && errno == 0;
     }
 
     @Override

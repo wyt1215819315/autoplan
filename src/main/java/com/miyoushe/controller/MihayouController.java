@@ -91,9 +91,8 @@ public class MihayouController {
     }
 
     @PostMapping("/run")
-    public Map<String, Object> run(@Param("id") Integer id, Principal principal) {
-        Integer userId = userService.getUserId(principal.getName());
-        return mihayouService.doDailyTaskPersonal(id, userId);
+    public AjaxResult run(@Param("id") Integer id) {
+        return mihayouService.doDailyTaskPersonal(id);
     }
 
 }

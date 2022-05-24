@@ -1,21 +1,16 @@
 package com.oldwu.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bili.model.BiliPlan;
+import com.bili.service.BiliService;
 import com.miyoushe.model.AutoMihayou;
 import com.miyoushe.service.MihayouService;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.service.NetmusicService;
-import com.oldwu.dao.SysConfigDao;
 import com.oldwu.entity.AjaxResult;
-import com.oldwu.entity.BiliPlan;
-import com.oldwu.entity.SysConfig;
-import com.oldwu.service.BiliService;
 import com.oldwu.service.SysService;
 import com.oldwu.vo.PageDataVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,22 +31,13 @@ public class IndexApiController {
 
     /**
      * 获取系统首页公告
+     *
      * @return AjaxResult 公告内容
      */
     @RequestMapping("/welcome-notice/list")
-    public AjaxResult getSystemNoticeContent(){
+    public AjaxResult getSystemNoticeContent() {
         return sysService.getSystemNoticeContent();
     }
-
-    /**
-     * 编辑系统首页公告
-     * @return AjaxResult 公告内容
-     */
-    @PostMapping("/welcome-notice/edit")
-    public AjaxResult editSystemNoticeContent(@RequestParam String text){
-        return sysService.setSystemNoticeContent(text);
-    }
-
 
     /**
      * 获取b站任务列表

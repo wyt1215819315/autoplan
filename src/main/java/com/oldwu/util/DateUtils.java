@@ -6,6 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * 日期处理
@@ -19,10 +20,29 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
 	public final static String DATE_PATTERN = "yyyy-MM-dd";
 	/** 时间格式(yyyy-MM-dd HH:mm:ss) */
 	public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-	
+
 	public static String format(Date date) {
         return format(date, DATE_PATTERN);
     }
+
+
+    /**
+     * 线程暂停，相当于延时，会对传入参数做随机处理，可能高可能低
+     * @param seconds 需要延时的秒数
+     */
+    public static void threadSleep(Integer seconds) {
+        if (seconds == 0) {
+            seconds = 2;
+        }
+
+        Random random = new Random();
+        int sleepTime = (int) ((random.nextDouble() + 0.5) * seconds * 1000);
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException ignored) {
+        }
+    }
+
 	/**
 	 * 时间转换
 	 * @param date
@@ -36,9 +56,9 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         }
         return null;
     }
-    
-    
-    
+
+
+
     public static String YYYY = "yyyy";
 
     public static String YYYY_MM = "yyyy-MM";
@@ -50,13 +70,13 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     private static String[] parsePatterns = {
-            "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", 
+            "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
             "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
 
     /**
      * 获取当前Date型日期
-     * 
+     *
      * @return Date() 当前日期
      */
     public static Date getNowDate()
@@ -66,7 +86,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
 
     /**
      * 获取当前日期, 默认格式为yyyy-MM-dd
-     * 
+     *
      * @return String
      */
     public static String getDate()

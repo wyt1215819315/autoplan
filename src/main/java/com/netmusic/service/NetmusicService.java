@@ -3,7 +3,6 @@ package com.netmusic.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.misec.utils.HelpUtil;
 import com.netmusic.dao.AutoNetmusicDao;
 import com.netmusic.model.AutoNetmusic;
 import com.netmusic.util.NeteaseMusicUtil;
@@ -11,7 +10,6 @@ import com.oldwu.dao.AutoLogDao;
 import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
-import com.oldwu.entity.BiliPlan;
 import com.oldwu.security.utils.SessionUtils;
 import com.oldwu.task.NetMusicTask;
 import com.oldwu.vo.PageDataVO;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +37,18 @@ public class NetmusicService {
 
     /**
      * 根据id查询
+     *
      * @return
      */
-    public AjaxResult view(Integer id){
+    public AjaxResult view(Integer id) {
         Integer userId = SessionUtils.getPrincipal().getId();
         AutoNetmusic autoNetmusic = netmusicDao.selectById(id);
-        if (autoNetmusic == null){
+        if (autoNetmusic == null) {
             return AjaxResult.doError();
-        }else {
+        } else {
             //放行管理员
             String role = userDao.getRole(userId);
-            if (!autoNetmusic.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")){
+            if (!autoNetmusic.getUserid().equals(userId) && !role.equals("ROLE_ADMIN")) {
                 return AjaxResult.doError("你无权访问！");
             }
         }
@@ -75,7 +73,7 @@ public class NetmusicService {
             autoNetmusic.setPhone(null);
             autoNetmusic.setCookie(null);
             autoNetmusic.setWebhook(null);
-            autoNetmusic.setNetmusicName(HelpUtil.userNameEncode(autoNetmusic.getNetmusicName()));
+            autoNetmusic.setNetmusicName(com.oldwu.util.StringUtils.userNameEncode(autoNetmusic.getNetmusicName()));
         }
 
         data.setRecords(autoNetmusicList);
@@ -157,11 +155,12 @@ public class NetmusicService {
 
     /**
      * 删除网易云任务，开启事务
+     *
      * @param id 传入要删除的autoId
      * @return AjaxResult 删除结果
      */
     @Transactional
-    public AjaxResult deleteNetMusicPlan(Integer id) throws Exception{
+    public AjaxResult deleteNetMusicPlan(Integer id) throws Exception {
         //校验用户id
         Integer userid = SessionUtils.getPrincipal().getId();
         if (id == null || id == 0) {
@@ -237,7 +236,7 @@ public class NetmusicService {
         return map;
     }
 
-    public Map<String, Object> doDailyTaskPersonal(Integer autoId,Integer userid) {
+    public Map<String, Object> doDailyTaskPersonal(Integer autoId, Integer userid) {
         Map<String, Object> map = new HashMap<>();
         AutoNetmusic autoNetmusic = netmusicDao.selectById(autoId);
         if (autoNetmusic == null || autoNetmusic.getId() == null) {

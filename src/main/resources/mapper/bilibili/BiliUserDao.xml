@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oldwu.dao.BiliUserDao">
-    <resultMap id="BaseResultMap" type="com.oldwu.entity.BiliUser">
+<mapper namespace="com.bili.dao.BiliUserDao">
+    <resultMap id="BaseResultMap" type="com.bili.model.BiliUser">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="auto_id" jdbcType="INTEGER" property="autoId"/>
         <result column="uid" jdbcType="BIGINT" property="uid"/>
@@ -23,68 +23,68 @@
     is_vip, vip_due_date, other, `status`
     </sql>
 
-    <select id="selectByMid" resultType="com.oldwu.entity.BiliUser">
+    <select id="selectByMid" resultType="com.bili.model.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
         where uid = #{id}
     </select>
 
-    <select id="selectAll" resultType="com.oldwu.entity.BiliPlan">
-        SELECT bili_user.bili_name         AS bili_name,
-               bili_user.bili_coin         AS bili_coin,
-               bili_user.bili_exp          AS bili_exp,
-               bili_user.bili_upexp        AS bili_upexp,
-               bili_user.bili_level        AS bili_level,
-               bili_user.face_img          AS face_img,
-               bili_user.is_vip            AS is_vip,
-               bili_user.vip_due_date      AS vip_due_date,
-               bili_user.`status`          AS `status`,
-               bili_user.enddate           AS enddate,
-               auto_bilibili.skipDailyTask AS skipDailyTask,
-               auto_bilibili.id            AS auto_id
+    <select id="selectAll" resultType="com.bili.model.BiliPlan">
+        SELECT bili_user.bili_name    AS bili_name,
+               bili_user.bili_coin    AS bili_coin,
+               bili_user.bili_exp     AS bili_exp,
+               bili_user.bili_upexp   AS bili_upexp,
+               bili_user.bili_level   AS bili_level,
+               bili_user.face_img     AS face_img,
+               bili_user.is_vip       AS is_vip,
+               bili_user.vip_due_date AS vip_due_date,
+               bili_user.`status`     AS `status`,
+               bili_user.enddate      AS enddate,
+               auto_bilibili.`enable` AS `enable`,
+               auto_bilibili.id       AS auto_id
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
     </select>
 
-    <select id="selectPageList" resultType="com.oldwu.entity.BiliPlan">
-        SELECT bili_user.bili_name         AS bili_name,
-               bili_user.bili_coin         AS bili_coin,
-               bili_user.bili_exp          AS bili_exp,
-               bili_user.bili_upexp        AS bili_upexp,
-               bili_user.bili_level        AS bili_level,
-               bili_user.face_img          AS face_img,
-               bili_user.is_vip            AS is_vip,
-               bili_user.vip_due_date      AS vip_due_date,
-               bili_user.`status`          AS `status`,
-               bili_user.enddate           AS enddate,
-               auto_bilibili.skipDailyTask AS skipDailyTask,
-               auto_bilibili.id            AS auto_id
+    <select id="selectPageList" resultType="com.bili.model.BiliPlan">
+        SELECT bili_user.bili_name    AS bili_name,
+               bili_user.bili_coin    AS bili_coin,
+               bili_user.bili_exp     AS bili_exp,
+               bili_user.bili_upexp   AS bili_upexp,
+               bili_user.bili_level   AS bili_level,
+               bili_user.face_img     AS face_img,
+               bili_user.is_vip       AS is_vip,
+               bili_user.vip_due_date AS vip_due_date,
+               bili_user.`status`     AS `status`,
+               bili_user.enddate      AS enddate,
+               auto_bilibili.`enable` AS `enable`,
+               auto_bilibili.id       AS auto_id
         FROM auto_bilibili
-                     INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
+                 INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
         limit #{page}, #{limit}
     </select>
 
-    <select id="selectMine" resultType="com.oldwu.entity.BiliPlan">
-        SELECT bili_user.bili_name         AS bili_name,
-               bili_user.bili_coin         AS bili_coin,
-               bili_user.bili_exp          AS bili_exp,
-               bili_user.bili_upexp        AS bili_upexp,
-               bili_user.bili_level        AS bili_level,
-               bili_user.face_img          AS face_img,
-               bili_user.is_vip            AS is_vip,
-               bili_user.vip_due_date      AS vip_due_date,
-               bili_user.`status`          AS `status`,
-               bili_user.enddate           AS enddate,
-               auto_bilibili.skipDailyTask AS skipDailyTask,
-               auto_bilibili.name          AS plan_name,
-               auto_bilibili.id            AS auto_id
+    <select id="selectMine" resultType="com.bili.model.BiliPlan">
+        SELECT bili_user.bili_name    AS bili_name,
+               bili_user.bili_coin    AS bili_coin,
+               bili_user.bili_exp     AS bili_exp,
+               bili_user.bili_upexp   AS bili_upexp,
+               bili_user.bili_level   AS bili_level,
+               bili_user.face_img     AS face_img,
+               bili_user.is_vip       AS is_vip,
+               bili_user.vip_due_date AS vip_due_date,
+               bili_user.`status`     AS `status`,
+               bili_user.enddate      AS enddate,
+               auto_bilibili.`enable` AS `enable`,
+               auto_bilibili.name     AS plan_name,
+               auto_bilibili.id       AS auto_id
         FROM auto_bilibili
                  INNER JOIN bili_user ON bili_user.auto_id = auto_bilibili.id
         WHERE auto_bilibili.userid = #{userid}
     </select>
 
-    <select id="selectByAutoId" resultType="com.oldwu.entity.BiliUser">
+    <select id="selectByAutoId" resultType="com.bili.model.BiliUser">
         select
         <include refid="Base_Column_List"/>
         from bili_user
