@@ -524,7 +524,7 @@ public class NeteaseMusicUtil {
                 return result;
             } else {
                 result.put("flag", "false");
-                result.put("msg", "登录失败 : " + json.getString("msg"));
+                result.put("msg", "登录失败 : " + json.getString("message"));
                 result.put("code", json.getString("code"));
                 return result;
             }

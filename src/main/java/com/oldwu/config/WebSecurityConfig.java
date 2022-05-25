@@ -34,14 +34,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ValidateCodeFilter validateCodeFilter;
 
-    @Bean
-    UserDetailsService customUserService() { //注册UserDetailsService 的bean
-        return new CustomUserService();
-    }
+    @Autowired
+    private UserDetailsService customUserService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserService()).passwordEncoder(new PasswordEncoder() {
+        auth.userDetailsService(customUserService).passwordEncoder(new PasswordEncoder() {
 
             @Override
             public String encode(CharSequence rawPassword) {
