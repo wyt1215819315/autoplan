@@ -58,48 +58,56 @@ cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_
 1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，或者可以直接复制以下内容：
 ```yaml
 server:
-   #服务器端口
-   port: 26666
+  #服务器端口
+  port: 26666
 spring:
-   #数据库连接配置
-   datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: 数据库用户名
-      password: 数据库密码
-   main:
-      allow-bean-definition-overriding: true
-   mvc: #静态文件
-      static-path-pattern: /static/**
-# actable自动建表
+  #数据库连接配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: 数据库用户名
+    password: 数据库密码
+  main:
+    allow-bean-definition-overriding: true
+  mvc: #静态资源
+    static-path-pattern: /static/**
+    throw-exception-if-no-handler-found: true
+    hiddenmethod:
+      filter:
+        enabled: true
+  thymeleaf:
+    prefix: classpath:/templates/   #在构建URL时预先查看名称的前缀
+    suffix: .html  #构建URL时附加到查看名称的后缀
+    cache: false
 actable:
-   table:
-      auto: update
-   model:
-      #分号或者逗号隔开
-      pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
-   database:
-      type: mysql
-   index:
-      #自己定义的索引前缀#该配置项不设置默认使用actable_idx_
-      prefix: INDEX_
-   unique:
-      #自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
-      prefix: INDEX_UNIQUE_
-   # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
+  table:
+    auto: update
+  model:
+    #分号或者逗号隔开
+    pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model;com.bili.model
+  database:
+    type: mysql
+  index:
+    #自己定义的索引前缀#该配置项不设置默认使用actable_idx_
+    prefix: INDEX_
+  unique:
+    #自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
+    prefix: INDEX_UNIQUE_
+  # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
 mybatis-plus:
-   global-config:
-     db-config:
-       id-type: auto
-   #mapper配置文件
-   mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
-   type-aliases-package: com.oldwu.entity
-   #开启驼峰命名
-   configuration:
-      map-underscore-to-camel-case: true
-      #输出mybatis日志
-#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+  type-aliases-package: com.oldwu.entity
+  #开启驼峰命名
+  configuration:
+    map-underscore-to-camel-case: true
+    #输出mybatis日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 ```
+
 2. 在mysql中创建数据库并导入sql
 3. 接下来你可以选择两种方式部署：
 <details>
