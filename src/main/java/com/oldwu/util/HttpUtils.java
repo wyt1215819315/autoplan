@@ -580,6 +580,9 @@ public class HttpUtils {
      * @throws IOException
      */
     public static JSONObject getJson(HttpResponse httpResponse) throws IOException {
+        if (httpResponse.getStatusLine().getStatusCode() == 204){
+            return new JSONObject();
+        }
         HttpEntity entity = httpResponse.getEntity();
         String resp = EntityUtils.toString(entity, "UTF-8");
         EntityUtils.consume(entity);

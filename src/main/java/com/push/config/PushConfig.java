@@ -118,6 +118,11 @@ public class PushConfig {
      */
     private String WE_COM_APP_MEDIA_ID;
 
+    /**
+     * discord_webhook
+     */
+    private String DISCORD_URL;
+
     public PushInfo getPushInfo() {
         if (StringUtils.isNoneBlank(TG_BOT_TOKEN, TG_USER_ID) && Boolean.TRUE.equals(TG_USE_CUSTOM_URL)) {
             return new PushInfo(new TelegramCustomUrlPush(), TG_BOT_TOKEN, TG_USER_ID);
@@ -129,6 +134,8 @@ public class PushConfig {
             return new PushInfo(new DingTalkPush(), DING_TALK_URL);
         } else if (StringUtils.isNotBlank(PUSH_PLUS_TOKEN)) {
             return new PushInfo(new PushPlusPush(), PUSH_PLUS_TOKEN);
+        } else if (StringUtils.isNotBlank(DISCORD_URL)) {
+            return new PushInfo(new DiscordPush(), DISCORD_URL);
         } else if (StringUtils.isNotBlank(SCT_KEY)) {
             return new PushInfo(new ServerChanTurboPush(), SCT_KEY);
         } else if (StringUtils.isNotBlank(WE_COM_TOKEN)) {
