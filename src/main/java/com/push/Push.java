@@ -1,5 +1,6 @@
 package com.push;
 
+import com.push.config.PushConfig;
 import com.push.model.PushMetaInfo;
 import com.push.model.PushResult;
 
@@ -14,9 +15,9 @@ public interface Push {
     /**
      * 发起推送
      *
-     * @param metaInfo 元信息
+     * @param pushInfo 元信息
      * @param content  推送内容
      * @return 推送结果
      */
-    PushResult doPush(PushMetaInfo metaInfo, String content);
+    PushResult doPush(PushConfig.PushInfo pushInfo, String content);
 }

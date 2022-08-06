@@ -149,22 +149,7 @@ public class PushConfig {
         }
     }
 
-    public HttpHost getProxy() {
-        if (null == PROXY_PORT || PROXY_PORT.equals(0)) {
-            return null;
-        }
 
-        if (StringUtils.isNotBlank(PROXY_HTTP_HOST)) {
-            return new HttpHost(PROXY_HTTP_HOST, PROXY_PORT, "http");
-        }
-
-        if (StringUtils.isNotBlank(PROXY_SOCKET_HOST)) {
-            InetSocketAddress address = new InetSocketAddress(PROXY_SOCKET_HOST, PROXY_PORT);
-            return new HttpHost(PROXY_SOCKET_HOST, PROXY_PORT, "socket");
-        }
-
-        return null;
-    }
 
     @Getter
     public class PushInfo {

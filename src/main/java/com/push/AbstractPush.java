@@ -1,8 +1,12 @@
 package com.push;
 
+import cn.hutool.core.util.ClassUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.oldwu.util.HttpUtils;
+import com.push.config.PushConfig;
+import com.push.impl.WeComAppPush;
 import com.push.model.PushMetaInfo;
+import com.push.model.PushProxyConfig;
 import com.push.model.PushResult;
 import io.github.itning.retry.Attempt;
 import io.github.itning.retry.RetryException;
@@ -13,9 +17,15 @@ import io.github.itning.retry.strategy.limit.AttemptTimeLimiters;
 import io.github.itning.retry.strategy.stop.StopStrategies;
 import io.github.itning.retry.strategy.wait.WaitStrategies;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +40,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public abstract class AbstractPush implements Push, RetryListener {
+
+    public static PushProxyConfig pushProxyConfig;
 
     protected final RequestConfig requestConfig;
     private final Retryer<JSONObject> retryer;
@@ -59,14 +71,20 @@ public abstract class AbstractPush implements Push, RetryListener {
     }
 
     @Override
-    public final PushResult doPush(PushMetaInfo metaInfo, String content) {
+    public final PushResult doPush(PushConfig.PushInfo pushInfo, String content) {
+        //检测是否需要使用代理
+        Push target = pushInfo.getTarget();
+        String className = ClassUtil.getClassName(target, true);
+        boolean useProxy = pushProxyConfig.isEnable() && StringUtils.equalsAny(className, pushProxyConfig.getUse().toArray(new String[0]));
+        PushMetaInfo metaInfo = pushInfo.getMetaInfo();
         String url = generatePushUrl(metaInfo);
         assert null != url : "推送URL不能为空";
         List<String> pushList = segmentation(metaInfo, content);
         PushResult pushResult = PushResult.success();
         for (String pushItemContent : pushList) {
             String pushContent = generatePushBody(metaInfo, pushItemContent);
-            PushResult result = push2Target(url, pushContent);
+
+            PushResult result = push2Target(url, pushContent, useProxy);
             if (!result.isSuccess()) {
                 pushResult = PushResult.failed();
                 break;
@@ -84,9 +102,9 @@ public abstract class AbstractPush implements Push, RetryListener {
         return pushResult;
     }
 
-    private PushResult push2Target(String url, String pushContent) {
+    private PushResult push2Target(String url, String pushContent, boolean useProxy) {
         try {
-            JSONObject jsonObject = retryer.call(() -> post(url, pushContent));
+            JSONObject jsonObject = retryer.call(() -> post(url, pushContent, useProxy));
             log.info("推送结果：{}", jsonObject.toString());
             return PushResult.success(jsonObject.toString());
         } catch (RetryException e) {
@@ -97,11 +115,32 @@ public abstract class AbstractPush implements Push, RetryListener {
         return PushResult.failed();
     }
 
-    private JSONObject post(String url, String content) {
+    public HttpHost getProxy() {
+//        if ("http".equals(pushProxyConfig.getType())){
+        //TODO 没试过能不能用socket协议
+        return new HttpHost(pushProxyConfig.getIp(), pushProxyConfig.getPort(), pushProxyConfig.getType());
+//        } else if ("socket".equals(pushProxyConfig.getType())) {
+
+//        }
+//        if (StringUtils.isNotBlank(PROXY_SOCKET_HOST)) {
+//            InetSocketAddress address = new InetSocketAddress(PROXY_SOCKET_HOST, PROXY_PORT);
+//            return new HttpHost(address, pushProxyConfig.getIp(),pushProxyConfig.getPort(), "socket");
+//        }
+//
+//        return null;
+    }
+
+    private JSONObject post(String url, String content, boolean useProxy) {
         try {
             Map<String, String> headers = HttpUtils.getHeaders();
             headers.put("Content-Type", "application/json");
-            HttpResponse httpResponse = HttpUtils.doPost(url, null, headers, null, content);
+            HttpResponse httpResponse;
+            if (useProxy) {
+                HttpHost proxy = getProxy();
+                httpResponse = HttpUtils.doPost(url, null, headers, null, content, proxy);
+            } else {
+                httpResponse = HttpUtils.doPost(url, null, headers, null, content);
+            }
             return HttpUtils.getJson(httpResponse);
         } catch (Exception e) {
             e.printStackTrace();
