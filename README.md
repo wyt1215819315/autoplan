@@ -1,5 +1,9 @@
 # AutoPlan_Helper
-这是一个自动化的托管系统，目前支持网易云签到刷歌，bilibili赚经验+自动赛事预测，米游社原神签到，部署至服务器和你的小伙伴一起赚经验吧
+本项目为自动化的托管系统，目前支持以下功能：
+1. 网易云签到刷歌
+2. bilibili赚经验+自动赛事预测
+3. 米游社原神签到
+部署至服务器和你的小伙伴一起赚经验吧
 
 22.5 貌似网易云的登录接口凉凉了，返回“网络太拥挤，请稍候再试。”，蹲个大佬修一波
 
@@ -8,7 +12,7 @@
 
 **2.5以上版本由于重构了bili-helper，原来的数据库结构不再兼容新版，请使用管理员用户登录并在bili任务中点击“转json”按钮完成配置转换，记得备份原来的数据库**
 
-1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
+> 1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
 ```mysql
 INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
 ```
@@ -40,68 +44,26 @@ INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, 
 
 ### 使用说明
 #### bilibili
-原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
-
-支持b站签到任务以及赛事预测任务
-已实现扫码登录
-
-cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
+> 原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
+> 
+* 支持b站签到任务以及赛事预测任务
+* 支持扫码登录和cookie登录
+* cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
 #### 网易云
-都是字面意思
+* 网易云每日签到和网易云每日刷300首歌
+> **由于网易云的检测机制会封服务器ip，导致目前该功能的可用性为零**
 
 #### 米游社
-只支持原神签到任务和米游币任务
+* 原神签到任务
+* 米游币任务
 
-[更多使用说明请查看](https://blog.oldwu.top/index.php/archives/84/#toc_5)
+[**更多使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
 ### 项目部署
-1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，或者可以直接复制以下内容：
-```yaml
-server:
-   #服务器端口
-   port: 26666
-spring:
-   #数据库连接配置
-   datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: 数据库用户名
-      password: 数据库密码
-   main:
-      allow-bean-definition-overriding: true
-   mvc: #静态文件
-      static-path-pattern: /static/**
-# actable自动建表
-actable:
-   table:
-      auto: update
-   model:
-      #分号或者逗号隔开
-      pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
-   database:
-      type: mysql
-   index:
-      #自己定义的索引前缀#该配置项不设置默认使用actable_idx_
-      prefix: INDEX_
-   unique:
-      #自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
-      prefix: INDEX_UNIQUE_
-   # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
-mybatis-plus:
-   global-config:
-     db-config:
-       id-type: auto
-   #mapper配置文件
-   mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
-   type-aliases-package: com.oldwu.entity
-   #开启驼峰命名
-   configuration:
-      map-underscore-to-camel-case: true
-      #输出mybatis日志
-#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-```
-2. 在mysql中创建数据库并导入sql
-3. 接下来你可以选择两种方式部署：
+1. 首先准备好`application.yml`配置文件，模板文件可以点击链接下载：
+[application.yml](https://github.com/wyt1215819315/autoplan/blob/master/application-example.yml)
+3. 在`mysql`中创建数据库并导入`auto_plan.sql`
+4. 接下来你可以选择两种方式部署：
 <details>
 <summary>使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行</summary>
 
@@ -111,7 +73,7 @@ mybatis-plus:
 </details>
 
 <details>
-<summary>自行编译</summary>
+<summary>自行编译jar包</summary>
 
 1. 导入idea并下载依赖（请使用JDK1.8）
 2. 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
@@ -127,7 +89,7 @@ mybatis-plus:
    3. 将对应行的`sys_role_id`值改为1
 5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
-**Releases中的jar不会经常更新，我已经设置的github自动构建，如果需要最新测试版，请前往 https://github.com/wyt1215819315/autoplan/actions 自行下载**
+> **[Releases](https://github.com/wyt1215819315/autoplan/releases) 中的jar包可能更新不及时，项目设置有自动构建，急需最新版jar包，可前往 [actions](https://github.com/wyt1215819315/autoplan/actions) 自行下载**
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
@@ -139,7 +101,7 @@ mybatis-plus:
 ### 未来
 1. 管理员功能：查看日志，删除任务等
 2. go-cqhttp推送（需要加机器人为好友）
-3. 手动执行b站任务（咕咕咕）
+3. ~~手动执行b站任务（咕咕咕）~~
 5. 修改密码功能
 6. 自动清理n天之前的日志
 
