@@ -1,95 +1,75 @@
-# AutoPlan_Helper
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Auto Plan Helper</h1>
+<h4 align="center">自动化的托管系统</h4>
+<p align="center">
+	<a href="https://github.com/wyt1215819315/autoplan"><img src="https://img.shields.io/badge/AutoPlan-v2.6.0-brightgreen.svg"></a>
+	<img src="https://img.shields.io/github/stars/wyt1215819315/autoplan">
+</p>
+
+## 项目简介
 本项目为自动化的托管系统，目前支持以下功能：
-1. 网易云签到刷歌
-2. bilibili赚经验+自动赛事预测
-3. 米游社原神签到
-部署至服务器和你的小伙伴一起赚经验吧
+1. b站每日自动经验任务
+2. b站赛事预测赚硬币任务
+3. 网易云自动签到刷歌任务
+4. 米游社原神签到领奖励任务以及米游币任务
 
-22.5 貌似网易云的登录接口凉凉了，返回“网络太拥挤，请稍候再试。”，蹲个大佬修一波
+**如果觉得好用，点个star吧**
 
-2.5版本重构了bili-helper
-2.0版本已更新，带来全新的界面体验，感谢@MuXia-0326大佬的辛勤付出
-
-**2.5以上版本由于重构了bili-helper，原来的数据库结构不再兼容新版，请使用管理员用户登录并在bili任务中点击“转json”按钮完成配置转换，记得备份原来的数据库**
+> **2.5以上版本由于重构了bili-helper，原来的数据库结构不再兼容新版，请使用管理员用户登录并在bili任务中点击“转json”按钮完成配置转换，记得备份原来的数据库**
 
 > 1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
 ```mysql
 INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
 ```
 
-如果觉得好用，点个**star**吧
+## 演示站地址
+<a href="https://auto.oldwu.top/" target="_blank">点击打开Auto Plan</a>
 
-### 开源地址
-[wyt1215819315 / autoplan](https://github.com/wyt1215819315/autoplan)
+**本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境**
 
-### 目前已经实现
-1. b站每日自动经验任务
-1. b站赛事预测赚硬币任务
-2. 网易云自动签到刷歌任务
-3. 米游社原神签到领奖励任务以及米游币任务
-
-### 测试服务器地址
-<a href="https://auto.oldwu.top/" target="_blank">点击打开</a>
-
-本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境
-
-### 项目结构
-采用Springboot + Thymeleaf + layui制作
-
-数据库：mysql
-
-登录安全验证及权限管理：spring-security
+## 项目架构
+基于Springboot、SpringSecurity、layui、mysql开发
 
 定时任务核心：quartz（从pearadmin中抠过来的）
 
-### 使用说明
-#### bilibili
+## 使用说明
+### bilibili
 > 原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
 > 
 * 支持b站签到任务以及赛事预测任务
 * 支持扫码登录和cookie登录
 * cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
-#### 网易云
+### 网易云
 * 网易云每日签到和网易云每日刷300首歌
 > **由于网易云的检测机制会封服务器ip，导致目前该功能的可用性为零**
 
-#### 米游社
+### 米游社
 * 原神签到任务
 * 米游币任务
 
-[**更多使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
+[**更多详细使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
-### 项目部署
+## 项目部署
 1. 首先准备好`application.yml`配置文件，模板文件可以点击链接下载：
 [application.yml](https://github.com/wyt1215819315/autoplan/blob/master/application-example.yml)
-3. 在`mysql`中创建数据库并导入`auto_plan.sql`
-4. 接下来你可以选择两种方式部署：
-<details>
-<summary>使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行</summary>
-
-1. 将`application.yml`修改正确并放入jar包同级目录中
-2. 使用`java -jar xxx.jar`运行
-
-</details>
-
-<details>
-<summary>自行编译jar包</summary>
-
-1. 导入idea并下载依赖（请使用JDK1.8）
-2. 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
-3. 使用maven install打包成jar
-4. 使用`java -jar xxx.jar`运行
-
-</details>
+2. 在`mysql`中创建数据库并导入`auto_plan.sql`
+3. 接下来你可以选择两种方式部署：
+   * 第一种方法 **使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行**
+     * 将`application.yml`修改正确并放入jar包同级目录中
+     * 使用`java -jar xxx.jar`运行
+   * 第二种方法 **自行编译jar包**
+     * 导入idea并下载依赖（请使用JDK1.8）
+     * 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
+     * 使用maven install打包成jar
+     * 使用`java -jar xxx.jar`运行
 
 
 4. 注册账号，并将其定为管理员账户，步骤：
-   1. 查看`sys_user`表中你的账号对应的`id`
-   2. 进入`sys_role_user`表中找到对应的`user_id`
-   3. 将对应行的`sys_role_id`值改为1
+   * 查看`sys_user`表中你的账号对应的`id`
+   * 进入`sys_role_user`表中找到对应的`user_id`
+   * 将对应行的`sys_role_id`值改为1
 5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
-> **[Releases](https://github.com/wyt1215819315/autoplan/releases) 中的jar包可能更新不及时，项目设置有自动构建，急需最新版jar包，可前往 [actions](https://github.com/wyt1215819315/autoplan/actions) 自行下载**
+> **提示：[Releases](https://github.com/wyt1215819315/autoplan/releases) 中的jar包可能更新不及时，项目设置有自动构建，急需最新版jar包，可前往 [actions](https://github.com/wyt1215819315/autoplan/actions) 自行下载**
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
