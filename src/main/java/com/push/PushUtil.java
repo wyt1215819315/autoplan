@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.oldwu.entity.SysUserInfo;
 import com.oldwu.service.UserService;
 import com.push.config.PushConfig;
+import com.push.model.PushProxyConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,11 @@ public class PushUtil {
     @Autowired
     public void getUserService(UserService userService) {
         PushUtil.userService = userService;
+    }
+
+    @Autowired
+    private void setPushProxyConfig(PushProxyConfig pushProxyConfig) {
+        AbstractPush.pushProxyConfig = pushProxyConfig;
     }
 
 }

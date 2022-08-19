@@ -18,7 +18,7 @@ public class ServerPush {
         PushConfig.PushInfo pushInfo = pushConfig.getPushInfo();
 
         if (null != pushInfo) {
-            PushResult pushResult = pushInfo.getTarget().doPush(pushInfo.getMetaInfo(), content);
+            PushResult pushResult = pushInfo.getTarget().doPush(pushInfo, content);
             return pushResult.isSuccess();
         } else {
             log.info("未配置正确的ftKey和chatId,本次执行将不推送日志");
@@ -29,7 +29,7 @@ public class ServerPush {
     public PushResult doServerPushWithResult(String content,PushConfig pushConfig) {
         PushConfig.PushInfo pushInfo = pushConfig.getPushInfo();
         if (null != pushInfo) {
-            return pushInfo.getTarget().doPush(pushInfo.getMetaInfo(), content);
+            return pushInfo.getTarget().doPush(pushInfo, content);
         } else {
             log.info("未配置正确的ftKey和chatId,本次执行将不推送日志");
             return null;

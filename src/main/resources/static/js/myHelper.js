@@ -18,6 +18,7 @@ layui.use(['element','layer'], function() {
 
 })
 
+//显示b站部分的定时任务
 function showUserBilibiliInfo() {
     $.ajax({
         url: "/api/user/bili/list",
@@ -37,6 +38,7 @@ function showUserBilibiliInfo() {
     })
 }
 
+//显示网易云部分的定时任务
 function showUserNetmusicInfo() {
     $.ajax({
         url: "/api/user/netmusic/list",
@@ -56,6 +58,7 @@ function showUserNetmusicInfo() {
     })
 }
 
+//显示米游社部分的定时任务
 function showUserMiyousheInfo() {
     $.ajax({
         url: "/api/user/mihuyou/list",
@@ -75,6 +78,7 @@ function showUserMiyousheInfo() {
     })
 }
 
+//查看日志方法
 function openLog(type, id) {
     var boxSize = '600px';
     if (name === "netmusic") {
@@ -82,9 +86,9 @@ function openLog(type, id) {
     }
 
     var index = layer.open({
-        title: type + "日志查看",
+        title: `${type}日志查看`,
         type: 2,
-        content: "/getlog?type=" + type + "&id=" + id,
+        content: `/getlog?type=${type}&id=${id}`,
         maxmin: true,
         area: screen() < 2 ? ['90%', '80%'] : ['600px', boxSize],
         end: function (index, layero) {
@@ -93,12 +97,13 @@ function openLog(type, id) {
     });
 }
 
+//手动运行任务方法
 function runTask(name, id) {
-    layer.confirm('确定要手动运行一次' + name + '任务？', {icon: 3, title: '提示'}, function (index) {
+    layer.confirm(`确定要手动运行一次${name}任务？`, {icon: 3, title: '提示'}, function (index) {
         layer.close(index);
         let loading = layer.load();
         $.ajax({
-            url: "/api/user/" + name + "/run?id=" + id,
+            url: `/api/user/${name}/run?id=${id}`,
             type: 'post',
             success: function (result) {
                 layer.close(loading);
@@ -113,13 +118,14 @@ function runTask(name, id) {
     });
 }
 
+//修改定时任务方法
 function editTask(name, id) {
     layer.open({
         type: 2,
-        title: '修改' + name + '任务',
+        title: `修改${name}任务`,
         shade: 0.1,
         area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
-        content: name + "/edit?id=" + id,
+        content: `${name}/edit?id=${id}`,
         end: function (index, layero) {
             updateHtml(name);
             return true;
@@ -127,18 +133,55 @@ function editTask(name, id) {
     });
 }
 
+//添加定时任务方法
 function addTask(name) {
     layer.open({
         type: 2,
-        title: '添加' + name + '任务',
+        title: `添加${name}任务`,
         shade: 0.1,
         area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
-        content: name + "/add",
+        content: `${name}/add`,
         end: function (index, layero) {
             updateHtml(name);
             return true;
         }
     });
+}
+
+//删除定时任务方法
+function removePlan(name, autoId) {
+    layer.confirm('确定要删除该任务?删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
+        layer.close(index);
+        let loading = layer.load();
+        $.post(`/api/user/${name}/delete`, {id: autoId}, function (result) {
+            layer.close(loading);
+            if (result.code == 200) {
+                layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                    updateHtml(name);
+                });
+            } else {
+                layer.msg(result.msg, {icon: 2, time: 1000});
+            }
+        });
+    });
+}
+
+//最后运行日期是否显示
+function endDateShow(endDateString) {
+    if (endDateString != null && endDateString !== "" && endDateString !== undefined) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//用户头像是否显示
+function userAvatarShow (avatar) {
+    if (avatar !== undefined && avatar != null && avatar !== "") {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 //刷新主页自己对于的内容
@@ -158,316 +201,259 @@ function updateHtml(name){
 
 //拼接米游社显示html
 function miyousheHtml(data) {
-    var name = "'mihuyou'";
-
     var _miyousheHtml = '';
-
     var dataLength = data.length;
 
     if (dataLength === 0) {
         return _miyousheHtml;
     }
 
-    //头
-    _miyousheHtml += '<fieldset class="layui-elem-field miyoushe">';
-    _miyousheHtml += '<legend><i class="layui-icon search miyousheLogo"></i>米游社</legend>';
-    _miyousheHtml += '<div class="layui-field-box">';
-    _miyousheHtml += '<div class="layui-row layui-col-space15">';
-
-    data.forEach(function(miyousheUser) {
-
-        _miyousheHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
-        _miyousheHtml += '<div class="layui-card">';
-        _miyousheHtml += '<div class="layui-card-header" style="font-size: 16px;">' + miyousheUser.name;
-
-        if (miyousheUser.endDateString != null && miyousheUser.endDateString !== "" && miyousheUser.endDateString !== undefined) {
-            _miyousheHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + miyousheUser.endDateString + '</font>'
-        }
-
-        if (miyousheUser.enable == "true") {
-            _miyousheHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
-        } else {
-            _miyousheHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
-        }
-
-        _miyousheHtml += '</div>';
-        _miyousheHtml += '<div class="layui-card-body layuiadmin-card-list">';
-        _miyousheHtml += '<p class="layuiadmin-big-font">用户名：';
-        _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.miName + '</font>';
-
-        if (miyousheUser.avatar !== undefined && miyousheUser.avatar != null && miyousheUser.avatar !== "") {
-            _miyousheHtml += '<span class="layuiadmin-span-color">';
-            _miyousheHtml += '<img src="' + miyousheUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
-            _miyousheHtml += '</span>';
-        }
-
-        _miyousheHtml += '</p>';
-        _miyousheHtml += '<p class="layuiadmin-big-font">原神UID：';
-        _miyousheHtml += '<font class="miyoushe-p-font">' + miyousheUser.genshinUid + '</font>';
-        _miyousheHtml += '</p>';
-        _miyousheHtml += '<p style="margin-top: 10px;">';
-
-        _miyousheHtml = addStatus(_miyousheHtml, miyousheUser.status);
-
-        _miyousheHtml += '<span class="layuiadmin-span-color">';
-        _miyousheHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + miyousheUser.id + ')">';
-        _miyousheHtml += '<i class="layui-icon layui-icon-tips"></i>';
-        _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + miyousheUser.id + ')">';
-        _miyousheHtml += '<i class="layui-icon layui-icon-edit"></i>';
-        _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'mihuyou\', ' + miyousheUser.id + ')">';
-        _miyousheHtml += '<i class="layui-icon layui-icon-delete"></i>';
-        _miyousheHtml += '</button>';
-        _miyousheHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(' + name + ',' + miyousheUser.id + ')">';
-        _miyousheHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
-        _miyousheHtml += '</button>';
-        _miyousheHtml += '</span>';
-        _miyousheHtml += '</p>';
-        _miyousheHtml += '</div>';
-        _miyousheHtml += '</div>';
-        _miyousheHtml += '</div>';
-    })
-
-    //尾
-    _miyousheHtml += '</div>';
-    _miyousheHtml += '</div>';
-    _miyousheHtml += '</fieldset>';
+    _miyousheHtml += `<fieldset class="layui-elem-field miyoushe">
+                        <legend><i class="layui-icon search miyousheLogo"></i>米游社</legend>
+                        <div class="layui-field-box">
+                            <div class="layui-row layui-col-space15">
+                                ${miyousheHtmlUserInfo(data)}
+                            </div> 
+                        </div>
+                    </fieldset>`;
 
     return _miyousheHtml;
 }
 
+//拼接米游社用户信息显示html
+function miyousheHtmlUserInfo(data){
+    var name = "'mihuyou'";
+    let miyousheHtmlUserInfo = '';
+
+    data.forEach(function(miyousheUser) {
+
+        miyousheHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+                                    <div class="layui-card">
+                                        <div class="layui-card-header" style="font-size: 16px;">${miyousheUser.name}
+                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(miyousheUser.endDateString)?'':'display: none;'}">运行于：${miyousheUser.endDateString}</font>
+                                            <span class="layui-badge layuiadmin-badge ${miyousheUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${miyousheUser.enable == "true"?"开启":"关闭"}</span>
+                                        </div>
+                                        <div class="layui-card-body layuiadmin-card-list">
+                                            <p class="layuiadmin-big-font">用户名：
+                                                <font class="miyoushe-p-font">${miyousheUser.miName}</font>
+                                                <span class="layuiadmin-span-color" style="${userAvatarShow(miyousheUser.avatar)?'':'display: none;'}">
+                                                    <img src="${miyousheUser.avatar}" alt="头像" style="width: 60px; height: 60px">
+                                                </span>
+                                            </p>
+                                            <p class="layuiadmin-big-font">原神UID：
+                                                <font class="miyoushe-p-font">${miyousheUser.genshinUid}</font>
+                                            </p>
+                                            <p style="margin-top: 10px;">
+                                                ${addStatus(miyousheUser.status)}
+                                                <span class="layuiadmin-span-color">
+                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${miyousheUser.id})">
+                                                        <i class="layui-icon layui-icon-tips"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${miyousheUser.id})">
+                                                        <i class="layui-icon layui-icon-edit"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${miyousheUser.id})">
+                                                        <i class="layui-icon layui-icon-delete"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(${name}, ${miyousheUser.id})">
+                                                        <i class="layui-icon layui-icon-triangle-r"></i>
+                                                    </button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>`;
+    })
+
+    return miyousheHtmlUserInfo;
+}
+
 //拼接网易云显示html
 function netmusicHtml(data) {
-    var name = "'netmusic'";
-
     var _netmusicHtml = '';
-
     var dataLength = data.length;
 
     if (dataLength === 0) {
         return _netmusicHtml;
     }
 
-    //头
-    _netmusicHtml += '<fieldset class="layui-elem-field netmusic">';
-    _netmusicHtml += '<legend><i class="layui-icon search netmusicLogo"></i>网易云</legend>';
-    _netmusicHtml += '<div class="layui-field-box">';
-    _netmusicHtml += '<div class="layui-row layui-col-space15">';
-
-    data.forEach(function(netmusicUser) {
-
-        _netmusicHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
-        _netmusicHtml += '<div class="layui-card">';
-        _netmusicHtml += '<div class="layui-card-header" style="font-size: 16px;">' + netmusicUser.name;
-
-        if (netmusicUser.endDateString != null && netmusicUser.endDateString !== "" && netmusicUser.endDateString !== undefined) {
-            _netmusicHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + netmusicUser.endDateString + '</font>'
-        }
-
-        if (netmusicUser.enable == "true") {
-            _netmusicHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
-        } else {
-            _netmusicHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
-        }
-
-        _netmusicHtml += '</div>';
-        _netmusicHtml += '<div class="layui-card-body layuiadmin-card-list">';
-        _netmusicHtml += '<p class="layuiadmin-big-font">用户名：';
-        _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicName + '</font>';
-
-        if (netmusicUser.avatar !== undefined && netmusicUser.avatar != null && netmusicUser.avatar !== ""){
-            _netmusicHtml += '<span class="layuiadmin-span-color">';
-            _netmusicHtml += '<img src="' + netmusicUser.avatar + '" alt="头像" style="width: 60px; height: 60px">';
-            _netmusicHtml += '</span>';
-        }
-
-        _netmusicHtml += '</p>';
-        _netmusicHtml += '<p class="layuiadmin-big-font">等级：';
-        _netmusicHtml += '<font class="netmusic-p-font">' + netmusicUser.netmusicLevel + '</font>';
-        _netmusicHtml += '</p>';
-        _netmusicHtml += '<p class="layuiadmin-big-font">升级还需：';
-        _netmusicHtml += '<font class="netmusic-p-font">' + Number(netmusicUser.netmusicNeedDay) + ' 天</font>';
-        _netmusicHtml += '</p>';
-        _netmusicHtml += '<p class="layuiadmin-big-font">剩余听歌数：';
-        _netmusicHtml += '<font class="netmusic-p-font">' + Number(netmusicUser.netmusicNeedListen) + '</font>';
-        _netmusicHtml += '</p>';
-        _netmusicHtml += '<p style="margin-top: 10px;">';
-
-        _netmusicHtml = addStatus(_netmusicHtml, netmusicUser.status);
-
-        _netmusicHtml += '<span class="layuiadmin-span-color">';
-        _netmusicHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + netmusicUser.id + ')">';
-        _netmusicHtml += '<i class="layui-icon layui-icon-tips"></i>';
-        _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + netmusicUser.id + ')">';
-        _netmusicHtml += '<i class="layui-icon layui-icon-edit"></i>';
-        _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'netmusic\' ,' + netmusicUser.id + ')">';
-        _netmusicHtml += '<i class="layui-icon layui-icon-delete"></i>';
-        _netmusicHtml += '</button>';
-        _netmusicHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + name + ',' + netmusicUser.id + ')">';
-        _netmusicHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
-        _netmusicHtml += '</button>';
-        _netmusicHtml += '</span>';
-        _netmusicHtml += '</p>';
-        _netmusicHtml += '</div>';
-        _netmusicHtml += '</div>';
-        _netmusicHtml += '</div>';
-    })
-
-    //尾
-    _netmusicHtml += '</div>';
-    _netmusicHtml += '</div>';
-    _netmusicHtml += '</fieldset>';
+    _netmusicHtml += `<fieldset class="layui-elem-field netmusic">
+                        <legend><i class="layui-icon search netmusicLogo"></i>网易云</legend>
+                        <div class="layui-field-box">
+                            <div class="layui-row layui-col-space15">
+                                ${netmusicHtmlUserInfo(data)}
+                            </div>
+                        </div>
+                    </fieldset>`;
 
     return _netmusicHtml;
 }
 
+//拼接网易云用户信息显示html
+function netmusicHtmlUserInfo(data) {
+    var name = "'netmusic'";
+    let netmusicHtmlUserInfo = '';
+
+    data.forEach(function(netmusicUser) {
+
+    netmusicHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+                                <div class="layui-card">
+                                    <div class="layui-card-header" style="font-size: 16px;">${netmusicUser.name}
+                                        <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(netmusicUser.endDateString)?'':'display: none;'}">运行于：${netmusicUser.endDateString}</font>
+                                        <span class="layui-badge layuiadmin-badge ${netmusicUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${netmusicUser.enable == "true"?"开启":"关闭"}</span>
+                                    </div>
+                                    <div class="layui-card-body layuiadmin-card-list">
+                                        <p class="layuiadmin-big-font">用户名：
+                                            <font class="netmusic-p-font">${netmusicUser.netmusicName}</font>
+                                            <span class="layuiadmin-span-color" style="${userAvatarShow(netmusicUser.avatar)?'':'display: none;'}">
+                                                <img src="${netmusicUser.avatar}" alt="头像" style="width: 60px; height: 60px">
+                                            </span>
+                                        </p>
+                                        <p class="layuiadmin-big-font">等级：
+                                            <font class="netmusic-p-font">${netmusicUser.netmusicLevel}</font>
+                                        </p>
+                                        <p class="layuiadmin-big-font">升级还需：
+                                            <font class="netmusic-p-font">${Number(netmusicUser.netmusicNeedDay)} 天</font>
+                                        </p>
+                                        <p class="layuiadmin-big-font">剩余听歌数：
+                                            <font class="netmusic-p-font">${Number(netmusicUser.netmusicNeedListen)}</font>
+                                        </p>
+                                        <p style="margin-top: 10px;">
+                                            ${addStatus( netmusicUser.status)}
+                                            <span class="layuiadmin-span-color">
+                                                <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${netmusicUser.id})">
+                                                    <i class="layui-icon layui-icon-tips"></i>
+                                                </button>
+                                                <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${netmusicUser.id})">
+                                                    <i class="layui-icon layui-icon-edit"></i>
+                                                </button>
+                                                <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${netmusicUser.id})">
+                                                    <i class="layui-icon layui-icon-delete"></i>
+                                                </button>
+                                                <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${netmusicUser.id})">
+                                                    <i class="layui-icon layui-icon-triangle-r"></i>
+                                                </button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>`;
+    })
+
+    return netmusicHtmlUserInfo;
+}
+
 //拼接b站显示html
 function bilibiliHtml(data) {
-    var name = "'bili'";
-
     var _bilibiliHtml = '';
-
     var dataLength = data.length;
 
     if (dataLength === 0) {
         return _bilibiliHtml;
     }
 
-    //头
-    _bilibiliHtml += '<fieldset class="layui-elem-field bilibili">';
-    _bilibiliHtml += '<legend><i class="layui-icon search bilibiliLogo"></i>哔哩哔哩</legend>';
-    _bilibiliHtml += '<div class="layui-field-box">';
-    _bilibiliHtml += '<div class="layui-row layui-col-space15">';
-
-    data.forEach(function(bilibiliUser) {
-
-        _bilibiliHtml += '<div class="layui-col-xs6 layui-col-sm6 layui-col-md3">';
-        _bilibiliHtml += '<div class="layui-card">';
-        _bilibiliHtml += '<div class="layui-card-header" style="font-size: 16px;">' + bilibiliUser.planName;
-
-        if (bilibiliUser.endDateString != null && bilibiliUser.endDateString !== "" && bilibiliUser.endDateString !== undefined) {
-            _bilibiliHtml += '<font style="color: #b4b4b4; font-size: 14px; margin-left: 10px;">运行于：' + bilibiliUser.endDateString + '</font>'
-        }
-
-        if (bilibiliUser.enable == "true") {
-            _bilibiliHtml += '<span class="layui-badge layui-bg-blue layuiadmin-badge">开启</span>';
-        } else {
-            _bilibiliHtml += '<span class="layui-badge layui-bg-red layuiadmin-badge">关闭</span>';
-        }
-
-        _bilibiliHtml += '</div>';
-        _bilibiliHtml += '<div class="layui-card-body layuiadmin-card-list">';
-        _bilibiliHtml += '<p class="layuiadmin-big-font">用户名：';
-        _bilibiliHtml += '<font class="bilibili-p-font">' + bilibiliUser.biliName + '</font>';
-
-        if (bilibiliUser.faceImg !== undefined && bilibiliUser.faceImg != null && bilibiliUser.faceImg !== ""){
-            _bilibiliHtml += '<span class="layuiadmin-span-color">';
-            _bilibiliHtml += '<img src="' + bilibiliUser.faceImg + '" alt="头像" style="width: 60px; height: 60px">';
-            _bilibiliHtml += '</span>';
-        }
-
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '<p class="layuiadmin-big-font">硬币：';
-        _bilibiliHtml += '<font class="bilibili-p-font">' + bilibiliUser.biliCoin + '</font>';
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '<p class="layuiadmin-big-font">等级：';
-        _bilibiliHtml += '<font class="bilibili-p-font">' + bilibiliUser.biliLevel + '</font>';
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '<p class="layuiadmin-big-font">升级还需：';
-        _bilibiliHtml += '<font class="bilibili-p-font">' + Number(bilibiliUser.biliUpexp - bilibiliUser.biliExp) + '</font>';
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '<p class="layuiadmin-big-font">大会员情况：';
-
-        if (bilibiliUser.isVip == "true") {
-            _bilibiliHtml += '<font class="bilibili-p-font">大会员</font>';
-        } else {
-            _bilibiliHtml += '<font class="bilibili-p-font">不是大会员</font>';
-        }
-
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '<p style="margin-top: 10px;">';
-
-        _bilibiliHtml = addStatus(_bilibiliHtml, bilibiliUser.status);
-
-        _bilibiliHtml += '<span class="layuiadmin-span-color">';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-sm" onclick="openLog(' + name + ',' + bilibiliUser.autoId + ')">';
-        _bilibiliHtml += '<i class="layui-icon layui-icon-tips"></i>';
-        _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(' + name + ',' + bilibiliUser.autoId + ')">';
-        _bilibiliHtml += '<i class="layui-icon layui-icon-edit"></i>';
-        _bilibiliHtml += '</button>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(\'bili\',' + bilibiliUser.autoId + ')">';
-        _bilibiliHtml += '<i class="layui-icon layui-icon-delete"></i>';
-        _bilibiliHtml += '<button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(' + name + ',' + bilibiliUser.autoId + ')">';
-        _bilibiliHtml += '<i class="layui-icon layui-icon-triangle-r"></i>';
-        _bilibiliHtml += '</button>';
-        _bilibiliHtml += '</button>';
-        _bilibiliHtml += '</span>';
-        _bilibiliHtml += '</p>';
-        _bilibiliHtml += '</div>';
-        _bilibiliHtml += '</div>';
-        _bilibiliHtml += '</div>';
-    })
-
-    //尾
-    _bilibiliHtml += '</div>';
-    _bilibiliHtml += '</div>';
-    _bilibiliHtml += '</fieldset>';
+    _bilibiliHtml += `<fieldset class="layui-elem-field bilibili">
+                        <legend><i class="layui-icon search bilibiliLogo"></i>哔哩哔哩</legend>
+                        <div class="layui-field-box">
+                            <div class="layui-row layui-col-space15">
+                            ${bilibiliHtmlUserInfo(data)}
+                            </div>
+                        </div>
+                    </fieldset>`;
 
     return _bilibiliHtml;
 }
 
+//拼接b站用户信息显示html
+function bilibiliHtmlUserInfo(data) {
+    var name = "'bili'";
+    let bilibiliHtmlUserInfo = '';
+
+    data.forEach(function(bilibiliUser) {
+
+        bilibiliHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+                                    <div class="layui-card">
+                                        <div class="layui-card-header" style="font-size: 16px;">${bilibiliUser.planName}
+                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(bilibiliUser.endDateString)?'':'display: none;'}">运行于：${bilibiliUser.endDateString}</font>
+                                            <span class="layui-badge layuiadmin-badge ${bilibiliUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${bilibiliUser.enable == "true"?"开启":"关闭"}</span>
+                                        </div>
+                                        <div class="layui-card-body layuiadmin-card-list">
+                                            <p class="layuiadmin-big-font">用户名：
+                                                <font class="bilibili-p-font">${bilibiliUser.biliName}</font>
+                                                <span class="layuiadmin-span-color" style="${userAvatarShow(bilibiliUser.faceImg)?'':'display: none;'}">
+                                                    <img src="${bilibiliUser.faceImg}" alt="头像" style="width: 60px; height: 60px">
+                                                </span>
+                                            </p>
+                                            <p class="layuiadmin-big-font">硬币：
+                                                <font class="bilibili-p-font">${bilibiliUser.biliCoin}</font>
+                                            </p>
+                                            <p class="layuiadmin-big-font">等级：
+                                                <font class="bilibili-p-font">${bilibiliUser.biliLevel}</font>
+                                            </p>
+                                            <p class="layuiadmin-big-font">升级还需：
+                                                <font class="bilibili-p-font">${Number(bilibiliUser.biliUpexp - bilibiliUser.biliExp)}</font>
+                                            </p>
+                                            <p class="layuiadmin-big-font">大会员情况：
+                                                <font class="bilibili-p-font">${bilibiliUser.isVip == "true"?'大会员':'不是大会员'}</font>
+                                            </p>
+                                            <p style="margin-top: 10px;">
+                                                ${addStatus(bilibiliUser.status)}
+                                                <span class="layuiadmin-span-color">
+                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${bilibiliUser.autoId})">
+                                                        <i class="layui-icon layui-icon-tips"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${bilibiliUser.autoId})">
+                                                        <i class="layui-icon layui-icon-edit"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${bilibiliUser.autoId})">
+                                                        <i class="layui-icon layui-icon-delete"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${bilibiliUser.autoId})">
+                                                        <i class="layui-icon layui-icon-triangle-r"></i>
+                                                    </button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>`;
+    })
+
+    return bilibiliHtmlUserInfo;
+}
+
 //添加状态
-function addStatus(_html, status) {
+function addStatus(status) {
+    let _html = '';
+
     if (status === "200") {
-        _html += '<button class="layui-btn layui-btn-sm">运行完毕</button>';
+        _html = '<button class="layui-btn layui-btn-sm">运行完毕</button>';
     }
 
     if (status === "-1") {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-danger">运行失败</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-danger">运行失败</button>';
     }
 
     if (status === "500") {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-danger">账号信息已过期</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-danger">账号信息已过期</button>';
     }
 
     if (status === "501") {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-normal">执行成功，账号信息更新失败</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-normal">执行成功，账号信息更新失败</button>';
     }
 
     if (status === "0") {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-warm">未开启</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-warm">未开启</button>';
     }
 
     if (status === "1") {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-disabled">任务运行中</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-disabled">任务运行中</button>';
     }
 
     if (status === "100" || status == null) {
-        _html += '<button class="layui-btn layui-btn-sm layui-btn-primary">等待运行</button>';
+        _html = '<button class="layui-btn layui-btn-sm layui-btn-primary">等待运行</button>';
     }
 
     return _html;
-}
-
-function removePlan(name, autoId) {
-    layer.confirm('确定要删除该任务?删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
-        layer.close(index);
-        let loading = layer.load();
-        $.post("/api/user/" + name + "/delete", {id: autoId}, function (result) {
-            layer.close(loading);
-            if (result.code == 200) {
-                layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                    updateHtml(name);
-                });
-            } else {
-                layer.msg(result.msg, {icon: 2, time: 1000});
-            }
-        });
-    });
 }
 
 

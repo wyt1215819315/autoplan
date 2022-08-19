@@ -4,6 +4,19 @@
         <meta content="text/html;charset=UTF-8"/>
         <title>b站任务列表</title>
         <th:block th:include="include :: headerCss"/>
+        <style>
+            .layui-btn-bilivip {
+                background-color: #FB7299;
+            }
+
+            .level {
+                background: url(/static/image/biliLevel.png) no-repeat;
+                display: inline-block;
+                margin-top: 4px;
+                width: 30px;
+                height: 20px;
+            }
+        </style>
     </head>
     <body>
 
@@ -40,6 +53,17 @@
                 index: 'lib/index' //主入口模块
             }).use('index');
 
+            var yesVip = '<a class="layui-btn layui-btn-xs layui-btn-bilivip">大会员</a>';
+            var noVip = '<a class="layui-btn layui-btn-xs layui-btn-primary">不是大会员</a>';
+
+            var levelZero = '<span class="level" style="background-position: -21px -8px;"></span>';
+            var levelOne = '<span class="level" style="background-position: -21px -44px;"></span>';
+            var levelTwo = '<span class="level" style="background-position: -21px -80px;"></span>';
+            var levelThree = '<span class="level" style="background-position: -21px -116px;"></span>';
+            var levelFour = '<span class="level" style="background-position: -21px -152px;"></span>';
+            var levelFive = '<span class="level" style="background-position: -21px -188px;"></span>';
+            var levelSix = '<span class="level" style="background-position: -21px -224px;"></span>';
+
             layui.use(['table','layer'], function() {
 
                 var table = layui.table,layer = layui.layer;
@@ -74,15 +98,31 @@
                     cols: [ [
                         {field:'biliName',title:'用户名', align:"center"},
                         {field:'biliCoin',title:'用户硬币', align:"center"},
-                        {field:'biliLevel',title:'用户等级', align:"center"},
+                        {field:'biliLevel',title:'用户等级', align:"center", templet:function (d){
+                            if (d.biliLevel == 0) {
+                                return levelZero;
+                            } else if (d.biliLevel == 1) {
+                                return levelOne;
+                            } else if (d.biliLevel == 2) {
+                                return levelTwo;
+                            } else if (d.biliLevel == 3) {
+                                return levelThree;
+                            } else if (d.biliLevel == 4) {
+                                return levelFour;
+                            } else if (d.biliLevel == 5) {
+                                return levelFive;
+                            } else if (d.biliLevel == 6) {
+                                return levelSix;
+                            }
+                        }},
                         {field:'biliUpexp',title:'升级还需要', align:"center", templet:function (d){
                             return d.biliUpexp - d.biliExp;
                         }},
                         {field:'isVip',title:'大会员情况', align:"center", templet:function (d){
                             if (d.isVip == "true") {
-                                return "大会员";
+                                return yesVip;
                             } else {
-                                return "不是大会员";
+                                return noVip;
                             }
                         }},
                         {field:'enable',title:'任务是否开启', align:"center", templet:function (d){

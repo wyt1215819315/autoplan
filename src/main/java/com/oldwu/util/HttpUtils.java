@@ -36,10 +36,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -325,6 +322,35 @@ public class HttpUtils {
     }
 
     /**
+     * Post String
+     *
+     * @param host
+     * @param path
+     * @param headers
+     * @param querys
+     * @param body
+     * @return
+     * @throws Exception
+     */
+    public static HttpResponse doPost(String host, String path,
+                                      Map<String, String> headers,
+                                      Map<String, String> querys,
+                                      String body,
+                                      HttpHost proxy)
+            throws Exception {
+        HttpClient httpClient = wrapClient(host, path);
+        HttpPost request = new HttpPost(buildUrl(host, path, querys));
+        request.setConfig(RequestConfig.custom().setProxy(proxy).build());
+        for (Map.Entry<String, String> e : headers.entrySet()) {
+            request.addHeader(e.getKey(), e.getValue());
+        }
+        if (StringUtils.isNotBlank(body)) {
+            request.setEntity(new StringEntity(body, "utf-8"));
+        }
+        return httpClient.execute(request);
+    }
+
+    /**
      * Post stream
      *
      * @param host
@@ -580,6 +606,9 @@ public class HttpUtils {
      * @throws IOException
      */
     public static JSONObject getJson(HttpResponse httpResponse) throws IOException {
+        if (httpResponse.getStatusLine().getStatusCode() == 204){
+            return new JSONObject();
+        }
         HttpEntity entity = httpResponse.getEntity();
         String resp = EntityUtils.toString(entity, "UTF-8");
         EntityUtils.consume(entity);

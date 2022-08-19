@@ -1,128 +1,75 @@
-# AutoPlan_Helper
-这是一个自动化的托管系统，目前支持网易云签到刷歌，bilibili赚经验+自动赛事预测，米游社原神签到，部署至服务器和你的小伙伴一起赚经验吧
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Auto Plan Helper</h1>
+<h4 align="center">自动化的托管系统</h4>
+<p align="center">
+	<a href="https://github.com/wyt1215819315/autoplan"><img src="https://img.shields.io/badge/AutoPlan-v2.6.0-brightgreen.svg"></a>
+	<img src="https://img.shields.io/github/stars/wyt1215819315/autoplan">
+</p>
 
-2.0版本已更新，带来全新的界面体验，感谢@MuXia-0326大佬的辛勤付出
+## 项目简介
+本项目为自动化的托管系统，目前支持以下功能：
+1. b站每日自动经验任务
+2. b站赛事预测赚硬币任务
+3. 网易云自动签到刷歌任务
+4. 米游社原神签到领奖励任务以及米游币任务
 
-1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
+**如果觉得好用，点个star吧**
+
+> **2.5以上版本由于重构了bili-helper，原来的数据库结构不再兼容新版，请使用管理员用户登录并在bili任务中点击“转json”按钮完成配置转换，记得备份原来的数据库**
+
+> 1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
 ```mysql
 INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
 ```
 
-如果觉得好用，点个**star**吧
+## 演示站地址
+<a href="https://auto.oldwu.top/" target="_blank">点击打开Auto Plan</a>
 
-### 开源地址
-[wyt1215819315 / autoplan](https://github.com/wyt1215819315/autoplan)
+**本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境**
 
-### 目前已经实现
-1. b站每日自动经验任务
-1. b站赛事预测赚硬币任务
-2. 网易云自动签到刷歌任务
-3. 米游社原神签到领奖励任务以及米游币任务
-
-### 测试服务器地址
-<a href="https://auto.oldwu.top/" target="_blank">点击打开</a>
-
-本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境
-
-### 项目结构
-采用Springboot + Thymeleaf + layui制作
-
-数据库：mysql
-
-登录安全验证及权限管理：spring-security
+## 项目架构
+基于Springboot、SpringSecurity、layui、mysql开发
 
 定时任务核心：quartz（从pearadmin中抠过来的）
 
-### 使用说明
-#### bilibili
-原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
+## 使用说明
+### bilibili
+> 原作者开源项目已经停止维护，可以看看他的博客声明https://blog.misec.top/archives/bye-helper
+> 
+* 支持b站签到任务以及赛事预测任务
+* 支持扫码登录和cookie登录
+* cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
+### 网易云
+* 网易云每日签到和网易云每日刷300首歌
+> **由于网易云的检测机制会封服务器ip，导致目前该功能的可用性为零**
 
-支持b站签到任务以及赛事预测任务
-已实现扫码登录
+### 米游社
+* 原神签到任务
+* 米游币任务
 
-cookie登录请参考<a href="https://blog.oldwu.top/index.php/archives/84/#toc_6">这里</a>以获取cookie值
-#### 网易云
-都是字面意思
+[**更多详细使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
-#### 米游社
-只支持原神签到任务和米游币任务
-
-[更多使用说明请查看](https://blog.oldwu.top/index.php/archives/84/#toc_5)
-
-### 项目部署
-1. 首先准备好`application.yml`配置文件，模板文件可以在项目根目录找到或Releases中附，或者可以直接复制以下内容：
-```yaml
-server:
-   #服务器端口
-   port: 26666
-spring:
-   #数据库连接配置
-   datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-      username: 数据库用户名
-      password: 数据库密码
-   main:
-      allow-bean-definition-overriding: true
-   mvc: #静态文件
-      static-path-pattern: /static/**
-# actable自动建表
-actable:
-   table:
-      auto: update
-   model:
-      #分号或者逗号隔开
-      pack: com.oldwu.entity;com.oldwu.domain;com.netmusic.model;com.miyoushe.model
-   database:
-      type: mysql
-   index:
-      #自己定义的索引前缀#该配置项不设置默认使用actable_idx_
-      prefix: INDEX_
-   unique:
-      #自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
-      prefix: INDEX_UNIQUE_
-   # mybatis自有的配置信息，key也可能是：mybatis.mapperLocations
-mybatis-plus:
-   global-config:
-     db-config:
-       id-type: auto
-   #mapper配置文件
-   mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
-   type-aliases-package: com.oldwu.entity
-   #开启驼峰命名
-   configuration:
-      map-underscore-to-camel-case: true
-      #输出mybatis日志
-#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-```
-2. 在mysql中创建数据库并导入sql
+## 项目部署
+1. 首先准备好`application.yml`配置文件，模板文件可以点击链接下载：
+[application.yml](https://github.com/wyt1215819315/autoplan/blob/master/application-example.yml)
+2. 在`mysql`中创建数据库并导入`auto_plan.sql`
 3. 接下来你可以选择两种方式部署：
-<details>
-<summary>使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行</summary>
-
-1. 将`application.yml`修改正确并放入jar包同级目录中
-2. 使用`java -jar xxx.jar`运行
-
-</details>
-
-<details>
-<summary>自行编译</summary>
-
-1. 导入idea并下载依赖（请使用JDK1.8）
-2. 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
-3. 使用maven install打包成jar
-4. 使用`java -jar xxx.jar`运行
-
-</details>
+   * 第一种方法 **使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行**
+     * 将`application.yml`修改正确并放入jar包同级目录中
+     * 使用`java -jar xxx.jar`运行
+   * 第二种方法 **自行编译jar包**
+     * 导入idea并下载依赖（请使用JDK1.8）
+     * 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
+     * 使用maven install打包成jar
+     * 使用`java -jar xxx.jar`运行
 
 
 4. 注册账号，并将其定为管理员账户，步骤：
-   1. 查看`sys_user`表中你的账号对应的`id`
-   2. 进入`sys_role_user`表中找到对应的`user_id`
-   3. 将对应行的`sys_role_id`值改为1
+   * 查看`sys_user`表中你的账号对应的`id`
+   * 进入`sys_role_user`表中找到对应的`user_id`
+   * 将对应行的`sys_role_id`值改为1
 5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
 
-**Releases中的jar不会经常更新，我已经设置的github自动构建，如果需要最新测试版，请前往 https://github.com/wyt1215819315/autoplan/actions 自行下载**
+> **提示：[Releases](https://github.com/wyt1215819315/autoplan/releases) 中的jar包可能更新不及时，项目设置有自动构建，急需最新版jar包，可前往 [actions](https://github.com/wyt1215819315/autoplan/actions) 自行下载**
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
@@ -130,16 +77,13 @@ mybatis-plus:
 
 ### 一些问题
 1. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
-3. 由于BILIBILI-HELPER-PRE项目大多采用static变量，因此无法多线程运行，也无法手动执行
 
 ### 未来
 1. 管理员功能：查看日志，删除任务等
 2. go-cqhttp推送（需要加机器人为好友）
-3. 手动执行b站任务（咕咕咕）
-4. 主页说明支持markdown格式动态编辑（功能已实现，界面待优化..）
+3. ~~手动执行b站任务（咕咕咕）~~
 5. 修改密码功能
 6. 自动清理n天之前的日志
-7. 重写bilibili-helper（看的真的血压高）
 
 ### 更新日志
 * 21.8.29 更新了b站二维码登录以及任务删除功能
@@ -171,6 +115,7 @@ mybatis-plus:
    3. 增加删除功能，之前忘记写了
 * 22.2.5 修复网易云账号信息验证失败时无法打印错误信息的问题
 * 22.2.9 修复webhook页面显示bug，修改公告修改页面的样式，给网易云重试添加延迟操作
+* 22.5.24 bili-helper重构基本实现，可能还会有小问题，咕了n久，只是懒得写说明文档
 
 
 ### 鸣谢

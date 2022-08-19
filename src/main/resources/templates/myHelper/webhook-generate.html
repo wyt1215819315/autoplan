@@ -19,6 +19,7 @@
                                 <option value="serverchan">Server酱</option>
                                 <option value="telegram">Telegram Bot</option>
                                 <option value="pushplus">PUSH PLUS</option>
+                                <option value="discord">Discord</option>
                                 <option value="wechatcom">企业微信</option>
                             </select>
                         </div>
@@ -101,6 +102,15 @@
                         </div>
                     </div>
 
+                    <div id="discord" style="display: none">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">Discord的Webhook地址</label>
+                            <div class="layui-input-block">
+                                <input autocomplete="off" class="layui-input" id="discord_url" name="discord_url" placeholder="Discord的Webhook地址" type="text">
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="wechatcom" style="display: none">
                         <div class="layui-form-item">
                             <label class="layui-form-label">企业微信，群消息非应用消息</label>
@@ -148,7 +158,7 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <div class="layui-input-block">
+                        <div class="layui-input-block layui-btn-container">
                             <button class="layui-btn layui-btn-normal" lay-filter="user-save" lay-submit="" type="submit">
                                 <i class="layui-icon layui-icon-ok"></i> 输出结果
                             </button>
@@ -169,7 +179,7 @@
 
         </div>
         <th:block th:include="include::footerJs"></th:block>
-        <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 
         <script>
             layui.use(['form'], function () {
@@ -185,30 +195,42 @@
                         $("#telegram").css("display", "none");
                         $("#pushplus").css("display", "none");
                         $("#wechatcom").css("display", "none");
+                        $("#discord").css("display", "none");
                     } else if (data.value === 'serverchan') {
                         $("#serverchan").css("display", "block");
                         $("#dingtalk").css("display", "none");
                         $("#telegram").css("display", "none");
                         $("#pushplus").css("display", "none");
                         $("#wechatcom").css("display", "none");
+                        $("#discord").css("display", "none");
                     } else if (data.value === 'telegram') {
                         $("#telegram").css("display", "block");
                         $("#serverchan").css("display", "none");
                         $("#dingtalk").css("display", "none");
                         $("#pushplus").css("display", "none");
                         $("#wechatcom").css("display", "none");
+                        $("#discord").css("display", "none");
                     } else if (data.value === 'pushplus') {
                         $("#pushplus").css("display", "block");
                         $("#telegram").css("display", "none");
                         $("#serverchan").css("display", "none");
                         $("#dingtalk").css("display", "none");
                         $("#wechatcom").css("display", "none");
+                        $("#discord").css("display", "none");
                     } else if (data.value === 'wechatcom') {
                         $("#wechatcom").css("display", "block");
                         $("#pushplus").css("display", "none");
                         $("#telegram").css("display", "none");
                         $("#serverchan").css("display", "none");
                         $("#dingtalk").css("display", "none");
+                        $("#discord").css("display", "none");
+                    } else if (data.value === 'discord') {
+                        $("#discord").css("display", "block");
+                        $("#pushplus").css("display", "none");
+                        $("#telegram").css("display", "none");
+                        $("#serverchan").css("display", "none");
+                        $("#dingtalk").css("display", "none");
+                        $("#wechatcom").css("display", "none");
                     }
                     form.render('select');
                 });
@@ -250,6 +272,8 @@
                         obj.WE_COM_APP_AGENT_ID = data.field.wechatcom_push_agentid;
                         obj.WE_COM_APP_TO_USER = data.field.wechatcom_push_user;
                         obj.WE_COM_APP_MEDIA_ID = data.field.wechatcom_push_mediaid;
+                    }else if (data.field.webhook_type === 'discord') {
+                        obj.DISCORD_URL = data.field.discord_url;
                     }
                     return JSON.stringify(obj);
                 }

@@ -47,3 +47,14 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     #输出mybatis日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#推送代理
+proxy:
+  push:
+    enable: false
+    port: 7890
+    ip: 127.0.0.1
+    type: http/socket
+    #指定那种推送方式需要使用代理
+    use:
+      - TelegramPush
+      - DiscordPush

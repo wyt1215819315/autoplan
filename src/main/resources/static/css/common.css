@@ -19,17 +19,17 @@ ul {
 }
 
 .bilibiliLogo {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/bilibili_logo.png) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/bilibili_logo.png) no-repeat 0 center;
     background-size: 40px 40px;
 }
 
 .netmusicLogo {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/netmusic_logo.ico) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/netmusic_logo.ico) no-repeat 0 center;
     background-size: 40px 40px;
 }
 
 .miyousheLogo {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/miyoushe_logo.ico) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/miyoushe_logo.ico) no-repeat 0 center;
     background-size: 40px 40px;
 }
 
@@ -39,17 +39,17 @@ ul {
 }
 
 .bilibiliIcon {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/bilibili.svg) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/bilibili.svg) no-repeat 0 center;
     background-size: 30px 30px;
 }
 
 .netmusicIcon {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/netmusic.svg) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/netmusic.svg) no-repeat 0 center;
     background-size: 30px 30px;
 }
 
 .miyousheIcon {
-    background: url(https://cdn.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/miyoushe.png) no-repeat 0 center;
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/miyoushe.png) no-repeat 0 center;
     background-size: 30px 30px;
 }
 
