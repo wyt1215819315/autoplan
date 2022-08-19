@@ -59,8 +59,8 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         this.stuid = stuid;
         this.stoken = stoken;
         setClientType("2");
-        setAppVersion("2.34.1");
-        setSalt("z8DRIUjNDT7IT5IZXvrUAxyupA1peND9");
+        setAppVersion("2.35.2");
+        setSalt("ZSHlXeQUBis52qD1kEgKt5lUYed4b7Bb");
         this.pool = executor;
     }
 
@@ -175,7 +175,10 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      * 原神社区签到
      */
     public String sign() {
-        JSONObject signResult = HttpUtils.doPost(String.format(MiHoYoConfig.HUB_SIGN_URL, hub.getForumId()), getHeaders(), null);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("gids", hub.getForumId());
+
+        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.HUB_SIGN_URL, getHeaders(), data);
         if ("OK".equals(signResult.get("message")) || "重复".equals(signResult.get("message"))) {
             log.info("{}", signResult.get("message"));
             return "社区签到: " + signResult.get("message");
@@ -288,10 +291,13 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
 
     @Override
     public Header[] getHeaders() {
+        JSONObject json = new JSONObject();
+        json.put("gids", hub.getForumId());
+
         return new HeaderBuilder.Builder()
                 .add("x-rpc-client_type", getClientType())
                 .add("x-rpc-app_version", getAppVersion())
-                .add("x-rpc-sys_version", "10").add("x-rpc-channel", "miyousheluodi")
+                .add("x-rpc-sys_version", "12").add("x-rpc-channel", "miyousheluodi")
                 .add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toLowerCase())
                 .add("x-rpc-device_name", "Xiaomi Redmi Note 4")
                 .add("Referer", "https://app.mihoyo.com")
@@ -303,7 +309,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
                 .add("User-Agent", "okhttp/4.8.0")
                 .add("x-rpc-device_model", "Redmi Note 4")
                 .add("isLogin", "true")
-                .add("DS", getDS())
+                .add("DS", getDSCommunitySign(json.toString()))
                 .add("cookie", "stuid=" + stuid + ";stoken=" + stoken + ";").build();
     }
 

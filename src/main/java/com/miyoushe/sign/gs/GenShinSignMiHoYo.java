@@ -28,8 +28,8 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
     public GenShinSignMiHoYo(String cookie) {
         super(cookie);
         setClientType("5");
-        setAppVersion("2.34.1");
-        setSalt("9nQiU3AV0rJSIBWgdynfoGMGKaklfbM7");
+        setAppVersion("2.35.2");
+        setSalt("N50pqm7FSy2AkFz2B3TqtuZMJ5TOl3Ep");
     }
 
     @Override

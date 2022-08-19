@@ -60,8 +60,20 @@ public abstract class MiHoYoAbstractSign implements Sign {
 
     }
 
+    protected String getDSCommunitySign(String gidsJson) {
+        Random random = new Random();
+        String i = (System.currentTimeMillis() / 1000) + "";
+        String r = String.valueOf(random.nextInt(200000 - 100000) + 100000 + 1);
+        return createDSCommunitySign("t0qEgfub6cvueAPgR5m9aQWWVciEer7v", i, r, gidsJson);
+    }
+
     private String createDS(String n, String i, String r) {
         String c = DigestUtils.md5Hex("salt=" + n + "&t=" + i + "&r=" + r);
+        return String.format("%s,%s,%s", i, r, c);
+    }
+
+    private String createDSCommunitySign(String n, String i, String r, String b) {
+        String c = DigestUtils.md5Hex("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + "");
         return String.format("%s,%s,%s", i, r, c);
     }
 

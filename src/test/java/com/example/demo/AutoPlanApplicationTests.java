@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 @SpringBootTest
 public class AutoPlanApplicationTests {
@@ -18,7 +19,9 @@ public class AutoPlanApplicationTests {
 
     @Test
     void test() {
-
+        Random random = new Random();
+        int i = random.nextInt(200000 - 100000) + 100000 + 1;
+        System.out.println(i);
     }
 
     /**
