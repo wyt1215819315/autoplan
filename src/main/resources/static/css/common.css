@@ -38,6 +38,11 @@ ul {
     margin-right: 5px;
 }
 
+.duckyIcon {
+    background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/ducky_dyn.gif) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
 .bilibiliIcon {
     background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/bilibili.svg) no-repeat 0 center;
     background-size: 30px 30px;
