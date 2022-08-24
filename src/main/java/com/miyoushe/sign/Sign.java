@@ -13,5 +13,5 @@ public interface Sign {
 
     List<Map<String, Object>> doSign() throws Exception;
 
-    Header[] getHeaders();
+    Header[] getHeaders(String dsType);
 }

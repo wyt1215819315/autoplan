@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.miyoushe.sign.constant.MihayouConstants;
 import com.miyoushe.sign.gs.pojo.Award;
 import com.miyoushe.util.HttpUtils;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +28,13 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
 
     public GenShinSignMiHoYo(String cookie) {
         super(cookie);
-        setClientType("5");
-        setAppVersion("2.35.2");
-        setSalt("N50pqm7FSy2AkFz2B3TqtuZMJ5TOl3Ep");
+        setClientType(MihayouConstants.SIGN_CLIENT_TYPE);
+        setAppVersion(MihayouConstants.APP_VERSION);
+        setSalt(MihayouConstants.SIGN_SALT);
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Override
@@ -41,10 +46,10 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
                 continue;
             }
 
-            String str = doSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
+            String doSign = doSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
 
-            String s = hubSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
-            uidMap.put("msg", uidMap.get("msg") + "\n" + str + "\n" + s);
+            String hubSign = hubSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
+            uidMap.put("msg", uidMap.get("msg") + "\n" + doSign + "\n" + hubSign);
             continue;
         }
         return uid;
@@ -64,7 +69,7 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
         data.put("region", region);
         data.put("uid", uid);
 
-        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.SIGN_URL, getHeaders(), data);
+        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.SIGN_URL, getHeaders(""), data);
 
         if (signResult.getInteger("retcode") == 0) {
             log.info("原神签到福利成功：{}", signResult.get("message"));
@@ -97,10 +102,11 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
             JSONArray jsonArray = result.getJSONObject("data").getJSONArray("list");
 
             for (Object user : jsonArray) {
-                String uid = (String) ((JSONObject)user).get("game_uid");
-                String nickname = (String) ((JSONObject)user).get("nickname");
-                String regionName = (String) ((JSONObject)user).get("region_name");
-                String region = (String) ((JSONObject)user).get("region");
+                JSONObject userInfo = (JSONObject) user;
+                String uid = userInfo.getString("game_uid");
+                String nickname = userInfo.getString("nickname");
+                String regionName = userInfo.getString("region_name");
+                String region = userInfo.getString("region");
 
                 log.info("获取用户UID：{}", uid);
                 log.info("当前用户名称：{}", nickname);
@@ -128,10 +134,6 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
         }
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     /**
      * 获取今天奖励详情
      *
@@ -140,12 +142,14 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
      */
     public Award getAwardInfo(int day) {
         Map<String, String> data = new HashMap<>();
+
         data.put("act_id", MiHoYoConfig.ACT_ID);
         data.put("region", MiHoYoConfig.REGION);
-        JSONObject awardResult = HttpUtils.doGet(MiHoYoConfig.AWARD_URL, getHeaders());
+
+        JSONObject awardResult = HttpUtils.doGet(MiHoYoConfig.AWARD_URL, getHeaders(""));
         JSONArray jsonArray = awardResult.getJSONObject("data").getJSONArray("awards");
-        List<Award> awards = JSON.parseObject(JSON.toJSONString(jsonArray), new TypeReference<List<Award>>() {
-        });
+
+        List<Award> awards = JSON.parseObject(JSON.toJSONString(jsonArray), new TypeReference<List<Award>>() {});
         return awards.get(day - 1);
     }
 
@@ -162,7 +166,7 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
         data.put("region", region);
         data.put("uid", uid);
 
-        JSONObject signInfoResult = HttpUtils.doGet(MiHoYoConfig.INFO_URL, getHeaders(), data);
+        JSONObject signInfoResult = HttpUtils.doGet(MiHoYoConfig.INFO_URL, getHeaders(""), data);
         if (signInfoResult == null || signInfoResult.getJSONObject("data") == null){
             return null;
         }
@@ -171,12 +175,16 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
         Boolean isSign = signInfoResult.getJSONObject("data").getBoolean("is_sign");
         Integer totalSignDay = signInfoResult.getJSONObject("data").getInteger("total_sign_day");
         int day = isSign ? totalSignDay : totalSignDay + 1;
+
         Award award = getAwardInfo(day);
+
         StringBuilder msg = new StringBuilder();
         msg.append(time.getMonth().getValue()).append("月已签到").append(totalSignDay).append("\n");
         msg.append(signInfoResult.getJSONObject("data").get("today")).append("签到获取").append(award.getCnt()).append(award.getName());
+
         log.info("{}月已签到{}天", time.getMonth().getValue(), totalSignDay);
         log.info("{}签到获取{}{}", signInfoResult.getJSONObject("data").get("today"), award.getCnt(), award.getName());
+
         return msg.toString();
     }
 
