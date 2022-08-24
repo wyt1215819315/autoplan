@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.miyoushe.sign.constant.MihayouConstants;
 import com.miyoushe.sign.gs.pojo.PostResult;
 import com.miyoushe.util.HttpUtils;
 import org.apache.http.Header;
@@ -33,6 +34,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      * 分享帖子数
      */
     private final static int SHARE_NUM = 3;
+
     private static final Logger log = LogManager.getLogger(MiHoYoSignMiHoYo.class.getName());
     private final MiHoYoConfig.Hub hub;
     private final String stuid;
@@ -58,10 +60,10 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         this.hub = hub;
         this.stuid = stuid;
         this.stoken = stoken;
-        setClientType("2");
-        setAppVersion("2.35.2");
-        setSalt("ZSHlXeQUBis52qD1kEgKt5lUYed4b7Bb");
         this.pool = executor;
+        setClientType(MihayouConstants.COMMUNITY_CLIENT_TYPE);
+        setAppVersion(MihayouConstants.APP_VERSION);
+        setSalt(MihayouConstants.COMMUNITY_SALT);
     }
 
     @Override
@@ -100,9 +102,8 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         return list;
     }
 
-
     public Map<String, Object> doSingleThreadSign() throws Exception {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         String msg = "";
         String sign = sign();
         msg = msg + sign + "\n";
@@ -128,8 +129,8 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         //打印日志
         log.info("浏览帖子: {},点赞帖子: {},分享帖子: {}", vpf.get(), upf.get(), spf.get());
         msg = msg + "浏览帖子: " + vpf.get() + ",点赞帖子: " + upf.get() + ",分享帖子: " + spf.get();
-        map.put("flag",true);
-        map.put("msg",msg);
+        map.put("flag", true);
+        map.put("msg", msg);
         return map;
     }
 
@@ -178,7 +179,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("gids", hub.getForumId());
 
-        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.HUB_SIGN_URL, getHeaders1(), data);
+        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.HUB_SIGN_URL, getHeaders(MihayouConstants.DS_TYPE_ONE), data);
         if ("OK".equals(signResult.get("message")) || "重复".equals(signResult.get("message"))) {
             log.info("{}", signResult.get("message"));
             return "社区签到: " + signResult.get("message");
@@ -214,7 +215,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      * @throws Exception
      */
     public List<PostResult> getPosts(String url) throws Exception {
-        JSONObject result = HttpUtils.doGet(url, getHeaders());
+        JSONObject result = HttpUtils.doGet(url, getHeaders(MihayouConstants.DS_TYPE_TWO));
         if ("OK".equals(result.get("message"))) {
             JSONArray jsonArray = result.getJSONObject("data").getJSONArray("list");
             List<PostResult> posts = JSON.parseObject(JSON.toJSONString(jsonArray), new TypeReference<List<PostResult>>() {
@@ -235,7 +236,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         Map<String, Object> data = new HashMap<>();
         data.put("post_id", post.getPost().getPost_id());
         data.put("is_cancel", false);
-        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_VIEW_URL, hub.getForumId()), getHeaders(), data);
+        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_VIEW_URL, hub.getForumId()), getHeaders(MihayouConstants.DS_TYPE_TWO), data);
         return "OK".equals(result.get("message"));
     }
 
@@ -248,7 +249,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         Map<String, Object> data = new HashMap<>();
         data.put("post_id", post.getPost().getPost_id());
         data.put("is_cancel", false);
-        JSONObject result = HttpUtils.doPost(MiHoYoConfig.HUB_VOTE_URL, getHeaders(), data);
+        JSONObject result = HttpUtils.doPost(MiHoYoConfig.HUB_VOTE_URL, getHeaders(MihayouConstants.DS_TYPE_TWO), data);
         return "OK".equals(result.get("message"));
     }
 
@@ -258,7 +259,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      * @param post
      */
     public boolean sharePost(PostResult post) {
-        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_SHARE_URL, post.getPost().getPost_id()), getHeaders());
+        JSONObject result = HttpUtils.doGet(String.format(MiHoYoConfig.HUB_SHARE_URL, post.getPost().getPost_id()), getHeaders(MihayouConstants.DS_TYPE_TWO));
         return "OK".equals(result.get("message"));
     }
 
@@ -270,7 +271,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
      */
     public String getCookieToken() throws Exception {
         JSONObject result = HttpUtils.
-                doGet(String.format(MiHoYoConfig.HUB_COOKIE2_URL, getCookieByName("login_ticket"), getCookieByName("account_id")), getHeaders());
+                doGet(String.format(MiHoYoConfig.HUB_COOKIE2_URL, getCookieByName("login_ticket"), getCookieByName("account_id")), getHeaders(MihayouConstants.DS_TYPE_TWO));
         if (!"OK".equals(result.get("message"))) {
             log.info("login_ticket已失效,请重新登录获取");
             throw new Exception("login_ticket已失效,请重新登录获取");
@@ -290,9 +291,8 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
     }
 
     @Override
-    public Header[] getHeaders() {
-
-        return new HeaderBuilder.Builder()
+    public Header[] getHeaders(String dsType) {
+        HeaderBuilder.Builder builder = new HeaderBuilder.Builder()
                 .add("x-rpc-client_type", getClientType())
                 .add("x-rpc-app_version", getAppVersion())
                 .add("x-rpc-sys_version", "12").add("x-rpc-channel", "miyousheluodi")
@@ -307,31 +307,19 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
                 .add("User-Agent", "okhttp/4.8.0")
                 .add("x-rpc-device_model", "Redmi Note 4")
                 .add("isLogin", "true")
-                .add("DS", getDS())
-                .add("cookie", "stuid=" + stuid + ";stoken=" + stoken + ";").build();
-    }
 
-    public Header[] getHeaders1() {
-        JSONObject json = new JSONObject();
-        json.put("gids", hub.getForumId());
+                .add("cookie", "stuid=" + stuid + ";stoken=" + stoken + ";");
 
-        return new HeaderBuilder.Builder()
-                .add("x-rpc-client_type", getClientType())
-                .add("x-rpc-app_version", getAppVersion())
-                .add("x-rpc-sys_version", "12").add("x-rpc-channel", "miyousheluodi")
-                .add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toLowerCase())
-                .add("x-rpc-device_name", "Xiaomi Redmi Note 4")
-                .add("Referer", "https://app.mihoyo.com")
-                .add("Content-Type", "application/json")
-                .add("Host", "bbs-api.mihoyo.com")
-//        .add("Content-Length", "41");
-                .add("Connection", "Keep-Alive")
-                .add("Accept-Encoding", "gzip")
-                .add("User-Agent", "okhttp/4.8.0")
-                .add("x-rpc-device_model", "Redmi Note 4")
-                .add("isLogin", "true")
-                .add("DS", getDSCommunitySign(json.toString()))
-                .add("cookie", "stuid=" + stuid + ";stoken=" + stoken + ";").build();
+        if (MihayouConstants.DS_TYPE_ONE.equals(dsType)) {
+            JSONObject json = new JSONObject();
+            json.put("gids", hub.getForumId());
+
+            builder.add("DS", getDS(json.toString()));
+        } else if (MihayouConstants.DS_TYPE_TWO.equals(dsType)){
+            builder.add("DS", getDS());
+        }
+
+        return builder.build();
     }
 
 }

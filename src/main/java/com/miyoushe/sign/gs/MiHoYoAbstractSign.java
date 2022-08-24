@@ -1,6 +1,7 @@
 package com.miyoushe.sign.gs;
 
 import com.miyoushe.sign.Sign;
+import com.miyoushe.sign.constant.MihayouConstants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
@@ -28,11 +29,13 @@ public abstract class MiHoYoAbstractSign implements Sign {
         this.cookie = cookie;
     }
 
+    @Override
     public abstract List<Map<String, Object>> doSign() throws Exception;
 
     @Override
-    public Header[] getHeaders() {
-        return new HeaderBuilder.Builder().add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toUpperCase())
+    public Header[] getHeaders(String dsType) {
+        return new HeaderBuilder.Builder()
+                .add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toUpperCase())
                 .add("Content-Type", "application/json;charset=UTF-8")
                 .add("x-rpc-client_type", getClientType())
                 .add("x-rpc-app_version", getAppVersion())
@@ -40,7 +43,8 @@ public abstract class MiHoYoAbstractSign implements Sign {
     }
 
     protected Header[] getBasicHeaders() {
-        return new HeaderBuilder.Builder().add("Cookie", cookie)
+        return new HeaderBuilder.Builder()
+                .add("Cookie", cookie)
                 .add("User-Agent", String.format(MiHoYoConfig.USER_AGENT_TEMPLATE, getAppVersion()))
                 .add("Referer", MiHoYoConfig.REFERER_URL)
                 .add("Accept-Encoding", "gzip, deflate, br")
@@ -57,14 +61,13 @@ public abstract class MiHoYoAbstractSign implements Sign {
         String i = (System.currentTimeMillis() / 1000) + "";
         String r = getRandomStr();
         return createDS(getSalt(), i, r);
-
     }
 
-    protected String getDSCommunitySign(String gidsJson) {
+    protected String getDS(String gidsJson) {
         Random random = new Random();
         String i = (System.currentTimeMillis() / 1000) + "";
         String r = String.valueOf(random.nextInt(200000 - 100000) + 100000 + 1);
-        return createDSCommunitySign("t0qEgfub6cvueAPgR5m9aQWWVciEer7v", i, r, gidsJson);
+        return createDS(MihayouConstants.COMMUNITY_SIGN_SALT, i, r, gidsJson);
     }
 
     private String createDS(String n, String i, String r) {
@@ -72,7 +75,7 @@ public abstract class MiHoYoAbstractSign implements Sign {
         return String.format("%s,%s,%s", i, r, c);
     }
 
-    private String createDSCommunitySign(String n, String i, String r, String b) {
+    private String createDS(String n, String i, String r, String b) {
         String c = DigestUtils.md5Hex("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + "");
         return String.format("%s,%s,%s", i, r, c);
     }
