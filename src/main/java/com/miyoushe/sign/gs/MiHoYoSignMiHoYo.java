@@ -178,7 +178,7 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("gids", hub.getForumId());
 
-        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.HUB_SIGN_URL, getHeaders(), data);
+        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.HUB_SIGN_URL, getHeaders1(), data);
         if ("OK".equals(signResult.get("message")) || "重复".equals(signResult.get("message"))) {
             log.info("{}", signResult.get("message"));
             return "社区签到: " + signResult.get("message");
@@ -291,6 +291,27 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
 
     @Override
     public Header[] getHeaders() {
+
+        return new HeaderBuilder.Builder()
+                .add("x-rpc-client_type", getClientType())
+                .add("x-rpc-app_version", getAppVersion())
+                .add("x-rpc-sys_version", "12").add("x-rpc-channel", "miyousheluodi")
+                .add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toLowerCase())
+                .add("x-rpc-device_name", "Xiaomi Redmi Note 4")
+                .add("Referer", "https://app.mihoyo.com")
+                .add("Content-Type", "application/json")
+                .add("Host", "bbs-api.mihoyo.com")
+//        .add("Content-Length", "41");
+                .add("Connection", "Keep-Alive")
+                .add("Accept-Encoding", "gzip")
+                .add("User-Agent", "okhttp/4.8.0")
+                .add("x-rpc-device_model", "Redmi Note 4")
+                .add("isLogin", "true")
+                .add("DS", getDS())
+                .add("cookie", "stuid=" + stuid + ";stoken=" + stoken + ";").build();
+    }
+
+    public Header[] getHeaders1() {
         JSONObject json = new JSONObject();
         json.put("gids", hub.getForumId());
 
