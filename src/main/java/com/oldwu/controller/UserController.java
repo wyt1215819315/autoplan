@@ -57,7 +57,11 @@ public class UserController {
         String role = userDao.getRole(userId);
         AutoLog log;
         if (role.equals("ROLE_ADMIN")) {
-            log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), Integer.valueOf(params.get("userId")));
+            if (StringUtils.isBlank(params.get("userId"))) {
+                log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), userId);
+            } else {
+                log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), Integer.valueOf(params.get("userId")));
+            }
         }else {
             log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), userId);
         }

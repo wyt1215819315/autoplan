@@ -19,6 +19,10 @@ public class UserService {
     @Autowired
     private SysUserInfoDao userInfoDao;
 
+    public String getRole(Integer id) {
+        return userDao.getRole(id);
+    }
+
     public int getUserId(String username) {
         SysUser byUserName = userDao.findByUserName(username);
         return byUserName.getId();

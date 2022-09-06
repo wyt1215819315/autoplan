@@ -78,3 +78,17 @@ function httpsAddMeta() {
         document.getElementsByTagName('head')[0].appendChild(oMeta);
     }
 }
+
+function getTaskLogType(type) {
+    if (type === "mihuyou") {
+        return `<button class="layui-btn layui-btn-xs miyousheBtn">米游社</button>`;
+    }
+
+    if (type === "bili" || type === "bilibili") {
+        return `<button class="layui-btn layui-btn-xs bilibiliBtn">哔哩哔哩</button>`;
+    }
+
+    if (type === "netmusic") {
+        return `<button class="layui-btn layui-btn-xs netmusicBtn">网易云</button>`;
+    }
+}

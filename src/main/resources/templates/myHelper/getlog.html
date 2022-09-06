@@ -23,7 +23,8 @@
                     url: "/api/user/getlog",
                     data: {
                         "id": GetQueryString("id"),
-                        "type": GetQueryString("type")
+                        "type": GetQueryString("type"),
+                        "userId": GetQueryString("userId")
                     },
                     type: "POST",
                     success: function(result) {
