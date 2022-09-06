@@ -1,5 +1,6 @@
 package com.oldwu.controller;
 
+import com.oldwu.dao.UserDao;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.entity.AutoLog;
 import com.oldwu.entity.SysUserInfo;
@@ -31,6 +32,9 @@ public class UserController {
     @Autowired
     private LogService logService;
 
+    @Autowired
+    private UserDao userDao;
+
     @PostMapping("/reg")
     public AjaxResult regPost(@Param("username") String username, @Param("password") String password) {
         return regService.doReg(username, password);
@@ -49,7 +53,14 @@ public class UserController {
         if (!params.containsKey("type") || StringUtils.isBlank(params.get("type"))){
             return AjaxResult.doError("TYPE不能为空！");
         }
-        AutoLog log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), SessionUtils.getPrincipal().getId());
+        Integer userId = SessionUtils.getPrincipal().getId();
+        String role = userDao.getRole(userId);
+        AutoLog log;
+        if (role.equals("ROLE_ADMIN")) {
+            log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), Integer.valueOf(params.get("userId")));
+        }else {
+            log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), userId);
+        }
         if (log == null || log.getId() == null) {
             AutoLog log1 = new AutoLog();
             log1.setText("当前无日志");
