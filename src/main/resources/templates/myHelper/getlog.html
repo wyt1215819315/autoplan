@@ -19,12 +19,23 @@
                 var element = layui.element;
                 var layer = layui.layer;
 
+                var url = "";
+
+                var id = GetQueryString("id");
+                console.log("id" + id);
+                if (id == null || id == "" || id == undefined) {
+                    url = "/api/user/getlog";
+                } else {
+                    url = "admin/taskLog/getlog";
+                }
+
                 $.ajax({
-                    url: "/api/user/getlog",
+                    url: url,
                     data: {
-                        "id": GetQueryString("id"),
+                        "autoId": GetQueryString("autoId"),
                         "type": GetQueryString("type"),
-                        "userId": GetQueryString("userId")
+                        "userId": GetQueryString("userId"),
+                        "id": GetQueryString("id")
                     },
                     type: "POST",
                     success: function(result) {

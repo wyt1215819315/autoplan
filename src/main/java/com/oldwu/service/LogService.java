@@ -15,15 +15,20 @@ public class LogService {
     @Autowired
     private AutoLogDao logDao;
 
-    public AutoLog getLog(Integer id, String type, Integer uid){
-        AutoLog autoLog = new AutoLog();
-        if (StringUtils.isBlank(type)){
-            return null;
+    public AutoLog getLog(Long id, Integer autoId, String type, Integer uid){
+        QueryWrapper<AutoLog> queryWrapper = new QueryWrapper<>();
+
+        if (id == null) {
+            queryWrapper.eq("auto_id", autoId);
+            queryWrapper.eq("type", type);
+            queryWrapper.eq("userid", uid);
+            queryWrapper.orderByDesc("date");
+            Page<AutoLog> page = new Page<>(1, 1);
+            Page<AutoLog> list = logDao.selectPage(page, queryWrapper);
+            return list.getRecords().get(0);
+        } else {
+            return logDao.selectById(id);
         }
-        autoLog.setAutoId(id);
-        autoLog.setType(type);
-        autoLog.setUserid(uid);
-        return logDao.selectByCondition(autoLog);
     }
 
     public PageDataVO<AutoLog> queryPageList(Integer page, Integer limit, String taskType, String taskStatus) {

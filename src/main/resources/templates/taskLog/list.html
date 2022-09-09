@@ -151,7 +151,7 @@
                     var index = layer.open({
                         title: `${data.type}日志查看`,
                         type: 2,
-                        content: `/getlog?type=${data.type}&id=${data.autoId}&userId=${data.userid}`,
+                        content: `/getlog?type=${data.type}&autoId=${data.autoId}&userId=${data.userid}&id=${data.id}`,
                         maxmin: true,
                         area: screen() < 2 ? ['90%', '80%'] : ['600px', boxSize],
                         end: function (index, layero) {

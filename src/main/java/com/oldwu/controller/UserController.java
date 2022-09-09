@@ -47,23 +47,27 @@ public class UserController {
      */
     @PostMapping("/api/user/getlog")
     public AjaxResult getLog(@RequestParam Map<String, String> params) {
-        if (!params.containsKey("id") || StringUtils.isBlank(params.get("id"))){
+        if (!params.containsKey("autoId") || StringUtils.isBlank(params.get("autoId"))){
             return AjaxResult.doError("ID不能为空！");
         }
         if (!params.containsKey("type") || StringUtils.isBlank(params.get("type"))){
             return AjaxResult.doError("TYPE不能为空！");
         }
+
+        Integer autoId = Integer.valueOf(params.get("autoId"));
+        String type = params.get("type");
+
         Integer userId = SessionUtils.getPrincipal().getId();
         String role = userDao.getRole(userId);
         AutoLog log;
         if (role.equals("ROLE_ADMIN")) {
             if (StringUtils.isBlank(params.get("userId"))) {
-                log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), userId);
+                log = logService.getLog(null, autoId, type, userId);
             } else {
-                log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), Integer.valueOf(params.get("userId")));
+                log = logService.getLog(null, autoId, type, Integer.valueOf(params.get("userId")));
             }
         }else {
-            log = logService.getLog(Integer.valueOf(params.get("id")), params.get("type"), userId);
+            log = logService.getLog(null, autoId, type, userId);
         }
         if (log == null || log.getId() == null) {
             AutoLog log1 = new AutoLog();

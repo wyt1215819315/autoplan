@@ -79,7 +79,7 @@ function showUserMiyousheInfo() {
 }
 
 //查看日志方法
-function openLog(type, id) {
+function openLog(type, autoId) {
     var boxSize = '600px';
     if (name === "netmusic") {
         boxSize = '450px';
@@ -88,7 +88,7 @@ function openLog(type, id) {
     var index = layer.open({
         title: `${type}日志查看`,
         type: 2,
-        content: `/getlog?type=${type}&id=${id}`,
+        content: `/getlog?type=${type}&autoId=${autoId}`,
         maxmin: true,
         area: screen() < 2 ? ['90%', '80%'] : ['600px', boxSize],
         end: function (index, layero) {
