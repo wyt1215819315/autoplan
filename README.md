@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Auto Plan Helper</h1>
 <h4 align="center">自动化的托管系统</h4>
 <p align="center">
-	<a href="https://github.com/wyt1215819315/autoplan"><img src="https://img.shields.io/badge/AutoPlan-v2.7.0-brightgreen.svg"></a>
+	<a href="https://github.com/wyt1215819315/autoplan"><img src="https://img.shields.io/github/v/release/wyt1215819315/autoplan?color=green"></a>
 	<img src="https://img.shields.io/github/stars/wyt1215819315/autoplan">
 </p>
 
