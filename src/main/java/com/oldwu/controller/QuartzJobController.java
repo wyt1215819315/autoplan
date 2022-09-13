@@ -6,6 +6,7 @@ import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.Tablepar;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.service.SysQuartzJobService;
+import com.oldwu.util.StringUtils;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,6 +74,9 @@ public class QuartzJobController extends BaseController{
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult add(SysQuartzJob sysQuartzJob){
+		if (StringUtils.isEmpty(sysQuartzJob.getInvokeTarget())) {
+			return error("调用目标字符串不能为空");
+		}
 		int b = sysQuartzJobService.insertSelective(sysQuartzJob);
 		if (b > 0) {
 			return success();

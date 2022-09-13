@@ -1,7 +1,9 @@
 package com.oldwu.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.oldwu.dao.AutoLogDao;
 import com.oldwu.entity.AutoLog;
@@ -15,17 +17,14 @@ public class LogService {
     @Autowired
     private AutoLogDao logDao;
 
-    public AutoLog getLog(Long id, Integer autoId, String type, Integer uid){
-        QueryWrapper<AutoLog> queryWrapper = new QueryWrapper<>();
-
+    public AutoLog getLog(Long id, Integer autoId, String type, Integer uid) {
         if (id == null) {
-            queryWrapper.eq("auto_id", autoId);
-            queryWrapper.eq("type", type);
-            queryWrapper.eq("userid", uid);
-            queryWrapper.orderByDesc("date");
-            Page<AutoLog> page = new Page<>(1, 1);
-            Page<AutoLog> list = logDao.selectPage(page, queryWrapper);
-            return list.getRecords().get(0);
+            LambdaQueryWrapper<AutoLog> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(AutoLog::getAutoId, autoId);
+            queryWrapper.eq(AutoLog::getType, type);
+            queryWrapper.eq(AutoLog::getUserid, uid);
+            queryWrapper.last("limit 1");
+            return logDao.selectOne(queryWrapper);
         } else {
             return logDao.selectById(id);
         }
