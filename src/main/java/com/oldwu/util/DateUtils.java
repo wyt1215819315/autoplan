@@ -21,6 +21,8 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
 	/** 时间格式(yyyy-MM-dd HH:mm:ss) */
 	public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
+    public final static String ADD_H_LAST = " 00:00:00";
+
 	public static String format(Date date) {
         return format(date, DATE_PATTERN);
     }
