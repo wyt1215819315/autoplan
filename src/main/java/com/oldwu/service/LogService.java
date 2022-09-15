@@ -23,6 +23,7 @@ public class LogService {
             queryWrapper.eq(AutoLog::getAutoId, autoId);
             queryWrapper.eq(AutoLog::getType, type);
             queryWrapper.eq(AutoLog::getUserid, uid);
+            queryWrapper.orderByDesc(AutoLog::getDate);
             queryWrapper.last("limit 1");
             return logDao.selectOne(queryWrapper);
         } else {

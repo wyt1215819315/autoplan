@@ -46,7 +46,6 @@ public class CleanUpLogsRegularlyTask {
      */
     @Scheduled(cron = "0 0 0 1 * ?")
     public void cleanUpAutoLog() {
-        System.out.println("定时任务1");
         Calendar calendar = Calendar.getInstance();
         //当前时间减去一个月，即一个月前的时间
         calendar.add(Calendar.MONTH, -1);
@@ -62,7 +61,6 @@ public class CleanUpLogsRegularlyTask {
      */
     @Scheduled(cron = "0 0 0 1 * ?")
     public void cleanUpScheduledTaskLogs() {
-        System.out.println("定时任务2");
         Calendar calendar = Calendar.getInstance();
         //当前时间减去一个月，即一个月前的时间
         calendar.add(Calendar.MONTH, -1);
