@@ -298,7 +298,7 @@ public class BiliService {
         }
         Integer reserveCoins = jsonObject.getInteger("reserveCoins");
         if (reserveCoins != null && reserveCoins >= 0) {
-            biliCoinConfig.setReserveCoins(50);
+            biliCoinConfig.setReserveCoins(reserveCoins);
         }
         boolean enableClickLike = Boolean.parseBoolean(jsonObject.getString("enableClickLike"));
         biliCoinConfig.setEnableClickLike(enableClickLike);
