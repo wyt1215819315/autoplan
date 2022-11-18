@@ -200,12 +200,4 @@ public class PageController {
         return new ModelAndView("xiaomi/xiaomi-helper-edit.html");
     }
 
-    /**
-     * 修改密码
-     * @return
-     */
-    @GetMapping("/changePassword")
-    public ModelAndView test(){
-        return new ModelAndView("myHelper/changePassword.html");
-    }
 }
