@@ -1,7 +1,8 @@
 package com.oldwu.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.oldwu.dao.SysQuartzJobMapper;
 import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.SysQuartzJobExample;
@@ -35,17 +36,12 @@ public class SysQuartzJobService implements BaseService<SysQuartzJob, SysQuartzJ
     @Autowired
     private QuartzSchedulerUtil quartzSchedulerUtil;
 
-    public PageInfo<SysQuartzJob> list(Tablepar tablepar, String name) {
-        SysQuartzJobExample testExample = new SysQuartzJobExample();
-        testExample.setOrderByClause("id ASC");
-        if (name != null && !"".equals(name)) {
-            testExample.createCriteria().andJobNameLike("%" + name + "%");
-        }
-
-        PageHelper.startPage(tablepar.getPage(), tablepar.getLimit());
-        List<SysQuartzJob> list = sysQuartzJobMapper.selectByExample(testExample);
-        PageInfo<SysQuartzJob> pageInfo = new PageInfo<SysQuartzJob>(list);
-        return pageInfo;
+    public Page<SysQuartzJob> list(Tablepar tablepar, String name) {
+        Page<SysQuartzJob> page = new Page<>(tablepar.getPage(), tablepar.getLimit());
+        LambdaQueryWrapper<SysQuartzJob> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.orderByAsc(SysQuartzJob::getJobName);
+        page = sysQuartzJobMapper.selectPage(page, queryWrapper);
+        return page;
     }
 
     @Override

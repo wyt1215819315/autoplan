@@ -170,4 +170,42 @@ public class PageController {
         return new ModelAndView("miyoushe/miyoushe-helper-edit");
     }
 
+    /**
+     * 小米运动任务展示首页
+     *
+     * @return
+     */
+    @GetMapping("/xiaomi/index")
+    public ModelAndView xiaoMiIndexPage() {
+        return new ModelAndView("xiaomi/xiaomi-helper.html");
+    }
+
+    /**
+     * 小米运动任务添加页
+     *
+     * @return ModelAndView
+     */
+    @GetMapping("/xiaomi/add")
+    public ModelAndView xiaoMiAddPage() {
+        return new ModelAndView("xiaomi/xiaomi-helper-add.html");
+    }
+
+    /**
+     * 小米运动任务修改页
+     *
+     * @return ModelAndView
+     */
+    @GetMapping("/xiaomi/edit")
+    public ModelAndView xiaoMiEditPage() {
+        return new ModelAndView("xiaomi/xiaomi-helper-edit.html");
+    }
+
+    /**
+     * 修改密码
+     * @return
+     */
+    @GetMapping("/changePassword")
+    public ModelAndView test(){
+        return new ModelAndView("myHelper/changePassword.html");
+    }
 }

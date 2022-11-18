@@ -33,6 +33,11 @@ ul {
     background-size: 40px 40px;
 }
 
+.xiaomiLogo {
+    background: url(../image/xiaomi_logo.ico) no-repeat 0 center;
+    background-size: 40px 40px;
+}
+
 .searchIcon {
     padding: 13px 30px 13px 0px;
     margin-right: 5px;
@@ -55,6 +60,11 @@ ul {
 
 .miyousheIcon {
     background: url(https://fastly.jsdelivr.net/gh/wyt1215819315/autoplan@master/src/main/resources/static/image/miyoushe.png) no-repeat 0 center;
+    background-size: 30px 30px;
+}
+
+.xiaomiIcon {
+    background: url(../image/xiaomi_logo.ico) no-repeat 0 center;
     background-size: 30px 30px;
 }
 

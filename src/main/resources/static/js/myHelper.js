@@ -5,15 +5,19 @@ layui.use(['element','layer'], function() {
     showUserBilibiliInfo();
     showUserNetmusicInfo();
     showUserMiyousheInfo();
+    showUserXiaoMiInfo();
 
-    $("#addBilibiliTask").click(function (){
-        addTask("bili");
+    $("#addBilibiliTask").click(function () {
+        addTask("bili", "哔哩哔哩");
     })
-    $("#addMiyousheTask").click(function (){
-        addTask("mihuyou");
+    $("#addMiyousheTask").click(function () {
+        addTask("mihuyou", "米游社");
     })
-    $("#addNetmusicTask").click(function (){
-        addTask("netmusic");
+    $("#addNetmusicTask").click(function () {
+        addTask("netmusic", "网易云");
+    })
+    $("#addXiaoMi").click(function () {
+        addTask("xiaomi", "小米运动");
     })
 
 })
@@ -78,17 +82,37 @@ function showUserMiyousheInfo() {
     })
 }
 
+//显示小米运动部分的定时任务
+function showUserXiaoMiInfo() {
+    $.ajax({
+        url: "/api/user/xiaomi/list",
+        async: false,//关键是这个参数 是否异步请求=>false:使用同步请求
+        type: "POST",
+        success: function (result) {
+            if (result.code === 200) {
+                var _html = xiaoMiHtml(result.data);
+                $("#xiaoMiShow").html(_html);
+            } else {
+                layer.msg("获取小米运动任务失败");
+            }
+        },
+        error: function () {
+            layer.msg("获取小米运动任务失败");
+        }
+    })
+}
+
 //查看日志方法
-function openLog(type, autoId) {
+function openLog(name, url, autoId) {
     var boxSize = '600px';
-    if (name === "netmusic") {
+    if (url === "netmusic") {
         boxSize = '450px';
     }
 
     var index = layer.open({
-        title: `${type}日志查看`,
+        title: `${name}日志查看`,
         type: 2,
-        content: `/getlog?type=${type}&autoId=${autoId}`,
+        content: `/getlog?type=${url}&autoId=${autoId}`,
         maxmin: true,
         area: screen() < 2 ? ['90%', '80%'] : ['600px', boxSize],
         end: function (index, layero) {
@@ -98,18 +122,18 @@ function openLog(type, autoId) {
 }
 
 //手动运行任务方法
-function runTask(name, id) {
+function runTask(name, url, id) {
     layer.confirm(`确定要手动运行一次${name}任务？`, {icon: 3, title: '提示'}, function (index) {
         layer.close(index);
         let loading = layer.load();
         $.ajax({
-            url: `/api/user/${name}/run?id=${id}`,
+            url: `/api/user/${url}/run?id=${id}`,
             type: 'post',
             success: function (result) {
                 layer.close(loading);
                 if (result.code == 200) {
                     parent.layer.msg(result.msg);
-                    updateHtml(name);
+                    updateHtml(url);
                 } else {
                     parent.layer.msg(result.msg);
                 }
@@ -119,45 +143,45 @@ function runTask(name, id) {
 }
 
 //修改定时任务方法
-function editTask(name, id) {
+function editTask(name, url, id) {
     layer.open({
         type: 2,
         title: `修改${name}任务`,
         shade: 0.1,
         area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
-        content: `${name}/edit?id=${id}`,
+        content: `${url}/edit?id=${id}`,
         end: function (index, layero) {
-            updateHtml(name);
+            updateHtml(url);
             return true;
         }
     });
 }
 
 //添加定时任务方法
-function addTask(name) {
+function addTask(url, name) {
     layer.open({
         type: 2,
         title: `添加${name}任务`,
         shade: 0.1,
         area: screen() < 2 ? ['90%', '80%'] : ['1200px', '600px'],
-        content: `${name}/add`,
+        content: `${url}/add`,
         end: function (index, layero) {
-            updateHtml(name);
+            updateHtml(url);
             return true;
         }
     });
 }
 
 //删除定时任务方法
-function removePlan(name, autoId) {
+function removePlan(url, autoId) {
     layer.confirm('确定要删除该任务?删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
         layer.close(index);
         let loading = layer.load();
-        $.post(`/api/user/${name}/delete`, {id: autoId}, function (result) {
+        $.post(`/api/user/${url}/delete`, {id: autoId}, function (result) {
             layer.close(loading);
             if (result.code == 200) {
                 layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                    updateHtml(name);
+                    updateHtml(url);
                 });
             } else {
                 layer.msg(result.msg, {icon: 2, time: 1000});
@@ -197,6 +221,80 @@ function updateHtml(name){
     if (name === "mihuyou") {
         showUserMiyousheInfo();
     }
+
+    if (name === "xiaomi") {
+        showUserXiaoMiInfo();
+    }
+}
+
+//拼接小米运动显示html
+function xiaoMiHtml(data) {
+    var _xiaoMiHtml = '';
+    var dataLength = data.length;
+
+    if (dataLength === 0) {
+        return _xiaoMiHtml;
+    }
+
+    _xiaoMiHtml += `<fieldset class="layui-elem-field xiaomi">
+                        <legend><i class="layui-icon search xiaomiLogo"></i>小米运动</legend>
+                        <div class="layui-field-box">
+                            <div class="layui-row layui-col-space15">
+                                ${xiaomiHtmlUserInfo(data)}
+                            </div> 
+                        </div>
+                    </fieldset>`;
+
+    return _xiaoMiHtml;
+}
+
+//拼接小米运动用户信息显示html
+function xiaomiHtmlUserInfo(data) {
+    var name = "'小米运动'";
+    var url = "'xiaomi'";
+    let miyousheHtmlUserInfo = '';
+
+    data.forEach(function (xiaomiUser) {
+
+        miyousheHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+                                    <div class="layui-card">
+                                        <div class="layui-card-header" style="font-size: 16px;">${xiaomiUser.name}
+                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(xiaomiUser.endDateString) ? '' : 'display: none;'}">运行于：${xiaomiUser.endDateString}</font>
+                                            <span class="layui-badge layuiadmin-badge ${xiaomiUser.enable == "true" ? 'layui-bg-blue' : 'layui-bg-red'}">${xiaomiUser.enable == "true" ? "开启" : "关闭"}</span>
+                                        </div>
+                                        <div class="layui-card-body layuiadmin-card-list">
+                                            <p class="layuiadmin-big-font">小米运动账号：
+                                                <font class="xiaomi-p-font">${xiaomiUser.phone}</font>
+                                            </p>
+                                            <p class="layuiadmin-big-font">当前设置的步数：
+                                                <font class="xiaomi-p-font">${xiaomiUser.steps}</font>
+                                            </p>
+                                            <p class="layuiadmin-big-font">上一次提交的步数：
+                                                <font class="xiaomi-p-font">${xiaomiUser.previousOccasion}</font>
+                                            </p>
+                                            <p style="margin-top: 10px;">
+                                                ${addStatus(xiaomiUser.status)}
+                                                <span class="layuiadmin-span-color">
+                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${url}, ${xiaomiUser.id})">
+                                                        <i class="layui-icon layui-icon-tips"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${url}, ${xiaomiUser.id})">
+                                                        <i class="layui-icon layui-icon-edit"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${url}, ${xiaomiUser.id})">
+                                                        <i class="layui-icon layui-icon-delete"></i>
+                                                    </button>
+                                                    <button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(${name}, ${url}, ${xiaomiUser.id})">
+                                                        <i class="layui-icon layui-icon-triangle-r"></i>
+                                                    </button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>`;
+    })
+
+    return miyousheHtmlUserInfo;
 }
 
 //拼接米游社显示html
@@ -221,22 +319,23 @@ function miyousheHtml(data) {
 }
 
 //拼接米游社用户信息显示html
-function miyousheHtmlUserInfo(data){
-    var name = "'mihuyou'";
+function miyousheHtmlUserInfo(data) {
+    var name = "'米游社'";
+    var url = "'mihuyou'";
     let miyousheHtmlUserInfo = '';
 
-    data.forEach(function(miyousheUser) {
+    data.forEach(function (miyousheUser) {
 
         miyousheHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
                                     <div class="layui-card">
                                         <div class="layui-card-header" style="font-size: 16px;">${miyousheUser.name}
-                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(miyousheUser.endDateString)?'':'display: none;'}">运行于：${miyousheUser.endDateString}</font>
-                                            <span class="layui-badge layuiadmin-badge ${miyousheUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${miyousheUser.enable == "true"?"开启":"关闭"}</span>
+                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(miyousheUser.endDateString) ? '' : 'display: none;'}">运行于：${miyousheUser.endDateString}</font>
+                                            <span class="layui-badge layuiadmin-badge ${miyousheUser.enable == "true" ? 'layui-bg-blue' : 'layui-bg-red'}">${miyousheUser.enable == "true" ? "开启" : "关闭"}</span>
                                         </div>
                                         <div class="layui-card-body layuiadmin-card-list">
                                             <p class="layuiadmin-big-font">用户名：
                                                 <font class="miyoushe-p-font">${miyousheUser.miName}</font>
-                                                <span class="layuiadmin-span-color" style="${userAvatarShow(miyousheUser.avatar)?'':'display: none;'}">
+                                                <span class="layuiadmin-span-color" style="${userAvatarShow(miyousheUser.avatar) ? '' : 'display: none;'}">
                                                     <img src="${miyousheUser.avatar}" alt="头像" style="width: 60px; height: 60px">
                                                 </span>
                                             </p>
@@ -246,16 +345,16 @@ function miyousheHtmlUserInfo(data){
                                             <p style="margin-top: 10px;">
                                                 ${addStatus(miyousheUser.status)}
                                                 <span class="layuiadmin-span-color">
-                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${miyousheUser.id})">
+                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${url}, ${miyousheUser.id})">
                                                         <i class="layui-icon layui-icon-tips"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${miyousheUser.id})">
+                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${url}, ${miyousheUser.id})">
                                                         <i class="layui-icon layui-icon-edit"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${miyousheUser.id})">
+                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${url}, ${miyousheUser.id})">
                                                         <i class="layui-icon layui-icon-delete"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(${name}, ${miyousheUser.id})">
+                                                    <button class="layui-btn layui-btn-warm layui-btn-sm " onclick="runTask(${name}, ${url}, ${miyousheUser.id})">
                                                         <i class="layui-icon layui-icon-triangle-r"></i>
                                                     </button>
                                                 </span>
@@ -291,21 +390,22 @@ function netmusicHtml(data) {
 
 //拼接网易云用户信息显示html
 function netmusicHtmlUserInfo(data) {
-    var name = "'netmusic'";
+    var name = "'网易云'";
+    var url = "'netmusic'";
     let netmusicHtmlUserInfo = '';
 
-    data.forEach(function(netmusicUser) {
+    data.forEach(function (netmusicUser) {
 
-    netmusicHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+        netmusicHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
                                 <div class="layui-card">
                                     <div class="layui-card-header" style="font-size: 16px;">${netmusicUser.name}
-                                        <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(netmusicUser.endDateString)?'':'display: none;'}">运行于：${netmusicUser.endDateString}</font>
-                                        <span class="layui-badge layuiadmin-badge ${netmusicUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${netmusicUser.enable == "true"?"开启":"关闭"}</span>
+                                        <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(netmusicUser.endDateString) ? '' : 'display: none;'}">运行于：${netmusicUser.endDateString}</font>
+                                        <span class="layui-badge layuiadmin-badge ${netmusicUser.enable == "true" ? 'layui-bg-blue' : 'layui-bg-red'}">${netmusicUser.enable == "true" ? "开启" : "关闭"}</span>
                                     </div>
                                     <div class="layui-card-body layuiadmin-card-list">
                                         <p class="layuiadmin-big-font">用户名：
                                             <font class="netmusic-p-font">${netmusicUser.netmusicName}</font>
-                                            <span class="layuiadmin-span-color" style="${userAvatarShow(netmusicUser.avatar)?'':'display: none;'}">
+                                            <span class="layuiadmin-span-color" style="${userAvatarShow(netmusicUser.avatar) ? '' : 'display: none;'}">
                                                 <img src="${netmusicUser.avatar}" alt="头像" style="width: 60px; height: 60px">
                                             </span>
                                         </p>
@@ -319,18 +419,18 @@ function netmusicHtmlUserInfo(data) {
                                             <font class="netmusic-p-font">${Number(netmusicUser.netmusicNeedListen)}</font>
                                         </p>
                                         <p style="margin-top: 10px;">
-                                            ${addStatus( netmusicUser.status)}
+                                            ${addStatus(netmusicUser.status)}
                                             <span class="layuiadmin-span-color">
-                                                <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${netmusicUser.id})">
+                                                <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${url}, ${netmusicUser.id})">
                                                     <i class="layui-icon layui-icon-tips"></i>
                                                 </button>
-                                                <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${netmusicUser.id})">
+                                                <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${url}, ${netmusicUser.id})">
                                                     <i class="layui-icon layui-icon-edit"></i>
                                                 </button>
-                                                <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${netmusicUser.id})">
+                                                <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${url}, ${netmusicUser.id})">
                                                     <i class="layui-icon layui-icon-delete"></i>
                                                 </button>
-                                                <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${netmusicUser.id})">
+                                                <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${url}, ${netmusicUser.id})">
                                                     <i class="layui-icon layui-icon-triangle-r"></i>
                                                 </button>
                                             </span>
@@ -366,21 +466,22 @@ function bilibiliHtml(data) {
 
 //拼接b站用户信息显示html
 function bilibiliHtmlUserInfo(data) {
-    var name = "'bili'";
+    var name = "'哔哩哔哩'";
+    var url = "'bili'";
     let bilibiliHtmlUserInfo = '';
 
-    data.forEach(function(bilibiliUser) {
+    data.forEach(function (bilibiliUser) {
 
         bilibiliHtmlUserInfo += `<div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
                                     <div class="layui-card">
                                         <div class="layui-card-header" style="font-size: 16px;">${bilibiliUser.planName}
-                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(bilibiliUser.endDateString)?'':'display: none;'}">运行于：${bilibiliUser.endDateString}</font>
-                                            <span class="layui-badge layuiadmin-badge ${bilibiliUser.enable == "true"?'layui-bg-blue':'layui-bg-red'}">${bilibiliUser.enable == "true"?"开启":"关闭"}</span>
+                                            <font style="color: #b4b4b4; font-size: 14px; margin-left: 10px; ${endDateShow(bilibiliUser.endDateString) ? '' : 'display: none;'}">运行于：${bilibiliUser.endDateString}</font>
+                                            <span class="layui-badge layuiadmin-badge ${bilibiliUser.enable == "true" ? 'layui-bg-blue' : 'layui-bg-red'}">${bilibiliUser.enable == "true" ? "开启" : "关闭"}</span>
                                         </div>
                                         <div class="layui-card-body layuiadmin-card-list">
                                             <p class="layuiadmin-big-font">用户名：
                                                 <font class="bilibili-p-font">${bilibiliUser.biliName}</font>
-                                                <span class="layuiadmin-span-color" style="${userAvatarShow(bilibiliUser.faceImg)?'':'display: none;'}">
+                                                <span class="layuiadmin-span-color" style="${userAvatarShow(bilibiliUser.faceImg) ? '' : 'display: none;'}">
                                                     <img src="${bilibiliUser.faceImg}" alt="头像" style="width: 60px; height: 60px">
                                                 </span>
                                             </p>
@@ -394,21 +495,21 @@ function bilibiliHtmlUserInfo(data) {
                                                 <font class="bilibili-p-font">${Number(bilibiliUser.biliUpexp - bilibiliUser.biliExp)}</font>
                                             </p>
                                             <p class="layuiadmin-big-font">大会员情况：
-                                                <font class="bilibili-p-font">${bilibiliUser.isVip == "true"?'大会员':'不是大会员'}</font>
+                                                <font class="bilibili-p-font">${bilibiliUser.isVip == "true" ? '大会员' : '不是大会员'}</font>
                                             </p>
                                             <p style="margin-top: 10px;">
                                                 ${addStatus(bilibiliUser.status)}
                                                 <span class="layuiadmin-span-color">
-                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${bilibiliUser.autoId})">
+                                                    <button class="layui-btn layui-btn-sm" onclick="openLog(${name}, ${url}, ${bilibiliUser.autoId})">
                                                         <i class="layui-icon layui-icon-tips"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${bilibiliUser.autoId})">
+                                                    <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="editTask(${name}, ${url}, ${bilibiliUser.autoId})">
                                                         <i class="layui-icon layui-icon-edit"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${name}, ${bilibiliUser.autoId})">
+                                                    <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="removePlan(${url}, ${bilibiliUser.autoId})">
                                                         <i class="layui-icon layui-icon-delete"></i>
                                                     </button>
-                                                    <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${bilibiliUser.autoId})">
+                                                    <button class="layui-btn layui-btn-warm layui-btn-sm" onclick="runTask(${name}, ${url}, ${bilibiliUser.autoId})">
                                                         <i class="layui-icon layui-icon-triangle-r"></i>
                                                     </button>
                                                 </span>

@@ -1,6 +1,5 @@
 package com.oldwu.config;
 
-import com.oldwu.security.CustomUserService;
 import com.oldwu.security.LoginAuthenticationFailureHandler;
 import com.oldwu.security.LoginAuthenticationSuccessHandler;
 import com.oldwu.security.validate.ValidateCodeFilter;
@@ -76,6 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/bili/index").permitAll()
                 .antMatchers("/netmusic/index").permitAll()
                 .antMatchers("/mihuyou/index").permitAll()
+                .antMatchers("/xiaomi/index").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 //列表api请求
                 .antMatchers("/api/index/**").permitAll()

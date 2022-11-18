@@ -91,4 +91,8 @@ function getTaskLogType(type) {
     if (type === "netmusic") {
         return `<button class="layui-btn layui-btn-xs netmusicBtn">网易云</button>`;
     }
+
+    if (type === "xiaomi") {
+        return `<button class="layui-btn layui-btn-xs xiaomiBtn">小米运动</button>`;
+    }
 }

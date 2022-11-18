@@ -37,6 +37,19 @@
     color: #3285ff !important;
 }
 
+.xiaomi {
+    border-color: #ff7622 !important;
+}
+
+.xiaomiBtn {
+    background-color: #ff7622 !important;
+    border-radius: 10px;
+}
+
+.xiaomi legend,.xiaomi-p-font {
+    color: #ff7622 !important;
+}
+
 .netmusic .layui-card,.bilibili .layui-card,.miyoushe .layui-card {
     -webkit-box-shadow:2px 2px 5px #bbb;
     -moz-box-shadow:2px 2px 5px #bbb;

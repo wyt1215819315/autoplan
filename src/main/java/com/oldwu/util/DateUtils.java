@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -27,6 +28,22 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
         return format(date, DATE_PATTERN);
     }
 
+    /**
+     * 获取星期
+     *
+     * @param date
+     * @return
+     */
+    public static String getWeekOfDate(Date date) {
+        String[] weekDays = {"7", "1", "2", "3", "4", "5", "6"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0) {
+            w = 0;
+        }
+        return weekDays[w];
+    }
 
     /**
      * 线程暂停，相当于延时，会对传入参数做随机处理，可能高可能低

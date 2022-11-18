@@ -9,6 +9,8 @@ import com.netmusic.service.NetmusicService;
 import com.oldwu.entity.AjaxResult;
 import com.oldwu.service.SysService;
 import com.oldwu.vo.PageDataVO;
+import com.xiaomi.model.entity.AutoXiaomiEntity;
+import com.xiaomi.service.AutoXiaomiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,9 @@ public class IndexApiController {
 
     @Autowired
     private SysService sysService;
+
+    @Autowired
+    private AutoXiaomiService autoXiaomiService;
 
     /**
      * 获取系统首页公告
@@ -72,4 +77,15 @@ public class IndexApiController {
         return mihayouService.queryPageList(page, limit);
     }
 
+    /**
+     * 获取小米运动任务列表
+     *
+     * @param page  页码
+     * @param limit 每页数
+     * @return PageDataVO<BiliPlan>
+     */
+    @RequestMapping("/xiaomi/list")
+    public PageDataVO<AutoXiaomiEntity> xiaoMiList(Integer page, Integer limit) {
+        return autoXiaomiService.queryPageList(page, limit);
+    }
 }

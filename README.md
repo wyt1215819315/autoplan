@@ -46,6 +46,10 @@ INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, 
 * 原神签到任务
 * 米游币任务
 
+### 小米运动
+
+- 每天中午12点定时提交任务，步数可以同步到微信、支付宝。绑定好就行了
+
 [**更多详细使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
 ## 项目部署
@@ -116,6 +120,7 @@ INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, 
 * 22.2.5 修复网易云账号信息验证失败时无法打印错误信息的问题
 * 22.2.9 修复webhook页面显示bug，修改公告修改页面的样式，给网易云重试添加延迟操作
 * 22.5.24 bili-helper重构基本实现，可能还会有小问题，咕了n久，只是懒得写说明文档
+* 22.11.18 **新增小米运动**，支持定时，步数可以同步到微信、支付宝。修复定时任务管理分页查询问题。
 
 
 ### 鸣谢

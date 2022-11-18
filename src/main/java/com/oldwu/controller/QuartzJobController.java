@@ -1,6 +1,6 @@
 package com.oldwu.controller;
 
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.oldwu.domain.ResultTable;
 import com.oldwu.domain.SysQuartzJob;
 import com.oldwu.domain.Tablepar;
@@ -49,8 +49,8 @@ public class QuartzJobController extends BaseController{
 	@GetMapping("/list")
 	@ResponseBody
 	public ResultTable list(Tablepar tablepar, String searchText){
-		PageInfo<SysQuartzJob> page=sysQuartzJobService.list(tablepar,searchText) ;
-		return pageTable(page.getList(),page.getTotal());
+		Page<SysQuartzJob> page = sysQuartzJobService.list(tablepar, searchText);
+		return pageTable(page.getRecords(), page.getTotal());
 	}
 	
 	/**
