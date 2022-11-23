@@ -351,7 +351,9 @@ VALUES ('592295794938351616', '米游社自动重置任务状态', 'DEFAULT', 'm
 INSERT INTO `t_sys_quartz_job`
 VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
 INSERT INTO `t_sys_quartz_job`
-VALUES ('684022184875790336', '小米自动刷步数', 'DEFAULT', 'xiaomiTask.doAutoCheck', '0 0 12 * * ? *', '3', '1', 0);
+VALUES ('684022184875790336', '小米自动刷步数', 'DEFAULT', 'xiaomiTask.doAutoCheck()', '0 0 12 * * ? *', '3', '1', 0);
+INSERT INTO `t_sys_quartz_job`
+VALUES ('684022184905150464', '小米运动定时重置任务状态', 'DEFAULT', 'xiaomiTask.resetStatus()', '0 0 0 * * ? *', '3', '1', 0);
 
 -- ----------------------------
 -- Table structure for t_sys_quartz_job_log
