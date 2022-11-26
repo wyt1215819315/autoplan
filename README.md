@@ -21,6 +21,42 @@
 INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
 ```
 
+***
+
+> **2.11版本新增小米运动，需要新增数据库，请执行如下sql**
+```mysql
+# 任务记录表
+CREATE TABLE `auto_xiaomi`
+(
+    `id`                INT(11)     NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `user_id`           INT(11)     NULL DEFAULT NULL COMMENT '外键约束user_id',
+    `phone`             VARCHAR(50) NOT NULL COMMENT '小米账号' COLLATE 'utf8mb4_general_ci',
+    `password`          VARCHAR(50) NOT NULL COMMENT '密码' COLLATE 'utf8mb4_general_ci',
+    `steps`             VARCHAR(5)  NULL DEFAULT NULL COMMENT '步数' COLLATE 'utf8mb4_general_ci',
+    `previous_occasion` VARCHAR(5)  NULL DEFAULT NULL COMMENT '上次提交的步数' COLLATE 'utf8mb4_general_ci',
+    `name`              VARCHAR(50) NULL DEFAULT NULL COMMENT '任务名称' COLLATE 'utf8mb4_general_ci',
+    `status`            VARCHAR(10) NULL DEFAULT NULL COMMENT '任务状态' COLLATE 'utf8mb4_general_ci',
+    `random_or_not`     CHAR(1)     NULL DEFAULT NULL COMMENT '是否随机：0否，1是' COLLATE 'utf8mb4_general_ci',
+    `enable`            VARCHAR(50) NULL DEFAULT NULL COMMENT '任务是否开启' COLLATE 'utf8mb4_general_ci',
+    `enddate`           DATETIME    NULL DEFAULT NULL COMMENT '任务结束时间',
+    `webhook`           TEXT        NULL DEFAULT NULL COMMENT '推送地址json' COLLATE 'utf8mb4_general_ci',
+    `CREATED_TIME`      DATETIME    NULL DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `userid` (`user_id`) USING BTREE,
+    CONSTRAINT `auto_xiaomi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+    COLLATE = 'utf8mb4_general_ci'
+    ENGINE = InnoDB
+;
+
+# 定时任务执行sql
+INSERT INTO `t_sys_quartz_job`
+VALUES ('684022184875790336', '小米自动刷步数', 'DEFAULT', 'xiaomiTask.doAutoCheck()', '0 0 12 * * ? *', '3', '1', 0);
+INSERT INTO `t_sys_quartz_job`
+VALUES ('684022184905150464', '小米运动定时重置任务状态', 'DEFAULT', 'xiaomiTask.resetStatus()', '0 0 0 * * ? *', '3', '1', 0);
+
+```
+
 ## 演示站地址
 <a href="https://auto.oldwu.top/" target="_blank">点击打开Auto Plan</a>
 
