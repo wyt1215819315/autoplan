@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Slf4j
 public class XiaomiLogin {
@@ -70,6 +71,7 @@ public class XiaomiLogin {
                     .build());
             httpPost.addHeader("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
             httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            httpPost.addHeader("X-FORWARDED-FOR", getRandomIp());
             HttpResponse execute = httpClient.execute(httpPost);
             int statusCode = execute.getStatusLine().getStatusCode();
             Header location = execute.getFirstHeader("Location");
@@ -85,7 +87,10 @@ public class XiaomiLogin {
         }
 
     }
-
+    private static String getRandomIp() {
+        Random r = new Random();
+        return r.nextInt(255) + "." + r.nextInt(255) + "." + r.nextInt(255) + "." + r.nextInt(255);
+    }
     public static Map<String, String> login(String accessCode, Map<String, String> map) {
         //HashMap<String, String> map = new HashMap<>();
         try {
@@ -103,6 +108,7 @@ public class XiaomiLogin {
             HttpPost httpPost1 = new HttpPost(builder1.build());
             httpPost1.addHeader("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
             httpPost1.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            httpPost1.addHeader("X-FORWARDED-FOR", getRandomIp());
             HttpResponse execute1 = httpClient.execute(httpPost1);
             String s1 = EntityUtils.toString(execute1.getEntity());
             JsonNode jsonNode = objectMapper.readTree(s1);
@@ -127,6 +133,7 @@ public class XiaomiLogin {
         try {
             HttpGet httpGet = new HttpGet("http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp");
             httpGet.addHeader("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)");
+            httpGet.addHeader("X-FORWARDED-FOR", getRandomIp());
             CloseableHttpResponse execute = null;
             execute = httpClient.execute(httpGet);
             String s3 = EntityUtils.toString(execute.getEntity());
