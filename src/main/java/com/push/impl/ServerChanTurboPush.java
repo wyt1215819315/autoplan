@@ -1,9 +1,11 @@
 package com.push.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.oldwu.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
+import com.push.model.push.ServerChanTurboPo;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -46,6 +48,7 @@ public class ServerChanTurboPush extends AbstractPush {
 
     @Override
     protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return "title=Oldwu-HELPER任务简报&desp=" + content.replaceAll("=", ":");
+        ServerChanTurboPo serverChanTurboPo = new ServerChanTurboPo("Oldwu-HELPER任务简报", content.replaceAll("=", ":"));
+        return JSONUtil.toJsonStr(serverChanTurboPo);
     }
 }

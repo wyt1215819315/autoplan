@@ -161,21 +161,21 @@ public class MihayouService {
             return list;
         }
         //账号验证成功,写入用户数据，如果有多个数据则拿逗号分隔
-        String uid = "";
-        String nickname = "";
+        StringBuilder uid = new StringBuilder();
+        StringBuilder nickname = new StringBuilder();
         for (int i = 0; i < uidInfo.size(); i++) {
             Map<String, Object> map1 = uidInfo.get(i);
             if (i == 0) {
-                uid = (String) map1.get("uid");
-                nickname = (String) map1.get("nickname");
+                uid = new StringBuilder((String) map1.get("uid"));
+                nickname = new StringBuilder((String) map1.get("nickname"));
             } else {
-                uid = uid + "," + map1.get("uid");
-                nickname = nickname + "," + map1.get("nickname");
+                uid.append(",").append(map1.get("uid"));
+                nickname.append(",").append(map1.get("nickname"));
             }
 
         }
-        autoMihayou.setGenshinUid(uid);
-        autoMihayou.setMiName(nickname);
+        autoMihayou.setGenshinUid(uid.toString());
+        autoMihayou.setMiName(nickname.toString());
         autoMihayou.setSuid((String) stringObjectMap.get("stuid"));
         autoMihayou.setStoken((String) stringObjectMap.get("stoken"));
         autoMihayou.setOtherKey((String) stringObjectMap.get("login_ticket_str"));

@@ -17,21 +17,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author ponking
- * @Date 2021/5/7 10:10
+ * @author lijinglin
  */
-public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
+public class StarRailSignMihoYo extends MiHoYoAbstractSign{
 
     private static final Logger log = LogManager.getLogger(HttpUtils.class.getName());
 
     private String uid;
 
-    public GenShinSignMiHoYo(String cookie) {
+    public StarRailSignMihoYo(String cookie) {
         super(cookie);
         setClientType(MihayouConstants.SIGN_CLIENT_TYPE);
         setAppVersion(MihayouConstants.APP_VERSION);
         setSalt(MihayouConstants.SIGN_SALT);
     }
+
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -45,7 +45,6 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
             if (!(boolean) uidMap.get("flag")) {
                 continue;
             }
-
             String doSign = doSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
             String hubSign = hubSign((String) uidMap.get("uid"), (String) uidMap.get("region"));
             uidMap.put("msg", uidMap.get("msg") + "\n" + doSign + "\n" + hubSign);
@@ -63,26 +62,24 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
 
         Map<String, Object> data = new HashMap<>();
 
-        data.put("act_id", MiHoYoConfig.YS_SIGN_ACT_ID);
+        data.put("act_id", MiHoYoConfig.XQTD_SIGN_ACT_ID);
         data.put("region", region);
         data.put("uid", uid);
 
-        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.YS_SIGN_URL, getHeaders(""), data);
+        JSONObject signResult = HttpUtils.doPost(MiHoYoConfig.XQTD_SIGN_URL, getHeaders(""), data);
 
         if (signResult.getInteger("retcode") == 0) {
-            log.info("原神签到福利成功：{}", signResult.get("message"));
-            return "原神签到福利成功：" + signResult.get("message");
+            log.info("星穹铁道签到福利成功：{}", signResult.get("message"));
+            return "星穹铁道签到福利成功：" + signResult.get("message");
         } else {
-            log.info("原神签到福利签到失败：{}", signResult.get("message"));
-            return "原神签到福利签到失败：" + signResult.get("message");
+            log.info("星穹铁道签到福利签到失败：{}", signResult.get("message"));
+            return "星穹铁道签到福利签到失败：" + signResult.get("message");
         }
     }
-
 
     /**
      * 获取uid
      *
-     * @return
      */
     public List<Map<String, Object>> getUid() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -90,7 +87,7 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
 
         try {
 
-            JSONObject result = HttpUtils.doGet(MiHoYoConfig.YS_ROLE_URL, getBasicHeaders());
+            JSONObject result = HttpUtils.doGet(MiHoYoConfig.XQTD_ROLE_URL, getBasicHeaders());
             if (result == null) {
                 map.put("flag", false);
                 map.put("msg", "获取uid失败，cookie可能有误！");
@@ -142,10 +139,10 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
     public Award getAwardInfo(int day) {
         Map<String, String> data = new HashMap<>();
 
-        data.put("act_id", MiHoYoConfig.YS_SIGN_ACT_ID);
+        data.put("act_id", MiHoYoConfig.XQTD_SIGN_ACT_ID);
         data.put("region", MiHoYoConfig.REGION);
 
-        JSONObject awardResult = HttpUtils.doGet(MiHoYoConfig.YS_AWARD_URL, getHeaders(""));
+        JSONObject awardResult = HttpUtils.doGet(MiHoYoConfig.XQTD_AWARD_URL, getHeaders(""));
         JSONArray jsonArray = awardResult.getJSONObject("data").getJSONArray("awards");
 
         List<Award> awards = JSON.parseObject(JSON.toJSONString(jsonArray), new TypeReference<List<Award>>() {});
@@ -161,11 +158,11 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
     public String hubSign(String uid, String region) {
         Map<String, Object> data = new HashMap<>();
 
-        data.put("act_id", MiHoYoConfig.YS_SIGN_ACT_ID);
+        data.put("act_id", MiHoYoConfig.XQTD_SIGN_ACT_ID);
         data.put("region", region);
         data.put("uid", uid);
 
-        JSONObject signInfoResult = HttpUtils.doGet(MiHoYoConfig.YS_INFO_URL, getHeaders(""), data);
+        JSONObject signInfoResult = HttpUtils.doGet(MiHoYoConfig.XQTD_INFO_URL, getHeaders(""), data);
         if (signInfoResult == null || signInfoResult.getJSONObject("data") == null){
             return null;
         }
@@ -186,5 +183,4 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
 
         return msg.toString();
     }
-
 }

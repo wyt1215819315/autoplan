@@ -163,17 +163,17 @@ public class HttpUtils {
         JSONObject resultJson = null;
         try {
             URIBuilder uriBuilder = new URIBuilder(url);
-            List<NameValuePair> params = null;
+            List<NameValuePair> params;
             if (data != null && !data.isEmpty()) {
                 params = new ArrayList<>();
                 for (String key : data.keySet()) {
-                    params.add(new BasicNameValuePair(key, data.get(key) + ""));
+                    params.add(new BasicNameValuePair(key, String.valueOf(data.get(key))));
                 }
                 uriBuilder.setParameters(params);
             }
             URI uri = uriBuilder.build();
             HttpGet httpGet = new HttpGet(uri);
-            if (headers != null && headers.length != 0) {
+            if (headers != null) {
                 for (Header header : headers) {
                     httpGet.addHeader(header);
                 }
@@ -192,7 +192,7 @@ public class HttpUtils {
         } finally {
             closeResource(httpClient, response);
         }
-        return resultJson;
+        return null;
     }
 
 
