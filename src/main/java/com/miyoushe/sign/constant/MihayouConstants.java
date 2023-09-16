@@ -19,12 +19,12 @@ public class MihayouConstants {
     /**
      * AppVersion
      */
-    public static final String APP_VERSION = "2.55.1";
+    public static final String APP_VERSION = "2.58.2";
 
     /**
      * 签到Salt
      */
-    public static final String SIGN_SALT = "F6tsiCZEIcL9Mor64OXVJEKRRQ6BpOZa";
+    public static final String SIGN_SALT = "KTJQGN2a2Trqk0tcQZS6JV3rU7CnV8Q6";
 
     /**
      * 社区签到Salt
@@ -34,7 +34,7 @@ public class MihayouConstants {
     /**
      * 社区Salt
      */
-    public static final String COMMUNITY_SALT ="xc1lzZFOBGU0lz8ZkPgcrWZArZzEVMbA";
+    public static final String COMMUNITY_SALT ="kzTvKGDHumYf6h1Ia5txMjxAJuTtD0ol";
 
     /**
      * 签到ClientType
