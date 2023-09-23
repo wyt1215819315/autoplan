@@ -10,7 +10,8 @@ services:
     volumes:
       - ./auto_plan_docker.sql:/docker-entrypoint-initdb.d/auto_plan_docker.sql
     environment:
-      - MYSQL_ROOT_PASSWORD="密码"
+      # 设置数据库密码
+      - MYSQL_ROOT_PASSWORD=
       - TZ="Asia/Shanghai"
     networks:
       autoplan_net:
