@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0.19
+    container_name: autoplan-mysql
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./auto_plan.sql:/docker-entrypoint-initdb.d/
+    environment:
+      - MYSQL_ROOT_PASSWORD="密码"
+      - TZ="Asia/Shanghai"
+    networks:
+      autoplan_net:
+        aliases:
+          - autoplan-mysql
+  autoplan:
+    image: muxia0326/autoplan
+    container_name: autoplan
+    restart: always
+    ports:
+      - 26666:26666
+    volumes:
+      - ./application.yml:/tmp/yml/
+    environment:
+      - TZ="Asia/Shanghai"
+    networks:
+      autoplan_net:
+        aliases:
+          - autoplan-mysql
+
+
+networks:
+  autoplan_net:
+    name: autoplan_net
