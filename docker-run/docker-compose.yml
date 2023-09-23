@@ -30,6 +30,8 @@ services:
       autoplan_net:
         aliases:
           - autoplan-mysql
+    depends_on:
+      - mysql
 
 
 networks:
