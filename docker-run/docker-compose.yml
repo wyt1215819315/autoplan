@@ -8,7 +8,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./auto_plan.sql:/docker-entrypoint-initdb.d/
+      - ./auto_plan_docker.sql:/docker-entrypoint-initdb.d/auto_plan_docker.sql
     environment:
       - MYSQL_ROOT_PASSWORD="密码"
       - TZ="Asia/Shanghai"
@@ -23,7 +23,7 @@ services:
     ports:
       - 26666:26666
     volumes:
-      - ./application.yml:/tmp/yml/
+      - ./application.yml:/tmp/yml/application.yml
     environment:
       - TZ="Asia/Shanghai"
     networks:
