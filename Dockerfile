@@ -1,8 +1,8 @@
-FROM java:8
+FROM openjdk:8
 
 VOLUME /tmp
 
-ADD target/*.jar /auto_plan.jar
+ADD ./target/*.jar /auto_plan.jar
 
 EXPOSE 26666
 
