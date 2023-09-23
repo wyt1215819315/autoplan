@@ -15,7 +15,7 @@ services:
     networks:
       autoplan_net:
         aliases:
-          - autoplan-mysql
+          - mysql
   autoplan:
     image: muxia0326/autoplan
     container_name: autoplan
