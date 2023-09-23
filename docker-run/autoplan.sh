@@ -8,6 +8,8 @@ docker run --name autoplan-mysql \
 --restart=always \
 -d mysql:8.0.19
 
+sleep 5
+
 docker run --name autoplan \
 -p 26666:26666 \
 -e TZ="Asia/Shanghai" \
