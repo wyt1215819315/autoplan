@@ -7,7 +7,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://mysql:3306/autoplan?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&allowPublicKeyRetrieval=true
     username: root
-    password: 数据库密码
+    # 在下面填上你的数据库密码(注意空格)
+    password: 密码
   main:
     allow-bean-definition-overriding: true
   mvc: #静态资源

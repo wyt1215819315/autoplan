@@ -1,7 +1,7 @@
 #!bin/bash
 
 # 输入数据库的密码
-MYSQL_PASSWORD = ""
+MYSQL_PASSWORD=""
 
 docker network create autoplan_net
 
