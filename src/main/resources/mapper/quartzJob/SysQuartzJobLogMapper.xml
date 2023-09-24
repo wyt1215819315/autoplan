@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oldwu.dao.SysQuartzJobLogMapper">
-  <resultMap id="BaseResultMap" type="com.oldwu.domain.SysQuartzJobLog">
+<mapper namespace="com.system.dao.SysQuartzJobLogMapper">
+  <resultMap id="BaseResultMap" type="com.system.domain.SysQuartzJobLog">
     <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
     <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
@@ -81,7 +81,7 @@
        	  	      	start_time,
        	  	    	  	end_time
        	</sql>
-  <select id="selectByExample" parameterType="com.oldwu.domain.SysQuartzJobLogExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.system.domain.SysQuartzJobLogExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -96,7 +96,7 @@
     </if>
   </select>
 
-  <delete id="deleteByExample" parameterType="com.oldwu.domain.SysQuartzJobLogExample">
+  <delete id="deleteByExample" parameterType="com.system.domain.SysQuartzJobLogExample">
     delete from t_sys_quartz_job_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -107,7 +107,7 @@
     delete from t_sys_quartz_job_log
   </delete>
   
-  <select id="countByExample" parameterType="com.oldwu.domain.SysQuartzJobLogExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.system.domain.SysQuartzJobLogExample" resultType="java.lang.Long">
     select count(*) from t_sys_quartz_job_log
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

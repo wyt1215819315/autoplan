@@ -1,8 +1,8 @@
 package com.push;
 
 import com.alibaba.fastjson.JSON;
-import com.oldwu.entity.SysUserInfo;
-import com.oldwu.service.UserService;
+import com.system.entity.SysUserInfo;
+import com.system.service.UserService;
 import com.push.config.PushConfig;
 import com.push.model.PushProxyConfig;
 import org.apache.commons.lang3.StringUtils;

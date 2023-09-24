@@ -1,6 +1,25 @@
 spring:
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
+  mvc: #静态资源
+    static-path-pattern: /static/**
+    throw-exception-if-no-handler-found: true
+    hiddenmethod:
+      filter:
+        enabled: true
+  thymeleaf:
+    prefix: classpath:/templates/   #在构建URL时预先查看名称的前缀
+    suffix: .html  #构建URL时附加到查看名称的后缀
+    cache: false
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  #开启驼峰命名
+  configuration:
+    map-underscore-to-camel-case: true
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）

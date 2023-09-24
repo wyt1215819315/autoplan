@@ -2,7 +2,7 @@ package com.push.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.oldwu.constant.URLConstant;
+import com.system.constant.URLConstant;
 import com.push.AbstractPush;
 import com.push.model.PushMetaInfo;
 import lombok.Getter;

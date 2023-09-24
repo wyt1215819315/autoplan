@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.miyoushe.mapper.AutoMihayouDao">
-    <resultMap id="BaseResultMap" type="com.miyoushe.model.AutoMihayou">
+<mapper namespace="com.task.miyoushe.mapper.AutoMihayouDao">
+    <resultMap id="BaseResultMap" type="com.task.miyoushe.model.AutoMihayou">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="cookie" jdbcType="VARCHAR" property="cookie"/>
@@ -26,17 +26,17 @@
         id, `name`, user_id, genshin_uid, mi_name, `enable`,
     `status`, endate, webhook, other, avatar
     </sql>
-    <select id="selectMine" resultType="com.miyoushe.model.AutoMihayou">
+    <select id="selectMine" resultType="com.task.miyoushe.model.AutoMihayou">
         select
         <include refid="Base_Column_List_noCookie"/>
         from auto_mihayou where user_id = #{userid}
     </select>
-    <select id="selectBystuid" resultType="com.miyoushe.model.AutoMihayou">
+    <select id="selectBystuid" resultType="com.task.miyoushe.model.AutoMihayou">
         select
         <include refid="Base_Column_List"/>
         from auto_mihayou where suid = #{suid}
     </select>
-    <select id="selectByGenshinUid" resultType="com.miyoushe.model.AutoMihayou">
+    <select id="selectByGenshinUid" resultType="com.task.miyoushe.model.AutoMihayou">
         select
         <include refid="Base_Column_List"/>
         from auto_mihayou where genshin_uid = #{genshinUid}

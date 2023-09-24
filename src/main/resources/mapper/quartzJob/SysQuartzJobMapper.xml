@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oldwu.dao.SysQuartzJobMapper">
-  <resultMap id="BaseResultMap" type="com.oldwu.domain.SysQuartzJob">
+<mapper namespace="com.system.dao.SysQuartzJobMapper">
+  <resultMap id="BaseResultMap" type="com.system.domain.SysQuartzJob">
     <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
     <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
@@ -79,7 +79,7 @@
        	  	      	concurrent,
        	  	    	  	status
        	</sql>
-  <select id="selectByExample" parameterType="com.oldwu.domain.SysQuartzJobExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.system.domain.SysQuartzJobExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -94,14 +94,14 @@
     </if>
   </select>
 
-  <delete id="deleteByExample" parameterType="com.oldwu.domain.SysQuartzJobExample">
+  <delete id="deleteByExample" parameterType="com.system.domain.SysQuartzJobExample">
     delete from t_sys_quartz_job
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   
-  <select id="countByExample" parameterType="com.oldwu.domain.SysQuartzJobExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.system.domain.SysQuartzJobExample" resultType="java.lang.Long">
     select count(*) from t_sys_quartz_job
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

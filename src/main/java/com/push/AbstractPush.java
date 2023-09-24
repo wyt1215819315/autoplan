@@ -2,9 +2,8 @@ package com.push;
 
 import cn.hutool.core.util.ClassUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.oldwu.util.HttpUtils;
+import com.system.util.HttpUtils;
 import com.push.config.PushConfig;
-import com.push.impl.WeComAppPush;
 import com.push.model.PushMetaInfo;
 import com.push.model.PushProxyConfig;
 import com.push.model.PushResult;
@@ -21,11 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
