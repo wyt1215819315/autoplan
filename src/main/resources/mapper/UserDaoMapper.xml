@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.system.dao.UserDao">
-    <resultMap id="userMap" type="com.system.domain.SysUser">
+<mapper namespace="com.github.system.dao.UserDao">
+    <resultMap id="userMap" type="com.github.system.domain.SysUser">
         <id property="id" column="ID"/>
         <result property="username" column="username"/>
         <result property="password" column="PASSWORD"/>
-        <collection property="roles" ofType="com.system.domain.SysRole">
+        <collection property="roles" ofType="com.github.system.domain.SysRole">
             <result column="name" property="name"/>
         </collection>
 

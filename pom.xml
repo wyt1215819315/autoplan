@@ -7,15 +7,16 @@
         <version>2.7.16</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com</groupId>
-    <artifactId>auto_plan</artifactId>
+    <groupId>com.github</groupId>
+    <artifactId>autoplan</artifactId>
     <version>3.0.0-DEV</version>
     <name>auto_plan</name>
-    <description>Demo project for Spring Boot</description>
+    <description>auto_plan project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
         <hutool-all.version>5.8.22</hutool-all.version>
         <sa-token.version>1.36.0</sa-token.version>
+        <guava.version>32.1.2-jre</guava.version>
     </properties>
     <dependencies>
 
@@ -89,6 +90,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-config</artifactId>
             <version>1.1.6.RELEASE</version>
@@ -105,23 +112,20 @@
             <artifactId>quartz</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.0.1-jre</version>
+            <version>${guava.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.rholder/guava-retrying -->
         <dependency>
-            <groupId>io.github.itning</groupId>
-            <artifactId>guava-retrying3</artifactId>
-            <version>3.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.github.rholder</groupId>
+            <artifactId>guava-retrying</artifactId>
+            <version>2.0.0</version>
         </dependency>
+
     </dependencies>
 
     <build>

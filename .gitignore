@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/java/com/task/miyoushe/Test.java
+/src/main/java/com/github/task/miyoushe/Test.java

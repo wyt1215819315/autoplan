@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.system.dao.SysUserInfoDao">
-    <resultMap id="BaseResultMap" type="com.system.entity.SysUserInfo">
+<mapper namespace="com.github.system.dao.SysUserInfoDao">
+    <resultMap id="BaseResultMap" type="com.github.system.entity.SysUserInfo">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="user_id" jdbcType="INTEGER" property="userId"/>
         <result column="webhook" jdbcType="VARCHAR" property="webhook"/>
@@ -10,7 +10,7 @@
     <sql id="Base_Column_List">
         id, user_id, webhook, other
     </sql>
-    <select id="selectByUserId" resultType="com.system.entity.SysUserInfo">
+    <select id="selectByUserId" resultType="com.github.system.entity.SysUserInfo">
         select
         <include refid="Base_Column_List"/>
         from sys_user_info

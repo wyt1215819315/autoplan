@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.task.netmusic.dao.AutoNetmusicDao">
-    <resultMap id="BaseResultMap" type="com.task.netmusic.model.AutoNetmusic">
+<mapper namespace="com.github.task.netmusic.dao.AutoNetmusicDao">
+    <resultMap id="BaseResultMap" type="com.github.task.netmusic.model.AutoNetmusic">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
@@ -31,13 +31,13 @@
     netmusic_need_day, netmusic_need_listen, `name`, `status`, `enable`, enddate,
     webhook, other, avatar
     </sql>
-    <select id="selectByUid" resultType="com.task.netmusic.model.AutoNetmusic">
+    <select id="selectByUid" resultType="com.github.task.netmusic.model.AutoNetmusic">
         select
         <include refid="Base_Column_List"/>
         from auto_netmusic
         where netmusic_id = #{uid}
     </select>
-    <select id="selectMine" resultType="com.task.netmusic.model.AutoNetmusic">
+    <select id="selectMine" resultType="com.github.task.netmusic.model.AutoNetmusic">
         select
         <include refid="Base_Column_List_noCookie"/>
         from auto_netmusic
