@@ -2,10 +2,11 @@ package com.github.push.base.init;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.StrUtil;
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.annotation.PushProperty;
+import com.github.push.base.annotation.PushPropertyOptions;
 import com.github.push.base.dto.PushConfigDto;
+import com.github.push.base.dto.PushConfigOptions;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.service.PushService;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,17 @@ public class PushInit implements CommandLineRunner {
                         pushConfigDto.setName(pushProperty.value());
                         pushConfigDto.setDesc(pushProperty.desc() == null ? "请输入" + pushProperty.value() : pushProperty.desc());
                         pushConfigDto.setDefaultValue(pushProperty.defaultValue());
+                        if (pushProperty.options() != null && pushProperty.options().length > 0) {
+                            PushPropertyOptions[] options = pushProperty.options();
+                            List<PushConfigOptions> optionsList = new ArrayList<>();
+                            for (PushPropertyOptions option : options) {
+                                PushConfigOptions configOptions = new PushConfigOptions();
+                                configOptions.setValue(option.num());
+                                configOptions.setName(option.name());
+                                optionsList.add(configOptions);
+                            }
+                            pushConfigDto.setOptions(optionsList);
+                        }
                     } else {
                         pushConfigDto.setName(field.getName());
                         pushConfigDto.setDesc("请输入" + field.getName());

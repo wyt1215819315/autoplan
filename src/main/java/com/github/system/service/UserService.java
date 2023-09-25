@@ -5,8 +5,6 @@ import com.github.system.dao.UserDao;
 import com.github.system.domain.SysUser;
 import com.github.system.entity.AjaxResult;
 import com.github.system.entity.SysUserInfo;
-import com.github.push.ServerPush;
-import com.github.push.model.PushResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
