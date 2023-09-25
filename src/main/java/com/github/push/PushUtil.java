@@ -1,58 +1,58 @@
 package com.github.push;
 
-import com.alibaba.fastjson.JSON;
-import com.github.system.entity.SysUserInfo;
-import com.github.system.service.UserService;
-import com.github.push.config.PushConfig;
-import com.github.push.model.PushProxyConfig;
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.json.JSONUtil;
+import com.github.push.base.dto.PushResultDto;
+import com.github.push.base.init.PushInit;
+import com.github.push.base.model.PushBaseConfig;
+import com.github.push.base.model.PushData;
+import com.github.push.base.service.PushMainService;
+import com.github.system.entity.SysWebhook;
+import com.github.system.service.WebhookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class PushUtil {
-    private static UserService userService;
+    private static WebhookService webhookService;
+    private static PushMainService pushMainService;
 
-    public static boolean doPush(String content, String webhook, Integer userId) {
-        boolean b = doPush(content, webhook);
-        if (b) {
-            return true;
-        }
-        SysUserInfo userInfo = userService.getUserInfo(userId);
-        if (userInfo == null || StringUtils.isBlank(userInfo.getWebhook())) {
-            return false;
-        }
-        String globalWebhook = userInfo.getWebhook();
-        return doPush(content, globalWebhook);
+    /**
+     * 此方法仅用于推送测试，为同步方法，除了推送测试请勿使用
+     */
+    public static PushResultDto doPush(PushData<?> pushData) {
+        return pushMainService.doPush(pushData);
     }
 
-    public static boolean doPush(String content, String webhook) {
-        if (StringUtils.isBlank(content) || StringUtils.isBlank(webhook)) {
-            return false;
-        }
-        try {
-            PushConfig pushConfig = JSON.parseObject(webhook, PushConfig.class);
-            if (pushConfig.getPushInfo().getMetaInfo() == null) {
-                return false;
-            }
-            ServerPush serverPush = new ServerPush();
-//            return serverPush.doServerPush(content, pushConfig);
-            //为了适配钉钉关键字
-            return serverPush.doServerPush("【HELPER】\n" + content, pushConfig);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return false;
+    public static <T extends PushBaseConfig> void doPush(Integer userId,Long logId, String title, String content) {
+        List<SysWebhook> userWebhook = webhookService.getUserWebhook(userId);
+        if (!userWebhook.isEmpty()) {
+            userWebhook.forEach(w -> {
+                Class<?> aClass = PushInit.pushBaseConfigMap.get(w.getType());
+                if (aClass == null) {
+                    return;
+                }
+                PushData<T> pushData = new PushData<>();
+                pushData.setTitle(title);
+                pushData.setContent(content);
+                pushData.setLogId(logId);
+                pushData.setUserId(userId);
+                pushData.setConfig((T) JSONUtil.toBean(w.getData(),aClass));
+                pushMainService.doPushAsync(pushData);
+            });
         }
     }
 
     @Autowired
-    public void getUserService(UserService userService) {
-        PushUtil.userService = userService;
+    public void getWebhookService(WebhookService webhookService) {
+        PushUtil.webhookService = webhookService;
     }
 
     @Autowired
-    private void setPushProxyConfig(PushProxyConfig pushProxyConfig) {
-        AbstractPush.pushProxyConfig = pushProxyConfig;
+    public void getPushMainService(PushMainService pushMainService) {
+        PushUtil.pushMainService = pushMainService;
     }
+
 
 }

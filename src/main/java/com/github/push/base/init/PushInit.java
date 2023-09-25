@@ -7,6 +7,7 @@ import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.annotation.PushProperty;
 import com.github.push.base.dto.PushConfigDto;
 import com.github.push.base.model.PushBaseConfig;
+import com.github.push.base.service.PushService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class PushInit implements CommandLineRunner {
     // 推送线程池 每个推送类型一个线程池 用于控制流速使用
     public static final ConcurrentHashMap<String, ExecutorService> pushThreadMap = new ConcurrentHashMap<>();
     public static final Map<String, Class<? extends PushBaseConfig>> pushBaseConfigMap = new HashMap<>();
+    public static final Map<String, Class<? extends PushService<?>>> pushServiceMap = new HashMap<>();
     // 用于前端回显 储存所有可用的推送类型
     public static final List<String> pushTypeList = new ArrayList<>();
     // 用于前端回显 储存可用的推送字段信息
@@ -36,10 +38,24 @@ public class PushInit implements CommandLineRunner {
 //        // 获取所有推送实体类
 //        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(StrUtil.subBefore(packageName, ".", true) + ".model.impl", PushBaseConfig.class);
         Set<Class<?>> classes = ClassUtil.scanPackageBySuper("com.github.push", PushBaseConfig.class);
+        Set<Class<?>> pushServiceClasses = ClassUtil.scanPackageBySuper("com.github.push", PushService.class);
         for (Class<?> aClass : classes) {
             PushEntity apiModelAnno = AnnotationUtil.getAnnotation(aClass, PushEntity.class);
             if (apiModelAnno != null) {
                 String key = apiModelAnno.value();
+                boolean find = false;
+                for (Class<?> pushServiceClass : pushServiceClasses) {
+                    PushService<?> pushService = (PushService<?>) pushServiceClass.getDeclaredConstructor().newInstance();
+                    String name = pushService.getName();
+                    if (key.equals(name)) {
+                        find = true;
+                        pushServiceMap.put(key, (Class<? extends PushService<?>>) pushServiceClass);
+                    }
+                }
+                if (!find) {
+                    log.warn("未找到key:{}对应的实现服务", key);
+                    continue;
+                }
                 pushBaseConfigMap.put(key, (Class<? extends PushBaseConfig>) aClass);
                 pushThreadMap.put(key, createThread(key));
                 pushTypeList.add(key);
@@ -57,10 +73,11 @@ public class PushInit implements CommandLineRunner {
                         pushConfigDto.setName(field.getName());
                         pushConfigDto.setDesc("请输入" + field.getName());
                     }
-                    pushConfigMap.put(key,pushConfigDto);
+                    pushConfigMap.put(key, pushConfigDto);
                 }
             }
         }
+        log.info("推送服务加载完成，共{}个", pushTypeList.size());
     }
 
 

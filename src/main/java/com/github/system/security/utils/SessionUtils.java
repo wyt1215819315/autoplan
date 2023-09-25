@@ -3,6 +3,7 @@ package com.github.system.security.utils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.github.system.security.entity.SystemUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,6 +16,10 @@ import org.springframework.web.context.request.ServletWebRequest;
  * session工具类
  */
 public class SessionUtils {
+
+    public static Integer getUserId() {
+        return (Integer) StpUtil.getLoginId();
+    }
 
     public static String getSessionId() {
         HttpServletRequest request = RequestUtils.getCurrentRequest();

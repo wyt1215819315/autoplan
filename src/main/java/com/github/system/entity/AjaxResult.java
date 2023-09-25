@@ -1,6 +1,5 @@
 package com.github.system.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -101,8 +100,5 @@ public class AjaxResult {
         return ajaxResult;
     }
 
-    public static String toJson(AjaxResult ajaxResult){
-        return JSON.toJSONString(ajaxResult);
-    }
 
 }
