@@ -2,6 +2,7 @@ package com.github.push.base.init;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.annotation.PushProperty;
 import com.github.push.base.annotation.PushPropertyOptions;
@@ -80,6 +81,10 @@ public class PushInit implements CommandLineRunner {
                                 optionsList.add(configOptions);
                             }
                             pushConfigDto.setOptions(optionsList);
+                        }
+                        if (StrUtil.isNotBlank(pushProperty.ref())) {
+                            pushConfigDto.setRef(pushProperty.ref());
+                            pushConfigDto.setRefValue(pushProperty.refValue());
                         }
                     } else {
                         pushConfigDto.setName(field.getName());

@@ -28,4 +28,16 @@ public @interface PushProperty {
      */
     String defaultValue() default "";
 
+    /**
+     * 与下面的refValue需要同时出现
+     * 意思为当ref值的字段值变为refValue时，前端会渲染出来这个字段
+     * 仅控制前端渲染
+     */
+    String ref() default "";
+
+    /**
+     * 见ref说明
+     */
+    int refValue() default -1;
+
 }

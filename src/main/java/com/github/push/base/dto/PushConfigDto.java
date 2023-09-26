@@ -14,6 +14,8 @@ public class PushConfigDto {
     private String name;
     private String desc;
     private String defaultValue;
+    private String ref;
+    private Integer refValue;
     private List<PushConfigOptions> options;
 
 }
