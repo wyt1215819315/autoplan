@@ -1,68 +1,89 @@
 package com.github.push.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.github.push.AbstractPush;
-import com.github.push.model.PushMetaInfo;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.github.push.base.dto.PushResultDto;
+import com.github.push.base.exception.PushRequestException;
+import com.github.push.base.model.PushData;
+import com.github.push.base.service.PushService;
+import com.github.push.constant.PushTypeConstant;
+import com.github.push.model.DiscordConfig;
 import com.github.push.model.push.DiscordWebhook;
+import com.github.system.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
- * 钉钉机器人.
- *
- * @author itning
- * @since 2021/3/22 19:15
+ * Discord Webhook
+ * <a href="https://discord.com/developers/docs/resources/webhook#webhook-object-webhook-types">doc</a>
  */
 @Slf4j
-public class DiscordPush extends AbstractPush {
-
-    private final int DING_TALK_MESSAGE_MAX_LENGTH = 15000;
+public class DiscordPush implements PushService<DiscordConfig> {
 
     @Override
-    protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return metaInfo.getToken();
+    public String getName() {
+        return PushTypeConstant.DISCORD;
     }
 
     @Override
-    protected boolean checkPushStatus(JSONObject jsonObject) {
-        if (jsonObject == null){
-            return false;
-        }
-        return jsonObject.isEmpty();
-    }
-
-    @Override
-    protected String generatePushBody(PushMetaInfo metaInfo, String content) {
+    public PushResultDto doPush(PushData<DiscordConfig> pushConfig, Map<String, Object> params) throws Exception {
+        String colorRegx = "([\\d]+)[\\s],[\\s]([\\d]+)[\\s],[\\s]([\\d]+)";
+        DiscordConfig config = pushConfig.getConfig();
         DiscordWebhook discordWebhook = new DiscordWebhook();
         DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
-        embedObject.setTitle("HELPER任务简报");
-        embedObject.setDescription(content);
-        embedObject.setColor(new Color(239,88,88));
+        embedObject.setTitle(pushConfig.getTitle());
+        embedObject.setDescription(pushConfig.getContent());
+        if (ReUtil.contains(colorRegx, config.getColor())) {
+            int r = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 1));
+            int g = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 2));
+            int b = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 3));
+            if (r <= 255 && g <= 255 && b <= 255 && r >= 0 && g >= 0 && b >= 0) {
+                embedObject.setColor(new Color(r, g, b));
+            }
+        }
+        if (embedObject.getColor() == null) {
+            embedObject.setColor(new Color(239, 88, 88));
+        }
         discordWebhook.addEmbed(embedObject);
-        return discordWebhook.execute();
+        JSONObject requestObj = discordWebhook.execute();
+        JSONObject jsonObject = request(config.getUrl(), requestObj, HttpUtil.RequestType.JSON);
+        if (jsonObject.getBool("success")) {
+            return PushResultDto.doSuccess();
+        }
+        return PushResultDto.doError(jsonObject.getStr("message"));
     }
 
     @Override
-    protected List<String> segmentation(PushMetaInfo metaInfo, String pushBody) {
-        if (StringUtils.isBlank(pushBody)) {
-            return Collections.emptyList();
+    public JSONObject request(String url, Map<String, Object> params, HttpUtil.RequestType requestType) throws PushRequestException {
+        try {
+            boolean useProxy = isUseProxy();
+            HttpResponse response = HttpUtil.requestRetry(url, params, requestType, useProxy);
+            String body = response.body();
+            JSONObject jsonObject = JSONUtil.parseObj(body);
+            if (!response.isOk() && StrUtil.isBlank(body)) {
+                jsonObject.set("success", false);
+                jsonObject.set("message", "服务器返回" + response.getStatus() + "状态,无错误信息");
+            } else if (response.isOk() && StrUtil.isBlank(body)) {
+                jsonObject.set("success", true);
+            } else if (!response.isOk() && jsonObject.containsKey("message")) {
+                jsonObject.set("success", false);
+                jsonObject.set("message", "code=" + jsonObject.getInt("code") + ",message=" + jsonObject.getStr("message"));
+            } else if (!response.isOk() && !jsonObject.isEmpty()) {
+                jsonObject.set("message", "返回JSON元数据:" + jsonObject.toJSONString(0));
+                jsonObject.set("success", false);
+            } else {
+                jsonObject.set("success", true);
+            }
+            response.close();
+            return jsonObject;
+        } catch (Exception e) {
+            logger.error("推送内部错误", e);
+            throw new PushRequestException("推送内部错误：" + e.getMessage());
         }
-
-        if (pushBody.length() > DING_TALK_MESSAGE_MAX_LENGTH) {
-            log.info("推送内容长度[{}]大于最大长度[{}]进行分割处理", pushBody.length(), DING_TALK_MESSAGE_MAX_LENGTH);
-            List<String> pushContent = Arrays.stream(splitStringByLength(pushBody, DING_TALK_MESSAGE_MAX_LENGTH)).collect(Collectors.toList());
-            log.info("分割数量：{}", pushContent.size());
-            return pushContent;
-        }
-
-        return Collections.singletonList(pushBody);
     }
-
 }

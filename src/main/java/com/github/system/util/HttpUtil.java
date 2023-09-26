@@ -155,6 +155,19 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
      *
      * @param url         请求url
      * @param params      请求内容
+     * @param requestType 请求类型
+     * @param useProxy    是否使用代理请求
+     * @return httpResponse
+     */
+    public static HttpResponse requestRetry(String url, Map<String, Object> params, RequestType requestType, boolean useProxy) {
+        return requestRetry(url, params, null, requestType, useProxy);
+    }
+
+    /**
+     * 使用默认重试机制请求
+     *
+     * @param url         请求url
+     * @param params      请求内容
      * @param headers     请求头Map
      * @param requestType 请求类型
      * @return httpResponse

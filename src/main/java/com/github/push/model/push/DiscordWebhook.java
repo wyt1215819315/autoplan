@@ -1,7 +1,6 @@
 package com.github.push.model.push;
 
-import com.alibaba.fastjson.JSONObject;
-import lombok.AllArgsConstructor;
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,30 +23,28 @@ public class DiscordWebhook {
         this.embeds.add(embed);
     }
 
-    public String execute() {
+    public JSONObject execute() {
         if (content == null && embeds.isEmpty()) {
             throw new IllegalArgumentException("Set content or add at least one EmbedObject");
         }
         JSONObject json = new JSONObject();
-        json.put("content", content);
-        json.put("username", username);
-        json.put("avatar_url", avatarUrl);
-        json.put("tts", tts);
+        json.set("content", content);
+        json.set("username", username);
+        json.set("avatar_url", avatarUrl);
+        json.set("tts", tts);
         if (!embeds.isEmpty()) {
             List<JSONObject> embedObjects = new ArrayList<>();
             for (EmbedObject embed : embeds) {
                 JSONObject jsonEmbed = new JSONObject();
-                jsonEmbed.put("title", embed.getTitle());
-                jsonEmbed.put("description", embed.getDescription());
-                jsonEmbed.put("url", embed.getUrl());
-
+                jsonEmbed.set("title", embed.getTitle());
+                jsonEmbed.set("description", embed.getDescription());
+                jsonEmbed.set("url", embed.getUrl());
                 if (embed.getColor() != null) {
                     Color color = embed.getColor();
                     int rgb = color.getRed();
                     rgb = (rgb << 8) + color.getGreen();
                     rgb = (rgb << 8) + color.getBlue();
-
-                    jsonEmbed.put("color", rgb);
+                    jsonEmbed.set("color", rgb);
                 }
                 EmbedObject.Footer footer = embed.getFooter();
                 EmbedObject.Image image = embed.getImage();
@@ -56,41 +53,41 @@ public class DiscordWebhook {
                 List<EmbedObject.Field> fields = embed.getFields();
                 if (footer != null) {
                     JSONObject jsonFooter = new JSONObject();
-                    jsonFooter.put("text", footer.getText());
-                    jsonFooter.put("icon_url", footer.getIconUrl());
-                    jsonEmbed.put("footer", jsonFooter);
+                    jsonFooter.set("text", footer.getText());
+                    jsonFooter.set("icon_url", footer.getIconUrl());
+                    jsonEmbed.set("footer", jsonFooter);
                 }
                 if (image != null) {
                     JSONObject jsonImage = new JSONObject();
-                    jsonImage.put("url", image.getUrl());
-                    jsonEmbed.put("image", jsonImage);
+                    jsonImage.set("url", image.getUrl());
+                    jsonEmbed.set("image", jsonImage);
                 }
                 if (thumbnail != null) {
                     JSONObject jsonThumbnail = new JSONObject();
-                    jsonThumbnail.put("url", thumbnail.getUrl());
-                    jsonEmbed.put("thumbnail", jsonThumbnail);
+                    jsonThumbnail.set("url", thumbnail.getUrl());
+                    jsonEmbed.set("thumbnail", jsonThumbnail);
                 }
                 if (author != null) {
                     JSONObject jsonAuthor = new JSONObject();
-                    jsonAuthor.put("name", author.getName());
-                    jsonAuthor.put("url", author.getUrl());
-                    jsonAuthor.put("icon_url", author.getIconUrl());
-                    jsonEmbed.put("author", jsonAuthor);
+                    jsonAuthor.set("name", author.getName());
+                    jsonAuthor.set("url", author.getUrl());
+                    jsonAuthor.set("icon_url", author.getIconUrl());
+                    jsonEmbed.set("author", jsonAuthor);
                 }
                 List<JSONObject> jsonFields = new ArrayList<>();
                 for (EmbedObject.Field field : fields) {
                     JSONObject jsonField = new JSONObject();
-                    jsonField.put("name", field.getName());
-                    jsonField.put("value", field.getValue());
-                    jsonField.put("inline", field.isInline());
+                    jsonField.set("name", field.getName());
+                    jsonField.set("value", field.getValue());
+                    jsonField.set("inline", field.isInline());
                     jsonFields.add(jsonField);
                 }
-                jsonEmbed.put("fields", jsonFields.toArray());
+                jsonEmbed.set("fields", jsonFields.toArray());
                 embedObjects.add(jsonEmbed);
             }
-            json.put("embeds", embedObjects.toArray());
+            json.set("embeds", embedObjects.toArray());
         }
-        return json.toJSONString();
+        return json;
     }
 
     @Data
@@ -130,39 +127,24 @@ public class DiscordWebhook {
             return this;
         }
 
-        @AllArgsConstructor
         @Getter
-        private static class Image {
-            private final String url;
+        private record Image(String url) {
         }
 
-        @AllArgsConstructor
         @Getter
-        private static class Author {
-            private final String name;
-            private final String url;
-            private final String iconUrl;
+        private record Author(String name, String url, String iconUrl) {
         }
 
-        @AllArgsConstructor
         @Getter
-        private static class Field {
-            private final String name;
-            private final String value;
-            private final boolean inline;
+        private record Field(String name, String value, boolean inline) {
         }
 
-        @AllArgsConstructor
         @Getter
-        private static class Footer {
-            private final String text;
-            private final String iconUrl;
+        private record Footer(String text, String iconUrl) {
         }
 
-        @AllArgsConstructor
         @Getter
-        private static class Thumbnail {
-            private final String url;
+        private record Thumbnail(String url) {
         }
     }
 

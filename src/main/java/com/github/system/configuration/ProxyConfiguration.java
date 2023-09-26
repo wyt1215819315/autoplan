@@ -25,6 +25,6 @@ public class ProxyConfiguration {
     private String type = "http";
 
     @ApiModelProperty("推送代理配置")
-    private ProxyChildConfiguration pushConfig;
+    private ProxyChildConfiguration push;
 
 }

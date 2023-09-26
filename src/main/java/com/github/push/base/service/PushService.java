@@ -40,7 +40,7 @@ public interface PushService<T extends PushBaseConfig> {
 
     default boolean isUseProxy() {
         boolean useProxy = false;
-        ProxyChildConfiguration pushConfig = HttpUtil.proxyConfiguration.getPushConfig();
+        ProxyChildConfiguration pushConfig = HttpUtil.proxyConfiguration.getPush();
         if (pushConfig.isEnable() && pushConfig.getUse().contains(this.getName())) {
             useProxy = true;
         }

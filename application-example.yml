@@ -21,9 +21,9 @@ proxy:
   ip: 127.0.0.1
   port: 7890
   type: http/socket
-  push-config:
+  push:
     enable: false
-    #指定那种推送方式需要使用代理
+    #指定那种推送方式需要使用代理，名称使用的是service中getName的名称
     use:
       - TelegramPush
-      - DiscordPush
+      - Discord
