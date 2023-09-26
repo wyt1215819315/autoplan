@@ -1,9 +1,9 @@
-package com.github.push.base.service.impl;
+package com.github.push.impl;
 
 import cn.hutool.json.JSONObject;
 import com.github.push.base.dto.PushResultDto;
 import com.github.push.base.model.PushData;
-import com.github.push.base.model.impl.PushPlusConfig;
+import com.github.push.model.PushPlusConfig;
 import com.github.push.base.service.PushService;
 import com.github.push.constant.PushTypeConstant;
 import com.github.push.constant.PushUrlConstant;
@@ -12,10 +12,7 @@ import com.github.system.util.HttpUtil;
 import java.util.Map;
 
 /**
- * Push Plus 推送.
- *
- * @author itning
- * @since 2021/3/28 15:49
+ * Push Plus 推送
  */
 public class PushPlusPush implements PushService<PushPlusConfig> {
 

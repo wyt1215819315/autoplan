@@ -1,86 +1,58 @@
 package com.github.push.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.github.push.AbstractPush;
-import com.github.push.model.PushMetaInfo;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.json.JSONObject;
+import com.github.push.base.dto.PushResultDto;
+import com.github.push.base.model.PushData;
+import com.github.push.base.service.PushService;
+import com.github.push.constant.PushTypeConstant;
+import com.github.push.model.DingTalkPushConfig;
+import com.github.system.util.HttpUtil;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
- * 钉钉机器人.
- *
- * @author itning
- * @since 2021/3/22 19:15
+ * 钉钉群机器人<br/>
+ * <a href="https://open.dingtalk.com/document/robots/custom-robot-access">钉钉机器人自定义webhook说明</a><br/>
+ * <a href="https://open.dingtalk.com/document/robots/customize-robot-security-settings">钉钉机器人加签说明</a>
  */
-@Slf4j
-public class DingTalkPush extends AbstractPush {
-
-    private final int DING_TALK_MESSAGE_MAX_LENGTH = 15000;
+public class DingTalkPush implements PushService<DingTalkPushConfig> {
 
     @Override
-    protected String generatePushUrl(PushMetaInfo metaInfo) {
-        return metaInfo.getToken();
+    public String getName() {
+        return PushTypeConstant.DING_TALK;
     }
 
     @Override
-    protected boolean checkPushStatus(JSONObject jsonObject) {
-        if (jsonObject == null) {
-            return false;
+    public PushResultDto doPush(PushData<DingTalkPushConfig> pushConfig, Map<String, Object> params) throws Exception {
+        DingTalkPushConfig config = pushConfig.getConfig();
+        String url = config.getUrl();
+        if (config.getPushType() == 1) {
+            // 加签方式，需要先计算签名
+            Long timestamp = System.currentTimeMillis();
+            String stringToSign = timestamp + "\n" + config.getSecret();
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(new SecretKeySpec(config.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+            String sign = URLEncoder.encode(Base64.encode(signData), StandardCharsets.UTF_8);
+            url += "&timestamp=" + timestamp + "&sign=" + sign;
         }
-        Integer errcode = jsonObject.getInteger("errcode");
-        String errmsg = jsonObject.getString("errmsg");
-        if (null == errcode || null == errmsg) {
-            return false;
+        // 请求组装数据
+        Map<String,Object> markdownParams = new HashMap<>();
+        // 经过测试，钉钉的安全策略关键字匹配也可以匹配标题的，所以说不需要再内容额外加关键字
+        markdownParams.put("title", pushConfig.getTitle());
+        markdownParams.put("text", pushConfig.getContent());
+        params.put("markdown", markdownParams);
+        params.put("msgtype", "markdown");
+        JSONObject jsonObject = request(url, params, HttpUtil.RequestType.JSON);
+        if (jsonObject.getInt("errcode") == 0) {
+            return PushResultDto.doSuccess();
         }
-
-        return errcode == 0 && "ok".equals(errmsg);
+        return PushResultDto.doError(jsonObject.getStr("errmsg"));
     }
 
-    @Override
-    protected String generatePushBody(PushMetaInfo metaInfo, String content) {
-        return JSON.toJSONString(new MessageModel(content));
-    }
-
-    @Override
-    protected List<String> segmentation(PushMetaInfo metaInfo, String pushBody) {
-        if (StringUtils.isBlank(pushBody)) {
-            return Collections.emptyList();
-        }
-
-        if (pushBody.length() > DING_TALK_MESSAGE_MAX_LENGTH) {
-            log.info("推送内容长度[{}]大于最大长度[{}]进行分割处理", pushBody.length(), DING_TALK_MESSAGE_MAX_LENGTH);
-            List<String> pushContent = Arrays.stream(splitStringByLength(pushBody, DING_TALK_MESSAGE_MAX_LENGTH)).collect(Collectors.toList());
-            log.info("分割数量：{}", pushContent.size());
-            return pushContent;
-        }
-
-        return Collections.singletonList(pushBody);
-    }
-
-    @Getter
-    static class MessageModel {
-        private final String msgtype = "text";
-        private final String title = "Oldwu-HELPER任务简报";
-        private final Text text;
-
-        public MessageModel(String content) {
-            this.text = new Text(content);
-        }
-    }
-
-    @Getter
-    static class Text {
-        private final String content;
-
-        public Text(String content) {
-            this.content = content.replaceAll("\r\n\r", "");
-        }
-    }
 }

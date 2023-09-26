@@ -1,4 +1,4 @@
-package com.github.push.base.model.impl;
+package com.github.push.model;
 
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.annotation.PushProperty;
