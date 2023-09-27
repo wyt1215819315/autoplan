@@ -12,16 +12,21 @@ public class PushResultDto {
     private String data;
 
     public static PushResultDto doSuccess() {
-        return doSuccess(null,null);
+        return doSuccess(null, null);
     }
 
-    public static PushResultDto doSuccess(String msg,String data) {
+    public static PushResultDto doSuccess(String msg) {
+        return doSuccess(msg, null);
+    }
+
+    public static PushResultDto doSuccess(String msg, String data) {
         PushResultDto pushResultDto = new PushResultDto();
         pushResultDto.setSuccess(true);
         pushResultDto.setMsg(msg);
         pushResultDto.setData(data);
         return pushResultDto;
     }
+
     public static PushResultDto doError(String msg) {
         PushResultDto pushResultDto = new PushResultDto();
         pushResultDto.setSuccess(false);
