@@ -13,10 +13,10 @@ import lombok.EqualsAndHashCode;
 @PushEntity(PushTypeConstant.DING_TALK)
 public class DingTalkPushConfig extends PushBaseConfig {
 
-    @PushProperty(value = "钉钉推送地址")
+    @PushProperty(value = "钉钉推送地址", notnull = true)
     private String url;
 
-    @PushProperty(value = "钉钉加签secret", ref = "pushType", refValue = 1)
+    @PushProperty(value = "钉钉加签secret", ref = "pushType", refValue = 1, notnull = true)
     private String secret;
 
     @PushProperty(value = "钉钉推送方式", options = {

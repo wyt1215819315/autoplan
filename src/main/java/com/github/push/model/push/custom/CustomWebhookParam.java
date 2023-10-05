@@ -1,9 +1,9 @@
-package com.github.push.model.push;
+package com.github.push.model.push.custom;
 
 import lombok.Data;
 
 @Data
-public class CustomWebhookSuccessFlag {
+public class CustomWebhookParam {
 
     private String key;
     private String valueType;

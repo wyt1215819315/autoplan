@@ -1,4 +1,4 @@
-package com.github.push.model.push;
+package com.github.push.model.push.custom;
 
 import lombok.Data;
 

@@ -38,6 +38,11 @@ public @interface PushProperty {
     /**
      * 见ref说明
      */
-    int refValue() default -1;
+    int[] refValue() default -1;
+
+    /**
+     * 是否必填，影响参数校验以及前端展示
+     */
+    boolean notnull() default false;
 
 }

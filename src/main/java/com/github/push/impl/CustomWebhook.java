@@ -11,9 +11,9 @@ import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushService;
 import com.github.push.constant.PushTypeConstant;
 import com.github.push.model.CustomWebhookConfig;
-import com.github.push.model.push.CustomWebhookHeader;
-import com.github.push.model.push.CustomWebhookParam;
-import com.github.push.model.push.CustomWebhookSuccessFlag;
+import com.github.push.model.push.custom.CustomWebhookHeader;
+import com.github.push.model.push.custom.CustomWebhookParam;
+import com.github.push.model.push.custom.CustomWebhookSuccessFlag;
 import com.github.system.util.HttpUtil;
 
 import java.util.HashMap;

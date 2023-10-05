@@ -84,7 +84,7 @@ public class PushInit implements CommandLineRunner {
                         }
                         if (StrUtil.isNotBlank(pushProperty.ref())) {
                             pushConfigDto.setRef(pushProperty.ref());
-                            pushConfigDto.setRefValue(pushProperty.refValue());
+                            pushConfigDto.setRefValue(pushConfigDto.getRefValue());
                         }
                     } else {
                         pushConfigDto.setName(field.getName());

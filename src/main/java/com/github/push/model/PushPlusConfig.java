@@ -9,10 +9,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@PushEntity(PushTypeConstant.PUSH_PLUS)
+@PushEntity(value = PushTypeConstant.PUSH_PLUS, delay = 10)
 public class PushPlusConfig extends PushBaseConfig {
 
-    @PushProperty(value = "push plus++推送的token")
+    @PushProperty(value = "push plus++推送的token", notnull = true)
     private String token;
 
 }
