@@ -6,7 +6,7 @@ import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
-import com.github.system.entity.SysWebhook;
+import com.github.system.base.entity.SysWebhook;
 import com.github.system.service.WebhookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

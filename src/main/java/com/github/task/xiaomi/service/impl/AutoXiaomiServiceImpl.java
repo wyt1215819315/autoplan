@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.system.dao.AutoLogDao;
+import com.github.system.task.dao.HistoryTaskLogDao;
 import com.github.system.dao.UserDao;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.entity.AutoLog;
+import com.github.system.task.entity.HistoryTaskLog;
 import com.github.system.security.utils.SessionUtils;
 import com.github.system.vo.PageDataVO;
 import com.github.task.xiaomi.dao.AutoXiaomiDao;
@@ -37,7 +37,7 @@ public class AutoXiaomiServiceImpl extends ServiceImpl<AutoXiaomiDao, AutoXiaomi
     private UserDao userDao;
 
     @Autowired
-    private AutoLogDao autoLogDao;
+    private HistoryTaskLogDao autoLogDao;
 
     /**
      * 查询页面
@@ -197,11 +197,11 @@ public class AutoXiaomiServiceImpl extends ServiceImpl<AutoXiaomiDao, AutoXiaomi
             return AjaxResult.doError("你没有权限删除这条或数据不存在！");
         }
         //首先删除日志
-        AutoLog autoLog = new AutoLog();
-        autoLog.setUserid(userid);
-        autoLog.setAutoId(id);
-        autoLog.setType("xiaomi");
-        autoLogDao.deleteByAutoId(autoLog);
+        HistoryTaskLog historyTaskLog = new HistoryTaskLog();
+        historyTaskLog.setUserid(userid);
+        historyTaskLog.setAutoId(id);
+        historyTaskLog.setType("xiaomi");
+        autoLogDao.deleteByAutoId(historyTaskLog);
         //最后删除主要数据
         boolean b = this.removeById(id);
         if (b) {

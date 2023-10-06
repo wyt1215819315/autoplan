@@ -1,6 +1,7 @@
 package com.github.system.util;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import com.github.system.base.constant.SystemConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.core.io.Resource;
@@ -20,7 +21,6 @@ import java.util.List;
 @Slf4j
 public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
 
-    private final static String BASE_PACKAGE = "com.github";
     private final static String RESOURCE_PATTERN = "/**/*.class";
 
     public static String getApplicationPath() {
@@ -34,7 +34,7 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
         ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         try {
             String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-                    ClassUtils.convertClassNameToResourcePath(BASE_PACKAGE) + RESOURCE_PATTERN;
+                    ClassUtils.convertClassNameToResourcePath(SystemConstant.BASE_PACKAGE) + RESOURCE_PATTERN;
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             //MetadataReader 的工厂类
             MetadataReaderFactory readerfactory = new CachingMetadataReaderFactory(resourcePatternResolver);

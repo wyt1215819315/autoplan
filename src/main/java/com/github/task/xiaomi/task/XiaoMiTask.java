@@ -3,8 +3,8 @@ package com.github.task.xiaomi.task;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.system.dao.AutoLogDao;
-import com.github.system.entity.AutoLog;
+import com.github.system.task.dao.HistoryTaskLogDao;
+import com.github.system.task.entity.HistoryTaskLog;
 import com.github.system.util.DateUtils;
 import com.github.push.PushUtil;
 import com.github.task.xiaomi.dao.AutoXiaomiDao;
@@ -24,10 +24,10 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component("xiaomiTask")
 public class XiaoMiTask {
     private static AutoXiaomiDao autoXiaomiDao;
-    private static AutoLogDao logDao;
+    private static HistoryTaskLogDao logDao;
 
     @Autowired
-    public void getLogDao(AutoLogDao logDao) {
+    public void getLogDao(HistoryTaskLogDao logDao) {
         XiaoMiTask.logDao = logDao;
     }
 
@@ -141,7 +141,7 @@ public class XiaoMiTask {
             }
         }
         //日志写入至数据库
-        AutoLog netlog = new AutoLog(autoId, "xiaomi", xiaomi.getStatus(), userid, new Date(), msg.toString());
+        HistoryTaskLog netlog = new HistoryTaskLog(autoId, "xiaomi", xiaomi.getStatus(), userid, new Date(), msg.toString());
         logDao.insert(netlog);
         //更新任务
         xiaomi.setPreviousOccasion(String.valueOf(steps));

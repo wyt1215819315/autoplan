@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.system.dao.AutoLogDao">
-    <resultMap id="BaseResultMap" type="com.github.system.entity.AutoLog">
+<mapper namespace="com.github.system.task.dao.HistoryTaskLogDao">
+    <resultMap id="BaseResultMap" type="com.github.system.task.entity.HistoryTaskLog">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="auto_id" jdbcType="INTEGER" property="autoId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -22,7 +22,7 @@
           and type = #{type}
           and userid = #{userid}
     </delete>
-    <select id="selectByCondition" resultType="com.github.system.entity.AutoLog">
+    <select id="selectByCondition" resultType="com.github.system.task.entity.HistoryTaskLog">
         select
         <include refid="Base_Column_List"/>
         from auto_log

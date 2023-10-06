@@ -14,14 +14,14 @@ public class AutoPlanApplicationTests {
         Date date = new Date();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(simpleDateFormat.format(date));
+        log.error(simpleDateFormat.format(date));
     }
 
     @Test
     void test() {
         Random random = new Random();
         int i = random.nextInt(200000 - 100000) + 100000 + 1;
-        System.out.println(i);
+        log.error(i);
     }
 
     /**

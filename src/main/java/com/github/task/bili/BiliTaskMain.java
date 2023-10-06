@@ -29,7 +29,7 @@ public class BiliTaskMain {
         autoBilibili.setSessdata("");
         autoBilibili.setTaskConfig("");
         TaskResult run = biliTaskMain.run(autoBilibili);
-        System.out.println(run.toString());
+        log.error(run.toString());
     }
 
     /**

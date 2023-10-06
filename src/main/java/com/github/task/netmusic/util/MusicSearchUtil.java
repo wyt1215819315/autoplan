@@ -18,10 +18,10 @@ public class MusicSearchUtil {
     public static void main(String[] args) {
 //5238992
 //        String playUrl = getPlayUrl("5238992");
-//        System.out.println(playUrl);
+//        log.error(playUrl);
         Map<String, String> map = MusicSearchUtil.searchMusicReturnResultBot("让风告诉你");
         String id = map.get("id");
-        System.out.println(id);
+        log.error(id);
     }
 
     /**

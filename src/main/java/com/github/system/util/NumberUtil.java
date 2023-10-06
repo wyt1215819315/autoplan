@@ -1,7 +1,5 @@
 package com.github.system.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,46 +8,48 @@ import java.util.Random;
 
 public class NumberUtil {
 
-    public static void main(String[] args) {
-        int[] randoms = NumberUtil.getRandoms(0, 10, 11);
-        System.out.println(Arrays.toString(randoms));
-    }
-
     private static final String[] NUMBER1 = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
     private static final String[] NUMBER2 = {"零", "拾", "佰", "仟", "万", "亿"};
 
+    public static void main(String[] args) {
+        int[] randoms = NumberUtil.getRandoms(0, 10, 11);
+        log.error(Arrays.toString(randoms));
+    }
+
     /**
      * 根据min和max随机生成一个范围在[min,max]的随机数，包括min和max
+     *
      * @param min
      * @param max
      * @return int
      */
-    public static int getRandom(int min, int max){
+    public static int getRandom(int min, int max) {
         Random random = new Random();
-        return random.nextInt( max - min + 1 ) + min;
+        return random.nextInt(max - min + 1) + min;
     }
 
     /**
      * 根据min和max随机生成count个不重复的随机数组
+     *
      * @param min
      * @param max
      * @param count
      * @return int[]
      */
-    public static int[] getRandoms(int min, int max, int count){
+    public static int[] getRandoms(int min, int max, int count) {
         int[] randoms = new int[count];
         List<Integer> listRandom = new ArrayList<Integer>();
 
-        if( count > ( max - min + 1 )){
+        if (count > (max - min + 1)) {
             return null;
         }
         // 将所有的可能出现的数字放进候选list
-        for(int i = min; i <= max; i++){
+        for (int i = min; i <= max; i++) {
             listRandom.add(i);
         }
         // 从候选list中取出放入数组，已经被选中的就从这个list中移除
-        for(int i = 0; i < count; i++){
-            int index = getRandom(0, listRandom.size()-1);
+        for (int i = 0; i < count; i++) {
+            int index = getRandom(0, listRandom.size() - 1);
             randoms[i] = listRandom.get(index);
             listRandom.remove(index);
         }
@@ -60,26 +60,27 @@ public class NumberUtil {
     /**
      * 随机指定范围内N个不重复的数(不含)
      * 最简单最基本的方法
+     *
      * @param min 指定范围最小值
      * @param max 指定范围最大值
-     * @param n 随机数个数
+     * @param n   随机数个数
      */
-    public static int[] randomCommon(int min, int max, int n){
+    public static int[] randomCommon(int min, int max, int n) {
         if (n > (max - min + 1) || max < min) {
             return null;
         }
         int[] result = new int[n];
         int count = 0;
-        while(count < n) {
+        while (count < n) {
             int num = (int) (Math.random() * (max - min)) + min;
             boolean flag = true;
             for (int j = 0; j < n; j++) {
-                if(num == result[j]){
+                if (num == result[j]) {
                     flag = false;
                     break;
                 }
             }
-            if(flag){
+            if (flag) {
                 result[count] = num;
                 count++;
             }
@@ -131,16 +132,6 @@ public class NumberUtil {
     }
 
     /**
-     * 小写转大写
-     *
-     * @param str
-     * @return
-     */
-    public static String smallXieTOBigXie(String str) {
-        return StringUtils.upperCase(str);
-    }
-
-    /**
      * 将秒数格式化成人看的文字
      *
      * @param second
@@ -175,8 +166,7 @@ public class NumberUtil {
                 str.append(s).append("秒");
             }
             return str.toString();
-        }
-        if (second > 86400) {
+        } else {
             int days = second / 86400;
             int hours = (second - days * 86400) / 3600;
             int minutes = (second - days * 86400 - hours * 3600) / 60;
@@ -193,7 +183,6 @@ public class NumberUtil {
             }
             return str.toString();
         }
-        return second + "秒";
     }
 
     /**

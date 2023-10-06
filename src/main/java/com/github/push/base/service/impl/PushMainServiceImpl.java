@@ -1,6 +1,5 @@
 package com.github.push.base.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.dto.PushResultDto;
 import com.github.push.base.exception.PushRequestException;
@@ -8,8 +7,8 @@ import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
-import com.github.system.dao.PushResultLogDao;
-import com.github.system.entity.PushResultLog;
+import com.github.system.base.dao.PushResultLogDao;
+import com.github.system.base.entity.PushResultLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

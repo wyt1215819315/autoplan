@@ -2,11 +2,11 @@ package com.github.system.controller;
 
 import com.github.system.dao.UserDao;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.entity.AutoLog;
+import com.github.system.task.entity.HistoryTaskLog;
 import com.github.system.entity.SysUserInfo;
 import com.github.system.security.entity.SystemUser;
 import com.github.system.security.utils.SessionUtils;
-import com.github.system.service.LogService;
+import com.github.system.task.service.LogService;
 import com.github.system.service.RegService;
 import com.github.system.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +59,7 @@ public class UserController {
 
         Integer userId = SessionUtils.getPrincipal().getId();
         String role = userDao.getRole(userId);
-        AutoLog log;
+        HistoryTaskLog log;
         if (role.equals("ROLE_ADMIN")) {
             if (StringUtils.isBlank(params.get("userId"))) {
                 log = logService.getLog(null, autoId, type, userId);
@@ -70,7 +70,7 @@ public class UserController {
             log = logService.getLog(null, autoId, type, userId);
         }
         if (log == null || log.getId() == null) {
-            AutoLog log1 = new AutoLog();
+            HistoryTaskLog log1 = new HistoryTaskLog();
             log1.setText("当前无日志");
             log1.setDate(new Date());
             return AjaxResult.doSuccess(log1);

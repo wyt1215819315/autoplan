@@ -8,7 +8,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.rholder.retry.*;
-import com.github.system.configuration.ProxyConfiguration;
+import com.github.system.base.configuration.ProxyConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -5,7 +5,7 @@ import com.github.push.base.dto.PushResultDto;
 import com.github.push.base.exception.PushRequestException;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
-import com.github.system.configuration.ProxyChildConfiguration;
+import com.github.system.base.configuration.ProxyChildConfiguration;
 import com.github.system.util.HttpUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

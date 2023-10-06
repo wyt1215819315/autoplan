@@ -50,7 +50,7 @@ public class NeteaseMusicUtil {
         infos.put("password", "");
         Map<String, Object> login = run(infos);
 //        Map<String, String> login = login(infos);
-        System.out.println(login);
+        log.error(login);
 //        shuaMusicTask();
 //        sign(0);
 //        Map<String, String> mlist = getUserSubscribePlayLists();
