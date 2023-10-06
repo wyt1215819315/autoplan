@@ -7,7 +7,7 @@ import com.github.task.bili.model.AutoBilibili;
 import com.github.system.constant.SystemConstant;
 import com.github.system.dao.SysConfigDao;
 import com.github.system.dao.UserDao;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.entity.SysConfig;
 import com.github.system.security.utils.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

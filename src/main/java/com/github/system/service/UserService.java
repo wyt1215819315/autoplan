@@ -2,8 +2,8 @@ package com.github.system.service;
 
 import com.github.system.dao.SysUserInfoDao;
 import com.github.system.dao.UserDao;
-import com.github.system.domain.SysUser;
-import com.github.system.entity.AjaxResult;
+import com.github.system.auth.entity.SysUser;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.entity.SysUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

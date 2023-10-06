@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.domain.ResultTable;
 import com.github.system.domain.SysQuartzJob;
 import com.github.system.domain.Tablepar;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.service.SysQuartzJobService;
 import com.github.system.util.StringUtils;
 import org.quartz.SchedulerException;

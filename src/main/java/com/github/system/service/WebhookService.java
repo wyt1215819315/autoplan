@@ -7,7 +7,7 @@ import com.github.push.base.dto.PushResultDto;
 import com.github.push.base.model.PushData;
 import com.github.system.configuration.SystemBean;
 import com.github.system.dao.SysWebhookDao;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.entity.SysWebhook;
 import com.github.system.security.utils.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

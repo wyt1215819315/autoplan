@@ -5,6 +5,8 @@ system:
   config:
     # 系统全局名称
     title: Auto Plan
+    # 密码盐值
+    pwdSalt: oldwu
   # 数据库连接配置
   datasource:
     # type=mysql时需要填写下面的连接信息，type=sqlite时会使用内置数据库无需额外填写信息

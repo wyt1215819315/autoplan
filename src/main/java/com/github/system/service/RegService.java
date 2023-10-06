@@ -1,8 +1,8 @@
 package com.github.system.service;
 
 import com.github.system.dao.UserDao;
-import com.github.system.domain.SysUser;
-import com.github.system.entity.AjaxResult;
+import com.github.system.auth.entity.SysUser;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.github.system.controller;
 
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.service.SysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

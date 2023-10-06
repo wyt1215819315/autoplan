@@ -32,7 +32,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@MapperScan(basePackages = {"com.github.system.dao.**", "com.github.task.**.dao.**", "com.github.task.**.mapper.**"}, sqlSessionFactoryRef = "db1SqlSessionFactory")
+@MapperScan(basePackages = {"com.github.**.dao.**", "com.github.**.**.dao.**", "com.github.**.**.mapper.**"}, sqlSessionFactoryRef = "db1SqlSessionFactory")
 public class DataSourceConfig {
     @Value("${system.datasource.type}")
     private String type;

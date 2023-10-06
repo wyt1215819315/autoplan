@@ -1,3 +1,7 @@
+system:
+  auth:
+    exclude-url:
+      - /test/**
 spring:
   profiles:
     active: dev

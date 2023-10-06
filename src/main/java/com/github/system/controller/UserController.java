@@ -1,7 +1,7 @@
 package com.github.system.controller;
 
 import com.github.system.dao.UserDao;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.entity.AutoLog;
 import com.github.system.entity.SysUserInfo;
 import com.github.system.security.entity.SystemUser;

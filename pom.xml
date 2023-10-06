@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -17,6 +18,7 @@
         <hutool-all.version>5.8.22</hutool-all.version>
         <sa-token.version>1.36.0</sa-token.version>
         <guava.version>32.1.2-jre</guava.version>
+        <JustAuth.version>1.16.5</JustAuth.version>
     </properties>
     <dependencies>
 
@@ -24,6 +26,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/me.zhyd.oauth/JustAuth -->
+<!--        <dependency>-->
+<!--            <groupId>me.zhyd.oauth</groupId>-->
+<!--            <artifactId>JustAuth</artifactId>-->
+<!--            <version>${JustAuth.version}</version>-->
+<!--        </dependency>-->
 
         <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
         <dependency>

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.dao.AutoLogDao;
 import com.github.system.dao.UserDao;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.entity.AutoLog;
 import com.github.system.security.utils.SessionUtils;
 import com.github.system.vo.PageDataVO;

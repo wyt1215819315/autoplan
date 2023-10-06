@@ -16,4 +16,7 @@ public class SystemBean {
     @ApiModelProperty("项目全局名称")
     private String title;
 
+    @ApiModelProperty("密码盐值")
+    private String pwdSalt;
+
 }

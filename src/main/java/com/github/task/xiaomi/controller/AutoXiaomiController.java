@@ -1,6 +1,6 @@
 package com.github.task.xiaomi.controller;
 
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.security.utils.SessionUtils;
 import com.github.system.service.UserService;
 import com.github.task.xiaomi.service.AutoXiaomiService;

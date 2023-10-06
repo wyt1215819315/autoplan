@@ -6,7 +6,7 @@ import com.github.task.miyoushe.model.AutoMihayou;
 import com.github.task.miyoushe.service.MihayouService;
 import com.github.task.netmusic.model.AutoNetmusic;
 import com.github.task.netmusic.service.NetmusicService;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.service.SysService;
 import com.github.system.vo.PageDataVO;
 import com.github.task.xiaomi.model.entity.AutoXiaomiEntity;

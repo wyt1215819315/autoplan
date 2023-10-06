@@ -1,7 +1,7 @@
 package com.github.task.xiaomi.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.system.entity.AjaxResult;
+import com.github.system.base.dto.AjaxResult;
 import com.github.system.vo.PageDataVO;
 import com.github.task.xiaomi.model.entity.AutoXiaomiEntity;
 
