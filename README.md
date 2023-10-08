@@ -23,58 +23,17 @@
 
 **如果觉得好用，点个star吧**
 
-> **2.5以上版本由于重构了bili-helper，原来的数据库结构不再兼容新版，请使用管理员用户登录并在bili任务中点击“转json”按钮完成配置转换，记得备份原来的数据库**
-
-> 1.x - 2.0版本升级需要升级配置文件，以及新增一个定时任务(不一定要执行sql，可以直接去管理界面加)：
-```mysql
-INSERT INTO `t_sys_quartz_job` (`id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`) VALUES ('592295794938351617', '米游社更新个人信息', 'DEFAULT', 'mihuyouTask.updateAvatar()', '0 15 0 ? * MON', '3', '1', 0);
-```
-
-***
-
-> **2.11版本新增小米运动，需要新增数据库，请执行如下sql**
-```mysql
-# 任务记录表
-CREATE TABLE `auto_xiaomi`
-(
-    `id`                INT(11)     NOT NULL AUTO_INCREMENT COMMENT '主键id',
-    `user_id`           INT(11)     NULL DEFAULT NULL COMMENT '外键约束user_id',
-    `phone`             VARCHAR(50) NOT NULL COMMENT '小米账号' COLLATE 'utf8mb4_general_ci',
-    `password`          VARCHAR(50) NOT NULL COMMENT '密码' COLLATE 'utf8mb4_general_ci',
-    `steps`             VARCHAR(5)  NULL DEFAULT NULL COMMENT '步数' COLLATE 'utf8mb4_general_ci',
-    `previous_occasion` VARCHAR(5)  NULL DEFAULT NULL COMMENT '上次提交的步数' COLLATE 'utf8mb4_general_ci',
-    `name`              VARCHAR(50) NULL DEFAULT NULL COMMENT '任务名称' COLLATE 'utf8mb4_general_ci',
-    `status`            VARCHAR(10) NULL DEFAULT NULL COMMENT '任务状态' COLLATE 'utf8mb4_general_ci',
-    `random_or_not`     CHAR(1)     NULL DEFAULT NULL COMMENT '是否随机：0否，1是' COLLATE 'utf8mb4_general_ci',
-    `enable`            VARCHAR(50) NULL DEFAULT NULL COMMENT '任务是否开启' COLLATE 'utf8mb4_general_ci',
-    `enddate`           DATETIME    NULL DEFAULT NULL COMMENT '任务结束时间',
-    `webhook`           TEXT        NULL DEFAULT NULL COMMENT '推送地址json' COLLATE 'utf8mb4_general_ci',
-    `CREATED_TIME`      DATETIME    NULL DEFAULT NULL COMMENT '创建时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    INDEX `userid` (`user_id`) USING BTREE,
-    CONSTRAINT `auto_xiaomi_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
-)
-    COLLATE = 'utf8mb4_general_ci'
-    ENGINE = InnoDB
-;
-
-# 定时任务执行sql
-INSERT INTO `t_sys_quartz_job`
-VALUES ('684022184875790336', '小米自动刷步数', 'DEFAULT', 'xiaomiTask.doAutoCheck()', '0 0 12 * * ? *', '3', '1', 0);
-INSERT INTO `t_sys_quartz_job`
-VALUES ('684022184905150464', '小米运动定时重置任务状态', 'DEFAULT', 'xiaomiTask.resetStatus()', '0 0 0 * * ? *', '3', '1', 0);
-
-```
-
 ## 演示站地址
 <a href="https://auto.oldwu.top/" target="_blank">点击打开Auto Plan</a>
 
 **本人不会利用任何cookie，但是为了安全考虑，建议还是自己搭建运行环境**
 
 ## 项目架构
-基于Springboot、SpringSecurity、layui、mysql开发
 
-定时任务核心：quartz（从pearadmin中抠过来的）
+* Springboot
+* <a href="https://github.com/dromara/sa-token">SaToken</a>
+* Mybatis-Plus
+* Quartz
 
 ## 使用说明
 ### bilibili
@@ -122,17 +81,6 @@ VALUES ('684022184905150464', '小米运动定时重置任务状态', 'DEFAULT',
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
-如果你不需要自动建表，请将配置文件中的actable有关的项全都注释掉即可
-
-### 一些问题
-1. 代码不是一般的乱，（非常非常乱....而且很多地方不符合规范），本人萌新一枚，请大佬多多指教
-
-### 未来
-1. 管理员功能：查看日志，删除任务等
-2. go-cqhttp推送（需要加机器人为好友）
-3. ~~手动执行b站任务（咕咕咕）~~
-5. 修改密码功能
-6. 自动清理n天之前的日志
 
 ### 更新日志
 * 21.8.29 更新了b站二维码登录以及任务删除功能
@@ -167,6 +115,14 @@ VALUES ('684022184905150464', '小米运动定时重置任务状态', 'DEFAULT',
 * 22.5.24 bili-helper重构基本实现，可能还会有小问题，咕了n久，只是懒得写说明文档
 * 22.11.18 **新增小米运动**，支持定时，步数可以同步到微信、支付宝。修复定时任务管理分页查询问题。
 
+### 构建
+
+##### 初始化git仓库
+```shell
+git clone https://github.com/wyt1215819315/autoplan
+cd autoplan/autoplan-front
+git submodule update --init --recursive
+```
 
 ### 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE（作者不干了）</a>
