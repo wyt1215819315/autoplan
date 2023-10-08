@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 鉴权
@@ -29,6 +31,13 @@ public class LoginController {
     @SaIgnore
     public AjaxResult formLogin(@Validated LoginModel loginModel) {
         return loginService.formLogin(loginModel);
+    }
+
+    @ApiOperation("获取图形验证码")
+    @RequestMapping("/getImageCaptcha")
+    @SaIgnore
+    public void getImageCaptcha(HttpServletResponse response) throws IOException {
+        loginService.getValidCode(response);
     }
 
     @ApiOperation("是否登录")

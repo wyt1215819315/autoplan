@@ -1,3 +1,9 @@
+server:
+  # 开启静态资源压缩
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,text/html
+    min-response-size: 2KB
 system:
   auth:
     exclude-url:
@@ -13,10 +19,12 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-  thymeleaf:
-    prefix: classpath:/templates/   #在构建URL时预先查看名称的前缀
-    suffix: .html  #构建URL时附加到查看名称的后缀
-    cache: false
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 1800
+          cache-public: true
 mybatis-plus:
   global-config:
     db-config:

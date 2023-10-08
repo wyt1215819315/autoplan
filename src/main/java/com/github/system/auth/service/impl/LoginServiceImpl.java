@@ -1,6 +1,11 @@
 package com.github.system.auth.service.impl;
 
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.system.auth.constant.AuthConstant;
@@ -16,6 +21,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 
 
 @Service
@@ -35,8 +43,15 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public AjaxResult formLogin(LoginModel loginModel) {
-        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<SysUser>();
-        lambdaQueryWrapper.eq(SysUser::getUsername,loginModel.getUsername());
+        // 校验验证码
+        SaSession session = StpUtil.getSession();
+        if (!session.has(AuthConstant.DICT_CAPTCHA) || ((DateTime) session.get(AuthConstant.DICT_CAPTCHA_TIME)).isBefore(new Date())) {
+            return AjaxResult.doError("验证码已过期！", "", -1);
+        } else if (!((ShearCaptcha) session.get(AuthConstant.DICT_CAPTCHA)).verify(loginModel.getCode().toLowerCase())) {
+            return AjaxResult.doError("验证码错误！", "", -2);
+        }
+        LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(SysUser::getUsername, loginModel.getUsername());
         SysUser sysUser = sysUserDao.selectOne(lambdaQueryWrapper);
         if (sysUser == null) {
             return AjaxResult.doError(AuthConstant.MSG_LOGIN_ERROR);
@@ -49,6 +64,15 @@ public class LoginServiceImpl implements LoginService {
             StpUtil.login(sysUser.getId());
             return me();
         }
+    }
+
+    @Override
+    public void getValidCode(HttpServletResponse response) throws IOException {
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(120, 40, 4, 4);
+        SaSession session = StpUtil.getSession();
+        session.set(AuthConstant.DICT_CAPTCHA, captcha);
+        session.set(AuthConstant.DICT_CAPTCHA_TIME, DateUtil.offsetMinute(new Date(), 5));
+        captcha.write(response.getOutputStream());
     }
 
 }

@@ -13,4 +13,7 @@ public class LoginModel {
     @NotBlank
     private String password;
 
+    @NotBlank
+    private String code;
+
 }
