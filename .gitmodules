@@ -1,0 +1,3 @@
+[submodule "autoplan-front"]
+	path = autoplan-front
+	url = https://github.com/wyt1215819315/autoplan-front
