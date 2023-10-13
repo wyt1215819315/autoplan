@@ -1,6 +1,7 @@
 package com.github.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.system.quartz.base.annotation.AutoJob;
 import com.github.task.bili.BiliTaskMain;
 import com.github.task.bili.dao.AutoBilibiliDao;
 import com.github.task.bili.dao.BiliUserDao;
@@ -49,6 +50,7 @@ public class BiliTask {
         BiliTask.biliUserDao = biliUserDao;
     }
 
+    @AutoJob("b站定时重置任务标识")
     public void resetStatus() {
         //重置自动任务的标识
         //bili

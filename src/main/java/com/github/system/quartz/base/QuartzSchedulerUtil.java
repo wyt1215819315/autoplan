@@ -1,9 +1,16 @@
 package com.github.system.quartz.base;
 
+import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.util.SpringUtil;
+import com.github.system.quartz.base.annotation.AutoJob;
+import com.github.system.quartz.base.constant.QuartzConstant;
 import com.github.system.quartz.dao.SysQuartzJobMapper;
-import com.github.system.quartz.domain.SysQuartzJob;
-import com.github.system.quartz.domain.SysQuartzJobExample;
+import com.github.system.quartz.entity.SysQuartzJob;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.JobDetailImpl;
@@ -12,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @CLASSNAME QuartzConfig
@@ -36,11 +46,9 @@ public class QuartzSchedulerUtil {
     /**
      * 获取定时任务的具体执行类
      *
-     * @param sysJob
-     * @return
      */
     private static Class<? extends Job> getQuartzJobClass(SysQuartzJob sysJob) {
-        boolean isConcurrent = "0".equals(sysJob.getConcurrent());
+        boolean isConcurrent = sysJob.getConcurrent() == 0;
         return isConcurrent ? QuartzJobExecution.class : QuartzDisallowConcurrentExecution.class;
     }
 
@@ -50,7 +58,40 @@ public class QuartzSchedulerUtil {
      */
     @PostConstruct
     public void init() throws SchedulerException {
-        List<SysQuartzJob> quartzJobs = sysQuartzJobMapper.selectByExample(new SysQuartzJobExample());
+        // 执行包扫描，扫描所有带@AutoJob注解的方法，然后插入数据库并注册到定时任务
+        Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(SystemConstant.BASE_PACKAGE, AutoJob.class);
+        List<SysQuartzJob> quartzJobs = sysQuartzJobMapper.selectList(new QueryWrapper<>());
+        Set<String> regJobs = quartzJobs.stream().map(SysQuartzJob::getJobName).collect(Collectors.toSet());
+        for (Class<?> aClass : classes) {
+            // 获取spring bean，如果这玩意是spring类的话，就拿bean名称作为调用字符串，否则拿完整类路径
+            String invokeTarget = aClass.getPackageName() + "." + aClass.getName();
+            Object bean = SpringUtil.getBean(aClass);
+            if (bean != null) {
+                invokeTarget = SpringUtil.getBeanNamesForType(aClass)[0];
+            }
+            // 扫这个类上的包含注解的方法
+            Method[] methods = ReflectUtil.getMethods(aClass, method -> AnnotationUtil.hasAnnotation(method, AutoJob.class));
+            for (Method method : methods) {
+                AutoJob annotation = AnnotationUtil.getAnnotation(aClass, AutoJob.class);
+                if (regJobs.contains(annotation.value())) {
+                    // 拿jobName来判断，数据库已经存在的job就不再进行下一步注册了
+                    continue;
+                }
+                // 获取参数数量
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                List<String> typeNameList = new ArrayList<>();
+                for (Class<?> parameterType : parameterTypes) {
+                    String typeName = parameterType.getTypeName();
+                    typeNameList.add(typeName);
+                }
+                String methodName = method.getName() + "(" + StrUtil.join(",", typeNameList) + ")";
+                // 往数据库里面塞一个新的job
+                SysQuartzJob sysQuartzJob = new SysQuartzJob(annotation.value(), invokeTarget + "." + methodName, annotation.defaultCron(), 1, 1);
+                sysQuartzJobMapper.insert(sysQuartzJob);
+                quartzJobs.add(sysQuartzJob);
+            }
+        }
+
         for (SysQuartzJob job : quartzJobs) {
             try {
                 //防止因为数据问题重复创建
@@ -59,12 +100,11 @@ public class QuartzSchedulerUtil {
                 }
                 createSchedule(job);
             } catch (SchedulerException e) {
-                e.printStackTrace();
+                log.error("初始化Quartz定时任务失败",e);
             }
         }
 
         start();
-
     }
 
     /**
@@ -74,8 +114,7 @@ public class QuartzSchedulerUtil {
         try {
             scheduler.start();
         } catch (SchedulerException e) {
-            e.printStackTrace();
-            log.error("定时任务执行失败");
+            log.error("定时任务执行失败", e);
         }
     }
 
@@ -91,7 +130,7 @@ public class QuartzSchedulerUtil {
             Class<? extends Job> jobClass = getQuartzJobClass(job);
             // 通过JobBuilder构建JobDetail实例，JobDetail规定只能是实现Job接口的实例
             // JobDetail 是具体Job实例
-            JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) jobClass).withIdentity(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup()).build();
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP).build();
             // 基于表达式构建触发器
             CronScheduleBuilder cronScheduleBuilder = null;
             if (StrUtil.isNotEmpty(job.getCronExpression())) {
@@ -102,7 +141,7 @@ public class QuartzSchedulerUtil {
 
             // CronTrigger表达式触发器 继承于Trigger  //cronScheduleBuilder.withMisfireHandlingInstructionDoNothing()错过60分钟后不在补偿 拉下的执行次数
             // TriggerBuilder 用于构建触发器实例
-            CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup()).withSchedule(cronScheduleBuilder.withMisfireHandlingInstructionDoNothing()).build();
+            CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP).withSchedule(cronScheduleBuilder.withMisfireHandlingInstructionDoNothing()).build();
             //放入参数，运行时的方法可以获取
             jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
             scheduler.scheduleJob(jobDetail, cronTrigger);
@@ -116,10 +155,6 @@ public class QuartzSchedulerUtil {
 
     /**
      * 修改定时任务
-     *
-     * @param job
-     * @return
-     * @throws SchedulerException
      */
     public boolean modifyJob(SysQuartzJob job) {
 
@@ -130,7 +165,7 @@ public class QuartzSchedulerUtil {
             }
             createSchedule(job);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("修改定时任务失败", e);
             return false;
         }
         return true;
@@ -146,7 +181,7 @@ public class QuartzSchedulerUtil {
         boolean bl = false;
         try {
             //JobKey定义了job的名称和组别
-            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup());
+            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP);
             if (jobKey != null) {
                 //继续任务
                 scheduler.resumeJob(jobKey);
@@ -170,7 +205,7 @@ public class QuartzSchedulerUtil {
         boolean bl = false;
         try {
             //JobKey定义了job的名称和组别
-            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup());
+            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP);
             if (jobKey != null) {
                 //删除定时任务
                 scheduler.deleteJob(jobKey);
@@ -188,7 +223,7 @@ public class QuartzSchedulerUtil {
      * 获取jobKey
      */
     public JobKey getJobKey(SysQuartzJob job) {
-        return JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup());
+        return JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP);
     }
 
     /**
@@ -211,7 +246,7 @@ public class QuartzSchedulerUtil {
         boolean bl = false;
         try {
             //JobKey定义了job的名称和组别
-            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup());
+            JobKey jobKey = JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP);
             //暂停任务
             if (jobKey != null) {
                 scheduler.pauseJob(jobKey);
@@ -233,7 +268,7 @@ public class QuartzSchedulerUtil {
      * @throws SchedulerException
      */
     public boolean checkJobExists(SysQuartzJob job) throws SchedulerException {
-        TriggerKey triggerKey = TriggerKey.triggerKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), job.getJobGroup());
+        TriggerKey triggerKey = TriggerKey.triggerKey(ScheduleConstants.TASK_CLASS_NAME + job.getId(), QuartzConstant.DEFAULT_GROUP);
         return scheduler.checkExists(triggerKey);
     }
 

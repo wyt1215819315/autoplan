@@ -2,8 +2,8 @@ package com.github.system.quartz.base.utils;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.system.quartz.domain.SysQuartzJob;
-import com.github.system.util.SpringUtil;
+import com.github.system.quartz.entity.SysQuartzJob;
+import com.github.system.base.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -94,7 +94,7 @@ public class JobInvokeUtil {
      */
     public static String getMethodName(String invokeTarget) {
         String methodName = StrUtil.subBefore(invokeTarget, "(", false);
-        return StrUtil.subBefore(methodName, ".", true);
+        return StrUtil.subAfter(methodName, ".", true);
     }
 
     /**

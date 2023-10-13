@@ -14,7 +14,7 @@ import com.github.push.model.CustomWebhookConfig;
 import com.github.push.model.push.custom.CustomWebhookHeader;
 import com.github.push.model.push.custom.CustomWebhookParam;
 import com.github.push.model.push.custom.CustomWebhookSuccessFlag;
-import com.github.system.util.HttpUtil;
+import com.github.system.base.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.List;

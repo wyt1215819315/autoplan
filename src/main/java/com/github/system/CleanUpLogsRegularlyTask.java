@@ -3,7 +3,7 @@ package com.github.system;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.system.quartz.dao.SysQuartzJobLogMapper;
-import com.github.system.quartz.domain.SysQuartzJobLog;
+import com.github.system.quartz.entity.SysQuartzJobLog;
 import com.github.system.task.dao.HistoryTaskLogDao;
 import com.github.system.task.entity.HistoryTaskLog;
 import lombok.extern.slf4j.Slf4j;

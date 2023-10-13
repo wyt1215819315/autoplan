@@ -1,91 +1,70 @@
 package com.github.system.quartz.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.system.domain.ResultTable;
-import com.github.system.quartz.domain.SysQuartzJobLog;
-import com.github.system.domain.Tablepar;
+import com.github.system.quartz.entity.SysQuartzJobLog;
 import com.github.system.base.dto.AjaxResult;
 import com.github.system.quartz.service.SysQuartzJobLogService;
+import com.github.system.quartz.vo.SysQuartzJobLogVo;
+import com.github.system.quartz.vo.SysQuartzJobVo;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @SaCheckRole("ADMIN")
 @Api(tags = "定时任务日志")
-@Controller
+@RestController
 @RequestMapping("/admin/joblog")
 public class QuartzJobLogController {
 
-    private final String prefix = "sysQuartzJobLog";
-    @Autowired
+    @Resource
     private SysQuartzJobLogService sysQuartzJobLogService;
 
-    /**
-     * 展示跳转页面
-     *
-     * @param model
-     * @return
-     * @author fuce
-     * @Date 2019年11月11日 下午4:01:13
-     */
-    @GetMapping("/view")
-    public String view(ModelMap model) {
-        return  prefix + "/list";
-    }
 
-    /**
-     * 定时任务调度日志list
-     *
-     * @param tablepar
-     * @param searchText
-     * @return
-     * @author fuce
-     * @Date 2019年11月11日 下午4:01:26
-     */
-    //@Log(title = "定时任务调度日志表集合查询", action = "111")
     @GetMapping("/list")
-    @ResponseBody
-    public ResultTable list(Tablepar tablepar, String searchText) {
-        Page<SysQuartzJobLog> page = sysQuartzJobLogService.list(tablepar, searchText);
-        return pageTable(page.getRecords(), page.getTotal());
+    @ApiOperation("定时任务调度日志表集合查询")
+    public AjaxResult list(Page<SysQuartzJobLog> page, SysQuartzJobVo sysQuartzJobVo) {
+        LambdaQueryWrapper<SysQuartzJobLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<String> excludeField = List.of("jobMessage", "exceptionInfo");
+        lambdaQueryWrapper.select(SysQuartzJobLog.class, i -> !excludeField.contains(i.getProperty()));
+        lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJobLog::getJobName, sysQuartzJobVo.getJobName());
+        lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJobLog::getStatus, sysQuartzJobVo.getStatus());
+        lambdaQueryWrapper.orderByDesc(SysQuartzJobLog::getStartTime);
+        return AjaxResult.doSuccess(sysQuartzJobLogService.page(page, lambdaQueryWrapper));
     }
 
-    /**
-     * 查看详情
-     *
-     * @param modelMap
-     * @return
-     * @author fuce
-     * @Date 2019年9月14日 下午11:50:42
-     */
-    @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") String id, ModelMap modelMap) {
-        SysQuartzJobLog log = sysQuartzJobLogService.selectByPrimaryKey(id);
-        modelMap.put("SysQuartzJobLog", log);
-        return prefix + "/detail";
+    @ApiOperation("详情")
+    @GetMapping("/view/{id}")
+    public AjaxResult view(@PathVariable("id") String id) {
+        SysQuartzJobLog log = sysQuartzJobLogService.getById(id);
+        return AjaxResult.doSuccess(log);
     }
 
-
-    /**
-     * 定时任务日志删除
-     *
-     * @param ids id集合
-     * @return
-     * @author fuce
-     * @Date 2019年11月20日 下午10:51:52
-     */
-    //@Log(title = "定时任务调度日志表删除", action = "111")
-    @DeleteMapping("/remove")
-    @ResponseBody
-    public AjaxResult remove(String ids) {
-        int b = sysQuartzJobLogService.deleteByPrimaryKey(ids);
-        if (b > 0) {
-            return success();
+    @ApiOperation("根据id删除日志")
+    @PostMapping("/delete")
+    public AjaxResult remove(@RequestBody SysQuartzJobLogVo sysQuartzJobLogVo) {
+        boolean b = sysQuartzJobLogService.removeBatchByIds(sysQuartzJobLogVo.getIds());
+        if (b) {
+            return AjaxResult.doSuccess();
         } else {
-            return error();
+            return AjaxResult.doError();
+        }
+    }
+
+    @ApiOperation("删除全部日志")
+    @PostMapping("/deleteAll")
+    public AjaxResult removeAll() {
+        boolean b = sysQuartzJobLogService.remove(new QueryWrapper<>());
+        if (b) {
+            return AjaxResult.doSuccess();
+        } else {
+            return AjaxResult.doError();
         }
     }
 

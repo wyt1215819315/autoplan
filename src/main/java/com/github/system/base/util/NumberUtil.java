@@ -1,4 +1,4 @@
-package com.github.system.util;
+package com.github.system.base.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -11,10 +11,6 @@ public class NumberUtil {
     private static final String[] NUMBER1 = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
     private static final String[] NUMBER2 = {"零", "拾", "佰", "仟", "万", "亿"};
 
-    public static void main(String[] args) {
-        int[] randoms = NumberUtil.getRandoms(0, 10, 11);
-        log.error(Arrays.toString(randoms));
-    }
 
     /**
      * 根据min和max随机生成一个范围在[min,max]的随机数，包括min和max

@@ -7,7 +7,7 @@ import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushService;
 import com.github.push.constant.PushTypeConstant;
 import com.github.push.model.DingTalkPushConfig;
-import com.github.system.util.HttpUtil;
+import com.github.system.base.util.HttpUtil;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

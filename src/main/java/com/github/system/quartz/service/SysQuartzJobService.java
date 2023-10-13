@@ -2,7 +2,7 @@ package com.github.system.quartz.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.quartz.dao.SysQuartzJobMapper;
-import com.github.system.quartz.domain.SysQuartzJob;
+import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.quartz.base.QuartzSchedulerUtil;
 import com.github.system.quartz.base.ScheduleConstants;
 import org.quartz.SchedulerException;

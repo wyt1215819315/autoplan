@@ -1,7 +1,7 @@
 package com.github.system.quartz.base;
 
 import com.github.system.quartz.base.utils.JobInvokeUtil;
-import com.github.system.quartz.domain.SysQuartzJob;
+import com.github.system.quartz.entity.SysQuartzJob;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 

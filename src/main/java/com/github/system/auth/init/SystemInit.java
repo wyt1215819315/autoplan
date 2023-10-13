@@ -5,7 +5,7 @@ import cn.hutool.core.collection.ListUtil;
 import com.github.system.auth.dao.SysRoleDao;
 import com.github.system.auth.entity.SysRole;
 import com.github.system.auth.service.SysRoleService;
-import com.github.system.util.SpringUtil;
+import com.github.system.base.util.SpringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

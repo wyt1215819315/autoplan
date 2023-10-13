@@ -1,4 +1,4 @@
-package com.github.system.util;
+package com.github.system.base.util;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import com.github.system.base.constant.SystemConstant;

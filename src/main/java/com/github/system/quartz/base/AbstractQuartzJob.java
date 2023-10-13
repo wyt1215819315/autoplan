@@ -2,10 +2,10 @@ package com.github.system.quartz.base;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.system.quartz.domain.SysQuartzJob;
-import com.github.system.quartz.domain.SysQuartzJobLog;
+import com.github.system.quartz.entity.SysQuartzJob;
+import com.github.system.quartz.entity.SysQuartzJobLog;
 import com.github.system.quartz.service.SysQuartzJobLogService;
-import com.github.system.util.SpringUtil;
+import com.github.system.base.util.SpringUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -69,7 +69,6 @@ public abstract class AbstractQuartzJob implements Job {
 
         final SysQuartzJobLog sysJobLog = new SysQuartzJobLog();
         sysJobLog.setJobName(sysJob.getJobName());
-        sysJobLog.setJobGroup(sysJob.getJobGroup());
         sysJobLog.setInvokeTarget(sysJob.getInvokeTarget());
         sysJobLog.setStartTime(startTime);
         sysJobLog.setEndTime(new Date());

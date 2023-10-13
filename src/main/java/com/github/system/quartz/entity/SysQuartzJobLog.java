@@ -1,4 +1,4 @@
-package com.github.system.quartz.domain;
+package com.github.system.quartz.entity;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,7 +14,6 @@ import java.util.Date;
 @ApiModel("定时任务调度日志表")
 public class SysQuartzJobLog implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
 
@@ -30,12 +28,6 @@ public class SysQuartzJobLog implements Serializable {
      **/
     @ApiModelProperty("任务名称")
     private String jobName;
-
-    /**
-     * 任务组名
-     **/
-    @ApiModelProperty("任务组名")
-    private String jobGroup;
 
     /**
      * 调用目标字符串
@@ -78,10 +70,9 @@ public class SysQuartzJobLog implements Serializable {
     }
 
 
-    public SysQuartzJobLog(Long id, String jobName, String jobGroup, String invokeTarget, String jobMessage, Integer status, String exceptionInfo, Date startTime, Date endTime) {
+    public SysQuartzJobLog(Long id, String jobName, String invokeTarget, String jobMessage, Integer status, String exceptionInfo, Date startTime, Date endTime) {
         this.id = id;
         this.jobName = jobName;
-        this.jobGroup = jobGroup;
         this.invokeTarget = invokeTarget;
         this.jobMessage = jobMessage;
         this.status = status;

@@ -23,7 +23,7 @@ public class TaskLogController {
     @Resource
     private LogService logService;
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public Page<HistoryTaskLog> list(Page<HistoryTaskLog> page, HistoryTaskLogVo historyTaskLogVo) {
         LambdaQueryWrapper<HistoryTaskLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getType()), HistoryTaskLog::getType, historyTaskLogVo.getType());
@@ -33,7 +33,7 @@ public class TaskLogController {
         return logService.page(page, lambdaQueryWrapper);
     }
 
-    @PostMapping("/view/{id}")
+    @GetMapping("/view/{id}")
     public AjaxResult view(@PathVariable String id) {
         return AjaxResult.doSuccess(logService.getOne(new LambdaQueryWrapper<HistoryTaskLog>().eq(HistoryTaskLog::getId,id)));
     }

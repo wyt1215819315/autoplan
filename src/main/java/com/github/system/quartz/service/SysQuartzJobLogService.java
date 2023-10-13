@@ -2,7 +2,7 @@ package com.github.system.quartz.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.quartz.dao.SysQuartzJobLogMapper;
-import com.github.system.quartz.domain.SysQuartzJobLog;
+import com.github.system.quartz.entity.SysQuartzJobLog;
 import org.springframework.stereotype.Service;
 
 

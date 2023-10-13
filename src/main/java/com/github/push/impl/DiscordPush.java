@@ -12,7 +12,7 @@ import com.github.push.base.service.PushService;
 import com.github.push.constant.PushTypeConstant;
 import com.github.push.model.DiscordConfig;
 import com.github.push.model.push.DiscordWebhook;
-import com.github.system.util.HttpUtil;
+import com.github.system.base.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;

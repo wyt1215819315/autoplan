@@ -1,129 +1,76 @@
 package com.github.system.quartz.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.quartz.domain.SysQuartzJob;
+import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.quartz.service.SysQuartzJobService;
+import com.github.system.quartz.vo.SysQuartzJobVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 
 @SaCheckRole("ADMIN")
 @Api(tags = "定时任务")
-@Controller
+@RestController
 @RequestMapping("/admin/job")
 public class QuartzJobController {
 
-    private final String prefix = "sysQuartzJob";
-
-    @Autowired
+    @Resource
     private SysQuartzJobService sysQuartzJobService;
 
 
-    /**
-     * 定时任务调度list
-     *
-     * @param tablepar
-     * @param searchText
-     * @return
-     */
     @GetMapping("/list")
-    @ResponseBody
-    public ResultTable list(Tablepar tablepar, String searchText) {
-        Page<SysQuartzJob> page = sysQuartzJobService.list(tablepar, searchText);
-        return pageTable(page.getRecords(), page.getTotal());
+    @ApiOperation("定时任务调度list")
+    public AjaxResult list(Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
+        LambdaQueryWrapper<SysQuartzJob> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJob::getJobName, sysQuartzJobVo.getJobName());
+        lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJob::getStatus, sysQuartzJobVo.getStatus());
+        lambdaQueryWrapper.orderByAsc(SysQuartzJob::getStatus);
+        return AjaxResult.doSuccess(sysQuartzJobService.page(page, lambdaQueryWrapper));
     }
 
-    /**
-     * 新增跳转页面
-     *
-     * @param modelMap
-     * @return
-     */
-    @GetMapping("/add")
-    public String add(ModelMap modelMap) {
-        return prefix + "/add";
+    @GetMapping("/view/{id}")
+    public AjaxResult view(@PathVariable("id") String id) {
+        SysQuartzJob log = sysQuartzJobService.getById(id);
+        return AjaxResult.doSuccess(log);
     }
 
-    /**
-     * 新增保存
-     *
-     * @param sysQuartzJob
-     * @return
-     * @author fuce
-     * @Date 2019年11月11日 下午4:00:08
-     */
-    @PostMapping("/add")
-    @ResponseBody
-    public AjaxResult add(SysQuartzJob sysQuartzJob) {
-        if (StringUtils.isEmpty(sysQuartzJob.getInvokeTarget())) {
-            return error("调用目标字符串不能为空");
+    @ApiOperation("保存")
+    @PostMapping("/save")
+    public AjaxResult add(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) {
+        return sysQuartzJobService.save(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
+    }
+
+    @ApiOperation("根据id删除")
+    @PostMapping("/delete")
+    public AjaxResult remove(@RequestBody SysQuartzJobVo sysQuartzJobVo) {
+        return sysQuartzJobService.removeBatchByIds(sysQuartzJobVo.getIds()) ? AjaxResult.doSuccess() : AjaxResult.doError();
+    }
+
+    @ApiOperation("编辑")
+    @PostMapping("/update")
+    public AjaxResult update(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) {
+        if (sysQuartzJobVo.getId() == null) {
+            return AjaxResult.doError("id不能为空");
         }
-        int b = sysQuartzJobService.insertSelective(sysQuartzJob);
-        if (b > 0) {
-            return success();
-        } else {
-            return error();
-        }
+        return sysQuartzJobService.updateById(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
     }
 
-    /**
-     * 删除
-     *
-     * @param ids
-     * @return
-     */
-    //@Log(title = "定时任务调度表删除", action = "111")
-    @DeleteMapping("/remove")
-    @ResponseBody
-    public AjaxResult remove(String ids) {
-        int b = sysQuartzJobService.deleteByPrimaryKey(ids);
-        if (b > 0) {
-            return success();
-        } else {
-            return error();
-        }
-    }
-
-
-    /**
-     * 修改跳转
-     *
-     * @param id
-     * @param mmap
-     * @return
-     */
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") String id, ModelMap mmap) {
-        mmap.put("SysQuartzJob", sysQuartzJobService.selectByPrimaryKey(id));
-
-        return prefix + "/edit";
-    }
-
-    /**
-     * 修改保存
-     */
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(SysQuartzJob record) {
-        return toAjax(sysQuartzJobService.updateByPrimaryKeySelective(record));
-    }
-
-    /**
-     * 任务调度状态修改
-     */
-    @PutMapping("/changeStatus")
-    @ResponseBody
-    public AjaxResult changeStatus(@RequestBody SysQuartzJob job) throws SchedulerException {
-        SysQuartzJob newJob = sysQuartzJobService.selectByPrimaryKey(job.getId());
-        newJob.setStatus(job.getStatus());
-        sysQuartzJobService.updateByPrimaryKeySelective(newJob);
-        return toAjax(sysQuartzJobService.changeStatus(newJob));
+    @ApiOperation("任务调度状态修改")
+    @PostMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody SysQuartzJobVo sysQuartzJobVo) throws SchedulerException {
+        SysQuartzJob job = sysQuartzJobService.getById(sysQuartzJobVo.getId());
+        job.setStatus(job.getStatus());
+        sysQuartzJobService.updateById(job);
+        return AjaxResult.doSuccess(sysQuartzJobService.changeStatus(job));
     }
 
     /**
@@ -132,9 +79,9 @@ public class QuartzJobController {
     @GetMapping("/run/{id}")
     @ResponseBody
     public AjaxResult run(@PathVariable("id") String id) throws SchedulerException {
-        SysQuartzJob newJob = sysQuartzJobService.selectByPrimaryKey(id);
-        sysQuartzJobService.run(newJob);
-        return success();
+        SysQuartzJob job = sysQuartzJobService.getById(id);
+        sysQuartzJobService.run(job);
+        return AjaxResult.doSuccess();
     }
 
 
