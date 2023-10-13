@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @CLASSNAME AbstractQuartzJob
@@ -37,10 +40,22 @@ public abstract class AbstractQuartzJob implements Job {
         BeanUtils.copyProperties(context.getMergedJobDataMap().get(ScheduleConstants.TASK_PROPERTIES), sysJob);
         try {
             before(context, sysJob);
-            if (sysJob != null) {
+            // 增加超时机制，如果任务执行超时直接将其kill掉
+            if (sysJob.getTimeout() == null || sysJob.getTimeout() <= 0) {
                 doExecute(context, sysJob);
+            } else {
+                FutureTask<Boolean> task = new FutureTask<>(() -> {
+                    doExecute(context, sysJob);
+                    return true;
+                });
+                Thread thread = new Thread(task);
+                thread.start();
+                task.get(sysJob.getTimeout(), TimeUnit.SECONDS);
             }
             after(context, sysJob, null);
+        } catch (TimeoutException e) {
+            log.error(sysJob.getJobName() + "任务执行超时");
+            after(context, sysJob, e);
         } catch (Exception e) {
             log.error("任务执行异常  - ：", e);
             after(context, sysJob, e);
@@ -75,7 +90,11 @@ public abstract class AbstractQuartzJob implements Job {
         long runMs = sysJobLog.getEndTime().getTime() - sysJobLog.getStartTime().getTime();
         sysJobLog.setJobMessage(sysJobLog.getJobName() + " 总共耗时：" + runMs + "毫秒");
         if (e != null) {
-            sysJobLog.setStatus(ScheduleConstants.FAIL_STATUS);
+            if (e instanceof TimeoutException) {
+                sysJobLog.setStatus(ScheduleConstants.TIMEOUT_STATUS);
+            } else {
+                sysJobLog.setStatus(ScheduleConstants.FAIL_STATUS);
+            }
             String errorMsg = StrUtil.sub(ExceptionUtil.getMessage(e), 0, 2000);
             sysJobLog.setExceptionInfo(errorMsg);
         } else {

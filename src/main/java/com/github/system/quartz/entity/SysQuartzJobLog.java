@@ -42,9 +42,9 @@ public class SysQuartzJobLog implements Serializable {
     private String jobMessage;
 
     /**
-     * 执行状态（0正常 1失败）
+     * 执行状态（0正常 1失败 2超时）
      **/
-    @ApiModelProperty("执行状态（0正常 1失败）")
+    @ApiModelProperty("执行状态（0正常 1失败 2超时）")
     private Integer status;
 
     /**

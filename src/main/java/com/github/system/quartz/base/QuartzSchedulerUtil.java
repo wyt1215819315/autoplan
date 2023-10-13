@@ -87,6 +87,7 @@ public class QuartzSchedulerUtil {
                 String methodName = method.getName() + "(" + StrUtil.join(",", typeNameList) + ")";
                 // 往数据库里面塞一个新的job
                 SysQuartzJob sysQuartzJob = new SysQuartzJob(annotation.value(), invokeTarget + "." + methodName, annotation.defaultCron(), 1, 1);
+                sysQuartzJob.setTimeout(3600 * 24);
                 sysQuartzJobMapper.insert(sysQuartzJob);
                 quartzJobs.add(sysQuartzJob);
             }

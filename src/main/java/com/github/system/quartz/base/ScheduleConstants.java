@@ -39,6 +39,11 @@ public interface ScheduleConstants {
     public static final Integer FAIL_STATUS = 1;
 
     /**
+     * 超时状态
+     */
+    public static final Integer TIMEOUT_STATUS = 2;
+
+    /**
      * 成功状态
      */
     public static final Integer SUCCESS_STATUS = 0;
