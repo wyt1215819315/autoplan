@@ -44,7 +44,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public AjaxResult formLogin(LoginModel loginModel) {
         // 校验验证码
-        SaSession session = StpUtil.getSession();
+        SaSession session = StpUtil.getAnonTokenSession();
         if (!session.has(AuthConstant.DICT_CAPTCHA) || ((DateTime) session.get(AuthConstant.DICT_CAPTCHA_TIME)).isBefore(new Date())) {
             return AjaxResult.doError("验证码已过期！", "", -1);
         } else if (!((ShearCaptcha) session.get(AuthConstant.DICT_CAPTCHA)).verify(loginModel.getCode().toLowerCase())) {
@@ -69,7 +69,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public void getValidCode(HttpServletResponse response) throws IOException {
         ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(120, 40, 4, 4);
-        SaSession session = StpUtil.getSession();
+        SaSession session = StpUtil.getAnonTokenSession();
         session.set(AuthConstant.DICT_CAPTCHA, captcha);
         session.set(AuthConstant.DICT_CAPTCHA_TIME, DateUtil.offsetMinute(new Date(), 5));
         captcha.write(response.getOutputStream());
