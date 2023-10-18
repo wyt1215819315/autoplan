@@ -1,4 +1,4 @@
-package com.github.system.task.vo;
+package com.github.task.base.vo;
 
 import lombok.Data;
 

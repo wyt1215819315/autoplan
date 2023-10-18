@@ -1,7 +1,7 @@
-package com.github.system.task.dao;
+package com.github.task.base.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.system.task.entity.HistoryTaskLog;
+import com.github.task.base.entity.HistoryTaskLog;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

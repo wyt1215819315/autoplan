@@ -10,6 +10,7 @@ import com.github.push.base.dto.PushConfigDto;
 import com.github.push.base.dto.PushConfigOptions;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.service.PushService;
+import com.github.system.base.constant.SystemConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -39,8 +40,8 @@ public class PushInit implements CommandLineRunner {
 //        String packageName = this.getClass().getPackageName();
 //        // 获取所有推送实体类
 //        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(StrUtil.subBefore(packageName, ".", true) + ".model.impl", PushBaseConfig.class);
-        Set<Class<?>> classes = ClassUtil.scanPackageBySuper("com.github.push", PushBaseConfig.class);
-        Set<Class<?>> pushServiceClasses = ClassUtil.scanPackageBySuper("com.github.push", PushService.class);
+        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE + ".push", PushBaseConfig.class);
+        Set<Class<?>> pushServiceClasses = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE + ".push", PushService.class);
         for (Class<?> aClass : classes) {
             PushEntity apiModelAnno = AnnotationUtil.getAnnotation(aClass, PushEntity.class);
             if (apiModelAnno != null) {

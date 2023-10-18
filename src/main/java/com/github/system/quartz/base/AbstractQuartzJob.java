@@ -38,6 +38,7 @@ public abstract class AbstractQuartzJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         SysQuartzJob sysJob = new SysQuartzJob();
         BeanUtils.copyProperties(context.getMergedJobDataMap().get(ScheduleConstants.TASK_PROPERTIES), sysJob);
+        Thread thread = null;
         try {
             before(context, sysJob);
             // 增加超时机制，如果任务执行超时直接将其kill掉
@@ -48,13 +49,16 @@ public abstract class AbstractQuartzJob implements Job {
                     doExecute(context, sysJob);
                     return true;
                 });
-                Thread thread = new Thread(task);
+                thread = new Thread(task);
                 thread.start();
                 task.get(sysJob.getTimeout(), TimeUnit.SECONDS);
             }
             after(context, sysJob, null);
         } catch (TimeoutException e) {
-            log.error(sysJob.getJobName() + "任务执行超时");
+            log.error(sysJob.getJobName() + "任务执行超时（" + sysJob.getTimeout() + "s）");
+            if (thread != null) {
+                thread.interrupt();
+            }
             after(context, sysJob, e);
         } catch (Exception e) {
             log.error("任务执行异常  - ：", e);

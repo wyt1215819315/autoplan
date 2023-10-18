@@ -1,13 +1,13 @@
-package com.github.system.task.controller;
+package com.github.task.base.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.task.service.LogService;
-import com.github.system.task.entity.HistoryTaskLog;
-import com.github.system.task.vo.HistoryTaskLogVo;
+import com.github.task.base.entity.HistoryTaskLog;
+import com.github.task.base.service.TaskLogService;
+import com.github.task.base.vo.HistoryTaskLogVo;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 public class TaskLogController {
 
     @Resource
-    private LogService logService;
+    private TaskLogService logService;
 
     @GetMapping("/list")
     public Page<HistoryTaskLog> list(Page<HistoryTaskLog> page, HistoryTaskLogVo historyTaskLogVo) {

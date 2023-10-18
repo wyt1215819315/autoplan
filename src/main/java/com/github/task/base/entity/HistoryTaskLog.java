@@ -1,4 +1,4 @@
-package com.github.system.task.entity;
+package com.github.task.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -17,13 +17,13 @@ public class HistoryTaskLog implements Serializable {
     private Long id;
 
     @ApiModelProperty("任务id")
-    private Integer autoId;
+    private Integer taskId;
 
     @ApiModelProperty("任务类型")
     private String type;
 
     @ApiModelProperty("任务状态")
-    private String status;
+    private Integer status;
 
     @ApiModelProperty("任务所属的用户id")
     private Integer userid;
@@ -35,8 +35,8 @@ public class HistoryTaskLog implements Serializable {
     private String text;
 
 
-    public HistoryTaskLog(Integer autoId, String type, String status, Integer userid, Date date, String text) {
-        this.autoId = autoId;
+    public HistoryTaskLog(Integer taskId, String type, Integer status, Integer userid, Date date, String text) {
+        this.taskId = taskId;
         this.type = type;
         this.status = status;
         this.userid = userid;

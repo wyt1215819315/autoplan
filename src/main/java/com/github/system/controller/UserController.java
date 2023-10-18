@@ -1,15 +1,9 @@
 package com.github.system.controller;
 
-import com.github.system.dao.UserDao;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.task.entity.HistoryTaskLog;
-import com.github.system.entity.SysUserInfo;
-import com.github.system.security.entity.SystemUser;
-import com.github.system.security.utils.SessionUtils;
-import com.github.system.task.service.LogService;
+import com.github.task.base.entity.HistoryTaskLog;
 import com.github.system.service.RegService;
 import com.github.system.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private LogService logService;
+    private TaskLogService logService;
 
     @Autowired
     private UserDao userDao;
