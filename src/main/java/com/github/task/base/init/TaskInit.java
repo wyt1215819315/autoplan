@@ -64,11 +64,16 @@ public class TaskInit {
         Set<Class<?>> serviceClasses = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE, BaseTaskService.class);
         for (Class<?> serviceClass : serviceClasses) {
             try {
-                BaseTaskService<?, ?, ?> baseTaskService = (BaseTaskService<?, ?, ?>) serviceClass.getDeclaredConstructor().newInstance();
+                BaseTaskService<?, ?> baseTaskService = (BaseTaskService<?, ?>) serviceClass.getDeclaredConstructor().newInstance();
                 TaskInfo taskInfo = baseTaskService.getName();
                 List<AutoIndex> collect = autoIndexLists.stream().filter(a -> taskInfo.getCode().equals(a.getCode())).toList();
                 if (collect.isEmpty()) {
-                    insertList.add(new AutoIndex(1, taskInfo.getName(), taskInfo.getCode(), taskInfo.getDelay(), taskInfo.getThreadNum()));
+                    insertList.add(new AutoIndex(1,
+                            taskInfo.getName(),
+                            taskInfo.getCode(),
+                            (int) taskInfo.getDelay().toSeconds(),
+                            taskInfo.getThreadNum(),
+                            (int) taskInfo.getTimeout().toSeconds()));
                 }
                 serviceClassesMap.put(taskInfo.getCode(), serviceClass);
             } catch (Exception e) {

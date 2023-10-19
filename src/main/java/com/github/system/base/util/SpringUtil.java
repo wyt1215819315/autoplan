@@ -28,6 +28,21 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
         return ah.getSource().getParentFile().toString();
     }
 
+    /**
+     * 优先获取SpringBean，如果SpringBean为空则获取普通java实例
+     */
+    public static <T> T getBeanOrInstance(Class<T> clazz) {
+        T bean = getBean(clazz);
+        if (bean == null) {
+            try {
+                bean = clazz.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return bean;
+    }
+
     public static <A extends Annotation> List<A> scanAllAnnotationByAnnotation(Class<A> annotationType) {
         List<A> aList = new ArrayList<>();
         //spring工具类，可以获取指定路径下的全部类

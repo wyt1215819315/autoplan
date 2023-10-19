@@ -22,8 +22,11 @@ public class AutoIndex {
     @ApiModelProperty("代号")
     private String code;
 
-    @ApiModelProperty("任务延时（通常用于控制多用户任务执行等待时间，防止风控）")
+    @ApiModelProperty("任务延时（通常用于控制多用户任务执行等待时间，防止风控），单位秒")
     private Integer delay;
+
+    @ApiModelProperty("任务超时，当单个任务大于设定时间时回终止任务，单位秒")
+    private Integer timout;
 
     @ApiModelProperty("任务同时运行的并发数量，为了防止风控一般都是1")
     private Integer threadNum;
@@ -44,5 +47,14 @@ public class AutoIndex {
         this.code = code;
         this.delay = delay;
         this.threadNum = threadNum;
+    }
+
+    public AutoIndex(Integer enable, String name, String code, Integer delay, Integer threadNum, Integer timeout) {
+        this.enable = enable;
+        this.name = name;
+        this.code = code;
+        this.delay = delay;
+        this.threadNum = threadNum;
+        this.timout = timeout;
     }
 }

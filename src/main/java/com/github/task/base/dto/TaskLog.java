@@ -17,10 +17,17 @@ public class TaskLog {
     }
 
     public enum LogType {
-        DEBUG, INFO, WARN, ERROR
+        TITLE,
+        DEBUG, INFO, WARN, ERROR,
+        TASK_COMPLETE, TASK_ERROR, TASK_RESULT,
+        USER_CHECK_ERROR, USER_INFO_UPDATE_ERROR
     }
 
     private final List<LogInfo> logList = new ArrayList<>();
+
+    public void append(LogInfo logInfo) {
+        this.logList.add(logInfo);
+    }
 
     public void debug(String text) {
         logger.debug(text);
@@ -62,11 +69,13 @@ public class TaskLog {
     }
 
     public void error(Throwable e) {
+        logger.debug("TaskLog堆栈错误：" + e.getMessage(), e);
         String message = ExceptionUtil.getMessage(e);
         error(message);
     }
 
     public void error(String text, Throwable e) {
+        logger.debug(text, e);
         String message = ExceptionUtil.getMessage(e);
         error(text + "：" + message);
     }

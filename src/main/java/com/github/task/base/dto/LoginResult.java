@@ -2,24 +2,45 @@ package com.github.task.base.dto;
 
 import com.github.task.base.model.BaseUserInfo;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class LoginResult<R, D extends BaseUserInfo> extends TaskResult<R> {
+public class LoginResult<D extends BaseUserInfo> {
 
     /**
-     * 用于返回登录之后的用户信息，注意不要将敏感信息放到这个里面去
+     * 任务是否执行成功
+     */
+    private boolean success;
+
+    /**
+     * 任务输出的信息
+     */
+    private String msg;
+
+    /**
+     * 用户信息返回，底层会将此字段持久化到数据库用于前端回显，请勿往里面塞敏感信息
      */
     private D userInfo;
 
-    public static <R, D extends BaseUserInfo> LoginResult<R, D> doSuccess(String msg, R data, D userInfo) {
-        LoginResult<R, D> loginResult = new LoginResult<>();
-        loginResult.setSuccess(true);
-        loginResult.setMsg(msg);
-        loginResult.setData(data);
-        loginResult.setUserInfo(userInfo);
-        return loginResult;
+    public static <D extends BaseUserInfo> LoginResult<D> doError(String msg) {
+        LoginResult<D> taskResult = new LoginResult<>();
+        taskResult.setSuccess(false);
+        taskResult.setMsg(msg);
+        return taskResult;
+    }
+
+    public static <D extends BaseUserInfo> LoginResult<D> doSuccess(String msg, D data) {
+        LoginResult<D> taskResult = new LoginResult<>();
+        taskResult.setSuccess(true);
+        taskResult.setMsg(msg);
+        taskResult.setUserInfo(data);
+        return taskResult;
+    }
+
+    public static <D extends BaseUserInfo> LoginResult<D> doSuccess(String msg) {
+        LoginResult<D> taskResult = new LoginResult<>();
+        taskResult.setSuccess(true);
+        taskResult.setMsg(msg);
+        return taskResult;
     }
 
 }
