@@ -14,6 +14,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   mvc: #静态资源
+    pathmatch:
+      matching-strategy: ant_path_matcher
     static-path-pattern: /static/**
     throw-exception-if-no-handler-found: true
     hiddenmethod:

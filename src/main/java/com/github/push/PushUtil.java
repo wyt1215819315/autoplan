@@ -8,7 +8,7 @@ import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
 import com.github.system.base.entity.SysWebhook;
 import com.github.system.service.WebhookService;
-import com.github.task.base.dto.TaskLog;
+import com.github.system.task.dto.TaskLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,10 +1,10 @@
 package com.github.push.base.model;
 
-import com.github.task.base.dto.TaskLog;
-import com.github.task.base.service.TaskLogDisplayHandler;
+import com.github.system.task.dto.TaskLog;
+import com.github.system.task.service.TaskLogDisplayHandler;
 import lombok.Data;
 
-import static com.github.task.base.init.TaskInit.taskLogHandlerClassesMap;
+import static com.github.system.task.init.TaskInit.taskLogHandlerClassesMap;
 
 @Data
 public class PushData<T extends PushBaseConfig> {

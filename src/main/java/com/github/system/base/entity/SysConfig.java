@@ -1,23 +1,22 @@
 package com.github.system.base.entity;
 
-import com.gitee.sunchenbin.mybatis.actable.annotation.*;
-import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Table("sys_config")
+@TableName("sys_config")
+@ApiModel("系统配置表")
 public class SysConfig {
 
-    @IsKey
-    @IsAutoIncrement
-    @IgnoreUpdate
+    @ApiModelProperty("主键id")
     private Integer id;
 
-    @Column(name = "bond", length = 200, comment = "key")
-    @Unique
-    private String bond;
+    @ApiModelProperty("键")
+    private String key;
 
-    @Column(type = MySqlTypeConstant.LONGTEXT, comment = "value")
+    @ApiModelProperty("值")
     private String value;
 
 }

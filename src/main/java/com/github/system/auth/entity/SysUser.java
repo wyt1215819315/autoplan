@@ -24,6 +24,11 @@ public class SysUser {
     @ApiModelProperty("注册时间")
     private Date regdate;
 
+    public SysUser() {
+    }
 
-
+    public SysUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

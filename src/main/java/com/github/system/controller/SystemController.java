@@ -1,5 +1,6 @@
 package com.github.system.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.github.system.base.dto.AjaxResult;
 import com.github.system.service.SysService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@SaCheckRole("ADMIN")
 @RestController
 public class SystemController {
     @Autowired
@@ -21,13 +23,5 @@ public class SystemController {
         return sysService.setSystemNoticeContent(text);
     }
 
-    /**
-     * 用于转换老版本的字段到json
-     * @return AjaxResult
-     */
-    @PostMapping("/api/admin/turnbiliplan2json")
-    public AjaxResult turnBiliPlan2Json(){
-        return sysService.turnBiliPlan2Json();
-    }
 
 }

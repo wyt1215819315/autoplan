@@ -53,33 +53,33 @@ public class DiscordWebhook {
                 List<EmbedObject.Field> fields = embed.getFields();
                 if (footer != null) {
                     JSONObject jsonFooter = new JSONObject();
-                    jsonFooter.set("text", footer.getText());
-                    jsonFooter.set("icon_url", footer.getIconUrl());
+                    jsonFooter.set("text", footer.text());
+                    jsonFooter.set("icon_url", footer.iconUrl());
                     jsonEmbed.set("footer", jsonFooter);
                 }
                 if (image != null) {
                     JSONObject jsonImage = new JSONObject();
-                    jsonImage.set("url", image.getUrl());
+                    jsonImage.set("url", image.url());
                     jsonEmbed.set("image", jsonImage);
                 }
                 if (thumbnail != null) {
                     JSONObject jsonThumbnail = new JSONObject();
-                    jsonThumbnail.set("url", thumbnail.getUrl());
+                    jsonThumbnail.set("url", thumbnail.url());
                     jsonEmbed.set("thumbnail", jsonThumbnail);
                 }
                 if (author != null) {
                     JSONObject jsonAuthor = new JSONObject();
-                    jsonAuthor.set("name", author.getName());
-                    jsonAuthor.set("url", author.getUrl());
-                    jsonAuthor.set("icon_url", author.getIconUrl());
+                    jsonAuthor.set("name", author.name());
+                    jsonAuthor.set("url", author.url());
+                    jsonAuthor.set("icon_url", author.iconUrl());
                     jsonEmbed.set("author", jsonAuthor);
                 }
                 List<JSONObject> jsonFields = new ArrayList<>();
                 for (EmbedObject.Field field : fields) {
                     JSONObject jsonField = new JSONObject();
-                    jsonField.set("name", field.getName());
-                    jsonField.set("value", field.getValue());
-                    jsonField.set("inline", field.isInline());
+                    jsonField.set("name", field.name());
+                    jsonField.set("value", field.value());
+                    jsonField.set("inline", field.inline());
                     jsonFields.add(jsonField);
                 }
                 jsonEmbed.set("fields", jsonFields.toArray());
@@ -127,23 +127,18 @@ public class DiscordWebhook {
             return this;
         }
 
-        @Getter
         private record Image(String url) {
         }
 
-        @Getter
         private record Author(String name, String url, String iconUrl) {
         }
 
-        @Getter
         private record Field(String name, String value, boolean inline) {
         }
 
-        @Getter
         private record Footer(String text, String iconUrl) {
         }
 
-        @Getter
         private record Thumbnail(String url) {
         }
     }
