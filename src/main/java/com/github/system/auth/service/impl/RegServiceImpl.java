@@ -1,9 +1,10 @@
-package com.github.system.service;
+package com.github.system.auth.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.github.system.auth.entity.SysUser;
+import com.github.system.auth.service.RegService;
 import com.github.system.auth.service.UserService;
+import com.github.system.auth.vo.RegModel;
 import com.github.system.base.configuration.SystemBean;
 import com.github.system.base.dto.AjaxResult;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 @Service
-public class RegService {
+public class RegServiceImpl implements RegService {
 
     @Resource
     private SystemBean systemBean;
@@ -19,15 +20,10 @@ public class RegService {
     @Resource
     private UserService userService;
 
-    public AjaxResult doReg(String username, String password) {
-        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)){
-            return AjaxResult.doError("用户名或密码不能为空！");
-        }
-        if (username.length() < 6 || username.length() > 20) {
-            return AjaxResult.doError("用户名必须为6-20位！");
-        } else if (password.length() < 8 || password.length() > 20) {
-            return AjaxResult.doError("密码长度需在8-20位之间！");
-        }
+    @Override
+    public AjaxResult doReg(RegModel regModel) {
+        String username = regModel.getUsername();
+        String password = regModel.getPassword();
         if (userService.findUserByUsername(username) != null) {
             return AjaxResult.doError("用户名已经存在！");
         }
