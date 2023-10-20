@@ -1,4 +1,4 @@
-package com.github.system.service;
+package com.github.system.base.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.system.base.entity.SysConfig;

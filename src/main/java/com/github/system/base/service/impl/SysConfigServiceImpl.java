@@ -1,9 +1,10 @@
-package com.github.system.service;
+package com.github.system.base.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.base.dao.SysConfigDao;
 import com.github.system.base.entity.SysConfig;
+import com.github.system.base.service.SysConfigService;
 import org.springframework.stereotype.Service;
 
 @Service
