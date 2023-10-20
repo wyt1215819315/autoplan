@@ -19,4 +19,11 @@ public class SysConfig {
     @ApiModelProperty("值")
     private String value;
 
+    public SysConfig(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public SysConfig() {
+    }
 }
