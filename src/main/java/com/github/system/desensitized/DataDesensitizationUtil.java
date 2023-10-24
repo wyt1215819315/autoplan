@@ -6,7 +6,6 @@ import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.system.task.annotation.DataDesensitization;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;

@@ -1,6 +1,6 @@
 package com.github.system.task.model;
 
-import com.github.system.task.annotation.DataDesensitization;
+import com.github.system.desensitized.DataDesensitization;
 import lombok.Data;
 
 /**

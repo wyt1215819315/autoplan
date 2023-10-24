@@ -1,4 +1,4 @@
-package com.github.system.task.annotation;
+package com.github.system.desensitized;
 
 import com.github.system.desensitized.DesensitizedType;
 
