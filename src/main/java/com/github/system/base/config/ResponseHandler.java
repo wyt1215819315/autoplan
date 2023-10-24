@@ -11,6 +11,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.List;
+
 @ControllerAdvice(basePackages = {SystemConstant.BASE_PACKAGE})
 public class ResponseHandler implements ResponseBodyAdvice<Object> {
 
@@ -28,7 +30,7 @@ public class ResponseHandler implements ResponseBodyAdvice<Object> {
      */
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (o instanceof Page<?>) {
+        if (o instanceof Page<?> || o instanceof List<?>) {
             return AjaxResult.doSuccess(o);
         } else {
             return o;

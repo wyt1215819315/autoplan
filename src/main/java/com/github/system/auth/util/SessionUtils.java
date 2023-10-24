@@ -61,6 +61,10 @@ public class SessionUtils {
         return principal.getId();
     }
 
+    public static boolean isAdmin() {
+        return StpUtil.hasRole("ADMIN");
+    }
+
     @Autowired
     public void setSysUserDao(SysUserDao sysUserDao) {
         SessionUtils.sysUserDao = sysUserDao;

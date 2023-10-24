@@ -29,12 +29,12 @@ public class QuartzJobController {
 
     @GetMapping("/list")
     @ApiOperation("定时任务调度list")
-    public AjaxResult list(Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
+    public Page<SysQuartzJob> list(Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
         LambdaQueryWrapper<SysQuartzJob> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJob::getJobName, sysQuartzJobVo.getJobName());
         lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJob::getStatus, sysQuartzJobVo.getStatus());
         lambdaQueryWrapper.orderByAsc(SysQuartzJob::getStatus);
-        return AjaxResult.doSuccess(sysQuartzJobService.page(page, lambdaQueryWrapper));
+        return sysQuartzJobService.page(page, lambdaQueryWrapper);
     }
 
     @GetMapping("/view/{id}")

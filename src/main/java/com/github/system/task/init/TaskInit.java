@@ -6,6 +6,8 @@ import com.github.system.base.constant.SystemConstant;
 import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dto.TaskInfo;
 import com.github.system.task.entity.AutoIndex;
+import com.github.system.task.model.BaseTaskSettings;
+import com.github.system.task.model.BaseUserInfo;
 import com.github.system.task.service.BaseTaskService;
 import com.github.system.task.service.TaskLogDisplayHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +32,8 @@ public class TaskInit {
     // 任务线程池，每个任务都会有一个他自己的独立线程池去执行
     public static final ConcurrentHashMap<String, ExecutorService> taskThreadMap = new ConcurrentHashMap<>();
     public static final Map<String, Class<?>> serviceClassesMap = new HashMap<>();
+    public static final Map<String, Class<?>> taskSettingsClassesMap = new HashMap<>();
+    public static final Map<String, Class<?>> userInfosClassesMap = new HashMap<>();
     public static final Map<String, TaskLogDisplayHandler> taskLogHandlerClassesMap = new HashMap<>();
 
     @Resource
@@ -65,6 +71,11 @@ public class TaskInit {
         for (Class<?> serviceClass : serviceClasses) {
             try {
                 BaseTaskService<?, ?> baseTaskService = (BaseTaskService<?, ?>) serviceClass.getDeclaredConstructor().newInstance();
+                // 反射获取泛型的类型，以便后续序列化用
+                ParameterizedType parameterizedType = (ParameterizedType) serviceClass.getGenericSuperclass();
+                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                Class<? extends BaseTaskSettings> settingsClass = (Class<? extends BaseTaskSettings>) actualTypeArguments[0];
+                Class<? extends BaseUserInfo> userInfosClass = (Class<? extends BaseUserInfo>) actualTypeArguments[1];
                 TaskInfo taskInfo = baseTaskService.getName();
                 List<AutoIndex> collect = autoIndexLists.stream().filter(a -> taskInfo.getCode().equals(a.getCode())).toList();
                 if (collect.isEmpty()) {
@@ -75,6 +86,8 @@ public class TaskInit {
                             taskInfo.getThreadNum(),
                             (int) taskInfo.getTimeout().toSeconds()));
                 }
+                taskSettingsClassesMap.put(taskInfo.getCode(), settingsClass);
+                userInfosClassesMap.put(taskInfo.getCode(), userInfosClass);
                 serviceClassesMap.put(taskInfo.getCode(), serviceClass);
             } catch (Exception e) {
                 log.error("初始化BaseTaskService时出现异常：" + serviceClass.getName(), e);
