@@ -3,7 +3,16 @@
 
 name: Maven Package
 
-on: [push, pull_request]
+# 配置触发事件
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'releases/**'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
@@ -14,20 +23,49 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
+    - uses: actions/checkout@v4
+    - name: 建立JDK17运行环境
+      uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'adopt'
+        distribution: 'corretto'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Build with Maven
+    - name: 构建Maven项目
       run: mvn -B package --file pom.xml
 
-    - name: Upload artifacts
+    - run: mkdir build && mkdir build/Linux_x64 && mkdir build/Linux_aarch64 && mkdir build/Windows_x64
+    - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz && tar -zxvf amazon-corretto-17-x64-linux-jdk.tar.gz
+    - run: find . -type d -name 'amazon-corretto-17*linux-x64' -exec cp -r {} build/Linux_x64/jdk \;
+    - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && tar -zxvf amazon-corretto-17-aarch64-linux-jdk.tar.gz
+    - run: find . -type d -name 'amazon-corretto-17*linux-aarch64' -exec cp -r {} build/Linux_aarch64/jdk \;
+    - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-windows-jdk.zip && unzip amazon-corretto-17-x64-windows-jdk.zip
+    - run: find ./jdk-windows-x64 -maxdepth 1 -type d -name 'jdk17*' -exec cp -r {} build/Windows_x64/jdk \;
+    - run: cp target/auto_plan.jar build/Linux_x64 && cp target/auto_plan.jar build/Linux_aarch64 && cp target/auto_plan.jar build/Windows_x64
+    - run: cp script/start.sh build/Linux_x64 && cp script/start.sh build/Linux_aarch64 && cp script/start.sh build/Windows_x64
+    - run: tar -czvf build/auto_plan_linux_x64.tar.gz  build/Linux_x64/
+    - run: tar -czvf build/auto_plan_linux_aarch64.tar.gz  build/Linux_aarch64/
+    - run: zip -r build/auto_plan_windows_x64.zip build/Windows_x64/
+
+
+    - name: 上传工件主包
       uses: actions/upload-artifact@v2
       with:
-        name: auto_plan-autobuild
+        name: auto_plan.jar
         path: target/auto_plan.jar
+    - name: 上传工件Linux_x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: auto_plan_linux_x64.tar.gz
+        path: build/auto_plan_linux_x64.tar.gz
+    - name: 上传工件Linux_aarch64
+      uses: actions/upload-artifact@v2
+      with:
+        name: auto_plan_linux_aarch64.tar.gz
+        path: build/auto_plan_linux_aarch64.tar.gz
+    - name: 上传工件Windows_x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: auto_plan_windows_x64.zip
+        path: build/auto_plan_windows_x64.zip
