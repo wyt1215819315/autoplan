@@ -7,18 +7,18 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.system.base.util.SpringUtil;
 import com.github.system.task.annotation.TaskAction;
+import com.github.system.task.constant.AutoTaskStatus;
 import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dao.AutoTaskDao;
 import com.github.system.task.dto.TaskLog;
 import com.github.system.task.dto.TaskResult;
 import com.github.system.task.entity.AutoIndex;
-import com.github.system.task.service.BaseTaskService;
-import com.github.system.task.service.TaskRuntimeService;
-import com.github.system.task.constant.AutoTaskStatus;
 import com.github.system.task.entity.AutoTask;
 import com.github.system.task.init.TaskInit;
 import com.github.system.task.model.BaseUserInfo;
+import com.github.system.task.service.BaseTaskService;
 import com.github.system.task.service.TaskLogService;
+import com.github.system.task.service.TaskRuntimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +79,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
         service.setThing(autoTask.getSettings(), taskLog);
         try {
-            service.init();
+            service.init(taskLog);
         } catch (Exception e) {
             taskLog.error("任务初始化失败:{}", e.getMessage());
             endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
@@ -91,7 +91,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             // 依次执行任务
             TaskResult taskResult;
             try {
-                taskResult = ReflectUtil.invoke(service, method);
+                taskResult = ReflectUtil.invoke(service, method, taskLog);
                 if (taskResult.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
                     taskLog.error("用户信息校验失败，任务终止");
                     endTask(autoTask, taskLog, AutoTaskStatus.USER_CHECK_ERROR);
@@ -182,10 +182,11 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doError(StrUtil.format("初始化执行器失败:{},class={}", autoTask.getCode(), aClass.getName()));
         }
         BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
+        TaskLog taskLog = new TaskLog();
         try {
-            service.init();
+            service.init(taskLog);
         } catch (Exception e) {
-            return TaskResult.doError("任务在更新用户信息时出现初始化错误,task_id=" + autoTask.getId());
+            return TaskResult.doError("任务在更新用户信息时出现初始化错误,task_id=" + autoTask.getId() + " log:" + taskLog);
         }
         return updateUserInfo(autoTask, service);
     }

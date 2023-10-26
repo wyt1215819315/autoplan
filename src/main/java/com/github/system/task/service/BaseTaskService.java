@@ -34,13 +34,13 @@ public abstract class BaseTaskService<T extends BaseTaskSettings, L extends Base
     /**
      * 任务名称，等信息，会自动注册到任务列表中
      */
-    public abstract TaskInfo getName();
+    public abstract TaskInfo getTaskInfo();
 
     /**
      * 初始化操作，底层会在新建对象之后确保调用一次初始化方法，此方法仅会调用一次
      * 可以将一些变量什么写到这边来初始化，如果有需要登录的，也可以将登录放到这里执行，后面的方法都可以拿到局部变量中的凭证
      */
-    public abstract void init() throws Exception;
+    public abstract void init(TaskLog log) throws Exception;
 
     /**
      * 仅用于在添加任务时，检查用户信息是否有效
@@ -58,7 +58,6 @@ public abstract class BaseTaskService<T extends BaseTaskSettings, L extends Base
      * 执行主方法，当然也可以自行加上注解拓展@TaskAction来拓展实现的子任务，方法名自己定
      * 无参方法，返回结果为TaskResult
      */
-    @TaskAction(name = "主任务")
-    public abstract TaskResult run() throws Exception;
+//    public abstract TaskResult run() throws Exception;
 
 }

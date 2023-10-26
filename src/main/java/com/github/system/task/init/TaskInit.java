@@ -76,7 +76,7 @@ public class TaskInit {
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 Class<? extends BaseTaskSettings> settingsClass = (Class<? extends BaseTaskSettings>) actualTypeArguments[0];
                 Class<? extends BaseUserInfo> userInfosClass = (Class<? extends BaseUserInfo>) actualTypeArguments[1];
-                TaskInfo taskInfo = baseTaskService.getName();
+                TaskInfo taskInfo = baseTaskService.getTaskInfo();
                 List<AutoIndex> collect = autoIndexLists.stream().filter(a -> taskInfo.getCode().equals(a.getCode())).toList();
                 if (collect.isEmpty()) {
                     insertList.add(new AutoIndex(1,

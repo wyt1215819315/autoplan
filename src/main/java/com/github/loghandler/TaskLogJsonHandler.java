@@ -1,4 +1,4 @@
-package com.github.system.loghandler;
+package com.github.loghandler;
 
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;

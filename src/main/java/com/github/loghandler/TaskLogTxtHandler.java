@@ -1,4 +1,4 @@
-package com.github.system.loghandler;
+package com.github.loghandler;
 
 import com.github.system.task.dto.TaskLog;
 import com.github.system.task.service.TaskLogDisplayHandler;

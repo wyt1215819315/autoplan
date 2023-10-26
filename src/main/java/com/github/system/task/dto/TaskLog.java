@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.system.task.init.TaskInit.taskLogHandlerClassesMap;
+
 @Getter
 public class TaskLog {
     private final Log logger = LogFactory.getLog(TaskLog.class);
@@ -78,4 +80,8 @@ public class TaskLog {
         error(text + "：" + message);
     }
 
+    @Override
+    public String toString() {
+        return (String) taskLogHandlerClassesMap.get("TXT").handle(this);
+    }
 }

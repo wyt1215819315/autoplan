@@ -1,6 +1,7 @@
 package com.github.system.task.model;
 
 import com.github.system.desensitized.DataDesensitization;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -16,5 +17,8 @@ public class BaseUserInfo {
      */
     @DataDesensitization
     private String onlyId;
+
+    @ApiModelProperty("头像地址")
+    private String headImg;
 
 }
