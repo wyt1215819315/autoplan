@@ -1,6 +1,9 @@
 package com.github.task.cloudgenshin.service;
 
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.github.system.base.util.HttpUtil;
 import com.github.system.task.annotation.TaskAction;
 import com.github.system.task.constant.AutoTaskStatus;
@@ -16,8 +19,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.task.cloudgenshin.constant.CloudGenshinSignConstant.AppVersionURL;
-import static com.github.task.cloudgenshin.constant.CloudGenshinSignConstant.WalletURL;
+import static com.github.task.cloudgenshin.constant.CloudGenshinSignConstant.*;
 
 public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSignSettings, CloudGenshinUserInfo> {
     private Map<String, String> header = null;
@@ -45,19 +47,54 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
     @Override
     public CloudGenshinUserInfo getUserInfo() throws Exception {
         CloudGenshinUserInfo cloudGenshinUserInfo = new CloudGenshinUserInfo();
-        //todo
-//        cloudGenshinUserInfo.setOnlyId();
-        return null;
+        JSONObject data = this.userInfo.getJSONObject("data");
+        cloudGenshinUserInfo.setFreeTime(data.getJSONObject("free_time").getInt("free_time"));
+        cloudGenshinUserInfo.setCoinNum(data.getJSONObject("coin").getInt("coin_num"));
+        cloudGenshinUserInfo.setPlayCard(data.getJSONObject("play_card").getStr("short_msg"));
+        cloudGenshinUserInfo.setOnlyId(SecureUtil.md5(taskSettings.toString()));
+        return cloudGenshinUserInfo;
     }
 
-    @TaskAction(name = "主任务")
-    public TaskResult run(TaskLog log) throws Exception {
+
+    @TaskAction(name = "校验登录状态", order = 0)
+    public TaskResult checkLoginStatus(TaskLog log) throws Exception {
         if (checkLoginSuccess()) {
-            //todo
-            return null;
+            return TaskResult.doSuccess();
         } else {
             return TaskResult.doError("登录校验失败", AutoTaskStatus.USER_CHECK_ERROR);
         }
+    }
+
+    @TaskAction(name = "获取公告列表", order = 1)
+    public TaskResult getAnnouncement(TaskLog log) throws Exception {
+        JSONObject jsonObject = HttpUtil.requestJson(AnnouncementURL, null, this.header, HttpUtil.RequestType.GET);
+        log.info("获取到公告列表：{}", jsonObject.get("data"));
+        return TaskResult.doSuccess();
+    }
+
+    @TaskAction(name = "签到", order = 2)
+    public TaskResult sign(TaskLog log) throws Exception {
+        JSONObject jsonObject = HttpUtil.requestJson(ListNotificationURL, null, this.header, HttpUtil.RequestType.GET);
+        JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("list");
+        if (jsonArray.isEmpty()) {
+            log.info("今天已经签到过了..");
+        } else {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject msgObj = JSONUtil.parseObj(jsonArray.getJSONObject(i).getStr("msg"));
+                Integer overNum = msgObj.getInt("over_num");
+                if (msgObj.containsKey("msg") && overNum != null && msgObj.containsKey("num")) {
+                    log.info("领取到奖励内容【{}】,时长={},溢出时长={}", msgObj.get("msg"), msgObj.get("num"), overNum);
+                    if (overNum > 0) {
+                        log.warn("奖励时长已经溢出！");
+                    }
+                } else {
+                    log.info("领取到奖励内容：" + msgObj);
+                }
+            }
+        }
+        // 更新用户信息
+        this.init(log);
+        return TaskResult.doSuccess();
     }
 
     private boolean checkLoginSuccess() {

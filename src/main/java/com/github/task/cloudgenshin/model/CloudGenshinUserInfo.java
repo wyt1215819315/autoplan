@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CloudGenshinUserInfo extends BaseUserInfo {
 
-    private String freeTime;
+    private Integer freeTime;
     private String playCard;
     private Integer coinNum;
 
