@@ -33,7 +33,7 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
     @Override
     public void init(TaskLog log) throws Exception {
         this.header = buildHeader();
-        this.userInfo = HttpUtil.requestJson(WalletURL, null, header, HttpUtil.RequestType.GET);
+        this.userInfo = initUserInfo();
     }
 
     @Override
@@ -48,8 +48,8 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
     public CloudGenshinUserInfo getUserInfo() throws Exception {
         CloudGenshinUserInfo cloudGenshinUserInfo = new CloudGenshinUserInfo();
         JSONObject data = this.userInfo.getJSONObject("data");
-        cloudGenshinUserInfo.setFreeTime(data.getJSONObject("free_time").getInt("free_time"));
-        cloudGenshinUserInfo.setCoinNum(data.getJSONObject("coin").getInt("coin_num"));
+        cloudGenshinUserInfo.setFreeTime(data.getJSONObject("free_time").getStr("free_time") + "/" + data.getJSONObject("free_time").getStr("free_time_limit"));
+        cloudGenshinUserInfo.setCoinNum(data.getJSONObject("coin").getStr("coin_num"));
         cloudGenshinUserInfo.setPlayCard(data.getJSONObject("play_card").getStr("short_msg"));
         cloudGenshinUserInfo.setOnlyId(SecureUtil.md5(taskSettings.toString()));
         return cloudGenshinUserInfo;
@@ -61,6 +61,7 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
         if (checkLoginSuccess()) {
             return TaskResult.doSuccess();
         } else {
+            log.error("返回信息：" + this.userInfo);
             return TaskResult.doError("登录校验失败", AutoTaskStatus.USER_CHECK_ERROR);
         }
     }
@@ -93,13 +94,17 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
             }
         }
         // 更新用户信息
-        this.init(log);
+        initUserInfo();
         return TaskResult.doSuccess();
     }
 
     private boolean checkLoginSuccess() {
         Integer retcode = userInfo.getInt("retcode");
         return retcode != null && retcode == 200;
+    }
+
+    private JSONObject initUserInfo() {
+        return HttpUtil.requestJson(WalletURL, null, header, HttpUtil.RequestType.GET);
     }
 
     private Map<String, String> buildHeader() {

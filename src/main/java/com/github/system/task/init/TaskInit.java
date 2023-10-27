@@ -1,10 +1,20 @@
 package com.github.system.task.init;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
+import com.github.system.task.annotation.SettingColumn;
+import com.github.system.task.annotation.SettingColumnOptions;
+import com.github.system.task.annotation.UserInfoColumn;
+import com.github.system.task.annotation.UserInfoColumnDict;
 import com.github.system.task.dao.AutoIndexDao;
+import com.github.system.task.dto.display.SettingDisplayDto;
+import com.github.system.task.dto.display.SettingDisplayOptions;
 import com.github.system.task.dto.TaskInfo;
+import com.github.system.task.dto.display.UserInfoDisplayDto;
+import com.github.system.task.dto.display.UserInfoDisplayOptions;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.model.BaseTaskSettings;
 import com.github.system.task.model.BaseUserInfo;
@@ -15,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -35,6 +46,8 @@ public class TaskInit {
     public static final Map<String, Class<?>> taskSettingsClassesMap = new HashMap<>();
     public static final Map<String, Class<?>> userInfosClassesMap = new HashMap<>();
     public static final Map<String, TaskLogDisplayHandler> taskLogHandlerClassesMap = new HashMap<>();
+    public static final Map<String, List<SettingDisplayDto>> settingDisplayDataMap = new HashMap<>();
+    public static final Map<String, List<UserInfoDisplayDto>> userInfoDisplayDataMap = new HashMap<>();
 
     @Resource
     private AutoIndexDao autoIndexDao;
@@ -77,18 +90,22 @@ public class TaskInit {
                 Class<? extends BaseTaskSettings> settingsClass = (Class<? extends BaseTaskSettings>) actualTypeArguments[0];
                 Class<? extends BaseUserInfo> userInfosClass = (Class<? extends BaseUserInfo>) actualTypeArguments[1];
                 TaskInfo taskInfo = baseTaskService.getTaskInfo();
-                List<AutoIndex> collect = autoIndexLists.stream().filter(a -> taskInfo.getCode().equals(a.getCode())).toList();
+                // 反射两个泛型，获取类中的注解，用于前端渲染字段用
+                String code = taskInfo.getCode();
+                handleSettingClass(code, settingsClass);
+                handUserInfoClass(code, userInfosClass);
+                List<AutoIndex> collect = autoIndexLists.stream().filter(a -> code.equals(a.getCode())).toList();
                 if (collect.isEmpty()) {
                     insertList.add(new AutoIndex(1,
                             taskInfo.getName(),
-                            taskInfo.getCode(),
+                            code,
                             (int) taskInfo.getDelay().toSeconds(),
                             taskInfo.getThreadNum(),
                             (int) taskInfo.getTimeout().toSeconds()));
                 }
-                taskSettingsClassesMap.put(taskInfo.getCode(), settingsClass);
-                userInfosClassesMap.put(taskInfo.getCode(), userInfosClass);
-                serviceClassesMap.put(taskInfo.getCode(), serviceClass);
+                taskSettingsClassesMap.put(code, settingsClass);
+                userInfosClassesMap.put(code, userInfosClass);
+                serviceClassesMap.put(code, serviceClass);
             } catch (Exception e) {
                 log.error("初始化BaseTaskService时出现异常：" + serviceClass.getName(), e);
             }
@@ -99,6 +116,68 @@ public class TaskInit {
         // 初始化任务线程池
         autoIndexLists.forEach(data -> taskThreadMap.put(data.getCode(), createThread(data.getCode(), data.getThreadNum())));
         log.info("初始化任务线程完成：" + autoIndexLists.size());
+    }
+
+    private void handUserInfoClass(String code, Class<? extends BaseUserInfo> clazz) {
+        Field[] fields = clazz.getFields();
+        List<UserInfoDisplayDto> userInfoDisplayDtoList = new ArrayList<>();
+        for (Field field : fields) {
+            UserInfoColumn userInfoColumn = AnnotationUtil.getAnnotation(field, UserInfoColumn.class);
+            if (userInfoColumn != null) {
+                UserInfoDisplayDto userInfoDisplayDto = new UserInfoDisplayDto();
+                userInfoDisplayDto.setField(field.getName());
+                userInfoDisplayDto.setName(userInfoColumn.value());
+                userInfoDisplayDto.setFieldType(field.getType().getSimpleName());
+                if (userInfoColumn.dicts().length > 0) {
+                    List<UserInfoDisplayOptions> options = new ArrayList<>();
+                    for (UserInfoColumnDict dict : userInfoColumn.dicts()) {
+                        options.add(new UserInfoDisplayOptions(dict.key(), dict.value()));
+                    }
+                    userInfoDisplayDto.setOptions(options);
+                }
+                userInfoDisplayDtoList.add(userInfoDisplayDto);
+            }
+        }
+        userInfoDisplayDataMap.put(code, userInfoDisplayDtoList);
+    }
+
+    private void handleSettingClass(String code, Class<? extends BaseTaskSettings> clazz) {
+        Field[] fields = clazz.getFields();
+        List<SettingDisplayDto> settingDisplayDtoList = new ArrayList<>();
+        for (Field field : fields) {
+            SettingColumn settingColumn = AnnotationUtil.getAnnotation(field, SettingColumn.class);
+            if (settingColumn != null) {
+                SettingDisplayDto settingDisplayDto = new SettingDisplayDto();
+                String name = field.getName();
+                settingDisplayDto.setField(name);
+                settingDisplayDto.setDesc(StrUtil.blankToDefault(settingColumn.desc(), null));
+                settingDisplayDto.setName(settingColumn.name());
+                settingDisplayDto.setDefaultValue(StrUtil.blankToDefault(settingColumn.defaultValue(), null));
+                if (StrUtil.isNotBlank(settingColumn.ref()) && settingColumn.refValue().length > 0) {
+                    settingDisplayDto.setRef(StrUtil.blankToDefault(settingColumn.ref(), null));
+                    settingDisplayDto.setRefValue(settingColumn.refValue());
+                }
+                if (settingColumn.boolOptions()) {
+                    List<SettingDisplayOptions> options = new ArrayList<>();
+                    if (name.contains("是否")) {
+                        options.add(new SettingDisplayOptions("否", 0));
+                        options.add(new SettingDisplayOptions("是", 1));
+                    } else {
+                        options.add(new SettingDisplayOptions("关闭", 0));
+                        options.add(new SettingDisplayOptions("开启", 1));
+                    }
+                    settingDisplayDto.setOptions(options);
+                } else if (settingColumn.options().length > 0) {
+                    List<SettingDisplayOptions> options = new ArrayList<>();
+                    for (SettingColumnOptions columnOptions : settingColumn.options()) {
+                        options.add(new SettingDisplayOptions(columnOptions.name(), columnOptions.num()));
+                    }
+                    settingDisplayDto.setOptions(options);
+                }
+                settingDisplayDtoList.add(settingDisplayDto);
+            }
+        }
+        settingDisplayDataMap.put(code, settingDisplayDtoList);
     }
 
     private ExecutorService createThread(String flag, int threadNum) {
