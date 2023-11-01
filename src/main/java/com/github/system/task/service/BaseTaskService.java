@@ -40,7 +40,7 @@ public abstract class BaseTaskService<T extends BaseTaskSettings, L extends Base
      * 初始化操作，底层会在新建对象之后确保调用一次初始化方法，此方法仅会调用一次
      * 可以将一些变量什么写到这边来初始化，如果有需要登录的，也可以将登录放到这里执行，后面的方法都可以拿到局部变量中的凭证
      */
-    public abstract void init(TaskLog log) throws Exception;
+    public abstract TaskResult init(TaskLog log) throws Exception;
 
     /**
      * 仅用于在添加任务时，检查用户信息是否有效

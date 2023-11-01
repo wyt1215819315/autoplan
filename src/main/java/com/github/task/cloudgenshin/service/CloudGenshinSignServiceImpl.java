@@ -31,9 +31,10 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
     }
 
     @Override
-    public void init(TaskLog log) throws Exception {
+    public TaskResult init(TaskLog log) throws Exception {
         this.header = buildHeader();
         this.userInfo = initUserInfo();
+        return TaskResult.doSuccess();
     }
 
     @Override

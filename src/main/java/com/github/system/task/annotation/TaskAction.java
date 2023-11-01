@@ -13,9 +13,9 @@ public @interface TaskAction {
     String name();
 
     /**
-     * 子任务延时
+     * 子任务延时,单位毫秒
      */
-    int delay() default 0;
+    int delay() default 2000;
 
     /**
      * 子任务执行顺序，越大就越晚执行

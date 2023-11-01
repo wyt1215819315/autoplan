@@ -1,6 +1,7 @@
 package com.github.system.task.service.impl;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -79,7 +80,17 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
         service.setThing(autoTask.getSettings(), taskLog);
         try {
-            service.init(taskLog);
+            TaskResult init = service.init(taskLog);
+            if (!init.isSuccess()) {
+                if (init.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
+                    taskLog.error("用户信息校验失败，任务终止");
+                    endTask(autoTask, taskLog, AutoTaskStatus.USER_CHECK_ERROR);
+                } else {
+                    taskLog.error("任务初始化失败:{}", init.getMsg());
+                    endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
+                }
+                return;
+            }
         } catch (Exception e) {
             taskLog.error("任务初始化失败:{}", e.getMessage());
             endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
@@ -109,6 +120,12 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             } else {
                 allSuccess = false;
                 taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_ERROR, taskAction.name()));
+            }
+            if (taskAction.delay() > 0) {
+                // 留百分之20的随机浮动范围
+                double range = taskAction.delay() * 0.2;
+                double delay = RandomUtil.randomDouble(taskAction.delay() - range, taskAction.delay() + range);
+                ThreadUtil.safeSleep(delay);
             }
         }
         // 顺便更新用户信息
