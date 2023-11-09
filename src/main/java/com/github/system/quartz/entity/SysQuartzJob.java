@@ -1,5 +1,7 @@
 package com.github.system.quartz.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +20,7 @@ public class SysQuartzJob implements Serializable {
      * id
      **/
     @ApiModelProperty("id")
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

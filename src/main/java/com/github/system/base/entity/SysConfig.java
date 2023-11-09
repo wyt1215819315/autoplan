@@ -1,5 +1,8 @@
 package com.github.system.base.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,9 +14,11 @@ import lombok.Data;
 public class SysConfig {
 
     @ApiModelProperty("主键id")
-    private Integer id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
     @ApiModelProperty("键")
+    @TableField("`key`")
     private String key;
 
     @ApiModelProperty("值")

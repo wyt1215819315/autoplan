@@ -9,7 +9,7 @@ import static com.github.system.task.init.TaskInit.taskLogHandlerClassesMap;
 @Data
 public class PushData<T extends PushBaseConfig> {
 
-    private Integer userId;
+    private Long userId;
     private Long logId;
     private TaskLog taskLog;
     private String title;

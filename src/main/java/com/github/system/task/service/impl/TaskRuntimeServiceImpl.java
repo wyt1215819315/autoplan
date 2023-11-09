@@ -36,7 +36,7 @@ import java.util.concurrent.*;
 @Slf4j
 @Service
 public class TaskRuntimeServiceImpl implements TaskRuntimeService {
-    private final ConcurrentMap<Integer, Integer> taskLockMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, Integer> taskLockMap = new ConcurrentHashMap<>();
 
     @Resource
     private AutoTaskDao taskDao;

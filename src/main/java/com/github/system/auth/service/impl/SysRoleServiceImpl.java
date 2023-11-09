@@ -28,7 +28,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public List<String> getUserRole(Integer userId) {
+    public List<String> getUserRole(Long userId) {
         return sysRoleDao.queryUserRole(userId);
     }
 

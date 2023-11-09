@@ -1,5 +1,7 @@
 package com.github.system.base.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +16,7 @@ public class PushResultLog {
     private Long id;
 
     @ApiModelProperty("用户id")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty("任务日志id")
     private Long taskId;

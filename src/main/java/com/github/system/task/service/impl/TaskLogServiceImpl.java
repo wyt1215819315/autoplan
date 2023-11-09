@@ -36,7 +36,7 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
 
     @Override
     public void insertAndPush(AutoTask autoTask, TaskLog taskLog, Integer status) {
-        Integer userId = autoTask.getUserId();
+        Long userId = autoTask.getUserId();
         // 储存到系统表
         Object json = taskLogHandlerClassesMap.get("JSON").handle(taskLog);
         HistoryTaskLog historyTaskLog = new HistoryTaskLog(autoTask.getId(), autoTask.getCode(), status, userId, new Date(), (String) json);

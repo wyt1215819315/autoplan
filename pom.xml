@@ -16,7 +16,7 @@
     <properties>
         <java.version>17</java.version>
         <hutool-all.version>5.8.22</hutool-all.version>
-        <sa-token.version>1.36.0</sa-token.version>
+        <sa-token.version>1.37.0</sa-token.version>
         <guava.version>32.1.2-jre</guava.version>
         <JustAuth.version>1.16.5</JustAuth.version>
         <mysql-driver.version>8.0.33</mysql-driver.version>

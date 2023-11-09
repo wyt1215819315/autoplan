@@ -26,7 +26,7 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     private SystemBean systemBean;
 
     @Override
-    public List<SysWebhook> getUserWebhook(int userId) {
+    public List<SysWebhook> getUserWebhook(long userId) {
         LambdaQueryWrapper<SysWebhook> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(SysWebhook::getUserId, userId);
         return baseMapper.selectList(queryWrapper);

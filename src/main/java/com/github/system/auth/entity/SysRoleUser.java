@@ -1,5 +1,7 @@
 package com.github.system.auth.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,12 +13,12 @@ import lombok.Data;
 public class SysRoleUser {
 
     @ApiModelProperty("主键id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("用户id")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty("角色id")
-    private Integer roleId;
+    private Long roleId;
 
 }

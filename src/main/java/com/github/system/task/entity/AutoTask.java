@@ -1,5 +1,7 @@
 package com.github.system.task.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,13 +15,13 @@ import java.util.Date;
 public class AutoTask {
 
     @ApiModelProperty("主键id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("自动任务id")
-    private Integer indexId;
+    private Long indexId;
 
     @ApiModelProperty("用户id")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty("任务唯一id标识，用于判断任务是否存在")
     private String onlyId;

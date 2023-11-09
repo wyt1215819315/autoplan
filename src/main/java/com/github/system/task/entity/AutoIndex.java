@@ -1,5 +1,7 @@
 package com.github.system.task.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +13,7 @@ import lombok.Data;
 public class AutoIndex {
 
     @ApiModelProperty("主键id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("是否开启，0不开启 1开启")
     private Integer enable;

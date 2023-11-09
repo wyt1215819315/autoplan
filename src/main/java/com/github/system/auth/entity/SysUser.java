@@ -1,5 +1,7 @@
 package com.github.system.auth.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +15,7 @@ import java.util.Date;
 public class SysUser {
 
     @ApiModelProperty("主键id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("用户名")
     private String username;

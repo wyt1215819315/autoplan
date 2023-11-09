@@ -1,6 +1,7 @@
 package com.github.system.auth.util;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.system.auth.dao.SysUserDao;
 import com.github.system.auth.domain.UserInfo;
@@ -37,7 +38,7 @@ public class SessionUtils {
             return null;
         }
         if (StpUtil.isLogin()) {
-            Integer loginUserId = (Integer) StpUtil.getLoginId();
+            Long loginUserId = StpUtil.getLoginIdAsLong();
             var session = StpUtil.getSessionByLoginId(loginUserId);
             UserInfo userInfo = session.get("User_info", () -> {
                 SysUser sysUser = sysUserDao.selectById(loginUserId);
@@ -53,7 +54,7 @@ public class SessionUtils {
         return null;
     }
 
-    public static Integer getUserId() {
+    public static Long getUserId() {
         UserInfo principal = getPrincipal();
         if (principal == null) {
             return null;

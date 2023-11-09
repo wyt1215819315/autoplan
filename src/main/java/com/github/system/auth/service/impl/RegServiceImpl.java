@@ -6,7 +6,9 @@ import com.github.system.auth.service.RegService;
 import com.github.system.auth.service.UserService;
 import com.github.system.auth.vo.RegModel;
 import com.github.system.base.configuration.SystemBean;
+import com.github.system.base.constant.SystemConstant;
 import com.github.system.base.dto.AjaxResult;
+import com.github.system.base.service.SysConfigService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,9 +21,14 @@ public class RegServiceImpl implements RegService {
 
     @Resource
     private UserService userService;
+    @Resource
+    private SysConfigService configService;
 
     @Override
     public AjaxResult doReg(RegModel regModel) {
+        if ("false".equals(configService.getValueByKey(SystemConstant.AUTH_REG_ENABLE))) {
+            return AjaxResult.doError("管理员未开放注册！");
+        }
         String username = regModel.getUsername();
         String password = regModel.getPassword();
         if (userService.findUserByUsername(username) != null) {
@@ -32,7 +39,7 @@ public class RegServiceImpl implements RegService {
         SysUser user = new SysUser(username, password);
         boolean b = userService.createUser(user);
         if (b) {
-            return AjaxResult.doSuccess();
+            return AjaxResult.doSuccess("注册成功！");
         }
         return AjaxResult.doError("注册失败！出现未知错误！");
     }

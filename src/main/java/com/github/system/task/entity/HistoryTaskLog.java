@@ -1,5 +1,7 @@
 package com.github.system.task.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,10 +16,11 @@ import java.util.Date;
 public class HistoryTaskLog implements Serializable {
 
     @ApiModelProperty("主键id")
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty("任务id")
-    private Integer taskId;
+    private Long taskId;
 
     @ApiModelProperty("任务类型")
     private String type;
@@ -26,7 +29,7 @@ public class HistoryTaskLog implements Serializable {
     private Integer status;
 
     @ApiModelProperty("任务所属的用户id")
-    private Integer userid;
+    private Long userid;
 
     @ApiModelProperty("记录时间")
     private Date date;
@@ -35,7 +38,7 @@ public class HistoryTaskLog implements Serializable {
     private String text;
 
 
-    public HistoryTaskLog(Integer taskId, String type, Integer status, Integer userid, Date date, String text) {
+    public HistoryTaskLog(Long taskId, String type, Integer status, Long userid, Date date, String text) {
         this.taskId = taskId;
         this.type = type;
         this.status = status;

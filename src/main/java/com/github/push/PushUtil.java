@@ -26,7 +26,7 @@ public class PushUtil {
         return pushMainService.doPush(pushData);
     }
 
-    public static <T extends PushBaseConfig> void doPush(Integer userId,Long logId, String title, TaskLog taskLog) {
+    public static <T extends PushBaseConfig> void doPush(Long userId,Long logId, String title, TaskLog taskLog) {
         List<SysWebhook> userWebhook = webhookService.getUserWebhook(userId);
         if (!userWebhook.isEmpty()) {
             userWebhook.forEach(w -> {

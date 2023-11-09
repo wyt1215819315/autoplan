@@ -37,7 +37,7 @@ public class StpInterfaceImpl implements StpInterface {
         SaSession session = StpUtil.getSession();
         return session.get("Role_List", () -> {
             // 从数据库查询这个账号id拥有的角色列表
-            List<String> roles = sysRoleService.getUserRole((Integer) loginId);
+            List<String> roles = sysRoleService.getUserRole(Long.parseLong((String) loginId));
             if (roles.contains("ADMIN")) {
                 return sysRoleService.getAllRoleCode();
             } else {

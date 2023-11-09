@@ -9,5 +9,5 @@ public interface SysRoleService {
 
     List<SysRole> getAllRole();
 
-    List<String> getUserRole(Integer userId);
+    List<String> getUserRole(Long userId);
 }

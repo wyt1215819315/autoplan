@@ -1,5 +1,6 @@
 package com.github.system.auth.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.github.system.auth.service.RegService;
 import com.github.system.auth.vo.RegModel;
 import com.github.system.base.dto.AjaxResult;
@@ -17,6 +18,7 @@ public class RegController {
     @Resource
     private RegService regService;
 
+    @SaIgnore
     @RequestMapping("/doReg")
     public AjaxResult doReg(@RequestBody @Validated RegModel regModel) {
         return regService.doReg(regModel);
