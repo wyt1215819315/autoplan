@@ -33,6 +33,7 @@ public @interface SettingColumn {
      * 如果此项为true，前端会自动生成 是(1) 和 否(0) 两个选项
      * 注意只适用于int值字段
      * 此配置优先级高于options
+     * 此字段默认为必填，不用在这个字段上刻意加@NotBlank，可以指定defaultValue来填充没有值的情况
      */
     boolean boolOptions() default false;
 

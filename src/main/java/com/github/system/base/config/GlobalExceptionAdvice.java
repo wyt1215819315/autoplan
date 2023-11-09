@@ -7,14 +7,15 @@ import cn.hutool.core.util.ReUtil;
 import com.github.system.base.dto.AjaxResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
-
 
     @ExceptionHandler(Exception.class)
     public AjaxResult ExceptionHandler(Exception ex) {
@@ -55,6 +56,26 @@ public class GlobalExceptionAdvice {
         }
         return AjaxResult.doError("参数校验失败：" + sb);
     }
+    //todo 看看这里之后能不能获取自定义注解上的name来转换为中文名称
+//    /**
+//     * 自定义验证异常
+//     */
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public AjaxResult handleBindException(MethodArgumentNotValidException ex) {
+//        ex.getBindingResult().
+//        logger.info(ex.getClass().getName());
+//        //
+//       List<String> errors = new ArrayList<>();
+//        for ( FieldError error : ex.getBindingResult().getFieldErrors()) {
+//            error.getField()
+//            errors.add(error.getField() + ": " + error.getDefaultMessage());
+//        }
+//        for (final ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+//            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+//        }
+//        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+//        return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+//    }
 
 
 }

@@ -2,13 +2,11 @@ package com.github.system.task.service;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
-import com.github.system.task.dto.TaskLog;
+import com.github.system.task.dto.*;
 import com.github.system.task.annotation.TaskAction;
-import com.github.system.task.dto.LoginResult;
-import com.github.system.task.dto.TaskInfo;
-import com.github.system.task.dto.TaskResult;
 import com.github.system.task.model.BaseTaskSettings;
 import com.github.system.task.model.BaseUserInfo;
+import lombok.Getter;
 
 /**
  * 任务service
@@ -20,6 +18,7 @@ import com.github.system.task.model.BaseUserInfo;
  * 总之这只是一个规范 至于你想怎么实现随你
  * 如果要在内部使用@Autowire等spring有关的东西，需要在实现类上加上@Compoent注解注册到spring容器即可
  */
+@Getter
 public abstract class BaseTaskService<T extends BaseTaskSettings, L extends BaseUserInfo> {
 
     protected T taskSettings;
@@ -51,8 +50,17 @@ public abstract class BaseTaskService<T extends BaseTaskSettings, L extends Base
     /**
      * 获取用户信息
      * 请勿将敏感信息丢到这里来，比如cookie之类的，这里返回的信息会用于前端展示（当然也有脱敏选项）
+     * 要注意 这边里面的userInfo必须setOnlyId作为判断任务是否存在的唯一标识
      */
     public abstract L getUserInfo() throws Exception;
+
+    /**
+     * 校验配置方法 如果注解校验并不满足 你可以重写这个方法实现自定义校验逻辑
+     * 如果你要改结果集的话，直接将this.taskSettings改了就行，持久化对象也会从这边读取
+     */
+    public ValidateResult validate() throws Exception {
+        return ValidateResult.doSuccess();
+    }
 
     /**
      * 执行主方法，当然也可以自行加上注解拓展@TaskAction来拓展实现的子任务，方法名自己定

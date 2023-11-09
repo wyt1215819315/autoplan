@@ -1,5 +1,7 @@
 package com.github.system.task.service.impl;
 
+import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -7,23 +9,26 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.system.base.util.SpringUtil;
+import com.github.system.task.annotation.SettingColumn;
 import com.github.system.task.annotation.TaskAction;
 import com.github.system.task.constant.AutoTaskStatus;
 import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dao.AutoTaskDao;
-import com.github.system.task.dto.TaskLog;
-import com.github.system.task.dto.TaskResult;
+import com.github.system.task.dto.*;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.entity.AutoTask;
 import com.github.system.task.init.TaskInit;
+import com.github.system.task.model.BaseTaskSettings;
 import com.github.system.task.model.BaseUserInfo;
 import com.github.system.task.service.BaseTaskService;
 import com.github.system.task.service.TaskLogService;
 import com.github.system.task.service.TaskRuntimeService;
+import com.github.system.task.util.ValidatorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.*;
@@ -39,6 +44,68 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
     private AutoIndexDao indexDao;
     @Resource
     private TaskLogService taskLogService;
+
+    @Override
+    public CheckResult checkUser(AutoTask autoTask) {
+        String code = autoTask.getCode();
+        Class<?> aClass = TaskInit.serviceClassesMap.get(code);
+        Object bean = SpringUtil.getBeanOrInstance(aClass);
+        if (bean == null) {
+            return CheckResult.doError("初始化执行器失败:" + code);
+        }
+        TaskLog taskLog = new TaskLog();
+        BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
+        // 校验表单
+        try {
+            ValidatorUtils.validate(service.getTaskSettings());
+        } catch (Exception e) {
+            return CheckResult.doError("参数校验失败：" + e.getMessage());
+        }
+        Class<? extends BaseTaskSettings> taskSettingsClass = service.getTaskSettings().getClass();
+        for (Field field : taskSettingsClass.getFields()) {
+            SettingColumn annotation = AnnotationUtil.getAnnotation(field, SettingColumn.class);
+            if (annotation != null && annotation.boolOptions()) {
+                Object fieldValue = BeanUtil.getFieldValue(service.getTaskSettings(), field.getName());
+                if (fieldValue == null || ((Integer) fieldValue) > 1 || ((Integer) fieldValue) < 0) {
+                    if (StrUtil.isNotBlank(annotation.defaultValue())) {
+                        BeanUtil.setFieldValue(service.getTaskSettings(), field.getName(), Integer.parseInt(annotation.defaultValue()));
+                    } else {
+                        return CheckResult.doError("字段[" + annotation.name() + "]为必选项！");
+                    }
+                }
+            }
+        }
+        // 处理自定义校验
+        try {
+            ValidateResult validate = service.validate();
+            if (!validate.isSuccess()) {
+                return CheckResult.doError("表单校验失败：" + validate.getMsg());
+            }
+        } catch (Exception e) {
+            return CheckResult.doError("检查表单时发生异常：" + e.getMessage());
+        }
+        // 初始化任务并校验
+        service.setThing(autoTask.getSettings(), taskLog);
+        try {
+            TaskResult init = service.init(taskLog);
+            if (!init.isSuccess()) {
+                return CheckResult.doError("任务初始化失败", taskLog);
+            }
+        } catch (Exception e) {
+            taskLog.error("任务初始化抛出异常:{}", e.getMessage());
+            return CheckResult.doError("任务初始化失败", taskLog);
+        }
+        try {
+            LoginResult<?> loginResult = service.checkUser();
+            if (!loginResult.isSuccess()) {
+                return CheckResult.doError("登录任务执行失败：" + loginResult.getMsg(), taskLog);
+            }
+        } catch (Exception e) {
+            taskLog.error("检查用户抛出异常:{}", e.getMessage());
+            return CheckResult.doError("用户校验失败", taskLog);
+        }
+        return CheckResult.doSuccess("用户检查通过", taskLog);
+    }
 
 
     private void doTask(AutoTask autoTask, TaskLog taskLog) {

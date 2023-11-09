@@ -1,24 +1,14 @@
-package com.github.task.xiaomi.util;
+package com.github.task.misport.support;
 
+import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.http.HttpRequest;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.github.system.base.util.HttpUtil;
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,19 +20,8 @@ import java.util.Random;
 @Slf4j
 public class XiaomiApi {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
-
-    private static CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-
-    {
-        // 转换为格式化的json
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        // 如果json中有新增的字段并且是实体类类中不存在的，不报错
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
     public static Map<String, Object> mainHandler(String phone, String password, String name, int stepNum) {
-        Map<String, Object> retMap = new HashMap();
+        Map<String, Object> retMap = new HashMap<>();
         try {
             String accessCode = getAccessCode(phone, password, retMap);
             Map<String, String> login = login(accessCode);
@@ -50,7 +29,7 @@ public class XiaomiApi {
             String user_id = login.get("user_id");
             String appToken = getAppToken(login_token);
             String time = getTime();
-            updateStep(appToken, user_id, time, stepNum,phone);
+            updateStep(appToken, user_id, time, stepNum, phone);
             retMap.put("flag", true);
             retMap.put("msg", "任务：" + name + "，已提交成功！" + "\n本次已为您刷了：" + stepNum + "步");
             return retMap;
@@ -64,26 +43,25 @@ public class XiaomiApi {
 
     public static String getAccessCode(String account, String password, Map<String, Object> retMap) {
         try {
-            URIBuilder builder = new URIBuilder("https://api-user.huami.com/registrations/+86" + account + "/tokens");
-            HashMap<String, String> data = new HashMap<>();
+            Map<String, Object> data = new HashMap<>();
             data.put("client_id", "HuaMi");
             data.put("password", password);
             data.put("redirect_uri", "https://s3-us-west-2.amazonaws.com/hm-registration/successsignin.html");
             data.put("token", "access");
-            data.forEach(builder::setParameter);
-            HttpPost httpPost = new HttpPost(builder.build());
-            httpPost.setConfig(RequestConfig.custom()
-                    .setSocketTimeout(5000)
-                    ////默认允许自动重定向
-                    .setRedirectsEnabled(false)
-                    .build());
-            httpPost.addHeader("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
-            httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            httpPost.addHeader("X-FORWARDED-FOR", getRandomIp());
-            HttpResponse execute = httpClient.execute(httpPost);
-            int statusCode = execute.getStatusLine().getStatusCode();
-            Header location = execute.getFirstHeader("Location");
-            String params = location.getValue().substring(location.getValue().indexOf("?") + 1);
+            Map<String, String> headers = new HashMap<>();
+            headers.put("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
+            headers.put("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            headers.put("X-FORWARDED-FOR", getRandomIp());
+            UrlBuilder builder = UrlBuilder.of("https://api-user.huami.com/registrations/+86" + account + "/tokens");
+            data.forEach(builder::addQuery);
+            HttpResponse execute = HttpUtil.createPost("")
+                    .headerMap(headers, true)
+                    .setUrl(builder)
+                    .timeout(5000)
+                    .execute();
+//            int statusCode = execute.getStatus();
+            String location = execute.header("Location");
+            String params = location.substring(location.indexOf("?") + 1);
             Map<String, String> split = Splitter.on("&").withKeyValueSeparator("=").split(params);
             String s = split.get("access");
             if (s == null) {
@@ -100,6 +78,7 @@ public class XiaomiApi {
             return null;
         }
     }
+
     private static String getRandomIp() {
         Random r = new Random();
         return r.nextInt(255) + "." + r.nextInt(255) + "." + r.nextInt(255) + "." + r.nextInt(255);
@@ -107,26 +86,29 @@ public class XiaomiApi {
 
     public static Map<String, String> login(String accessCode) {
         try {
-            HashMap<String, String> data1 = new HashMap<>();
-            data1.put("app_version", "4.6.0");
-            data1.put("code", accessCode);
-            data1.put("country_code", "CN");
-            data1.put("device_id", "2C8B4939-0CCD-4E94-8CBA-CB8EA6E613A1");
-            data1.put("device_model", "phone");
-            data1.put("grant_type", "access_token");
-            data1.put("third_name", "huami_phone");
-            data1.put("app_name", "com.xiaomi.hm.health");
-            URIBuilder builder1 = new URIBuilder("https://account.huami.com/v2/client/login");
-            data1.forEach(builder1::setParameter);
-            HttpPost httpPost1 = new HttpPost(builder1.build());
-            httpPost1.addHeader("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
-            httpPost1.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            httpPost1.addHeader("X-FORWARDED-FOR", getRandomIp());
-            HttpResponse execute1 = httpClient.execute(httpPost1);
-            String s1 = EntityUtils.toString(execute1.getEntity());
-            JsonNode jsonNode = objectMapper.readTree(s1);
-            String login_token = jsonNode.get("token_info").get("login_token").asText();
-            String user_id = jsonNode.get("token_info").get("user_id").asText();
+            Map<String, String> data = new HashMap<>();
+            data.put("app_version", "4.6.0");
+            data.put("code", accessCode);
+            data.put("country_code", "CN");
+            data.put("device_id", "2C8B4939-0CCD-4E94-8CBA-CB8EA6E613A1");
+            data.put("device_model", "phone");
+            data.put("grant_type", "access_token");
+            data.put("third_name", "huami_phone");
+            data.put("app_name", "com.xiaomi.hm.health");
+            Map<String, String> headers = new HashMap<>();
+            headers.put("User-Agent", "MiFit/4.6.0 (iPhone; iOS 14.0.1; Scale/2.00)");
+            headers.put("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            headers.put("X-FORWARDED-FOR", getRandomIp());
+            UrlBuilder builder = UrlBuilder.of("https://account.huami.com/v2/client/login");
+            data.forEach(builder::addQuery);
+            HttpResponse execute = HttpUtil.createPost("")
+                    .setUrl(builder)
+                    .headerMap(headers, true)
+                    .execute();
+            JSONObject jsonObject = JSONUtil.parseObj(execute.body());
+            execute.close();
+            String login_token = jsonObject.getJSONObject("token_info").getStr("login_token");
+            String user_id = jsonObject.getJSONObject("token_info").getStr("user_id");
             HashMap<String, String> map = new HashMap<>();
             map.put("login_token", login_token);
             map.put("user_id", user_id);
@@ -138,34 +120,24 @@ public class XiaomiApi {
     }
 
     public static String getAppToken(String login_token) {
-        try {
-            HttpGet httpGet = new HttpGet("https://account-cn.huami.com/v1/client/app_tokens?app_name=com.xiaomi.hm.health&dn=api-user.huami.com%2Capi-mifit.huami.com%2Capp-analytics.huami.com&login_token=" + login_token);
-            httpGet.addHeader("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)");
-            httpGet.addHeader("X-FORWARDED-FOR", getRandomIp());
-            CloseableHttpResponse execute3 = httpClient.execute(httpGet);
-            String s3 = EntityUtils.toString(execute3.getEntity());
-            String app_token = objectMapper.readTree(s3).get("token_info").get("app_token").asText();
-            return app_token;
-        } catch (Exception e) {
-            log.error("XiaomiApi-getAppToken error：{}", e.getMessage());
-            return null;
-        }
+        JSONObject jsonObject = HttpUtil
+                .requestJson("https://account-cn.huami.com/v1/client/app_tokens?app_name=com.xiaomi.hm.health&dn=api-user.huami.com%2Capi-mifit.huami.com%2Capp-analytics.huami.com&login_token=" + login_token,
+                        null, getHeaders(), HttpUtil.RequestType.GET);
+        return jsonObject.getJSONObject("token_info").getStr("app_token");
     }
 
     public static String getTime() {
-        try {
-            HttpGet httpGet = new HttpGet("http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp");
-            httpGet.addHeader("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)");
-            httpGet.addHeader("X-FORWARDED-FOR", getRandomIp());
-            CloseableHttpResponse execute = null;
-            execute = httpClient.execute(httpGet);
-            String s3 = EntityUtils.toString(execute.getEntity());
-            String time = objectMapper.readTree(s3).get("data").get("t").asText();
-            return time;
-        } catch (IOException e) {
-            log.error("XiaomiApi-getTime error：{}", e.getMessage());
-            return null;
-        }
+        JSONObject jsonObject = HttpUtil
+                .requestJson("http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp",
+                        null, getHeaders(), HttpUtil.RequestType.GET);
+        return jsonObject.getJSONObject("data").getStr("t");
+    }
+
+    public static Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("User-Agent", "Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)");
+        headers.put("X-FORWARDED-FOR", getRandomIp());
+        return headers;
     }
 
     public static void updateStep(String appToken, String userId, String time, Integer step, String phone) {

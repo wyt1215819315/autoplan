@@ -179,6 +179,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
         }
         biliUserInfo.setVipDueDate(DateUtil.formatDateTime(new Date(biliData.getVipDueDate())));
         biliUserInfo.setBiliUpExp(biliData.getLevel_info().getNext_exp_asInt());
+        biliUserInfo.setOnlyId(String.valueOf(biliData.getMid()));
         return biliUserInfo;
     }
 
