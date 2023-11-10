@@ -59,6 +59,7 @@ public class LoginController {
 
     @ApiOperation("注销")
     @RequestMapping("/logout")
+    @SaIgnore
     public AjaxResult logout() {
         StpUtil.logout();
         return AjaxResult.doSuccess();
