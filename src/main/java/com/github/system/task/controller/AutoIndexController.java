@@ -24,10 +24,7 @@ public class AutoIndexController {
     @ApiOperation("列表")
     @RequestMapping("/list")
     public List<AutoIndex> list() {
-        LambdaQueryWrapper<AutoIndex> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(AutoIndex::getId, AutoIndex::getCode, AutoIndex::getName)
-                .eq(AutoIndex::getEnable, 1);
-        return autoIndexService.list(lambdaQueryWrapper);
+        return autoIndexService.userList();
     }
 
     @ApiOperation("管理员分页列表")

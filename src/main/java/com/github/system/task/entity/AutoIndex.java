@@ -24,6 +24,9 @@ public class AutoIndex {
     @ApiModelProperty("代号")
     private String code;
 
+    @ApiModelProperty("前端渲染的图标")
+    private String icon = "card";
+
     @ApiModelProperty("任务延时（通常用于控制多用户任务执行等待时间，防止风控），单位秒")
     private Integer delay;
 
