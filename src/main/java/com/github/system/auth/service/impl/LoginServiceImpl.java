@@ -4,6 +4,7 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -68,7 +69,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void getValidCode(HttpServletResponse response) throws IOException {
-        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(120, 40, 4, 4);
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(120, 40);
+        captcha.setGenerator(new RandomGenerator("23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNOPQRSTUVWXYZ",4));
         SaSession session = StpUtil.getAnonTokenSession();
         session.set(AuthConstant.DICT_CAPTCHA, captcha);
         session.set(AuthConstant.DICT_CAPTCHA_TIME, DateUtil.offsetMinute(new Date(), 5));
