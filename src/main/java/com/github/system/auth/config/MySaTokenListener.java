@@ -1,6 +1,7 @@
 package com.github.system.auth.config;
 
 import cn.dev33.satoken.listener.SaTokenListenerForSimple;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,10 @@ public class MySaTokenListener extends SaTokenListenerForSimple {
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
         // 清除角色缓存和用户信息缓存
-        StpUtil.getSession().delete("Role_List");
-        StpUtil.getSession().delete("User_info");
+        SaSession session = StpUtil.getSessionByLoginId(loginId, false);
+        if (session != null) {
+            session.delete("Role_List");
+            session.delete("User_info");
+        }
     }
 }

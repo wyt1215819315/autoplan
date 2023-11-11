@@ -10,7 +10,13 @@ import java.util.List;
 @Mapper
 public interface SysRoleDao extends BaseMapper<SysRole> {
 
-    @Select("select code from sys_role r join sys_role_user ur on ur.user_id = #{userId}")
+    @Select("""
+            select code
+            from sys_role r
+                join sys_role_user ur on r.id = ur.role_id
+                join sys_user u on u.id = ur.user_id
+            where u.id = #{userId}
+            """)
     List<String> queryUserRole(Long userId);
 
 }

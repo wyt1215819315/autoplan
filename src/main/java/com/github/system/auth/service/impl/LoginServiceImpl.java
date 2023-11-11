@@ -70,7 +70,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public void getValidCode(HttpServletResponse response) throws IOException {
         ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(120, 40);
-        captcha.setGenerator(new RandomGenerator("23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNOPQRSTUVWXYZ",4));
+        captcha.setGenerator(new RandomGenerator("23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ",4));
         SaSession session = StpUtil.getAnonTokenSession();
         session.set(AuthConstant.DICT_CAPTCHA, captcha);
         session.set(AuthConstant.DICT_CAPTCHA_TIME, DateUtil.offsetMinute(new Date(), 5));
