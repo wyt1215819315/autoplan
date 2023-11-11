@@ -27,9 +27,9 @@ public class QuartzJobLogController {
     private SysQuartzJobLogService sysQuartzJobLogService;
 
 
-    @GetMapping("/list")
+    @RequestMapping("/list")
     @ApiOperation("定时任务调度日志表集合查询")
-    public AjaxResult list(Page<SysQuartzJobLog> page, SysQuartzJobVo sysQuartzJobVo) {
+    public AjaxResult list(@RequestBody Page<SysQuartzJobLog> page, SysQuartzJobVo sysQuartzJobVo) {
         LambdaQueryWrapper<SysQuartzJobLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<String> excludeField = List.of("jobMessage", "exceptionInfo");
         lambdaQueryWrapper.select(SysQuartzJobLog.class, i -> !excludeField.contains(i.getProperty()));

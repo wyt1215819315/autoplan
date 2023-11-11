@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.task.dto.AutoTaskDto;
+import com.github.system.task.dto.display.UserInfoDisplayDto;
 import com.github.system.task.entity.AutoTask;
 import com.github.system.task.service.AutoTaskService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +23,7 @@ public class AutoTaskController {
     private AutoTaskService autoTaskService;
 
     @RequestMapping("/{indexId}/page")
-    public Page taskPage(Page<AutoTask> page, @PathVariable String indexId) throws Exception {
+    public Page taskPage(@RequestBody Page<AutoTask> page, @PathVariable String indexId) throws Exception {
         return autoTaskService.taskPage(page, indexId);
     }
 

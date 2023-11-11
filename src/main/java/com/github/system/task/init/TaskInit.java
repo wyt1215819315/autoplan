@@ -2,6 +2,7 @@ package com.github.system.task.init;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
@@ -119,7 +120,7 @@ public class TaskInit {
     }
 
     private void handUserInfoClass(String code, Class<? extends BaseUserInfo> clazz) {
-        Field[] fields = clazz.getFields();
+        Field[] fields = ReflectUtil.getFields(clazz);
         List<UserInfoDisplayDto> userInfoDisplayDtoList = new ArrayList<>();
         for (Field field : fields) {
             UserInfoColumn userInfoColumn = AnnotationUtil.getAnnotation(field, UserInfoColumn.class);
@@ -142,7 +143,7 @@ public class TaskInit {
     }
 
     private void handleSettingClass(String code, Class<? extends BaseTaskSettings> clazz) {
-        Field[] fields = clazz.getFields();
+        Field[] fields = ReflectUtil.getFields(clazz);
         List<SettingDisplayDto> settingDisplayDtoList = new ArrayList<>();
         for (Field field : fields) {
             SettingColumn settingColumn = AnnotationUtil.getAnnotation(field, SettingColumn.class);

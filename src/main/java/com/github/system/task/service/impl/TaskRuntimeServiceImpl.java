@@ -62,7 +62,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return CheckResult.doError("参数校验失败：" + e.getMessage());
         }
         Class<? extends BaseTaskSettings> taskSettingsClass = service.getTaskSettings().getClass();
-        for (Field field : taskSettingsClass.getFields()) {
+        for (Field field : ReflectUtil.getFields(taskSettingsClass)) {
             SettingColumn annotation = AnnotationUtil.getAnnotation(field, SettingColumn.class);
             if (annotation != null && annotation.boolOptions()) {
                 Object fieldValue = BeanUtil.getFieldValue(service.getTaskSettings(), field.getName());
