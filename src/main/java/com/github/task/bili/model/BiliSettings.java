@@ -1,5 +1,6 @@
 package com.github.task.bili.model;
 
+import com.github.system.task.annotation.FormType;
 import com.github.system.task.annotation.SettingColumn;
 import com.github.system.task.annotation.SettingColumnOptions;
 import com.github.system.task.model.BaseTaskSettings;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class BiliSettings extends BaseTaskSettings {
 
-    @SettingColumn(name = "sessdata", hide = true)
+    @SettingColumn(name = "sessdata", hide = true, formType = FormType.TEXTAREA)
     @NotBlank
     private String sessdata;
 

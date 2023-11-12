@@ -11,6 +11,7 @@ import java.util.List;
 public class SettingDisplayDto {
 
     private String field;
+    private String fieldType;
     private String name;
     private String desc;
     private String defaultValue;

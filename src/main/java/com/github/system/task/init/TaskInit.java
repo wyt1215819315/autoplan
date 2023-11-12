@@ -6,10 +6,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
-import com.github.system.task.annotation.SettingColumn;
-import com.github.system.task.annotation.SettingColumnOptions;
-import com.github.system.task.annotation.UserInfoColumn;
-import com.github.system.task.annotation.UserInfoColumnDict;
+import com.github.system.task.annotation.*;
 import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dto.display.SettingDisplayDto;
 import com.github.system.task.dto.display.SettingDisplayOptions;
@@ -151,6 +148,11 @@ public class TaskInit {
                 SettingDisplayDto settingDisplayDto = new SettingDisplayDto();
                 String name = field.getName();
                 settingDisplayDto.setField(name);
+                if (settingColumn.formType() != FormType.AUTO) {
+                    settingDisplayDto.setFieldType(settingColumn.formType().getName());
+                } else {
+                    settingDisplayDto.setFieldType(field.getType().getSimpleName());
+                }
                 settingDisplayDto.setDesc(StrUtil.blankToDefault(settingColumn.desc(), null));
                 settingDisplayDto.setName(settingColumn.name());
                 settingDisplayDto.setDefaultValue(StrUtil.blankToDefault(settingColumn.defaultValue(), null));

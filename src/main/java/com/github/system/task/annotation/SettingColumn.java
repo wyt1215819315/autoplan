@@ -23,6 +23,11 @@ public @interface SettingColumn {
     String desc() default "";
 
     /**
+     * 指定前端渲染的组件
+     */
+    FormType formType() default FormType.AUTO;
+
+    /**
      * 是否在第二次读取数据的时候隐藏这个字段
      * 通常敏感信息字段需要置为true，防止被盗
      */
