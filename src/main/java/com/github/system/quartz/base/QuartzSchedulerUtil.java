@@ -65,7 +65,10 @@ public class QuartzSchedulerUtil {
         for (Class<?> aClass : classes) {
             // 获取spring bean，如果这玩意是spring类的话，就拿bean名称作为调用字符串，否则拿完整类路径
             String invokeTarget = aClass.getPackageName() + "." + aClass.getName();
-            Object bean = SpringUtil.getBean(aClass);
+            Object bean = null;
+            try {
+                bean = SpringUtil.getBean(aClass);
+            } catch (Exception ignore) {}
             if (bean != null) {
                 invokeTarget = SpringUtil.getBeanNamesForType(aClass)[0];
             }

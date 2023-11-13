@@ -47,5 +47,14 @@ public class AutoTask {
     @ApiModelProperty("最后任务状态")
     private Integer lastEndStatus;
 
+    public AutoTask() {
+    }
 
+    public AutoTask(Long indexId, Long userId, String code, Integer enable, String name) {
+        this.indexId = indexId;
+        this.userId = userId;
+        this.code = code;
+        this.enable = enable;
+        this.name = name;
+    }
 }

@@ -6,7 +6,7 @@ import com.github.system.task.entity.AutoTask;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface TaskRuntimeService {
-    CheckResult checkUser(AutoTask autoTask);
+    CheckResult checkUser(AutoTask autoTask, boolean save);
 
     @Transactional(rollbackFor = Exception.class)
     TaskResult doTask(AutoTask autoTask, boolean async);

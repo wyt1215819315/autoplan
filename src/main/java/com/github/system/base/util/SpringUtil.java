@@ -32,7 +32,10 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
      * 优先获取SpringBean，如果SpringBean为空则获取普通java实例
      */
     public static <T> T getBeanOrInstance(Class<T> clazz) {
-        T bean = getBean(clazz);
+        T bean = null;
+        try {
+            bean = getBean(clazz);
+        } catch (Exception ignored) {}
         if (bean == null) {
             try {
                 bean = clazz.getDeclaredConstructor().newInstance();

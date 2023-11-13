@@ -30,7 +30,10 @@ public class JobInvokeUtil {
         List<Object[]> methodParams = getMethodParams(invokeTarget);
 
         if (!isValidClassName(beanName)) {
-            Object bean = SpringUtil.getBean(beanName);
+            Object bean = null;
+            try {
+                bean = SpringUtil.getBean(beanName);
+            } catch (Exception ignored) {}
             if (null != bean) {
                 invokeMethod(bean, methodName, methodParams);
             } else {

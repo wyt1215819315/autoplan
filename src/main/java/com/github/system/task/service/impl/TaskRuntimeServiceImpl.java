@@ -8,6 +8,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.util.SpringUtil;
 import com.github.system.task.annotation.SettingColumn;
 import com.github.system.task.annotation.TaskAction;
@@ -45,8 +46,17 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
     @Resource
     private TaskLogService taskLogService;
 
+    private static void randomizeMethods(List<Method> methods, int startIndex, int endIndex, Random random) {
+        for (int i = startIndex; i < endIndex; i++) {
+            int j = random.nextInt(endIndex - startIndex) + startIndex;
+            Method temp = methods.get(i);
+            methods.set(i, methods.get(j));
+            methods.set(j, temp);
+        }
+    }
+
     @Override
-    public CheckResult checkUser(AutoTask autoTask) {
+    public CheckResult checkUser(AutoTask autoTask, boolean save) {
         String code = autoTask.getCode();
         Class<?> aClass = TaskInit.serviceClassesMap.get(code);
         Object bean = SpringUtil.getBeanOrInstance(aClass);
@@ -55,6 +65,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         }
         TaskLog taskLog = new TaskLog();
         BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
+        service.setThing(autoTask.getSettings(), taskLog);
         // 校验表单
         try {
             ValidatorUtils.validate(service.getTaskSettings());
@@ -100,13 +111,32 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             if (!loginResult.isSuccess()) {
                 return CheckResult.doError("登录任务执行失败：" + loginResult.getMsg(), taskLog);
             }
+            if (save) {
+                // 持久化
+                BaseUserInfo userInfo = loginResult.getUserInfo();
+                if (userInfo == null) {
+                    userInfo = service.getUserInfo();
+                }
+                if (StrUtil.isBlank(userInfo.getOnlyId())) {
+                    log.error("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
+                    return CheckResult.doError("添加任务时出现系统错误！(onlyId为空)", taskLog);
+                }
+                AutoTask tmpTask = taskDao.selectOne(new LambdaQueryWrapper<AutoTask>()
+                        .eq(AutoTask::getUserId, SessionUtils.getUserId())
+                        .eq(AutoTask::getCode, autoTask.getCode())
+                        .eq(AutoTask::getOnlyId, userInfo.getOnlyId()));
+                if (tmpTask != null) {
+                    return CheckResult.doError("已经存在了一个相同的任务，无法再次添加", taskLog);
+                }
+                taskDao.insert(autoTask);
+                return CheckResult.doSuccess("添加任务成功", taskLog);
+            }
         } catch (Exception e) {
             taskLog.error("检查用户抛出异常:{}", e.getMessage());
             return CheckResult.doError("用户校验失败", taskLog);
         }
         return CheckResult.doSuccess("用户检查通过", taskLog);
     }
-
 
     private void doTask(AutoTask autoTask, TaskLog taskLog) {
         String code = autoTask.getCode();
@@ -297,15 +327,6 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         autoTask.setLastEndStatus(statusInt);
         // 插入任务日志并推送
         taskLogService.insertAndPush(autoTask, taskLog, statusInt);
-    }
-
-    private static void randomizeMethods(List<Method> methods, int startIndex, int endIndex, Random random) {
-        for (int i = startIndex; i < endIndex; i++) {
-            int j = random.nextInt(endIndex - startIndex) + startIndex;
-            Method temp = methods.get(i);
-            methods.set(i, methods.get(j));
-            methods.set(j, temp);
-        }
     }
 
 }

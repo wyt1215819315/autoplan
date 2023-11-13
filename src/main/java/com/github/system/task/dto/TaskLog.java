@@ -54,6 +54,7 @@ public class TaskLog {
     }
 
     public void error(String text) {
+        logger.debug("TaskLog文本错误类型：" + text);
         logList.add(new LogInfo(LogType.ERROR, text));
     }
 

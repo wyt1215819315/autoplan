@@ -28,7 +28,7 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
     @Override
     public List<UserInfoDisplayDto> getTaskUserInfoColumn(String indexId) {
         AutoIndex autoIndex = getById(indexId);
-        if (autoIndex == null) {
+        if (autoIndex == null || autoIndex.getEnable() == 0) {
             return new ArrayList<>();
         }
         return userInfoDisplayDataMap.getOrDefault(autoIndex.getCode(), new ArrayList<>());
@@ -37,7 +37,7 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
     @Override
     public List<SettingDisplayDto> getSettingColumn(String indexId) {
         AutoIndex autoIndex = getById(indexId);
-        if (autoIndex == null) {
+        if (autoIndex == null || autoIndex.getEnable() == 0) {
             return new ArrayList<>();
         }
         return settingDisplayDataMap.getOrDefault(autoIndex.getCode(), new ArrayList<>());

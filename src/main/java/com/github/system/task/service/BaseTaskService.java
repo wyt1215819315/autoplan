@@ -3,7 +3,7 @@ package com.github.system.task.service;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
 import com.github.system.task.dto.*;
-import com.github.system.task.annotation.TaskAction;
+import com.github.system.task.init.TaskInit;
 import com.github.system.task.model.BaseTaskSettings;
 import com.github.system.task.model.BaseUserInfo;
 import lombok.Getter;
@@ -26,8 +26,9 @@ public abstract class BaseTaskService<T extends BaseTaskSettings, L extends Base
 
     public void setThing(String taskSettingsJsonString, TaskLog taskLog) {
         this.log = taskLog;
-        this.taskSettings = JSONUtil.toBean(taskSettingsJsonString, new TypeReference<>() {
-        }, false);
+        this.taskSettings = JSONUtil.toBean(taskSettingsJsonString,
+                TaskInit.taskSettingsClassesMap.get(getTaskInfo().getCode()),
+                false);
     }
 
     /**

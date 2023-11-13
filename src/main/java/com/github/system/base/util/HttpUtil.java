@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class HttpUtil extends cn.hutool.http.HttpUtil {
-    private final static int defaultTimeOut = 5;
+    private final static int defaultTimeOut = 5 * 1000;
     private final static int defaultRetryCount = 2;
     private final static int defaultRetryWaitTime = 2;
     public static ProxyConfiguration proxyConfiguration;
