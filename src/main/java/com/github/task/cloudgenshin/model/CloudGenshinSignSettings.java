@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,9 +20,9 @@ public class CloudGenshinSignSettings extends BaseTaskSettings {
 
     @SettingColumn(name = "客户端类型", options = {
             @SettingColumnOptions(num = 1, name = "IOS设备(1)"),
-            @SettingColumnOptions(num = 2, name = "Android和鸿蒙设备")
+            @SettingColumnOptions(num = 2, name = "Android和鸿蒙设备(2)")
     }, desc = "x-rpc-client_type")
-    @NotBlank
+    @NotNull
     private Integer clientType;
 
     @SettingColumn(name = "设备名称", desc = "x-rpc-device_name")

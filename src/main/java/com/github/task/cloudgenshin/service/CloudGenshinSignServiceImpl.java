@@ -109,7 +109,7 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
 
     private boolean checkLoginSuccess() {
         Integer retcode = userInfo.getInt("retcode");
-        return retcode != null && retcode == 200;
+        return retcode != null && retcode == 0;
     }
 
     private JSONObject initUserInfo() {
