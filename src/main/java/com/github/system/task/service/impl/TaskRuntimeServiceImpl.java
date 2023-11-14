@@ -118,7 +118,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                     userInfo = service.getUserInfo();
                 }
                 if (StrUtil.isBlank(userInfo.getOnlyId())) {
-                    log.error("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
+                    log.warn("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
                     return CheckResult.doError("添加任务时出现系统错误！(onlyId为空)", taskLog);
                 }
                 AutoTask tmpTask = taskDao.selectOne(new LambdaQueryWrapper<AutoTask>()
@@ -128,6 +128,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                 if (tmpTask != null) {
                     return CheckResult.doError("已经存在了一个相同的任务，无法再次添加", taskLog);
                 }
+                autoTask.setUserInfos(JSONUtil.toJsonStr(userInfo));
                 taskDao.insert(autoTask);
                 return CheckResult.doSuccess("添加任务成功", taskLog);
             }

@@ -1,5 +1,6 @@
 package com.github.task.cloudgenshin.service;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -79,10 +80,17 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
         JSONObject jsonObject = HttpUtil.requestJson(ListNotificationURL, null, this.header, HttpUtil.RequestType.GET);
         JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("list");
         if (jsonArray.isEmpty()) {
-            log.info("今天已经签到过了..");
+            log.info("奖励列表为空，应该是今天已经签到过了..");
         } else {
             for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject msgObj = JSONUtil.parseObj(jsonArray.getJSONObject(i).getStr("msg"));
+                JSONObject object = jsonArray.getJSONObject(i);
+                Long id = object.getLong("id");
+                // 请求接口获取奖励
+                JSONObject ackJsonObj = HttpUtil.requestJson(AckNotificationURL, MapUtil.of("id",id), this.header, HttpUtil.RequestType.JSON);
+                if (ackJsonObj.getInt("retcode") != 0) {
+                    log.error("领取奖励时发生错误：" + ackJsonObj.toJSONString(0));
+                }
+                JSONObject msgObj = JSONUtil.parseObj(object.getStr("msg"));
                 Integer overNum = msgObj.getInt("over_num");
                 if (msgObj.containsKey("msg") && overNum != null && msgObj.containsKey("num")) {
                     log.info("领取到奖励内容【{}】,时长={},溢出时长={}", msgObj.get("msg"), msgObj.get("num"), overNum);
@@ -117,6 +125,7 @@ public class CloudGenshinSignServiceImpl extends BaseTaskService<CloudGenshinSig
         header.put("x-rpc-device_id", taskSettings.getDeviceId());
         header.put("x-rpc-device_name", taskSettings.getDeviceName());
         header.put("x-rpc-device_model", taskSettings.getDeviceModel());
+        header.put("x-rpc-client_type", String.valueOf(taskSettings.getClientType()));
         header.put("x-rpc-app_id", "1953439974");
         header.put("x-rpc-cg_game_biz", "hk4e_cn");
         header.put("x-rpc-preview", "0");
