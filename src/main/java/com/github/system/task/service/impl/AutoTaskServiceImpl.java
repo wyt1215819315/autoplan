@@ -69,9 +69,7 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
             throw new Exception("未找到对应任务索引！");
         }
         AutoTask autoTask = new AutoTask(indexId, SessionUtils.getUserId(), autoIndex.getCode(), autoTaskVo.get_sys().getEnable(), autoTaskVo.get_sys().getName());
-        Class<?> settingsClass = TaskInit.taskSettingsClassesMap.get(autoTask.getCode());
-        Object bean = BeanUtil.toBean(autoTaskVo.getData(), settingsClass);
-        autoTask.setSettings(JSONUtil.toJsonStr(bean));
+        autoTask.setSettings(JSONUtil.toJsonStr(autoTaskVo.getData()));
         return taskRuntimeService.checkUser(autoTask, save);
     }
 
