@@ -2,6 +2,7 @@ package com.github.system.base.config.datasource;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.system.base.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@MapperScan(basePackages = {"com.github.**.dao.**", "com.github.**.**.dao.**", "com.github.**.**.mapper.**"}, sqlSessionFactoryRef = "db1SqlSessionFactory")
+@MapperScan(basePackages = {"com.github.**.dao", "com.github.**.mapper"}, sqlSessionFactoryRef = "db1SqlSessionFactory")
 public class DataSourceConfig {
     @Value("${system.datasource.type}")
     private String type;
@@ -78,9 +79,10 @@ public class DataSourceConfig {
     }
 
     @Bean(name = "db1SqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource,@Qualifier("mybatisPlusInterceptor") MybatisPlusInterceptor mybatisPlusInterceptor) throws Exception {
         MybatisSqlSessionFactoryBean sessionFactoryBean = new MybatisSqlSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
+        sessionFactoryBean.setPlugins(mybatisPlusInterceptor);
         sessionFactoryBean.setMapperLocations(resolveMapperLocations());
         return sessionFactoryBean.getObject();
     }
@@ -106,4 +108,5 @@ public class DataSourceConfig {
     public SqlSessionTemplate sqlSessionFactoryTemplate(@Qualifier("db1SqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+
 }
