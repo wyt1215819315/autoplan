@@ -27,9 +27,9 @@ public class QuartzJobController {
     private SysQuartzJobService sysQuartzJobService;
 
 
-    @RequestMapping("/list")
-    @ApiOperation("定时任务调度list")
-    public Page<SysQuartzJob> list(@RequestBody Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
+    @RequestMapping("/page")
+    @ApiOperation("定时任务调度分页查询")
+    public Page<SysQuartzJob> page(@RequestBody Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
         LambdaQueryWrapper<SysQuartzJob> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJob::getJobName, sysQuartzJobVo.getJobName());
         lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJob::getStatus, sysQuartzJobVo.getStatus());
@@ -68,7 +68,7 @@ public class QuartzJobController {
     @PostMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody SysQuartzJobVo sysQuartzJobVo) throws SchedulerException {
         SysQuartzJob job = sysQuartzJobService.getById(sysQuartzJobVo.getId());
-        job.setStatus(job.getStatus());
+        job.setStatus(sysQuartzJobVo.getStatus());
         sysQuartzJobService.updateById(job);
         return AjaxResult.doSuccess(sysQuartzJobService.changeStatus(job));
     }

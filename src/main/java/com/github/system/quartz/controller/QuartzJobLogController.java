@@ -27,16 +27,16 @@ public class QuartzJobLogController {
     private SysQuartzJobLogService sysQuartzJobLogService;
 
 
-    @RequestMapping("/list")
+    @RequestMapping("/page")
     @ApiOperation("定时任务调度日志表集合查询")
-    public AjaxResult list(@RequestBody Page<SysQuartzJobLog> page, SysQuartzJobVo sysQuartzJobVo) {
+    public Page<SysQuartzJobLog> page(@RequestBody Page<SysQuartzJobLog> page, SysQuartzJobVo sysQuartzJobVo) {
         LambdaQueryWrapper<SysQuartzJobLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<String> excludeField = List.of("jobMessage", "exceptionInfo");
         lambdaQueryWrapper.select(SysQuartzJobLog.class, i -> !excludeField.contains(i.getProperty()));
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJobLog::getJobName, sysQuartzJobVo.getJobName());
         lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJobLog::getStatus, sysQuartzJobVo.getStatus());
         lambdaQueryWrapper.orderByDesc(SysQuartzJobLog::getStartTime);
-        return AjaxResult.doSuccess(sysQuartzJobLogService.page(page, lambdaQueryWrapper));
+        return sysQuartzJobLogService.page(page, lambdaQueryWrapper);
     }
 
     @ApiOperation("详情")
