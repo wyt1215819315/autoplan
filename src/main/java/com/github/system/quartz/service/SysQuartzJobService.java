@@ -6,9 +6,13 @@ import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.quartz.base.QuartzSchedulerUtil;
 import com.github.system.quartz.base.ScheduleConstants;
 import org.quartz.SchedulerException;
+import org.quartz.impl.triggers.CronTriggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
+import java.util.Date;
 
 @Service
 public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper,SysQuartzJob> {
@@ -72,6 +76,21 @@ public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper,SysQuart
     @Transactional
     public void run(SysQuartzJob job) throws SchedulerException {
         quartzSchedulerUtil.run(job);
+    }
+
+    /**
+     * 判断cron时间表达式正确性
+     *
+     */
+    public boolean isValidExpression(String cronExpression) {
+        CronTriggerImpl trigger = new CronTriggerImpl();
+        try {
+            trigger.setCronExpression(cronExpression);
+            Date date = trigger.computeFirstFireTime(null);
+            return date != null;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
 

@@ -45,19 +45,19 @@ public class SysQuartzJob implements Serializable {
      * 是否并发执行（0允许 1禁止）
      **/
     @ApiModelProperty("是否并发执行（0允许 1禁止）")
-    private Integer concurrent = 0;
+    private Integer concurrent;
 
     /**
      * 任务执行超时 单位秒，0为永不超时
      **/
     @ApiModelProperty("任务执行超时，单位秒，0为永不超时")
-    private Integer timeout = 0;
+    private Integer timeout;
 
     /**
      * 任务状态（0正常 1暂停）
      **/
     @ApiModelProperty("任务状态（0正常 1暂停）")
-    private Integer status = 0;
+    private Integer status;
 
     public SysQuartzJob() {
         super();

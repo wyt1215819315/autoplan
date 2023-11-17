@@ -33,7 +33,7 @@ public class QuartzJobController {
         LambdaQueryWrapper<SysQuartzJob> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJob::getJobName, sysQuartzJobVo.getJobName());
         lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJob::getStatus, sysQuartzJobVo.getStatus());
-        lambdaQueryWrapper.orderByAsc(SysQuartzJob::getStatus);
+        lambdaQueryWrapper.orderByDesc(SysQuartzJob::getStatus);
         return sysQuartzJobService.page(page, lambdaQueryWrapper);
     }
 
@@ -46,6 +46,10 @@ public class QuartzJobController {
     @ApiOperation("保存")
     @PostMapping("/save")
     public AjaxResult add(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) {
+        // 校验cron
+        if (!sysQuartzJobService.isValidExpression(sysQuartzJobVo.getCronExpression())) {
+            return AjaxResult.doError("CRON表达式校验不通过！");
+        }
         return sysQuartzJobService.save(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
     }
 
@@ -60,6 +64,10 @@ public class QuartzJobController {
     public AjaxResult update(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) {
         if (sysQuartzJobVo.getId() == null) {
             return AjaxResult.doError("id不能为空");
+        }
+        // 校验cron
+        if (!sysQuartzJobService.isValidExpression(sysQuartzJobVo.getCronExpression())) {
+            return AjaxResult.doError("CRON表达式校验不通过！");
         }
         return sysQuartzJobService.updateById(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
     }
