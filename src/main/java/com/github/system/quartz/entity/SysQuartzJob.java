@@ -20,7 +20,7 @@ public class SysQuartzJob implements Serializable {
      * id
      **/
     @ApiModelProperty("id")
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

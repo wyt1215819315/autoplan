@@ -1,9 +1,10 @@
 package com.github.system.quartz.base.utils;
 
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.base.util.SpringUtil;
+import com.github.system.quartz.entity.SysQuartzJob;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +34,8 @@ public class JobInvokeUtil {
             Object bean = null;
             try {
                 bean = SpringUtil.getBean(beanName);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             if (null != bean) {
                 invokeMethod(bean, methodName, methodParams);
             } else {
@@ -58,14 +60,12 @@ public class JobInvokeUtil {
      * @param methodParams 方法参数
      */
     private static void invokeMethod(Object bean, String methodName, List<Object[]> methodParams)
-            throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
+            throws SecurityException, IllegalArgumentException {
         if (methodParams != null && !methodParams.isEmpty()) {
-            Method method = bean.getClass().getDeclaredMethod(methodName, getMethodParamsType(methodParams));
-            method.invoke(bean, getMethodParamsValue(methodParams));
+            Method method = ReflectUtil.getMethod(bean.getClass(), methodName, getMethodParamsType(methodParams));
+            ReflectUtil.invoke(bean, method, getMethodParamsValue(methodParams));
         } else {
-            Method method = bean.getClass().getDeclaredMethod(methodName);
-            method.invoke(bean);
+            ReflectUtil.invoke(bean, methodName);
         }
     }
 

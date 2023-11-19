@@ -59,7 +59,7 @@ public class QuartzSchedulerUtil {
     @PostConstruct
     public void init() throws SchedulerException {
         // 执行包扫描，扫描所有带@AutoJob注解的方法，然后插入数据库并注册到定时任务
-        Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(SystemConstant.BASE_PACKAGE, AutoJob.class);
+        Set<Class<?>> classes = SpringUtil.scanClassByAnnotation(SystemConstant.BASE_PACKAGE, AutoJob.class);
         List<SysQuartzJob> quartzJobs = sysQuartzJobMapper.selectList(new QueryWrapper<>());
         Set<String> regJobs = quartzJobs.stream().map(SysQuartzJob::getJobName).collect(Collectors.toSet());
         for (Class<?> aClass : classes) {
@@ -75,7 +75,7 @@ public class QuartzSchedulerUtil {
             // 扫这个类上的包含注解的方法
             Method[] methods = ReflectUtil.getMethods(aClass, method -> AnnotationUtil.hasAnnotation(method, AutoJob.class));
             for (Method method : methods) {
-                AutoJob annotation = AnnotationUtil.getAnnotation(aClass, AutoJob.class);
+                AutoJob annotation = AnnotationUtil.getAnnotation(method, AutoJob.class);
                 if (regJobs.contains(annotation.value())) {
                     // 拿jobName来判断，数据库已经存在的job就不再进行下一步注册了
                     continue;
@@ -107,6 +107,7 @@ public class QuartzSchedulerUtil {
                 log.error("初始化Quartz定时任务失败",e);
             }
         }
+        log.info("初始化quartz任务，数量：" + quartzJobs.size());
 
         start();
     }

@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
@@ -81,6 +83,75 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
             log.error("包扫描时出错：" + e.getMessage(), e);
         }
         return new ArrayList<>();
+    }
+
+    public static Set<Method> scanMethodByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        Set<Method> resultSet = new HashSet<>();
+        //spring工具类，可以获取指定路径下的全部类
+        ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+        try {
+            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+                    ClassUtils.convertClassNameToResourcePath(packageName) + RESOURCE_PATTERN;
+            Resource[] resources = resourcePatternResolver.getResources(pattern);
+            //MetadataReader 的工厂类
+            MetadataReaderFactory readerfactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+            for (Resource resource : resources) {
+                //用于读取类信息
+                MetadataReader reader = readerfactory.getMetadataReader(resource);
+                //扫描到的class
+                String classname = reader.getClassMetadata().getClassName();
+                Class<?> clazz = Class.forName(classname);
+
+                // 扫方法
+                Method[] methods = clazz.getMethods();
+                for (Method method : methods) {
+                    if (AnnotationUtil.hasAnnotation(method, annotationClass)) {
+                        resultSet.add(method);
+                    }
+                }
+            }
+            return resultSet;
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("包扫描时出错：" + e.getMessage(), e);
+        }
+        return new HashSet<>();
+    }
+
+    public static Set<Class<?>> scanClassByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        Set<Class<?>> resultSet = new HashSet<>();
+        //spring工具类，可以获取指定路径下的全部类
+        ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+        try {
+            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+                    ClassUtils.convertClassNameToResourcePath(packageName) + RESOURCE_PATTERN;
+            Resource[] resources = resourcePatternResolver.getResources(pattern);
+            //MetadataReader 的工厂类
+            MetadataReaderFactory readerfactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+            for (Resource resource : resources) {
+                //用于读取类信息
+                MetadataReader reader = readerfactory.getMetadataReader(resource);
+                //扫描到的class
+                String classname = reader.getClassMetadata().getClassName();
+                Class<?> clazz = Class.forName(classname);
+                //判断是否有指定主解
+                Annotation annotation = clazz.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    //将注解中的类型值作为key，对应的类作为 value
+                    resultSet.add(clazz);
+                }
+                // 扫方法
+                Method[] methods = clazz.getMethods();
+                for (Method method : methods) {
+                    if (AnnotationUtil.hasAnnotation(method, annotationClass)) {
+                        resultSet.add(clazz);
+                    }
+                }
+            }
+            return resultSet;
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("包扫描时出错：" + e.getMessage(), e);
+        }
+        return new HashSet<>();
     }
 
 }
