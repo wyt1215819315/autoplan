@@ -121,7 +121,7 @@ public class TaskInit {
         List<UserInfoDisplayDto> userInfoDisplayDtoList = new ArrayList<>();
         for (Field field : fields) {
             UserInfoColumn userInfoColumn = AnnotationUtil.getAnnotation(field, UserInfoColumn.class);
-            if (userInfoColumn != null) {
+            if (userInfoColumn != null && userInfoColumn.display()) {
                 UserInfoDisplayDto userInfoDisplayDto = new UserInfoDisplayDto();
                 userInfoDisplayDto.setField(field.getName());
                 userInfoDisplayDto.setName(userInfoColumn.value());

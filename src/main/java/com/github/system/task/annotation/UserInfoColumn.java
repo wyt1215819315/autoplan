@@ -17,6 +17,11 @@ public @interface UserInfoColumn {
      */
     String value();
 
+    /**
+     * 是否在前端展示 如果为false，则前端不会渲染该字段 但是后台会返回
+     */
+    boolean display() default true;
+
 
     /**
      * 选项，如果此项不为空，前端采用选项形式渲染
