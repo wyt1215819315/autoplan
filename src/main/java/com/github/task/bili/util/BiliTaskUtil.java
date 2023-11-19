@@ -30,10 +30,12 @@ public class BiliTaskUtil {
     private final BiliTaskInfo taskInfo;
     private final BiliWebUtil biliWebUtil;
     private final BiliTaskConfig taskConfig;
+    private final TaskLog log;
     @Getter
     private BiliData data;
 
-    public BiliTaskUtil(BiliTaskInfo taskInfo) {
+    public BiliTaskUtil(BiliTaskInfo taskInfo,TaskLog log) {
+        this.log = log;
         this.taskInfo = taskInfo;
         this.taskConfig = taskInfo.getTaskConfig();
         biliWebUtil = new BiliWebUtil(taskInfo.getCookie());
@@ -44,7 +46,7 @@ public class BiliTaskUtil {
      *
      * @throws Exception exception
      */
-    public BiliData userCheck(TaskLog log) throws Exception {
+    public BiliData userCheck() throws Exception {
         JSONObject userJson = biliWebUtil.doGet(BiliUrlConstant.BILI_LOGIN);
         if (userJson == null) {
             logger.error("b站用户信息校验失败：" + taskInfo.toString());
@@ -67,7 +69,7 @@ public class BiliTaskUtil {
     /**
      * 第二步，统计硬币情况
      */
-    public void coinLogs(TaskLog log) throws Exception {
+    public void coinLogs() throws Exception {
         JSONObject jsonObject = biliWebUtil.doGet(BiliUrlConstant.BILI_GET_COIN_LOG);
         if (jsonObject.getInt("code") == 0) {
             JSONObject data = jsonObject.getJSONObject("data");
@@ -93,7 +95,7 @@ public class BiliTaskUtil {
     /**
      * 充电功能
      */
-    public void chargeMe(TaskLog log) throws Exception {
+    public void chargeMe() throws Exception {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int day = cal.get(Calendar.DATE);
         //被充电用户的userID
@@ -172,7 +174,7 @@ public class BiliTaskUtil {
     /**
      * 投币功能
      */
-    public void coinAdd(TaskLog log) throws Exception {
+    public void coinAdd() throws Exception {
         //投币最多操作数 解决csrf校验失败时死循环的问题
         int addCoinOperateCount = 0;
         //安全检查，最多投币数
@@ -197,7 +199,7 @@ public class BiliTaskUtil {
         int needCoins = setCoin - useCoin;
 
         //投币前硬币余额
-        double beforeAddCoinBalance = getCoinBalance(log);
+        double beforeAddCoinBalance = getCoinBalance();
         int coinBalance = (int) Math.floor(beforeAddCoinBalance);
 
         if (needCoins <= 0) {
@@ -248,17 +250,17 @@ public class BiliTaskUtil {
             }
             if (addCoinOperateCount > 15) {
                 log.error("尝试投币/投币失败次数太多");
-                log.info("投币任务完成后余额为: {}", getCoinBalance(log));
+                log.info("投币任务完成后余额为: {}", getCoinBalance());
                 throw new Exception("尝试投币/投币失败次数太多");
             }
         }
-        log.info("投币任务完成后余额为: {}", getCoinBalance(log));
+        log.info("投币任务完成后余额为: {}", getCoinBalance());
     }
 
     /**
      * 观看视频功能
      */
-    public void watchVideo(TaskLog log) throws Exception {
+    public void watchVideo() throws Exception {
         String flag = "";
         VideoWatch videoWatch = new VideoWatch(biliWebUtil, taskInfo);
         GetVideoId taskGetVID = new GetVideoId(biliWebUtil, taskInfo);
@@ -295,7 +297,7 @@ public class BiliTaskUtil {
     /**
      * bili漫画签到
      */
-    public void cartoonSign(TaskLog log) throws Exception {
+    public void cartoonSign() throws Exception {
         String platform = taskConfig.getCartoonSignOS();
         Map<String, Object> params = new HashMap<>();
         params.put("platform", platform);
@@ -311,7 +313,7 @@ public class BiliTaskUtil {
     /**
      * 银瓜子换硬币
      */
-    public void silver2Coin(TaskLog log) throws Exception {
+    public void silver2Coin() throws Exception {
         JSONObject queryStatus = biliWebUtil.doGet(BiliUrlConstant.BILI_GET_SILVER_2_COIN_STATUS);
         if (queryStatus == null || Objects.isNull(queryStatus.get("data"))) {
             log.error("获取银瓜子状态失败");
@@ -333,7 +335,7 @@ public class BiliTaskUtil {
             int responseCode = resultJson.getInt("code");
             if (responseCode == 0) {
                 log.info("银瓜子兑换硬币成功");
-                double coinMoneyAfterSilver2Coin = getCoinBalance(log);
+                double coinMoneyAfterSilver2Coin = getCoinBalance();
                 log.info("当前银瓜子余额: {}", (silverNum - exchangeRate));
                 log.info("兑换银瓜子后硬币余额: {}", coinMoneyAfterSilver2Coin);
 
@@ -352,7 +354,7 @@ public class BiliTaskUtil {
     /**
      * 直播签到
      */
-    public void liveSign(TaskLog log) throws Exception {
+    public void liveSign() throws Exception {
         JSONObject liveCheckInResponse = biliWebUtil.doGet(BiliUrlConstant.BILI_LIVE_CHECKING);
         int code = liveCheckInResponse.getInt("code");
         if (code == 0) {
@@ -373,7 +375,7 @@ public class BiliTaskUtil {
     /**
      * 直播送礼
      */
-    public void liveGift(TaskLog log) throws Exception {
+    public void liveGift() throws Exception {
         /* 从配置类中读取是否需要执行赠送礼物 */
         if (!Boolean.TRUE.equals(taskConfig.getBiliGiveGiftConfig().getEnableGiveGift())) {
             log.info("未开启自动送出即将过期礼物功能");
@@ -436,7 +438,7 @@ public class BiliTaskUtil {
     /**
      * 大会员漫画权益领取
      */
-    public void vipCartoonRec(TaskLog log) throws Exception {
+    public void vipCartoonRec() throws Exception {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int day = cal.get(Calendar.DATE);
 
@@ -508,7 +510,7 @@ public class BiliTaskUtil {
     /**
      * 每日漫画阅读，祖传堀与宫村（我也不知道这是啥漫画）
      */
-    public void readCartoon(TaskLog log) throws Exception {
+    public void readCartoon() throws Exception {
         Map<String, String> map = new HashMap<>();
         map.put("device", "pc");
         map.put("platform", "web");
@@ -530,13 +532,13 @@ public class BiliTaskUtil {
     /**
      * 赛事预测
      */
-    public void matchGame(TaskLog log) throws Exception {
+    public void matchGame() throws Exception {
         if (!taskConfig.getBiliPreConfig().getEnablePre()) {
             log.info("赛事预测未开启");
             return;
         }
 
-        double currentCoin = getCoinBalance(log);
+        double currentCoin = getCoinBalance();
 
         if (currentCoin < taskConfig.getBiliPreConfig().getKeepCoin()) {
             log.info("{}个硬币都没有，参加\uD83D\uDC34预测呢？任务结束", taskConfig.getBiliPreConfig().getKeepCoin());
@@ -622,7 +624,7 @@ public class BiliTaskUtil {
     /**
      * 最后步骤：统计数值
      */
-    public BiliData calculateUpgradeDays(TaskLog log) throws Exception {
+    public BiliData calculateUpgradeDays() throws Exception {
 //        if (data == null) {
 //            appendLog("未请求到用户信息，暂无法计算等级相关数据");
 //            throw new Exception("未请求到用户信息，暂无法计算等级相关数据");
@@ -642,7 +644,7 @@ public class BiliTaskUtil {
         return data;
     }
     
-    private double getCoinBalance(TaskLog log) {
+    private double getCoinBalance() {
         try {
             Map<String, Object> coinBalanceMap = BiliHelpUtil.getCoinBalance(biliWebUtil);
             if (coinBalanceMap.containsKey("msg")) {

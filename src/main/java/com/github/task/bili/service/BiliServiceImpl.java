@@ -29,10 +29,9 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
 
     @Override
     public TaskResult init(TaskLog log) throws Exception {
-        this.biliTaskUtil = new BiliTaskUtil(getBiliTaskInfo());
+        this.biliTaskUtil = new BiliTaskUtil(getBiliTaskInfo(), log);
         try {
-            TaskLog taskLog = new TaskLog();
-            biliTaskUtil.userCheck(taskLog);
+            biliTaskUtil.userCheck();
             return TaskResult.doSuccess("登录校验成功！");
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage(), AutoTaskStatus.USER_CHECK_ERROR);
@@ -50,7 +49,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @Override
     public BiliUserInfo getUserInfo() throws Exception {
         if (biliTaskUtil.getData() == null) {
-            biliTaskUtil.userCheck(new TaskLog());
+            biliTaskUtil.userCheck();
         }
         return turnUserInfo(biliTaskUtil.getData());
     }
@@ -58,7 +57,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "漫画签到")
     public TaskResult cartoonSign(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.cartoonSign(log);
+            biliTaskUtil.cartoonSign();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -68,7 +67,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "充电功能")
     public TaskResult chargeMe(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.chargeMe(log);
+            biliTaskUtil.chargeMe();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -78,7 +77,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "投币功能")
     public TaskResult coinAdd(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.coinAdd(log);
+            biliTaskUtil.coinAdd();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -88,7 +87,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "直播送礼")
     public TaskResult liveGift(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.liveGift(log);
+            biliTaskUtil.liveGift();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -98,7 +97,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "直播签到")
     public TaskResult liveSign(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.liveSign(log);
+            biliTaskUtil.liveSign();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -108,7 +107,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "赛事预测")
     public TaskResult matchGame(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.matchGame(log);
+            biliTaskUtil.matchGame();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -118,7 +117,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "每日漫画阅读")
     public TaskResult readCartoon(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.readCartoon(log);
+            biliTaskUtil.readCartoon();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -128,7 +127,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "银瓜子换硬币")
     public TaskResult silver2Coin(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.silver2Coin(log);
+            biliTaskUtil.silver2Coin();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -138,7 +137,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "大会员漫画权益领取")
     public TaskResult vipCartoonRec(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.vipCartoonRec(log);
+            biliTaskUtil.vipCartoonRec();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -148,7 +147,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "观看视频功能")
     public TaskResult watchVideo(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.watchVideo(log);
+            biliTaskUtil.watchVideo();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
@@ -158,7 +157,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
     @TaskAction(name = "统计数值", order = 1, delay = 0)
     public TaskResult calculateUpgradeDays(TaskLog log) throws Exception {
         try {
-            biliTaskUtil.calculateUpgradeDays(log);
+            biliTaskUtil.calculateUpgradeDays();
             return TaskResult.doSuccess();
         } catch (Exception e) {
             return TaskResult.doError(e.getMessage());
