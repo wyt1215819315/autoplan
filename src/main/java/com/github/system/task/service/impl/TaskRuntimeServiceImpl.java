@@ -228,7 +228,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                     return;
                 }
             } catch (Exception e) {
-                taskLog.error("未知的捕获异常：" + e.getMessage(), e);
+                taskLog.error("任务执行失败，异常信息：" + e.getMessage(), e);
                 taskResult = TaskResult.doError();
             }
             if (StrUtil.isNotBlank(taskResult.getMsg())) {
