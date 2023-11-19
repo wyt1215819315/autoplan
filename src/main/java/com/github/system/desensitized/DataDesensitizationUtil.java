@@ -2,6 +2,7 @@ package com.github.system.desensitized;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -9,9 +10,15 @@ import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 脱敏工具类
+ *
  * @author oldwu
  */
 @Slf4j
@@ -57,12 +64,38 @@ public class DataDesensitizationUtil {
                 return normalInt(i);
             } else if (fieldValue instanceof Long l) {
                 return normalLong(l);
+            } else if (fieldValue instanceof List<?> list) {
+                if (!list.isEmpty()) {
+                    // 获取list的泛型，正常人应该不会写List<Object>这种
+                    Class<?> aClass = list.get(0).getClass();
+                    // 递归脱敏list中的内容
+                    return list(dataDesensitization, list, aClass);
+                }
+            } else if (fieldValue instanceof Map<?, ?> map) {
+                ParameterizedType parameterizedType = (ParameterizedType) map.getClass().getGenericSuperclass();
+                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                return map(dataDesensitization, map, (Class<?>) actualTypeArguments[0], (Class<?>) actualTypeArguments[1]);
             } else {
                 log.error("不能识别的脱敏字段类型:{},class={},已填充NULL", fieldValue.getClass().getName(), fieldValue.getClass().getName());
                 return null;
             }
         }
         return null;
+    }
+
+    public static <K, V> Map<K, V> map(DataDesensitization dataDesensitization, Map<?, ?> inputMap, Class<K> mapKeyClass, Class<V> mapValueClass) {
+        Map<K, V> map = MapUtil.createMap(inputMap.getClass());
+        inputMap.forEach((k, v) -> map.put((K) k, (V) desensitizationValue(dataDesensitization, v)));
+        return map;
+    }
+
+    public static <T> List<T> list(DataDesensitization dataDesensitization, List<?> inputList, Class<T> clazz) {
+        List<T> resultList = new ArrayList<>();
+        for (Object object : inputList) {
+            T o = (T) desensitizationValue(dataDesensitization, object);
+            resultList.add(o);
+        }
+        return resultList;
     }
 
     public static String normal(String str) {
