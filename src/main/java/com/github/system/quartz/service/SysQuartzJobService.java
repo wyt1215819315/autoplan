@@ -1,10 +1,11 @@
 package com.github.system.quartz.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.system.quartz.dao.SysQuartzJobMapper;
-import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.quartz.base.QuartzSchedulerUtil;
 import com.github.system.quartz.base.ScheduleConstants;
+import com.github.system.quartz.dao.SysQuartzJobMapper;
+import com.github.system.quartz.entity.SysQuartzJob;
+import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
-public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper,SysQuartzJob> {
+public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper, SysQuartzJob> {
 
     @Autowired
     private QuartzSchedulerUtil quartzSchedulerUtil;
+
 
     /**
      * 恢复任务
@@ -80,7 +84,6 @@ public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper,SysQuart
 
     /**
      * 判断cron时间表达式正确性
-     *
      */
     public boolean isValidExpression(String cronExpression) {
         CronTriggerImpl trigger = new CronTriggerImpl();
@@ -94,4 +97,30 @@ public class SysQuartzJobService extends ServiceImpl<SysQuartzJobMapper,SysQuart
     }
 
 
+    /**
+     * 返回下一个执行时间根据给定的Cron表达式
+     *
+     * @param cronExpression Cron表达式
+     * @return Date 下次Cron表达式执行时间
+     */
+    public List<Date> getNextExecution(String cronExpression, Integer num) {
+        if (num == null || num > 10) {
+            num = 10;
+        }
+        try {
+            // 创建corn 表达式的对象
+            CronExpression cron = new CronExpression(cronExpression);
+            // 从当前时间 开始计算，下n次的执行时间
+            List<Date> dateList = new ArrayList<>();
+            Date date = new Date();
+            for (int i = 0; i < num; i++) {
+                Date nextDate = cron.getNextValidTimeAfter(date);
+                dateList.add(nextDate);
+                date = nextDate;
+            }
+            return dateList;
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }

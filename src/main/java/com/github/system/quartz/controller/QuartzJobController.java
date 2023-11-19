@@ -15,6 +15,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @SaCheckRole("ADMIN")
@@ -70,6 +73,12 @@ public class QuartzJobController {
             return AjaxResult.doError("CRON表达式校验不通过！");
         }
         return sysQuartzJobService.updateById(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
+    }
+
+    @ApiOperation("获取cron表达式的下n次执行时间")
+    @PostMapping("/getNextExecution")
+    public List<Date> getNextExecution(@RequestBody Map<String, Object> params) {
+        return sysQuartzJobService.getNextExecution((String) params.get("cron"), (Integer) params.get("num"));
     }
 
     @ApiOperation("任务调度状态修改")
