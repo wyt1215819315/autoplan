@@ -1,5 +1,6 @@
 package com.github.task.cloudgenshin.model;
 
+import com.github.system.desensitized.DataDesensitization;
 import com.github.system.task.annotation.SettingColumn;
 import com.github.system.task.annotation.SettingColumnOptions;
 import com.github.system.task.model.BaseTaskSettings;
@@ -15,6 +16,7 @@ public class CloudGenshinSignSettings extends BaseTaskSettings {
 
     @SettingColumn(name = "Token", desc = "x-rpc-combo_token")
     @NotBlank
+    @DataDesensitization
     private String token;
 
 

@@ -12,9 +12,11 @@ import java.util.List;
 public interface AutoTaskService extends IService<AutoTask> {
     Page taskPage(Page<AutoTask> page, String indexId) throws Exception;
 
+    AutoTaskDto view(AutoTask autoTask);
+
     List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList);
 
     CheckResult checkOrSaveUser(Long indexId, AutoTaskVo autoTaskVo, boolean save) throws Exception;
 
-    CheckResult checkAndUpdate(AutoTaskVo autoTaskVo) throws Exception;
+    CheckResult checkAndUpdate(AutoTaskVo autoTaskVo, boolean save) throws Exception;
 }

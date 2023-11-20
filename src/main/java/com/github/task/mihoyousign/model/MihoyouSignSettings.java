@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class MihoyouSignSettings extends BaseTaskSettings {
 
     @SettingColumn(name = "cookie")
-    @DataDesensitization(value = DesensitizedType.NULL)
+    @DataDesensitization
     @NotBlank
     private String cookie;
 

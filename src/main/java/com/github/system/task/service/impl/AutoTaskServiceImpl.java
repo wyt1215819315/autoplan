@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.auth.util.SessionUtils;
+import com.github.system.desensitized.DataDesensitizationUtil;
 import com.github.system.task.dao.AutoTaskDao;
 import com.github.system.task.dto.AutoTaskDto;
 import com.github.system.task.dto.CheckResult;
@@ -53,6 +54,17 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
     }
 
     @Override
+    public AutoTaskDto view(AutoTask autoTask) {
+        autoTask.setUserInfos(null);
+        AutoTaskDto dto = BeanUtil.toBean(autoTask, AutoTaskDto.class);
+        dto.setSettings(null);
+        Object bean = JSONUtil.toBean(autoTask.getSettings(), TaskInit.taskSettingsClassesMap.get(autoTask.getCode()));
+        DataDesensitizationUtil.desensitizationNull(bean);
+        dto.setSetting(bean);
+        return dto;
+    }
+
+    @Override
     public List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList) {
         List<AutoTaskDto> list = new ArrayList<>();
         for (Object record : autoTaskList) {
@@ -78,7 +90,7 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
     }
 
     @Override
-    public CheckResult checkAndUpdate(AutoTaskVo autoTaskVo) throws Exception {
+    public CheckResult checkAndUpdate(AutoTaskVo autoTaskVo, boolean save) throws Exception {
         Long id = autoTaskVo.get_sys().getId();
         AutoTask task = getById(id);
         if (task == null) {
@@ -101,7 +113,7 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
         });
 
         task.setSettings(JSONUtil.toJsonStr(jsonObject));
-        return taskRuntimeService.checkUser(task, true);
+        return taskRuntimeService.checkUser(task, save);
     }
 
 }

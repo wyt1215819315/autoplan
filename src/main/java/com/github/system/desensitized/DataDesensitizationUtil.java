@@ -137,4 +137,17 @@ public class DataDesensitizationUtil {
         }
     }
 
+    /**
+     * 脱敏包含注解的对象，直接脱敏为null
+     */
+    public static <T> void desensitizationNull(T t) {
+        Field[] fields = ReflectUtil.getFields(t.getClass());
+        for (Field field : fields) {
+            DataDesensitization annotation = AnnotationUtil.getAnnotation(field, DataDesensitization.class);
+            if (annotation != null) {
+                BeanUtil.setFieldValue(t, field.getName(), null);
+            }
+        }
+    }
+
 }

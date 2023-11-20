@@ -12,6 +12,9 @@ public class AutoTaskDto extends AutoTask {
     @ApiModelProperty("用户信息对象")
     private Object userInfo;
 
+    @ApiModelProperty("配置对象")
+    private Object setting;
+
 
 
 }

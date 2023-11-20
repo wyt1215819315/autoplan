@@ -63,7 +63,7 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
             }
             map.put("index", list.get(0));
             map.put("settings", v);
-            map.put("display", userInfosClassesMap.get(k));
+            map.put("display", userInfoDisplayDataMap.get(k));
             resultMap.put(k, map);
         });
         return resultMap;
