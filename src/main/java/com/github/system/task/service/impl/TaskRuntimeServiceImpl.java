@@ -141,17 +141,22 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                     log.warn("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
                     return CheckResult.doError("添加任务时出现系统错误！(onlyId为空)", taskLog);
                 }
+                autoTask.setOnlyId(userInfo.getOnlyId());
+                autoTask.setUserInfos(JSONUtil.toJsonStr(userInfo));
                 AutoTask tmpTask = taskDao.selectOne(new LambdaQueryWrapper<AutoTask>()
                         .eq(AutoTask::getUserId, SessionUtils.getUserId())
                         .eq(AutoTask::getCode, autoTask.getCode())
                         .eq(AutoTask::getOnlyId, userInfo.getOnlyId()));
                 if (tmpTask != null) {
-                    return CheckResult.doError("已经存在了一个相同的任务，无法再次添加", taskLog);
+                    autoTask.setId(tmpTask.getId());
+                    autoTask.setLastEndStatus(tmpTask.getLastEndStatus());
+                    autoTask.setLastEndTime(tmpTask.getLastEndTime());
+                    taskDao.updateById(autoTask);
+                    return CheckResult.doSuccess("更新任务成功", taskLog);
+                } else {
+                    taskDao.insert(autoTask);
+                    return CheckResult.doSuccess("添加任务成功", taskLog);
                 }
-                autoTask.setOnlyId(userInfo.getOnlyId());
-                autoTask.setUserInfos(JSONUtil.toJsonStr(userInfo));
-                taskDao.insert(autoTask);
-                return CheckResult.doSuccess("添加任务成功", taskLog);
             }
         } catch (Exception e) {
             taskLog.error("检查用户抛出异常:{}", e.getMessage());

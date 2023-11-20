@@ -15,4 +15,6 @@ public interface AutoTaskService extends IService<AutoTask> {
     List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList);
 
     CheckResult checkOrSaveUser(Long indexId, AutoTaskVo autoTaskVo, boolean save) throws Exception;
+
+    CheckResult checkAndUpdate(AutoTaskVo autoTaskVo) throws Exception;
 }

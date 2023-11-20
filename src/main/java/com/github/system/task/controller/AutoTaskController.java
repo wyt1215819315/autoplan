@@ -42,6 +42,12 @@ public class AutoTaskController {
         return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(Long.parseLong(indexId), autoTaskVo, true));
     }
 
+    @ApiOperation("校验任务并更新")
+    @RequestMapping("/checkAndUpdate")
+    public AjaxResult checkUserAndSave(@RequestBody AutoTaskVo autoTaskVo) throws Exception {
+        return AjaxResult.doSuccess(autoTaskService.checkAndUpdate(autoTaskVo));
+    }
+
     @ApiOperation("我的任务列表")
     @RequestMapping("/mine/list")
     public List<AutoTaskDto> mineList() {

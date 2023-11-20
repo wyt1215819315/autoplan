@@ -1,6 +1,10 @@
 package com.github.system.task.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -71,6 +75,33 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
         AutoTask autoTask = new AutoTask(indexId, SessionUtils.getUserId(), autoIndex.getCode(), autoTaskVo.get_sys().getEnable(), autoTaskVo.get_sys().getName());
         autoTask.setSettings(JSONUtil.toJsonStr(autoTaskVo.getData()));
         return taskRuntimeService.checkUser(autoTask, save);
+    }
+
+    @Override
+    public CheckResult checkAndUpdate(AutoTaskVo autoTaskVo) throws Exception {
+        Long id = autoTaskVo.get_sys().getId();
+        AutoTask task = getById(id);
+        if (task == null) {
+            throw new Exception("没有找到任务！");
+        }
+        if (autoTaskVo.get_sys().getEnable() != null) {
+            task.setEnable(autoTaskVo.get_sys().getEnable());
+        }
+        if (StrUtil.isNotBlank(autoTaskVo.get_sys().getName())) {
+            task.setName(autoTaskVo.get_sys().getName());
+        }
+        // 假如说前端并没有给足数据，也就是用户只修改了一部分，这时候后台就要去拿原先的数据填充前端空的那部分
+        JSONObject jsonObject = JSONUtil.parseObj(task.getSettings());
+        Class<?> settingsClass = TaskInit.taskSettingsClassesMap.get(task.getCode());
+        autoTaskVo.getData().forEach((k, v) -> {
+            // 简单判断下，防止前端乱传数据
+            if (ReflectUtil.hasField(settingsClass, k) && ObjectUtil.isNotNull(v)) {
+                jsonObject.set(k, v);
+            }
+        });
+
+        task.setSettings(JSONUtil.toJsonStr(jsonObject));
+        return taskRuntimeService.checkUser(task, true);
     }
 
 }

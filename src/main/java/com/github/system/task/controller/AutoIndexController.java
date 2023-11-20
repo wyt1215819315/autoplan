@@ -35,14 +35,26 @@ public class AutoIndexController {
         return AjaxResult.doSuccess(autoIndexService.getById(indexId));
     }
 
+    @ApiOperation("获取所有表单")
+    @GetMapping("/getColumn")
+    public AjaxResult getColumn() {
+        return AjaxResult.doSuccess(autoIndexService.getColumn());
+    }
+
     @ApiOperation("获取展示表单字段")
-    @RequestMapping("/getUserInfoColumn/{indexId}")
+    @GetMapping("/getUserInfoColumn/{indexId}")
     public List<UserInfoDisplayDto> getTaskUserInfoColumn(@PathVariable String indexId) {
         return autoIndexService.getTaskUserInfoColumn(indexId);
     }
 
+    @ApiOperation("获取全部展示表单字段")
+    @GetMapping("/getUserInfoColumnAll")
+    public AjaxResult getUserInfoColumnAll() {
+        return AjaxResult.doSuccess(autoIndexService.getTaskUserInfoColumnAll());
+    }
+
     @ApiOperation("获取填写的配置字段")
-    @RequestMapping("/getSettingColumn/{indexId}")
+    @GetMapping("/getSettingColumn/{indexId}")
     public List<SettingDisplayDto> getSettingColumn(@PathVariable String indexId) {
         return autoIndexService.getSettingColumn(indexId);
     }
@@ -53,6 +65,25 @@ public class AutoIndexController {
     public Page<AutoIndex> adminPage(@RequestBody Page<AutoIndex> page) {
         LambdaQueryWrapper<AutoIndex> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         return autoIndexService.page(page, lambdaQueryWrapper);
+    }
+
+    @ApiOperation("修改")
+    @RequestMapping("/admin/update")
+    @SaCheckRole("ADMIN")
+    public AjaxResult adminUpdate(@RequestBody AutoIndex autoIndex) {
+        if (autoIndexService.updateById(autoIndex)) {
+            return AjaxResult.doSuccess();
+        }
+        return AjaxResult.doError();
+    }
+
+    @ApiOperation("修改开启状态")
+    @RequestMapping("/admin/changeEnable")
+    @SaCheckRole("ADMIN")
+    public AjaxResult adminChangeEnable(@RequestBody AutoIndex autoIndex) {
+        AutoIndex entity = autoIndexService.getById(autoIndex.getId());
+        entity.setEnable(autoIndex.getEnable());
+        return this.adminUpdate(entity);
     }
 
 

@@ -12,6 +12,7 @@ public class AutoTaskVo {
 
     @Data
     public static class AutoTaskSysObj {
+        private Long id;
         private String name;
         private String code;
         private Integer enable;
