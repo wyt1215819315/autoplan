@@ -21,7 +21,7 @@ public class MiSportSettings extends BaseTaskSettings {
     @NotBlank
     private String password;
 
-    @SettingColumn(name = "步数", ref = "random", refValue = 1)
+    @SettingColumn(name = "步数", ref = "random", refValue = 0)
     @Max(value = 98800, message = "设置的步数不能超过98800")
     private Integer steps;
 
