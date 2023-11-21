@@ -36,7 +36,7 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
     private TaskRuntimeService taskRuntimeService;
 
     @Override
-    public Page taskPage(Page<AutoTask> page, String indexId) throws Exception {
+    public Page<AutoTaskDto> taskPage(Page<AutoTask> page, String indexId) throws Exception {
         // 校验indexId是否存在并且启用
         AutoIndex autoIndex = autoIndexService.getOne(new LambdaQueryWrapper<AutoIndex>()
                 .eq(AutoIndex::getId, indexId)
@@ -47,10 +47,18 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
         LambdaQueryWrapper<AutoTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(AutoTask::getId, AutoTask::getCode, AutoTask::getEnable, AutoTask::getName, AutoTask::getLastEndStatus, AutoTask::getLastEndTime, AutoTask::getUserInfos)
                 .eq(AutoTask::getIndexId, indexId);
-        Page resPage = page(page, lambdaQueryWrapper);
-        List list = turnAutoTaskEntity(resPage.getRecords());
-        resPage.setRecords(list);
-        return resPage;
+        Page<AutoTask> queryPage = page(page, lambdaQueryWrapper);
+        return turnAutoTaskEntityPage(queryPage, true);
+    }
+
+    @Override
+    public Page<AutoTaskDto> minePage(Page<AutoTask> page) throws Exception {
+        LambdaQueryWrapper<AutoTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<String> settings = List.of("settings", "onlyId");
+        lambdaQueryWrapper.select(AutoTask.class, i -> !settings.contains(i.getProperty()))
+                .eq(AutoTask::getUserId, SessionUtils.getUserId());
+        Page<AutoTask> queryPage = page(page, lambdaQueryWrapper);
+        return turnAutoTaskEntityPage(queryPage, false);
     }
 
     @Override
@@ -65,17 +73,33 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
     }
 
     @Override
-    public List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList) {
+    public List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList, boolean desensitization) {
         List<AutoTaskDto> list = new ArrayList<>();
         for (Object record : autoTaskList) {
             Class<?> userInfoClass = TaskInit.userInfosClassesMap.get((String) BeanUtil.getFieldValue(record, "code"));
             AutoTaskDto dto = BeanUtil.toBean(record, AutoTaskDto.class);
             Object bean = JSONUtil.toBean((String) BeanUtil.getFieldValue(record, "userInfos"), userInfoClass);
+            BeanUtil.setFieldValue(bean, "onlyId", null);
+            if (desensitization) {
+                DataDesensitizationUtil.desensitization(bean);
+            }
             dto.setUserInfo(bean);
             dto.setUserInfos(null);
             list.add(dto);
         }
         return list;
+    }
+
+    @Override
+    public Page<AutoTaskDto> turnAutoTaskEntityPage(Page<AutoTask> autoTaskPage, boolean desensitization) {
+        List<AutoTaskDto> dtoList = turnAutoTaskEntity(autoTaskPage.getRecords(), desensitization);
+        Page<AutoTaskDto> resPage = new Page<>();
+        resPage.setRecords(dtoList);
+        resPage.setPages(autoTaskPage.getPages());
+        resPage.setCurrent(autoTaskPage.getCurrent());
+        resPage.setSize(autoTaskPage.getSize());
+        resPage.setTotal(autoTaskPage.getTotal());
+        return resPage;
     }
 
     @Override

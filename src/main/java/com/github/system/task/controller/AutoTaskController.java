@@ -24,8 +24,14 @@ public class AutoTaskController {
 
     @ApiOperation("任务分页查询")
     @RequestMapping("/{indexId}/page")
-    public Page taskPage(@RequestBody Page<AutoTask> page, @PathVariable String indexId) throws Exception {
+    public Page<AutoTaskDto> taskPage(@RequestBody Page<AutoTask> page, @PathVariable String indexId) throws Exception {
         return autoTaskService.taskPage(page, indexId);
+    }
+
+    @ApiOperation("我的任务列表分页")
+    @RequestMapping("/mine/page")
+    public Page<AutoTaskDto> minePage(@RequestBody Page<AutoTask> page) throws Exception {
+        return autoTaskService.minePage(page);
     }
 
     @ApiOperation("查看任务详情")
@@ -62,13 +68,14 @@ public class AutoTaskController {
         return AjaxResult.doSuccess(autoTaskService.checkAndUpdate(autoTaskVo, false));
     }
 
-    @ApiOperation("我的任务列表")
-    @RequestMapping("/mine/list")
-    public List<AutoTaskDto> mineList() {
-        LambdaQueryWrapper<AutoTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(AutoTask.class, i -> !"settings".equals(i.getProperty()))
-                .eq(AutoTask::getUserId, SessionUtils.getUserId());
-        return autoTaskService.turnAutoTaskEntity(autoTaskService.list(lambdaQueryWrapper));
-    }
+//    @ApiOperation("我的任务列表")
+//    @RequestMapping("/mine/list")
+//    public List<AutoTaskDto> mineList() {
+//        LambdaQueryWrapper<AutoTask> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        lambdaQueryWrapper.select(AutoTask.class, i -> !"settings".equals(i.getProperty()))
+//                .eq(AutoTask::getUserId, SessionUtils.getUserId());
+//        return autoTaskService.turnAutoTaskEntity(autoTaskService.list(lambdaQueryWrapper));
+//    }
+
 
 }

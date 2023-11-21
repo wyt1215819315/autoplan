@@ -132,7 +132,9 @@ public class DataDesensitizationUtil {
             if (annotation != null) {
                 // 启用数据脱敏
                 Object fieldValue = BeanUtil.getFieldValue(t, field.getName());
-                BeanUtil.setFieldValue(t, field.getName(), desensitizationValue(annotation, fieldValue));
+                if (fieldValue != null) {
+                    BeanUtil.setFieldValue(t, field.getName(), desensitizationValue(annotation, fieldValue));
+                }
             }
         }
     }

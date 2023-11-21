@@ -10,9 +10,11 @@ import lombok.EqualsAndHashCode;
 public class AutoTaskDto extends AutoTask {
 
     @ApiModelProperty("用户信息对象")
+//    @JsonSerialize(using = DesensitizedJsonSerializer.class)
     private Object userInfo;
 
     @ApiModelProperty("配置对象")
+//    @JsonSerialize(using = DesensitizedJsonSerializer.class)
     private Object setting;
 
 

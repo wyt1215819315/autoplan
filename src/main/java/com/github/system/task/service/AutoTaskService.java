@@ -10,11 +10,15 @@ import com.github.system.task.vo.AutoTaskVo;
 import java.util.List;
 
 public interface AutoTaskService extends IService<AutoTask> {
-    Page taskPage(Page<AutoTask> page, String indexId) throws Exception;
+    Page<AutoTaskDto> taskPage(Page<AutoTask> page, String indexId) throws Exception;
+
+    Page<AutoTaskDto> minePage(Page<AutoTask> page) throws Exception;
 
     AutoTaskDto view(AutoTask autoTask);
 
-    List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList);
+    List<AutoTaskDto> turnAutoTaskEntity(List<AutoTask> autoTaskList, boolean desensitization);
+
+    Page<AutoTaskDto> turnAutoTaskEntityPage(Page<AutoTask> autoTaskPage, boolean desensitization);
 
     CheckResult checkOrSaveUser(Long indexId, AutoTaskVo autoTaskVo, boolean save) throws Exception;
 
