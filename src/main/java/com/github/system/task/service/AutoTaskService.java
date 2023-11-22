@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.system.task.dto.AutoTaskDto;
 import com.github.system.task.dto.CheckResult;
+import com.github.system.task.dto.TaskResult;
 import com.github.system.task.entity.AutoTask;
 import com.github.system.task.vo.AutoTaskVo;
 
@@ -23,4 +24,6 @@ public interface AutoTaskService extends IService<AutoTask> {
     CheckResult checkOrSaveUser(Long indexId, AutoTaskVo autoTaskVo, boolean save) throws Exception;
 
     CheckResult checkAndUpdate(AutoTaskVo autoTaskVo, boolean save) throws Exception;
+
+    TaskResult run(Long taskId) throws Exception;
 }

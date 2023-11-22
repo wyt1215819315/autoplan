@@ -29,7 +29,7 @@ public class HistoryTaskLog implements Serializable {
     private Integer status;
 
     @ApiModelProperty("任务所属的用户id")
-    private Long userid;
+    private Long userId;
 
     @ApiModelProperty("记录时间")
     private Date date;
@@ -38,11 +38,11 @@ public class HistoryTaskLog implements Serializable {
     private String text;
 
 
-    public HistoryTaskLog(Long taskId, String type, Integer status, Long userid, Date date, String text) {
+    public HistoryTaskLog(Long taskId, String type, Integer status, Long userId, Date date, String text) {
         this.taskId = taskId;
         this.type = type;
         this.status = status;
-        this.userid = userid;
+        this.userId = userId;
         this.date = date;
         this.text = text;
     }

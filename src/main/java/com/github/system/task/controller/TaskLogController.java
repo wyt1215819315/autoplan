@@ -27,7 +27,7 @@ public class TaskLogController {
     public Page<HistoryTaskLog> list(@RequestBody Page<HistoryTaskLog> page, HistoryTaskLogVo historyTaskLogVo) {
         LambdaQueryWrapper<HistoryTaskLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getType()), HistoryTaskLog::getType, historyTaskLogVo.getType());
-        lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getUserId()), HistoryTaskLog::getUserid, historyTaskLogVo.getUserId());
+        lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getUserId()), HistoryTaskLog::getUserId, historyTaskLogVo.getUserId());
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getStatus()), HistoryTaskLog::getStatus, historyTaskLogVo.getStatus());
         lambdaQueryWrapper.orderByDesc(HistoryTaskLog::getDate);
         return logService.page(page, lambdaQueryWrapper);

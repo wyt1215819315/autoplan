@@ -14,6 +14,7 @@ import com.github.system.desensitized.DataDesensitizationUtil;
 import com.github.system.task.dao.AutoTaskDao;
 import com.github.system.task.dto.AutoTaskDto;
 import com.github.system.task.dto.CheckResult;
+import com.github.system.task.dto.TaskResult;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.entity.AutoTask;
 import com.github.system.task.init.TaskInit;
@@ -116,10 +117,7 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
     @Override
     public CheckResult checkAndUpdate(AutoTaskVo autoTaskVo, boolean save) throws Exception {
         Long id = autoTaskVo.get_sys().getId();
-        AutoTask task = getById(id);
-        if (task == null) {
-            throw new Exception("没有找到任务！");
-        }
+        AutoTask task = getSelfTask(id);
         if (autoTaskVo.get_sys().getEnable() != null) {
             task.setEnable(autoTaskVo.get_sys().getEnable());
         }
@@ -138,6 +136,20 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
 
         task.setSettings(JSONUtil.toJsonStr(jsonObject));
         return taskRuntimeService.checkUser(task, save);
+    }
+
+    @Override
+    public TaskResult run(Long taskId) throws Exception {
+        AutoTask task = getSelfTask(taskId);
+        return taskRuntimeService.doTask(task,true);
+    }
+
+    private AutoTask getSelfTask(Long taskId) throws Exception {
+        AutoTask task = getById(taskId);
+        if (task == null || (!task.getUserId().equals(SessionUtils.getUserId()) && !SessionUtils.isAdmin())) {
+            throw new Exception("没有找到任务！");
+        }
+        return task;
     }
 
 }

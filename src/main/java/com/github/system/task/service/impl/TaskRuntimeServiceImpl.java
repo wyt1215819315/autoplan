@@ -176,10 +176,10 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return;
         }
         // 获取bean上包含TaskAction的所有方法并排序
-        List<Method> taskMethodList = Arrays.stream(aClass.getDeclaredMethods())
+        List<Method> taskMethodList = new ArrayList<>(Arrays.stream(aClass.getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(TaskAction.class))
                 .sorted(Comparator.comparingInt(method -> method.getAnnotation(TaskAction.class).order()))
-                .toList();
+                .toList());
         // 对order值相同的方法进行随机排列
         Random random = new Random();
         int currentOrder = -1;
@@ -276,7 +276,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         if (taskLockMap.containsKey((autoTask.getId()))) {
             return TaskResult.doSuccess("任务已经在执行了");
         }
-        taskLockMap.put(autoTask.getId(), null);
+        taskLockMap.put(autoTask.getId(), 1);
         try {
             Future<Void> future = executorService.submit(() -> {
                 doTask(autoTask, taskLog);
@@ -310,6 +310,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doError("任务执行超时");
         } catch (Exception e) {
             endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
+            log.error("任务执行发生未知异常错误",e);
             return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
         }
     }
@@ -352,6 +353,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         int statusInt = status.getStatus();
         autoTask.setLastEndTime(new Date());
         autoTask.setLastEndStatus(statusInt);
+        taskDao.updateById(autoTask);
         // 插入任务日志并推送
         taskLogService.insertAndPush(autoTask, taskLog, statusInt);
     }

@@ -1,7 +1,6 @@
 package com.github.system.task.controller;
 
 import cn.hutool.core.util.NumberUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.dto.AjaxResult;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @RequestMapping("/auto/task")
@@ -36,7 +34,7 @@ public class AutoTaskController {
 
     @ApiOperation("查看任务详情")
     @GetMapping("/view/{taskId}")
-    public AjaxResult view(@PathVariable String taskId) {
+    public AjaxResult view(@PathVariable Long taskId) {
         AutoTask autoTask = autoTaskService.getById(taskId);
         if (!SessionUtils.isAdmin() && !NumberUtil.equals(autoTask.getUserId(), SessionUtils.getUserId())) {
             return AjaxResult.doError("无权限查看");
@@ -44,16 +42,32 @@ public class AutoTaskController {
         return AjaxResult.doSuccess(autoTaskService.view(autoTask));
     }
 
+    @ApiOperation("删除任务")
+    @GetMapping("/delete/{taskId}")
+    public AjaxResult delete(@PathVariable Long taskId) {
+        AutoTask autoTask = autoTaskService.getById(taskId);
+        if (!SessionUtils.isAdmin() && !NumberUtil.equals(autoTask.getUserId(), SessionUtils.getUserId())) {
+            return AjaxResult.doError("无权限操作");
+        }
+        return autoTaskService.removeById(taskId) ? AjaxResult.doSuccess() : AjaxResult.doError();
+    }
+
+    @ApiOperation("运行任务")
+    @GetMapping("/run/{taskId}")
+    public AjaxResult run(@PathVariable Long taskId) throws Exception {
+        return AjaxResult.doSuccess(autoTaskService.run(taskId));
+    }
+
     @ApiOperation("校验任务")
     @RequestMapping("/{indexId}/check")
-    public AjaxResult checkUser(@PathVariable String indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
-        return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(Long.parseLong(indexId), autoTaskVo, false));
+    public AjaxResult checkUser(@PathVariable Long indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
+        return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(indexId, autoTaskVo, false));
     }
 
     @ApiOperation("校验任务并保存")
     @RequestMapping("/{indexId}/checkAndSave")
-    public AjaxResult checkUserAndSave(@PathVariable String indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
-        return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(Long.parseLong(indexId), autoTaskVo, true));
+    public AjaxResult checkUserAndSave(@PathVariable Long indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
+        return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(indexId, autoTaskVo, true));
     }
 
     @ApiOperation("校验任务并更新")

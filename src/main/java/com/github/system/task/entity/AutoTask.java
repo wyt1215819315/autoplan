@@ -43,7 +43,7 @@ public class AutoTask {
     private String userInfos;
 
     @ApiModelProperty("最后任务完成时间")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM月dd日 HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM月dd日 HH:mm", timezone = "GMT+8")
     private Date lastEndTime;
 
     @ApiModelProperty("最后任务状态")

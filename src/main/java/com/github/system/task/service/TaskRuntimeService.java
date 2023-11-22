@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface TaskRuntimeService {
     CheckResult checkUser(AutoTask autoTask, boolean save);
 
-    @Transactional(rollbackFor = Exception.class)
     TaskResult doTask(AutoTask autoTask, boolean async);
 
     TaskResult updateUserInfo(AutoTask autoTask);

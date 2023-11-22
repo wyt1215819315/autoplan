@@ -28,7 +28,7 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
     public HistoryTaskLog getNearlyLog(HistoryTaskLogVo historyTaskLogVo) {
         LambdaQueryWrapper<HistoryTaskLog> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(HistoryTaskLog::getType, historyTaskLogVo.getType());
-        queryWrapper.eq(HistoryTaskLog::getUserid, historyTaskLogVo.getUserId());
+        queryWrapper.eq(HistoryTaskLog::getUserId, historyTaskLogVo.getUserId());
         queryWrapper.orderByDesc(HistoryTaskLog::getDate);
         queryWrapper.last("limit 1");
         return baseMapper.selectOne(queryWrapper);
