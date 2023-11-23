@@ -14,9 +14,19 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class MihoyouSignSettings extends BaseTaskSettings {
 
-    @SettingColumn(name = "cookie")
+    @SettingColumn(name = "米游社cookie")
     @DataDesensitization
     @NotBlank
     private String cookie;
+
+    @SettingColumn(name = "米哈游通行证cookie")
+    @DataDesensitization
+    private String lCookie;
+
+    @DataDesensitization
+    private String suid;
+
+    @DataDesensitization
+    private String stoken;
 
 }

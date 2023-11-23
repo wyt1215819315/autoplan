@@ -23,10 +23,15 @@ public class ValidateResult {
         return taskResult;
     }
 
-    public static ValidateResult doSuccess() {
+    public static ValidateResult doSuccess(String msg) {
         ValidateResult taskResult = new ValidateResult();
         taskResult.setSuccess(true);
+        taskResult.setMsg(msg);
         return taskResult;
+    }
+
+    public static ValidateResult doSuccess() {
+        return doSuccess(null);
     }
 
 }

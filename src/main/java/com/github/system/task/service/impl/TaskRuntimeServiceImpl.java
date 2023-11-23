@@ -111,6 +111,8 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             ValidateResult validate = service.validate();
             if (!validate.isSuccess()) {
                 return CheckResult.doError("表单校验失败：" + validate.getMsg());
+            } else if (StrUtil.isNotBlank(validate.getMsg())) {
+                taskLog.warn(validate.getMsg());
             }
         } catch (Exception e) {
             return CheckResult.doError("检查表单时发生异常：" + e.getMessage());
