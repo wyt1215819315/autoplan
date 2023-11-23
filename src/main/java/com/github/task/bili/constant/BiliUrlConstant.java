@@ -6,7 +6,7 @@ public class BiliUrlConstant {
     public static final String BILI_QRCODE_STATUS_URL = "https://passport.bilibili.com/qrcode/getLoginInfo";
 
     public static final String NEW_BILI_QRCODE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
-    public static final String NEW_BILI_QRCODE_STATUS_URL = "http://passport.bilibili.com/qrcode/getLoginInfo";
+    public static final String NEW_BILI_QRCODE_STATUS_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=";
 
     /**
      * 直播签到
