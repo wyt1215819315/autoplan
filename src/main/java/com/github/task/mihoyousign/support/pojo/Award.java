@@ -1,9 +1,10 @@
 package com.github.task.mihoyousign.support.pojo;
 
-/**
- * @Author ponking
- * @Date 2021/5/20 9:22
- */
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class Award {
 
     private String icon;
@@ -18,39 +19,4 @@ public class Award {
         this.cnt = cnt;
     }
 
-    public Award() {
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getCnt() {
-        return cnt;
-    }
-
-    public void setCnt(Integer cnt) {
-        this.cnt = cnt;
-    }
-
-    @Override
-    public String toString() {
-        return "Award{" +
-                "icon='" + icon + '\'' +
-                ", name='" + name + '\'' +
-                ", cnt=" + cnt +
-                '}';
-    }
 }
