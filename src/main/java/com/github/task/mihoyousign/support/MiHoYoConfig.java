@@ -1,4 +1,4 @@
-package com.miyoushe.sign.gs;
+package com.github.task.mihoyousign.support;
 
 /**
  * @Author ponking
