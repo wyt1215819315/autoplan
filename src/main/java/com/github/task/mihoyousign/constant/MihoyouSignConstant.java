@@ -1,5 +1,9 @@
 package com.github.task.mihoyousign.constant;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+
 public class MihoyouSignConstant {
 
     public static final String MYS_PERSONAL_INFO_URL = "https://bbs-api.miyoushe.com/user/wapi/getUserFullInfo?gids=2";
@@ -87,11 +91,9 @@ public class MihoyouSignConstant {
     public static final String XQTD_SIGN_URL = "https://api-takumi.mihoyo.com/event/luna/sign";
 
 
-    public static final String USER_AGENT = String.format("Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) miHoYoBBS/%s", APP_VERSION);
-
     public static final String USER_AGENT_TEMPLATE = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) miHoYoBBS/%s";
+    public static final String USER_AGENT = String.format(USER_AGENT_TEMPLATE, APP_VERSION);
 
-//    public static final String USER_AGENT = "okhttp/4.8.0";
 
 
     /**
@@ -99,11 +101,6 @@ public class MihoyouSignConstant {
      */
     public static final String SIGN_IN_STATUS = "https://bbs-api.mihoyo.com/apihub/sapi/querySignInStatus";
 
-    public static final String HUB_COOKIE1_URL = "https://webapi.account.mihoyo.com/Api/cookie_accountinfo_by_loginticket";
-
-    public static final String HUB_COOKIE2_URL = "https://api-takumi.mihoyo.com/auth/api/getMultiTokenByLoginTicket?login_ticket=%s&token_types=3&uid=%s";
-
-    //public static final String HUB_SIGN_URL = "https://bbs-api.mihoyo.com/apihub/sapi/signIn?gids=%s";
     public static final String HUB_SIGN_URL = "https://bbs-api.mihoyo.com/apihub/app/api/signIn";
 
     public static final String HUB_LIST1_URL = "https://bbs-api.mihoyo.com/post/api/getForumPostList?forum_id=%s&is_good=false&is_hot=false&page_size=20&sort_type=1";
@@ -119,26 +116,25 @@ public class MihoyouSignConstant {
     public static final String HUB_VOTE_URL = "https://bbs-api.mihoyo.com/apihub/sapi/upvotePost";
 
 
+    @Getter
     public enum HubsEnum {
-        BH3(new Hub.Builder().setId("1").setForumId("1").setName("崩坏3").setUrl("https://bbs.mihoyo.com/bh3/").build()),
-        //        YS(new Hub.Builder().setId("2").setForumId("2").setName("原神").setUrl("https://bbs.mihoyo.com/ys/").build()),
-        YS(new Hub.Builder().setId("2").setForumId("26").setName("原神").setUrl("https://bbs.mihoyo.com/ys/").build()),
-        BH2(new Hub.Builder().setId("3").setForumId("30").setName("崩坏2").setUrl("https://bbs.mihoyo.com/bh2/").build()),
-        WD(new Hub.Builder().setId("4").setForumId("37").setName("未定事件簿").setUrl("https://bbs.mihoyo.com/wd/").build()),
-        DBY(new Hub.Builder().setId("5").setForumId("34").setName("大别野").setUrl("https://bbs.mihoyo.com/dby/").build());
+        BH3(new Hub.HubBuilder().id("1").forumId("1").name("崩坏3").url("https://bbs.mihoyo.com/bh3/").build()),
+        YS(new Hub.HubBuilder().id("2").forumId("26").name("原神").url("https://bbs.mihoyo.com/ys/").build()),
+        BH2(new Hub.HubBuilder().id("3").forumId("30").name("崩坏2").url("https://bbs.mihoyo.com/bh2/").build()),
+        WD(new Hub.HubBuilder().id("4").forumId("37").name("未定事件簿").url("https://bbs.mihoyo.com/wd/").build()),
+        DBY(new Hub.HubBuilder().id("5").forumId("34").name("大别野").url("https://bbs.mihoyo.com/dby/").build());
 
-        private Hub game;
+        private final Hub game;
 
         HubsEnum(Hub game) {
             this.game = game;
         }
 
-        public Hub getGame() {
-            return game;
-        }
     }
 
 
+    @Data
+    @Builder
     public static class Hub {
 
         private String id;
@@ -146,78 +142,5 @@ public class MihoyouSignConstant {
         private String name;
         private String url;
 
-        public Hub() {
-        }
-
-        private Hub(Builder builder) {
-            this.id = builder.id;
-            this.forumId = builder.forumId;
-            this.name = builder.name;
-            this.url = builder.url;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getForumId() {
-            return forumId;
-        }
-
-        public void setForumId(String forumId) {
-            this.forumId = forumId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public static class Builder {
-
-            private String id;
-            private String forumId;
-            private String name;
-            private String url;
-
-            public Builder setId(String id) {
-                this.id = id;
-                return this;
-            }
-
-            public Builder setForumId(String forumId) {
-                this.forumId = forumId;
-                return this;
-            }
-
-            public Builder setName(String name) {
-                this.name = name;
-                return this;
-            }
-
-            public Builder setUrl(String url) {
-                this.url = url;
-                return this;
-            }
-
-            public Hub build() {
-                return new Hub(this);
-            }
-        }
     }
 }

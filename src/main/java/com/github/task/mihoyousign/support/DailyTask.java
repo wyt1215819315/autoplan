@@ -1,26 +1,25 @@
 package com.github.task.mihoyousign.support;
 
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.json.JSONObject;
+import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.util.HttpUtil;
 import com.github.system.task.dto.TaskLog;
 import com.github.system.task.dto.TaskResult;
-import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.github.task.mihoyousign.constant.MihoyouSignConstant;
+import com.github.task.mihoyousign.model.MihoyouSignUserInfo;
+import com.github.task.mihoyousign.support.game.MiHoYoAbstractGameSign;
+import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
+@Slf4j
 public class DailyTask {
-
-    private static final Logger log = LogManager.getLogger(DailyTask.class);
-
-    public GenShinSignMiHoYo genShinSign;
-
-    public StarRailSignMihoYo starRailSign;
-
+    private final List<MiHoYoAbstractGameSign> gameSignService = new ArrayList<>();
     public MiHoYoSignMiHoYo miHoYoSign;
 
 
@@ -28,91 +27,72 @@ public class DailyTask {
      * @param account 账号配置信息
      */
     public DailyTask(GenshinHelperProperties.Account account) {
-        genShinSign = new GenShinSignMiHoYo(account.getCookie());
-        starRailSign = new StarRailSignMihoYo(account.getCookie());
+        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE + ".task.mihoyousign", MiHoYoAbstractGameSign.class);
+        for (Class<?> aClass : classes) {
+            try {
+                MiHoYoAbstractGameSign signService = (MiHoYoAbstractGameSign) aClass.getDeclaredConstructor(String.class).newInstance(account.getCookie());
+                gameSignService.add(signService);
+            } catch (Exception e) {
+                log.error("初始化米游社游戏签到实例失败", e);
+            }
+        }
         if (account.getStuid() != null && account.getStoken() != null) {
-            miHoYoSign = new MiHoYoSignMiHoYo(MiHoYoConfig.HubsEnum.YS.getGame(), account.getStuid(), account.getStoken());
+            miHoYoSign = new MiHoYoSignMiHoYo(MihoyouSignConstant.HubsEnum.YS.getGame(), account.getStuid(), account.getStoken());
+        }
+    }
+
+    public boolean setUserInfo(MihoyouSignUserInfo userInfo) {
+        boolean success = false;
+        for (MiHoYoAbstractGameSign sign : gameSignService) {
+            boolean b = sign.setUserInfo(userInfo);
+            if (b) {
+                // 只要有一个成功了就是成功的
+                success = true;
+            }
+        }
+        return success;
+    }
+
+    /**
+     * 游戏社区签到任务
+     */
+    public TaskResult gameSign(TaskLog log) throws Exception {
+        for (MiHoYoAbstractGameSign sign : gameSignService) {
+            log.info("[{}]游戏签到任务开始", sign.getSignConfig().getGameName());
+            TaskResult taskResult = sign.doSign(log);
+            if (taskResult.isSuccess()) {
+                log.info("[{}]游戏签到任务结束", sign.getSignConfig().getGameName());
+            } else {
+                log.error("[{}]游戏签到任务出错：{}", sign.getSignConfig().getGameName(), taskResult.getMsg());
+            }
+        }
+        return TaskResult.doSuccess();
+    }
+
+
+    /**
+     * 米游社签到任务
+     */
+    public TaskResult miHoYoSign(TaskLog log) throws Exception {
+        if (miHoYoSign != null) {
+            return miHoYoSign.doSign(log);
+        } else {
+            log.info("未正确配置米游社签到cookie，跳过米游社签到任务");
+            return TaskResult.doSuccess();
         }
     }
 
     /**
-     * 原神社区签到任务
+     * 获取米游社账号各种信息
      */
-    public TaskResult genshinSign(TaskLog log) {
-        if (genShinSign != null) {
-            List<Map<String, Object>> list = genShinSign.doSign(log);
-
-            for (Map<String, Object> map : list) {
-                if (!(boolean) map.get("flag")){
-                    //登录失败，直接返回
-                    return TaskResult.doError((String) map.get("msg"));
-                }
-                log.info(map.get("msg"));
-                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
-            }
+    public JSONObject getPersonalInfo(String cookie) {
+        Map<String, String> basicHeaders = MiHoYoHttpUtil.getBasicHeaders(cookie, MihoyouSignConstant.APP_VERSION);
+        basicHeaders.put("cookie", cookie);
+        JSONObject json = HttpUtil.requestJson(MihoyouSignConstant.MYS_PERSONAL_INFO_URL, null, basicHeaders, HttpUtil.RequestType.GET);
+        if (json.getInt("retcode") != 0) {
+            return null;
         }
-    }
-
-    public Map<String,Object> doDailyTask(TaskLog log) {
-        Map<String,Object> result = new HashMap<>();
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        log.info("开始执行时间[ {} ] ]", dtf.format(LocalDateTime.now()));
-
-        if (genShinSign != null) {
-            List<Map<String, Object>> list = genShinSign.doSign();
-
-            for (Map<String, Object> map : list) {
-                if (!(boolean) map.get("flag")){
-                    //登录失败，直接返回
-                    map.put("msg",stringBuilder.toString() + "\n" + map.get("msg"));
-                    return map;
-                }
-
-                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
-            }
-        }
-
-        if (starRailSign != null) {
-            List<Map<String, Object>> list = starRailSign.doSign();
-
-            for (Map<String, Object> map : list) {
-                if (!(boolean) map.get("flag")){
-                    //登录失败，直接返回
-                    map.put("msg", stringBuilder + "\n" + map.get("msg"));
-                    return map;
-                }
-
-                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
-            }
-        }
-
-        if (miHoYoSign != null) {
-            try {
-                Map<String, Object> map = miHoYoSign.doSingleThreadSign();
-                stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
-            } catch (Exception e) {
-                stringBuilder.append("\n").append("[ERROR]miHoYoThreadSign执行异常！").append(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        if (miHoYoSign != null) {
-            try {
-                List<Map<String, Object>> list = miHoYoSign.doSign();
-                for (Map<String, Object> map : list) {
-                    stringBuilder.append("\n").append("-----------------\n").append(map.get("msg"));
-                }
-            } catch (Exception e) {
-                stringBuilder.append("\n").append("[ERROR]miHoYoSign执行异常！").append(e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        result.put("msg",stringBuilder.toString());
-        result.put("flag",true);
-        return result;
+        return json.getJSONObject("data");
     }
 
 }

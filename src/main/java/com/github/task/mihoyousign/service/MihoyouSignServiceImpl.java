@@ -1,11 +1,7 @@
 package com.github.task.mihoyousign.service;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.github.system.base.util.HttpUtil;
 import com.github.system.task.annotation.TaskAction;
 import com.github.system.task.constant.AutoTaskStatus;
@@ -16,20 +12,18 @@ import com.github.task.mihoyousign.model.MihoyouSignSettings;
 import com.github.task.mihoyousign.model.MihoyouSignUserInfo;
 import com.github.task.mihoyousign.support.DailyTask;
 import com.github.task.mihoyousign.support.GenshinHelperProperties;
+import com.github.task.mihoyousign.support.game.impl.GenShinSignMiHoYo;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.github.task.cloudgenshin.constant.CloudGenshinSignConstant.*;
 
 public class MihoyouSignServiceImpl extends BaseTaskService<MihoyouSignSettings, MihoyouSignUserInfo> {
 
+    private final MihoyouSignUserInfo userInfo = new MihoyouSignUserInfo();
     private DailyTask dailyTask;
 
     @Override
     public TaskInfo getTaskInfo() {
-        return new TaskInfo("米游社任务", "MihoyouSign", Duration.ofMinutes(1));
+        return new TaskInfo("米游社", "MihoyouSign", Duration.ofMinutes(1));
     }
 
     @Override
@@ -39,6 +33,10 @@ public class MihoyouSignServiceImpl extends BaseTaskService<MihoyouSignSettings,
         account.setStuid(taskSettings.getSuid());
         account.setStoken(taskSettings.getStoken());
         this.dailyTask = new DailyTask(account);
+        // 这一步就算是登录校验了
+        if (!this.dailyTask.setUserInfo(this.userInfo)) {
+            return TaskResult.doError("登录检查失败", AutoTaskStatus.USER_CHECK_ERROR);
+        }
         return TaskResult.doSuccess();
     }
 
@@ -100,62 +98,31 @@ public class MihoyouSignServiceImpl extends BaseTaskService<MihoyouSignSettings,
 
     @Override
     public LoginResult<MihoyouSignUserInfo> checkUser() throws Exception {
-
+        return LoginResult.doSuccess("登录校验成功");
     }
 
     @Override
     public MihoyouSignUserInfo getUserInfo() throws Exception {
-
-    }
-
-
-    @TaskAction(name = "校验登录状态", order = 0)
-    public TaskResult checkLoginStatus(TaskLog log) throws Exception {
-        if (checkLoginSuccess()) {
-            return TaskResult.doSuccess();
-        } else {
-            log.error("返回信息：" + this.userInfo);
-            return TaskResult.doError("登录校验失败", AutoTaskStatus.USER_CHECK_ERROR);
+        this.userInfo.setOnlyId(taskSettings.getSuid());
+        JSONObject personalInfo = this.dailyTask.getPersonalInfo(taskSettings.getCookie());
+        if (personalInfo !=null) {
+            JSONObject ui = personalInfo.getJSONObject("user_info");
+            this.userInfo.setMiName(ui.getStr("nickname"));
+            this.userInfo.setHeadImg(ui.getStr("avatar_url"));
         }
+        return this.userInfo;
     }
 
-    @TaskAction(name = "获取公告列表", order = 1)
-    public TaskResult getAnnouncement(TaskLog log) throws Exception {
-        JSONObject jsonObject = HttpUtil.requestJson(AnnouncementURL, null, this.header, HttpUtil.RequestType.GET);
-        log.info("获取到公告列表：{}", jsonObject.get("data"));
-        return TaskResult.doSuccess();
+
+    @TaskAction(name = "游戏社区签到任务")
+    public TaskResult gameSign(TaskLog log) throws Exception {
+        return this.dailyTask.gameSign(log);
     }
 
-    @TaskAction(name = "签到", order = 2)
-    public TaskResult sign(TaskLog log) throws Exception {
-        JSONObject jsonObject = HttpUtil.requestJson(ListNotificationURL, null, this.header, HttpUtil.RequestType.GET);
-        JSONArray jsonArray = jsonObject.getJSONObject("data").getJSONArray("list");
-        if (jsonArray.isEmpty()) {
-            log.info("奖励列表为空，应该是今天已经签到过了..");
-        } else {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject object = jsonArray.getJSONObject(i);
-                Long id = object.getLong("id");
-                // 请求接口获取奖励
-                JSONObject ackJsonObj = HttpUtil.requestJson(AckNotificationURL, MapUtil.of("id", id), this.header, HttpUtil.RequestType.JSON);
-                if (ackJsonObj.getInt("retcode") != 0) {
-                    log.error("领取奖励时发生错误：" + ackJsonObj.toJSONString(0));
-                }
-                JSONObject msgObj = JSONUtil.parseObj(object.getStr("msg"));
-                Integer overNum = msgObj.getInt("over_num");
-                if (msgObj.containsKey("msg") && overNum != null && msgObj.containsKey("num")) {
-                    log.info("领取到奖励内容【{}】,时长={},溢出时长={}", msgObj.get("msg"), msgObj.get("num"), overNum);
-                    if (overNum > 0) {
-                        log.warn("奖励时长已经溢出！");
-                    }
-                } else {
-                    log.info("领取到奖励内容：" + msgObj);
-                }
-            }
-        }
-        // 更新用户信息
-        initUserInfo();
-        return TaskResult.doSuccess();
+    @TaskAction(name = "米游社签到任务")
+    public TaskResult miHoYoSign(TaskLog log) throws Exception {
+        return this.dailyTask.miHoYoSign(log);
     }
+
 
 }

@@ -20,7 +20,16 @@ public class MihoyouSignUserInfo extends BaseUserInfo {
     @DataDesensitization
     private List<String> genshinName;
 
+    @UserInfoColumn("星铁uid")
+    @DataDesensitization
+    private List<String> starRailUid;
+
+    @UserInfoColumn("星铁昵称")
+    @DataDesensitization
+    private List<String> starRailName;
+
     @UserInfoColumn("米游社昵称")
+    @DataDesensitization
     private String miName;
 
 }

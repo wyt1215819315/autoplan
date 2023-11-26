@@ -89,7 +89,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             }
             return CheckResult.doError(sb + "</div>");
         } catch (Exception e) {
-            log.error("出现未知的参数校验异常，请检查model上的注释是否正确，code=" + code,e);
+            log.error("出现未知的参数校验异常，请检查model上的注释是否正确，code=" + code, e);
             return CheckResult.doError("参数校验出现系统错误，请联系管理员:" + e.getMessage());
         }
         Class<? extends BaseTaskSettings> taskSettingsClass = service.getTaskSettings().getClass();
@@ -111,14 +111,14 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             ValidateResult validate = service.validate();
             if (!validate.isSuccess()) {
                 return CheckResult.doError("表单校验失败：" + validate.getMsg());
-            } else if (StrUtil.isNotBlank(validate.getMsg())) {
-                taskLog.warn(validate.getMsg());
+            } else {
+                if (StrUtil.isNotBlank(validate.getMsg())) {
+                    taskLog.warn(validate.getMsg());
+                }
             }
         } catch (Exception e) {
             return CheckResult.doError("检查表单时发生异常：" + e.getMessage());
         }
-        // 初始化任务并校验
-        service.setThing(autoTask.getSettings(), taskLog);
         try {
             TaskResult init = service.init(taskLog);
             if (!init.isSuccess()) {
@@ -137,7 +137,12 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                 // 持久化
                 BaseUserInfo userInfo = loginResult.getUserInfo();
                 if (userInfo == null) {
-                    userInfo = service.getUserInfo();
+                    try {
+                        userInfo = service.getUserInfo();
+                    } catch (Exception e) {
+                        log.error("获取用户信息时出现异常", e);
+                        return CheckResult.doError("获取用户信息时出现异常！" + e.getMessage());
+                    }
                 }
                 if (StrUtil.isBlank(userInfo.getOnlyId())) {
                     log.warn("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
@@ -312,7 +317,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doError("任务执行超时");
         } catch (Exception e) {
             endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
-            log.error("任务执行发生未知异常错误",e);
+            log.error("任务执行发生未知异常错误", e);
             return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
         }
     }

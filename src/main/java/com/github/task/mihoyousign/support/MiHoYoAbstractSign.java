@@ -1,40 +1,27 @@
 package com.github.task.mihoyousign.support;
 
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import com.github.system.base.dto.r.R;
-import com.github.system.base.util.HttpUtil;
 import com.github.system.task.dto.TaskLog;
 import com.github.system.task.dto.TaskResult;
 import com.github.task.mihoyousign.constant.MihoyouSignConstant;
-import com.github.task.mihoyousign.support.model.SignUserInfo;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 
 @Data
 public abstract class MiHoYoAbstractSign implements Sign {
-    private final Log logger = LogFactory.getLog(MiHoYoAbstractSign.class);
-
     public final String cookie;
-
+    private final Log logger = LogFactory.getLog(MiHoYoAbstractSign.class);
     private String clientType = "";
-
     private String appVersion = "";
-
     private String salt = "";
-
     private String type = "5";
-
-    protected List<SignUserInfo> signUserInfoList;
-
 
     public MiHoYoAbstractSign(String cookie) {
         this.cookie = cookie;
@@ -43,9 +30,6 @@ public abstract class MiHoYoAbstractSign implements Sign {
     @Override
     public abstract TaskResult doSign(TaskLog log) throws Exception;
 
-    public abstract String getRoleUrl();
-
-    @Override
     public Map<String, String> getHeaders(String dsType) {
         Map<String, String> headers = new HashMap<>();
         headers.put("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toUpperCase());
@@ -57,46 +41,8 @@ public abstract class MiHoYoAbstractSign implements Sign {
         return headers;
     }
 
-    protected R<List<SignUserInfo>> getUserInfo(TaskLog log) {
-        List<SignUserInfo> list = new ArrayList<>();
-        try {
-            JSONObject result = HttpUtil.requestJson(getRoleUrl(),null, getBasicHeaders(), HttpUtil.RequestType.GET);
-            if (result.isEmpty()) {
-                return R.failed("获取uid失败，cookie可能有误！");
-            }
-            JSONArray jsonArray = result.getJSONObject("data").getJSONArray("list");
-            for (Object user : jsonArray) {
-                JSONObject userInfo = (JSONObject) user;
-                String uid = userInfo.getStr("game_uid");
-                String nickname = userInfo.getStr("nickname");
-                String regionName = userInfo.getStr("region_name");
-                String region = userInfo.getStr("region");
-                SignUserInfo signUserInfo = new SignUserInfo();
-                signUserInfo.setUid(uid);
-                signUserInfo.setNickname(nickname);
-                signUserInfo.setRegionName(regionName);
-                signUserInfo.setRegion(region);
-                list.add(signUserInfo);
-            }
-            return R.ok(list);
-        } catch (Exception e) {
-            logger.error("米游社游戏签到获取用户信息失败",e);
-            return R.failed("获取uid失败，未知异常：" + e.getMessage());
-        }
-    }
-
     protected Map<String, String> getBasicHeaders() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Cookie", cookie);
-        headers.put("User-Agent", String.format(MiHoYoConfig.USER_AGENT_TEMPLATE, getAppVersion()));
-        headers.put("Referer", MiHoYoConfig.REFERER_URL);
-        headers.put("Accept-Encoding", "gzip, deflate, br");
-        headers.put("x-rpc-channel", "appstore");
-        headers.put("accept-language", "zh-CN,zh;q=0.9,ja-JP;q=0.8,ja;q=0.7,en-US;q=0.6,en;q=0.5");
-        headers.put("accept-encoding", "gzip, deflate");
-        headers.put("x-requested-with", "com.mihoyo.hyperion");
-        headers.put("Host", "api-takumi.mihoyo.com");
-        return headers;
+        return MiHoYoHttpUtil.getBasicHeaders(cookie, getAppVersion());
     }
 
 
