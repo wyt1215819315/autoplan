@@ -43,6 +43,7 @@ public abstract class MiHoYoAbstractGameSign extends MiHoYoAbstractSign {
         R<List<SignUserInfo>> userInfo = getUserInfo();
         if (userInfo.ok()) {
             for (SignUserInfo signUserInfo : signUserInfoList) {
+                log.info("当前执行uid：" + signUserInfo.getUid() + ",昵称：" + signUserInfo.getNickname() + ",服务器：" + signUserInfo.getRegionName());
                 doSign(signUserInfo.getUid(), signUserInfo.getRegion(), log);
                 hubSign(signUserInfo.getUid(), signUserInfo.getRegion(), log);
             }

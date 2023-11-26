@@ -54,13 +54,14 @@ public class XiaomiApi {
             headers.put("X-FORWARDED-FOR", getRandomIp());
             UrlBuilder builder = UrlBuilder.of("https://api-user.huami.com/registrations/+86" + account + "/tokens");
             data.forEach(builder::addQuery);
-            HttpResponse execute = HttpUtil.createPost("")
+            HttpResponse execute = HttpUtil.createPost(builder.toString())
                     .headerMap(headers, true)
                     .setUrl(builder)
                     .timeout(5000)
                     .execute();
 //            int statusCode = execute.getStatus();
             String location = execute.header("Location");
+            execute.close();
             String params = location.substring(location.indexOf("?") + 1);
             Map<String, String> split = Splitter.on("&").withKeyValueSeparator("=").split(params);
             String s = split.get("access");
@@ -101,7 +102,7 @@ public class XiaomiApi {
             headers.put("X-FORWARDED-FOR", getRandomIp());
             UrlBuilder builder = UrlBuilder.of("https://account.huami.com/v2/client/login");
             data.forEach(builder::addQuery);
-            HttpResponse execute = HttpUtil.createPost("")
+            HttpResponse execute = HttpUtil.createPost(builder.toString())
                     .setUrl(builder)
                     .headerMap(headers, true)
                     .execute();

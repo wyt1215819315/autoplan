@@ -52,6 +52,7 @@ public class MiSportServiceImpl extends BaseTaskService<MiSportSettings, MiSport
     public MiSportUserInfo getUserInfo() throws Exception {
         MiSportUserInfo miSportUserInfo = new MiSportUserInfo();
         miSportUserInfo.setOnlyId(taskSettings.getPhone());
+        miSportUserInfo.setPhone(taskSettings.getPhone());
         return miSportUserInfo;
     }
 
