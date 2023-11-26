@@ -58,6 +58,11 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
     }
 
     @Override
+    public boolean isRunning(Long taskId) {
+        return taskLockMap.containsKey(taskId);
+    }
+
+    @Override
     public CheckResult checkUser(AutoTask autoTask, boolean save) {
         String code = autoTask.getCode();
         Class<?> aClass = TaskInit.serviceClassesMap.get(code);

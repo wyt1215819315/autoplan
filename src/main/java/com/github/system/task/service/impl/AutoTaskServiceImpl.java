@@ -84,6 +84,9 @@ public class AutoTaskServiceImpl extends ServiceImpl<AutoTaskDao, AutoTask> impl
             if (desensitization) {
                 DataDesensitizationUtil.desensitization(bean);
             }
+            if (taskRuntimeService.isRunning(dto.getId())) {
+                dto.setLastEndStatus(100);
+            }
             dto.setUserInfo(bean);
             dto.setUserInfos(null);
             list.add(dto);

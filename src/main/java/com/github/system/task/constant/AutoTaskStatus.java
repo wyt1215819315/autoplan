@@ -6,6 +6,10 @@ import lombok.Getter;
 public enum AutoTaskStatus {
 
     /**
+     * 运行中
+     */
+    RUNNING(100),
+    /**
      * 成功
      */
     SUCCESS(200),

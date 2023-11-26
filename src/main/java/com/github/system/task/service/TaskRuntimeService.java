@@ -6,6 +6,8 @@ import com.github.system.task.entity.AutoTask;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface TaskRuntimeService {
+    boolean isRunning(Long taskId);
+
     CheckResult checkUser(AutoTask autoTask, boolean save);
 
     TaskResult doTask(AutoTask autoTask, boolean async);
