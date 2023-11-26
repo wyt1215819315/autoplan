@@ -150,6 +150,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
             biliTaskUtil.watchVideo();
             return TaskResult.doSuccess();
         } catch (Exception e) {
+            log.error(e);
             return TaskResult.doError(e.getMessage());
         }
     }
@@ -176,7 +177,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
         } else {
             biliUserInfo.setIsVip(0);
         }
-        biliUserInfo.setVipDueDate(DateUtil.formatDateTime(new Date(biliData.getVipDueDate())));
+        biliUserInfo.setVipDueDate(DateUtil.formatDate(new Date(biliData.getVipDueDate())));
         biliUserInfo.setBiliUpExp(biliData.getLevel_info().getNext_exp_asInt());
         biliUserInfo.setOnlyId(String.valueOf(biliData.getMid()));
         return biliUserInfo;

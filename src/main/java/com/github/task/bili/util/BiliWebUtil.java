@@ -68,6 +68,6 @@ public class BiliWebUtil {
 
 
     public JSONObject doPost(String url, Map<String, Object> requestParam, Map<String, String> headers) throws Exception {
-        return HttpUtil.requestJson(url, requestParam, headers, HttpUtil.RequestType.FormData);
+        return HttpUtil.requestJson(url, requestParam, getHeaders(headers), HttpUtil.RequestType.X_WWW_FORM);
     }
 }

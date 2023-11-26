@@ -1,5 +1,6 @@
 package com.github.task.bili.util;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -233,6 +234,7 @@ public class BiliTaskUtil {
             } else {
                 bvid = taskGetVID.getRegionRankingVideoBvid();
             }
+            ThreadUtil.safeSleep(2000);
 
             addCoinOperateCount++;
             //观看视频
@@ -242,12 +244,14 @@ public class BiliTaskUtil {
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
+            ThreadUtil.safeSleep(2000);
 //            new SleepTime().sleepDefault();
             Map<String, Object> coinAddMap = BiliHelpUtil.coinAdd(bvid, 1, taskConfig.getBiliCoinConfig().getEnableClickLike(), biliWebUtil, taskInfo.getBiliJct());
             log.info((String) coinAddMap.get("msg"));
             if ((boolean) coinAddMap.get("data")) {
                 needCoins--;
             }
+            ThreadUtil.safeSleep(2000);
             if (addCoinOperateCount > 15) {
                 log.error("尝试投币/投币失败次数太多");
                 log.info("投币任务完成后余额为: {}", getCoinBalance());

@@ -121,7 +121,7 @@ public class BiliHelpUtil {
                 msg += String.format("为 %s投币成功", videoTitle);
                 map.put("data", true);
             } else {
-                msg += "投币失败" + jsonObject.getStr("message");
+                msg += "投币失败:" + jsonObject.getStr("message");
                 map.put("data", false);
             }
         } else {
