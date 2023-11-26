@@ -284,26 +284,21 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doSuccess("任务已经在执行了");
         }
         taskLockMap.put(autoTask.getId(), 1);
-        try {
-            Future<Void> future = executorService.submit(() -> {
-                doTask(autoTask, taskLog);
-                if (autoIndex.getDelay() > 0) {
-                    ThreadUtil.safeSleep(autoIndex.getDelay() * 1000);
-                }
-                return null;
-            });
-            if (async) {
-                // 要是异步的话还是得另外起一个线程去守护他
-                ThreadUtil.newThread(() -> {
-                    runFutureTask(autoTask, future, autoIndex, taskLog);
-                }, "Task_Daemon_" + autoTask.getId(), true);
-                return TaskResult.doSuccess("任务提交成功！");
-            } else {
-                return runFutureTask(autoTask, future, autoIndex, taskLog);
+        Future<Void> future = executorService.submit(() -> {
+            doTask(autoTask, taskLog);
+            if (autoIndex.getDelay() > 0) {
+                ThreadUtil.safeSleep(autoIndex.getDelay() * 1000);
             }
-        } finally {
-            // 解除任务锁定
-            taskLockMap.remove(autoTask.getId());
+            return null;
+        });
+        if (async) {
+            // 要是异步的话还是得另外起一个线程去守护他
+            ThreadUtil.newThread(() -> {
+                runFutureTask(autoTask, future, autoIndex, taskLog);
+            }, "Task_Daemon_" + autoTask.getId(), true);
+            return TaskResult.doSuccess("任务提交成功！");
+        } else {
+            return runFutureTask(autoTask, future, autoIndex, taskLog);
         }
     }
 
@@ -319,6 +314,8 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
             log.error("任务执行发生未知异常错误", e);
             return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
+        } finally {
+            taskLockMap.remove(autoTask.getId());
         }
     }
 
