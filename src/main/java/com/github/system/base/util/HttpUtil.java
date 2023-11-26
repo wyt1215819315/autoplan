@@ -279,6 +279,7 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
     }
 
     public static HttpResponse request(String url, Map<String, Object> params, Map<String, String> headers, RequestType requestType, int timeout, boolean useProxy) {
+        HttpRequest.getCookieManager().getCookieStore().removeAll();
         HttpRequest httpRequest;
         switch (requestType) {
             case GET -> httpRequest = createGet(url).form(params);
