@@ -24,6 +24,12 @@ public class SysConfig {
     @ApiModelProperty("值")
     private String value;
 
+    @ApiModelProperty("名称")
+    private String name;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
     public SysConfig(String key, String value) {
         this.key = key;
         this.value = value;

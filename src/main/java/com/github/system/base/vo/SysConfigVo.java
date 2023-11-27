@@ -14,4 +14,8 @@ public class SysConfigVo {
 
     private String value;
 
+    private String name;
+
+    private String remark;
+
 }
