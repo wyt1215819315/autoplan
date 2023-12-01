@@ -4,8 +4,8 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.system.base.dto.customform.CustomFormDisplayDto;
 import com.github.system.task.dao.AutoIndexDao;
-import com.github.system.task.dto.display.SettingDisplayDto;
 import com.github.system.task.dto.display.UserInfoDisplayDto;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.service.AutoIndexService;
@@ -42,7 +42,7 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
     }
 
     @Override
-    public List<SettingDisplayDto> getSettingColumn(String indexId) {
+    public List<CustomFormDisplayDto> getSettingColumn(String indexId) {
         AutoIndex autoIndex = getById(indexId);
         if (autoIndex == null || autoIndex.getEnable() == 0) {
             return new ArrayList<>();

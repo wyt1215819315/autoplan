@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.task.dto.display.SettingDisplayDto;
+import com.github.system.base.dto.customform.CustomFormDisplayDto;
 import com.github.system.task.dto.display.UserInfoDisplayDto;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.service.AutoIndexService;
@@ -55,7 +55,7 @@ public class AutoIndexController {
 
     @ApiOperation("获取填写的配置字段")
     @GetMapping("/getSettingColumn/{indexId}")
-    public List<SettingDisplayDto> getSettingColumn(@PathVariable String indexId) {
+    public List<CustomFormDisplayDto> getSettingColumn(@PathVariable String indexId) {
         return autoIndexService.getSettingColumn(indexId);
     }
 

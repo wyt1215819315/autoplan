@@ -13,10 +13,10 @@ import lombok.EqualsAndHashCode;
 @PushEntity(PushTypeConstant.SERVER_CHAIN)
 public class ServerChainConfig extends PushBaseConfig {
 
-    @PushProperty(value = "https://sct.ftqq.com/sendkey获取到的SendKey", notnull = true)
+    @PushProperty(desc = "https://sct.ftqq.com/sendkey获取到的SendKey", value = "SendKey", notnull = true)
     private String sendKey;
 
-    @PushProperty(value = "动态指定本次推送使用的消息通道", options = {
+    @PushProperty(desc = "本次推送使用的消息通道", value = "消息通道", options = {
             @PushPropertyOptions(num = 9, name = "方糖服务号"),
             @PushPropertyOptions(num = 66, name = "企业微信应用消息"),
             @PushPropertyOptions(num = 8, name = "Bark iOS"),
@@ -30,7 +30,7 @@ public class ServerChainConfig extends PushBaseConfig {
     })
     private Integer channel;
 
-    @PushProperty(value = "消息抄送的openid", ref = "channel", refValue = {66, 0})
+    @PushProperty(desc = "消息抄送的openid", value = "openid", ref = "channel", refValue = {66, 0})
     private String openid;
 
 }

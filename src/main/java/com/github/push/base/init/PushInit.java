@@ -11,6 +11,8 @@ import com.github.push.base.dto.PushConfigOptions;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.service.PushService;
 import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.dto.customform.CustomFormDisplayDto;
+import com.github.system.base.dto.customform.CustomFormDisplayOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -32,7 +34,7 @@ public class PushInit implements CommandLineRunner {
     // 用于前端回显 储存所有可用的推送类型
     public static final List<String> pushTypeList = new ArrayList<>();
     // 用于前端回显 储存可用的推送字段信息
-    public static final Map<String, PushConfigDto> pushConfigMap = new LinkedHashMap<>();
+    public static final Map<String, List<CustomFormDisplayDto>> pushConfigMap = new LinkedHashMap<>();
 
     @Override
     public void run(String... args) throws Exception {
@@ -64,9 +66,11 @@ public class PushInit implements CommandLineRunner {
                 pushTypeList.add(key);
                 // 扫描字段
                 Field[] declaredFields = ClassUtil.getDeclaredFields(aClass);
+                List<CustomFormDisplayDto> pushConfigDtoList = new ArrayList<>();
                 for (Field field : declaredFields) {
-                    PushConfigDto pushConfigDto = new PushConfigDto();
+                    CustomFormDisplayDto pushConfigDto = new CustomFormDisplayDto();
                     pushConfigDto.setField(field.getName());
+                    pushConfigDto.setFieldType(field.getType().getSimpleName());
                     PushProperty pushProperty = AnnotationUtil.getAnnotation(field, PushProperty.class);
                     if (pushProperty != null) {
                         pushConfigDto.setName(pushProperty.value());
@@ -74,9 +78,9 @@ public class PushInit implements CommandLineRunner {
                         pushConfigDto.setDefaultValue(pushProperty.defaultValue());
                         if (pushProperty.options() != null && pushProperty.options().length > 0) {
                             PushPropertyOptions[] options = pushProperty.options();
-                            List<PushConfigOptions> optionsList = new ArrayList<>();
+                            List<CustomFormDisplayOptions> optionsList = new ArrayList<>();
                             for (PushPropertyOptions option : options) {
-                                PushConfigOptions configOptions = new PushConfigOptions();
+                                CustomFormDisplayOptions configOptions = new CustomFormDisplayOptions();
                                 configOptions.setValue(option.num());
                                 configOptions.setName(option.name());
                                 optionsList.add(configOptions);
@@ -85,14 +89,15 @@ public class PushInit implements CommandLineRunner {
                         }
                         if (StrUtil.isNotBlank(pushProperty.ref())) {
                             pushConfigDto.setRef(pushProperty.ref());
-                            pushConfigDto.setRefValue(pushConfigDto.getRefValue());
+                            pushConfigDto.setRefValue(pushProperty.refValue());
                         }
                     } else {
                         pushConfigDto.setName(field.getName());
                         pushConfigDto.setDesc("请输入" + field.getName());
                     }
-                    pushConfigMap.put(key, pushConfigDto);
+                    pushConfigDtoList.add(pushConfigDto);
                 }
+                pushConfigMap.put(key, pushConfigDtoList);
             }
         }
         log.info("推送服务加载完成，共{}个", pushTypeList.size());

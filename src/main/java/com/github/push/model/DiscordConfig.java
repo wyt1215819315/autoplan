@@ -12,10 +12,10 @@ import lombok.EqualsAndHashCode;
 @PushEntity(PushTypeConstant.DISCORD)
 public class DiscordConfig extends PushBaseConfig {
 
-    @PushProperty(value = "Discord的Webhook地址", notnull = true)
+    @PushProperty(desc = "Discord的Webhook地址", value = "Webhook地址", notnull = true)
     private String url;
 
-    @PushProperty(value = "推送标签卡的颜色RGB值", defaultValue = "239,88,88")
+    @PushProperty(desc = "用于自定义消息标签卡的颜色", value = "标签卡的RGB值", defaultValue = "239,88,88")
     private String color;
 
 }

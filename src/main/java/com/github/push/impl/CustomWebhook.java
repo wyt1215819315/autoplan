@@ -91,7 +91,7 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
                 // 校验成功标识
                 JSONObject resultObj = JSONUtil.parseObj(body);
                 Object successFlag = JSONUtil.getByPath(resultObj, successKey);
-                if (StrUtil.equals(StrUtil.toString(successFlag),StrUtil.toString(successFlagObj.getValue()))) {
+                if (StrUtil.equals(StrUtil.toString(successFlag), StrUtil.toString(successFlagObj.getValue()))) {
                     return PushResultDto.doSuccess();
                 } else {
                     return PushResultDto.doError("推送失败，服务器返回data=" + body);

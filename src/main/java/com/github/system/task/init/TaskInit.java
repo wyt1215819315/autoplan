@@ -6,10 +6,10 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.dto.customform.CustomFormDisplayDto;
+import com.github.system.base.dto.customform.CustomFormDisplayOptions;
 import com.github.system.task.annotation.*;
 import com.github.system.task.dao.AutoIndexDao;
-import com.github.system.task.dto.display.SettingDisplayDto;
-import com.github.system.task.dto.display.SettingDisplayOptions;
 import com.github.system.task.dto.TaskInfo;
 import com.github.system.task.dto.display.UserInfoDisplayDto;
 import com.github.system.task.dto.display.UserInfoDisplayOptions;
@@ -44,7 +44,7 @@ public class TaskInit {
     public static final Map<String, Class<?>> taskSettingsClassesMap = new HashMap<>();
     public static final Map<String, Class<?>> userInfosClassesMap = new HashMap<>();
     public static final Map<String, TaskLogDisplayHandler> taskLogHandlerClassesMap = new HashMap<>();
-    public static final Map<String, List<SettingDisplayDto>> settingDisplayDataMap = new HashMap<>();
+    public static final Map<String, List<CustomFormDisplayDto>> settingDisplayDataMap = new HashMap<>();
     public static final Map<String, List<UserInfoDisplayDto>> userInfoDisplayDataMap = new HashMap<>();
 
     @Resource
@@ -141,11 +141,11 @@ public class TaskInit {
 
     private void handleSettingClass(String code, Class<? extends BaseTaskSettings> clazz) {
         Field[] fields = ReflectUtil.getFields(clazz);
-        List<SettingDisplayDto> settingDisplayDtoList = new ArrayList<>();
+        List<CustomFormDisplayDto> settingDisplayDtoList = new ArrayList<>();
         for (Field field : fields) {
             SettingColumn settingColumn = AnnotationUtil.getAnnotation(field, SettingColumn.class);
             if (settingColumn != null) {
-                SettingDisplayDto settingDisplayDto = new SettingDisplayDto();
+                CustomFormDisplayDto settingDisplayDto = new CustomFormDisplayDto();
                 String name = field.getName();
                 settingDisplayDto.setField(name);
                 if (settingColumn.formType() != FormType.AUTO) {
@@ -161,19 +161,19 @@ public class TaskInit {
                     settingDisplayDto.setRefValue(settingColumn.refValue());
                 }
                 if (settingColumn.boolOptions()) {
-                    List<SettingDisplayOptions> options = new ArrayList<>();
+                    List<CustomFormDisplayOptions> options = new ArrayList<>();
                     if (name.contains("是否")) {
-                        options.add(new SettingDisplayOptions("否", 0));
-                        options.add(new SettingDisplayOptions("是", 1));
+                        options.add(new CustomFormDisplayOptions("否", 0));
+                        options.add(new CustomFormDisplayOptions("是", 1));
                     } else {
-                        options.add(new SettingDisplayOptions("关闭", 0));
-                        options.add(new SettingDisplayOptions("开启", 1));
+                        options.add(new CustomFormDisplayOptions("关闭", 0));
+                        options.add(new CustomFormDisplayOptions("开启", 1));
                     }
                     settingDisplayDto.setOptions(options);
                 } else if (settingColumn.options().length > 0) {
-                    List<SettingDisplayOptions> options = new ArrayList<>();
+                    List<CustomFormDisplayOptions> options = new ArrayList<>();
                     for (SettingColumnOptions columnOptions : settingColumn.options()) {
-                        options.add(new SettingDisplayOptions(columnOptions.name(), columnOptions.num()));
+                        options.add(new CustomFormDisplayOptions(columnOptions.name(), columnOptions.num()));
                     }
                     settingDisplayDto.setOptions(options);
                 }

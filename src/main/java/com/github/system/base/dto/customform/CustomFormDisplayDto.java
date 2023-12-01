@@ -1,4 +1,4 @@
-package com.github.system.task.dto.display;
+package com.github.system.base.dto.customform;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.util.List;
  * 用于前端新增配置的时候展示
  */
 @Data
-public class SettingDisplayDto {
+public class CustomFormDisplayDto {
 
     private String field;
     private String fieldType;
@@ -17,7 +17,7 @@ public class SettingDisplayDto {
     private String defaultValue;
     private String ref;
     private int[] refValue;
-    private List<SettingDisplayOptions> options;
+    private List<CustomFormDisplayOptions> options;
 
 
 

@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @PushEntity(value = PushTypeConstant.PUSH_PLUS, delay = 10)
 public class PushPlusConfig extends PushBaseConfig {
 
-    @PushProperty(value = "push plus++推送的token", notnull = true)
+    @PushProperty(desc = "push plus++推送的token", value = "Token", notnull = true)
     private String token;
 
 }
