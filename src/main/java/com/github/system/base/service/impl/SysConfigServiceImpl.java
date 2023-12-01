@@ -20,6 +20,12 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfig> i
     }
 
     @Override
+    public String getValueByKeyOrDefault(String key,String defaultValue) {
+        String valueByKey = this.getValueByKey(key);
+        return valueByKey == null ? defaultValue : valueByKey;
+    }
+
+    @Override
     public boolean saveOrUpdate(String key, String value) {
         SysConfig sysConfig = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getKey, key));
         if (sysConfig == null) {

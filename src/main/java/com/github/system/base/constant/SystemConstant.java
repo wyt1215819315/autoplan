@@ -8,6 +8,7 @@ public class SystemConstant {
      * 公告内容字段
      */
     public static final String SYSTEM_NOTICE_CONTENT = "system_notice_content";
+    public static final String USER_WEBHOOK_MAX_LIMIT = "user_webhook_max_limit";
     public static final String AUTH_REG_ENABLE = "auto_reg_enable";
 
     public static final String SYSTEM_WEBHOOK_TEST_MSG = "这是一条测试消息用于测试Webhook是否正常，如果你收到了此消息代表你的Webhook配置正确";
