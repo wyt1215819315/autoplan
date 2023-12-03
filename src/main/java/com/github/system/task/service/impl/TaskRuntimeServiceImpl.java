@@ -77,22 +77,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         try {
             ValidatorUtils.validate(service.getTaskSettings());
         } catch (ConstraintViolationException e) {
-            Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
-            StringBuilder sb = new StringBuilder("<div>参数校验失败：");
-            for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-                Class<?> rootBeanClass = constraintViolation.getRootBeanClass();
-                sb.append("<p style='margin-top: 5px'>字段 <strong style='color: teal;'>");
-                String fieldName = constraintViolation.getPropertyPath().toString();
-                Field field = ReflectUtil.getField(rootBeanClass, fieldName);
-                if (field != null) {
-                    SettingColumn annotation = AnnotationUtil.getAnnotation(field, SettingColumn.class);
-                    if (annotation != null) {
-                        fieldName = annotation.name();
-                    }
-                }
-                sb.append(fieldName).append(" </strong>").append(constraintViolation.getMessage()).append("</p>");
-            }
-            return CheckResult.doError(sb + "</div>");
+            return CheckResult.doError(ValidatorUtils.parseHtmlError(e));
         } catch (Exception e) {
             log.error("出现未知的参数校验异常，请检查model上的注释是否正确，code=" + code, e);
             return CheckResult.doError("参数校验出现系统错误，请联系管理员:" + e.getMessage());

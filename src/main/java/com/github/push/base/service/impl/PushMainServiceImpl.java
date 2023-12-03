@@ -9,10 +9,12 @@ import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
 import com.github.system.base.dao.PushResultLogDao;
 import com.github.system.base.entity.PushResultLog;
+import com.github.system.task.util.ValidatorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -37,10 +39,14 @@ public class PushMainServiceImpl implements PushMainService {
     public PushResultDto push(PushData pushData, String type) {
         PushResultDto pushResultDto;
         try {
+            ValidatorUtils.validate(pushData.getConfig());
             pushResultDto = PushInit.pushServiceMap.get(type).getDeclaredConstructor().newInstance().doPush(pushData, new HashMap<>());
+        } catch (ConstraintViolationException e) {
+            pushResultDto = PushResultDto.doError(ValidatorUtils.parseHtmlError(e));
         } catch (PushRequestException e) {
             pushResultDto = PushResultDto.doError(e.getMessage());
         } catch (Exception e) {
+            log.error("推送遇到未知错误", e);
             pushResultDto = PushResultDto.doError("推送遇到未知错误：" + e.getMessage());
         }
         return pushResultDto;
