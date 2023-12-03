@@ -1,14 +1,21 @@
 package com.github.system.base.util;
 
 
+import cn.hutool.core.net.url.UrlBuilder;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.github.rholder.retry.*;
 import com.github.system.base.configuration.ProxyConfiguration;
+import io.github.itning.retry.RetryException;
+import io.github.itning.retry.Retryer;
+import io.github.itning.retry.RetryerBuilder;
+import io.github.itning.retry.strategy.limit.AttemptTimeLimiters;
+import io.github.itning.retry.strategy.stop.StopStrategies;
+import io.github.itning.retry.strategy.wait.WaitStrategies;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +39,8 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
     private final static int defaultRetryCount = 2;
     private final static int defaultRetryWaitTime = 2;
     public static ProxyConfiguration proxyConfiguration;
-    //定义重试机制
+    public final static ExecutorService retryExecutor = ThreadUtil.newExecutor();
+
 
     public enum RequestType {
         GET, JSON, FormData, X_WWW_FORM
@@ -262,19 +271,19 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
                 .retryIfRuntimeException()
                 .retryIfExceptionOfType(Exception.class)
                 .retryIfException(throwable -> Objects.equals(throwable, new Exception()))
-                .retryIfResult(HttpResponse::isOk)
+                .retryIfResult(response -> !response.isOk())
                 //等待策略：每次请求间隔x秒
                 .withWaitStrategy(WaitStrategies.fixedWait(waitTime, TimeUnit.SECONDS))
                 //停止策略：尝试请求n次
                 .withStopStrategy(StopStrategies.stopAfterAttempt(retryCount))
                 //时间限制 : 某次请求不得超过m秒 , 类似: TimeLimiter timeLimiter = new SimpleTimeLimiter();
-                .withAttemptTimeLimiter(AttemptTimeLimiters.fixedTimeLimit(timeout, TimeUnit.SECONDS))
+                .withAttemptTimeLimiter(AttemptTimeLimiters.fixedTimeLimit(timeout, TimeUnit.SECONDS, retryExecutor))
                 .build();
         try {
             return retryCall(url, params, headers, requestType, timeout, useProxy, retryer);
         } catch (ExecutionException | RetryException e) {
             log.error("重试最终失败{},url={}", e.getMessage(), url);
-            return null;
+            throw new RuntimeException("请求失败,url=" + url);
         }
     }
 
@@ -282,7 +291,11 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
         HttpRequest.getCookieManager().getCookieStore().removeAll();
         HttpRequest httpRequest;
         switch (requestType) {
-            case GET -> httpRequest = createGet(url).form(params);
+            case GET -> {
+                UrlBuilder builder = UrlBuilder.of(url);
+                params.forEach(builder::addQuery);
+                httpRequest = createGet(builder.toString());
+            }
             case JSON -> httpRequest = createPost(url).body(JSONUtil.toJsonStr(params));
             case FormData -> httpRequest = createPost(url).form(params);
             case X_WWW_FORM -> httpRequest = createPost(url).body(toParams(params, CharsetUtil.CHARSET_UTF_8, true));
@@ -308,11 +321,13 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
 
     private static HttpResponse retryCall(String url, Map<String, Object> params, Map<String, String> headers, RequestType requestType, int timeout, boolean useProxy, Retryer<HttpResponse> defaultRetryer) throws ExecutionException, RetryException {
         Callable<HttpResponse> callable = new Callable<>() {
-            int times = 1;
+            int times = 0;
 
             @Override
             public HttpResponse call() {
-                log.info("触发重试第{}次，url={}", times, url);
+                if (times > 0) {
+                    log.info("触发重试第{}次，url={}", times, url);
+                }
                 times++;
                 return request(url, params, headers, requestType, timeout, useProxy);
             }
