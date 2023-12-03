@@ -1,21 +1,22 @@
 package com.github.push.base.controller;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
+import com.github.push.base.service.WebhookService;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.dto.AjaxResult;
 import com.github.system.base.entity.SysWebhook;
-import com.github.push.base.service.WebhookService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 @Api(tags = "系统Webhook")
 @RestController
@@ -29,7 +30,7 @@ public class WebhookController {
     @GetMapping("/list")
     public AjaxResult list() {
         LambdaQueryWrapper<SysWebhook> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(SysWebhook::getType, SysWebhook::getName, SysWebhook::getId)
+        lambdaQueryWrapper.select(SysWebhook::getType, SysWebhook::getName, SysWebhook::getId, SysWebhook::getEnable)
                 .eq(SysWebhook::getUserId, SessionUtils.getUserId());
         return AjaxResult.doSuccess(webhookService.list(lambdaQueryWrapper));
     }
@@ -54,7 +55,7 @@ public class WebhookController {
     public AjaxResult delete(@PathVariable String id) {
         // 校验权限
         SysWebhook sysWebhook = webhookService.getById(id);
-        if (!NumberUtil.equals(sysWebhook.getUserId(),SessionUtils.getUserId()) && !SessionUtils.isAdmin()) {
+        if (!NumberUtil.equals(sysWebhook.getUserId(), SessionUtils.getUserId()) && !SessionUtils.isAdmin()) {
             return AjaxResult.doError("无权限删除！");
         }
         return webhookService.removeById(id) ? AjaxResult.doSuccess() : AjaxResult.doError();
@@ -64,7 +65,7 @@ public class WebhookController {
     @GetMapping("/view/{id}")
     public AjaxResult view(@PathVariable String id) {
         SysWebhook sysWebhook = webhookService.getById(id);
-        if (!NumberUtil.equals(sysWebhook.getUserId(),SessionUtils.getUserId()) && !SessionUtils.isAdmin()) {
+        if (!NumberUtil.equals(sysWebhook.getUserId(), SessionUtils.getUserId()) && !SessionUtils.isAdmin()) {
             return AjaxResult.doError("无权限查看！");
         }
         return AjaxResult.doSuccess(sysWebhook);
@@ -72,12 +73,16 @@ public class WebhookController {
 
     @ApiOperation("校验webhook")
     @PostMapping("/check")
-    public <T extends PushBaseConfig> AjaxResult checkWebhook(@RequestBody T pushBaseConfig) {
-        if (!PushInit.pushTypeList.contains(pushBaseConfig.getType())) {
+    public AjaxResult checkWebhook(@RequestBody Map<String, Object> params) {
+        // map 转 bean
+        String type = (String) params.get("type");
+        if (!PushInit.pushTypeList.contains(type)) {
             return AjaxResult.doError("不存在的推送类型！");
         }
-        PushData<T> pushData = new PushData<>();
-        pushData.setConfig(pushBaseConfig);
+        Class<? extends PushBaseConfig> aClass = PushInit.pushBaseConfigMap.get(type);
+        PushBaseConfig bean = BeanUtil.toBean(params, aClass);
+        PushData pushData = new PushData<>();
+        pushData.setConfig(bean);
         return webhookService.checkWebhook(pushData);
     }
 

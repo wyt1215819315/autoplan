@@ -1,6 +1,7 @@
 package com.github.push.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
@@ -16,6 +17,7 @@ import com.github.push.model.push.custom.CustomWebhookParam;
 import com.github.push.model.push.custom.CustomWebhookSuccessFlag;
 import com.github.system.base.util.HttpUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +36,17 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
     public PushResultDto doPush(PushData<CustomWebhookConfig> pushConfig, Map<String, Object> params) throws Exception {
         CustomWebhookConfig config = pushConfig.getConfig();
         String url = config.getUrl();
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
         Integer requestType = config.getRequestType();
         List<CustomWebhookParam> paramsList;
         List<CustomWebhookHeader> headersList;
         CustomWebhookSuccessFlag successFlagObj;
         try {
-            paramsList = JSONUtil.toList(config.getParams(), CustomWebhookParam.class);
-            headersList = JSONUtil.toList(config.getHeaders(), CustomWebhookHeader.class);
-            successFlagObj = JSONUtil.toBean(config.getSuccessFlag(), CustomWebhookSuccessFlag.class);
+            paramsList = JSONUtil.isTypeJSONArray(config.getParams()) ? JSONUtil.toList(config.getParams(), CustomWebhookParam.class) : new ArrayList<>();
+            headersList = JSONUtil.isTypeJSONArray(config.getHeaders()) ? JSONUtil.toList(config.getHeaders(), CustomWebhookHeader.class) : new ArrayList<>();
+            successFlagObj = JSONUtil.isTypeJSONObject(config.getSuccessFlag()) ? JSONUtil.toBean(config.getSuccessFlag(), CustomWebhookSuccessFlag.class) : new CustomWebhookSuccessFlag();
         } catch (Exception e) {
             return PushResultDto.doError("解析JSON配置失败：" + e.getMessage());
         }
@@ -53,7 +58,12 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
             String valueType = customWebhookParam.getValueType();
             Object value = customWebhookParam.getValue();
             if (StrUtil.isNotBlank(key)) {
-                JSONUtil.putByPath(mainObj, key, ("String".equals(valueType)) ? StrUtil.format((CharSequence) value, dataMap) : value);
+                if ("String".equals(valueType)) {
+                    value = StrUtil.format((CharSequence) value, dataMap);
+                } else if ("Number".equals(valueType)) {
+                    value = NumberUtil.parseNumber((String) value);
+                }
+                JSONUtil.putByPath(mainObj, key, value);
             }
         }
         // 组装headers
@@ -73,6 +83,15 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
         boolean ok = response.isOk();
         int status = response.getStatus();
         response.close();
+        String expectedValue = StrUtil.toString(successFlagObj.getValue());
+        // 状态码校验模式
+        if ("status".equals(successFlagObj.getValueType())) {
+            if (StrUtil.equals(expectedValue, StrUtil.toString(status))) {
+                return PushResultDto.doSuccess();
+            } else {
+                return PushResultDto.doError(String.format("服务器返回异常状态码%s", status));
+            }
+        }
         // 先把状态码异常的情况都给拦截了，然后剩下的就是状态码正常的情况了
         if (!ok) {
             if (StrUtil.isNotBlank(body)) {
@@ -81,25 +100,37 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
                 return PushResultDto.doError(String.format("服务器返回异常状态码%s", status));
             }
         }
-        // 解析成功标识
-        String successKey = successFlagObj.getKey();
-        if (StrUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)) {
-            // 有body的情况下
-            if (StrUtil.isBlank(successKey)) {
-                return PushResultDto.doSuccess("未配置成功标识符，无法判断成功状态");
+        // body无损体校验模式
+        if ("raw".equals(successFlagObj.getValueType())) {
+            if (StrUtil.equals(StrUtil.trim(expectedValue), StrUtil.trim(body))) {
+                return PushResultDto.doSuccess();
             } else {
-                // 校验成功标识
-                JSONObject resultObj = JSONUtil.parseObj(body);
-                Object successFlag = JSONUtil.getByPath(resultObj, successKey);
-                if (StrUtil.equals(StrUtil.toString(successFlag), StrUtil.toString(successFlagObj.getValue()))) {
-                    return PushResultDto.doSuccess();
+                return PushResultDto.doError("推送失败，服务器返回body=<code><xmp>" + body + "</xmp></code>");
+            }
+        } else if ("json".equals(successFlagObj.getValueType())) {
+            // JSON解析模式
+            String successKey = successFlagObj.getKey();
+            if (StrUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)) {
+                // 有body的情况下
+                if (StrUtil.isBlank(successKey)) {
+                    return PushResultDto.doSuccess("未配置成功标识符，无法判断成功状态");
                 } else {
-                    return PushResultDto.doError("推送失败，服务器返回data=" + body);
+                    // 校验成功标识
+                    JSONObject resultObj = JSONUtil.parseObj(body);
+                    Object successFlag = JSONUtil.getByPath(resultObj, successKey);
+                    if (StrUtil.equals(StrUtil.toString(successFlag), StrUtil.toString(successFlagObj.getValue()))) {
+                        return PushResultDto.doSuccess();
+                    } else {
+                        return PushResultDto.doError("推送失败，服务器返回body=<code><xmp>" + body + "</xmp></code>");
+                    }
                 }
+            } else {
+                // 没有body或者body不为json的情况
+                return PushResultDto.doError("服务器返回body为空或不为标准JSON字符串，无法判断成功状态");
             }
         } else {
-            // 没有body或者body不为json的情况
-            return PushResultDto.doSuccess("服务器返回body为空或不为标准JSON字符串，无法判断成功状态");
+            // 未正确配置校验方式
+            return PushResultDto.doSuccess("未正确配置校验方式，无法判断成功状态");
         }
     }
 
