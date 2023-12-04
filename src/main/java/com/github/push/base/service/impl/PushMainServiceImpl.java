@@ -1,5 +1,6 @@
 package com.github.push.base.service.impl;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.dto.PushResultDto;
 import com.github.push.base.exception.PushRequestException;
@@ -77,11 +78,7 @@ public class PushMainServiceImpl implements PushMainService {
             }
             // 延迟
             if (pushResultDto.isSuccess() && delay > 0) {
-                try {
-                    Thread.sleep(delay * 1000L);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                ThreadUtil.safeSleep(delay * 1000L);
             }
         });
     }

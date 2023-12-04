@@ -36,8 +36,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class HttpUtil extends cn.hutool.http.HttpUtil {
     private final static int defaultTimeOut = 5 * 1000;
-    private final static int defaultRetryCount = 2;
-    private final static int defaultRetryWaitTime = 2;
+    private final static int defaultRetryCount = 3;
+    private final static int defaultRetryWaitTime = 3;
     public static ProxyConfiguration proxyConfiguration;
     public final static ExecutorService retryExecutor = ThreadUtil.newExecutor();
 
