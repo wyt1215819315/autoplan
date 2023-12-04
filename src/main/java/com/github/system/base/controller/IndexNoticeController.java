@@ -31,7 +31,7 @@ public class IndexNoticeController {
     public AjaxResult view() {
         String value = sysConfigService.getValueByKey(SystemConstant.SYSTEM_NOTICE_CONTENT);
         if (StrUtil.isEmpty(value)) {
-            return AjaxResult.doSuccess("", "当前无公告！");
+            return AjaxResult.doSuccess("", null);
         }
         return AjaxResult.doSuccess("", value);
     }
