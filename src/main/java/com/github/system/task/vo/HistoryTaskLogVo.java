@@ -10,6 +10,6 @@ public class HistoryTaskLogVo {
 
     private String type;
 
-    private String userId;
+    private Long userId;
 
 }
