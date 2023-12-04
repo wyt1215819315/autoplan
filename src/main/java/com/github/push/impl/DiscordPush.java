@@ -64,7 +64,12 @@ public class DiscordPush implements PushService<DiscordConfig> {
             boolean useProxy = isUseProxy();
             HttpResponse response = HttpUtil.requestRetry(url, params, requestType, useProxy);
             String body = response.body();
-            JSONObject jsonObject = JSONUtil.parseObj(body);
+            JSONObject jsonObject;
+            if (JSONUtil.isTypeJSON(body)) {
+                jsonObject = JSONUtil.parseObj(body);
+            } else {
+                jsonObject = new JSONObject();
+            }
             if (!response.isOk() && StrUtil.isBlank(body)) {
                 jsonObject.set("success", false);
                 jsonObject.set("message", "服务器返回" + response.getStatus() + "状态,无错误信息");
