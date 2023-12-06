@@ -1,5 +1,6 @@
 package com.github.task.bili.model;
 
+import com.github.system.desensitized.DataDesensitization;
 import com.github.system.task.annotation.FormType;
 import com.github.system.task.annotation.SettingColumn;
 import com.github.system.task.annotation.SettingColumnOptions;
@@ -18,14 +19,17 @@ public class BiliSettings extends BaseTaskSettings {
 
     @SettingColumn(name = "sessdata", hide = true, formType = FormType.TEXTAREA)
     @NotBlank
+    @DataDesensitization
     private String sessdata;
 
     @SettingColumn(name = "biliJct", hide = true)
     @NotBlank
+    @DataDesensitization
     private String biliJct;
 
     @SettingColumn(name = "dedeuserid", hide = true)
     @NotBlank
+    @DataDesensitization
     private String dedeuserid;
 
     @SettingColumn(name = "每日投币数量", defaultValue = "5")

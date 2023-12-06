@@ -83,6 +83,18 @@
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
+## 拉取项目
+```shell
+# 拉取后台主项目
+$ git clone https://github.com/wyt1215819315/autoplan.git
+# 进入目录
+$ cd autoplan
+# 初始化子项目（前端）
+$ git submodule init
+# 更新子项目
+$ git submodule update
+```
+
 
 ### 更新日志
 * 21.8.29 更新了b站二维码登录以及任务删除功能
