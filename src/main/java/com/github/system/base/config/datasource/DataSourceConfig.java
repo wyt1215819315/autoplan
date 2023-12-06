@@ -2,6 +2,7 @@ package com.github.system.base.config.datasource;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.system.base.util.SpringUtil;
@@ -79,10 +80,14 @@ public class DataSourceConfig {
     }
 
     @Bean(name = "db1SqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource,@Qualifier("mybatisPlusInterceptor") MybatisPlusInterceptor mybatisPlusInterceptor) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource,
+                                               @Qualifier("mybatisPlusInterceptor") MybatisPlusInterceptor mybatisPlusInterceptor,
+                                               @Qualifier("mybatisPlusGlobalConfig") GlobalConfig globalConfig
+    ) throws Exception {
         MybatisSqlSessionFactoryBean sessionFactoryBean = new MybatisSqlSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setPlugins(mybatisPlusInterceptor);
+        sessionFactoryBean.setGlobalConfig(globalConfig);
         sessionFactoryBean.setMapperLocations(resolveMapperLocations());
         return sessionFactoryBean.getObject();
     }

@@ -30,9 +30,6 @@ spring:
           max-age: 1800
           cache-public: true
 mybatis-plus:
-  global-config:
-    db-config:
-      id-type: auto
   #开启驼峰命名
   configuration:
     map-underscore-to-camel-case: true

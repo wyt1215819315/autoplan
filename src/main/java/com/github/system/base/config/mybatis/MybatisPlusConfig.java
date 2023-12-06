@@ -1,6 +1,8 @@
 package com.github.system.base.config.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,15 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(paginationInnerInterceptor);
         //还可以添加i他的拦截器
         return interceptor;
+    }
+
+    @Bean
+    public GlobalConfig mybatisPlusGlobalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+        dbConfig.setIdType(IdType.AUTO);
+        globalConfig.setDbConfig(dbConfig);
+        return globalConfig;
     }
 
 
