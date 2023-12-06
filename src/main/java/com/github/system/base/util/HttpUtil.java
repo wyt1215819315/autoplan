@@ -293,7 +293,9 @@ public class HttpUtil extends cn.hutool.http.HttpUtil {
         switch (requestType) {
             case GET -> {
                 UrlBuilder builder = UrlBuilder.of(url);
-                params.forEach(builder::addQuery);
+                if (params != null) {
+                    params.forEach(builder::addQuery);
+                }
                 httpRequest = createGet(builder.toString());
             }
             case JSON -> httpRequest = createPost(url).body(JSONUtil.toJsonStr(params));
