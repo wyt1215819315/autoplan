@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -274,39 +273,40 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doSuccess("任务已经在执行了");
         }
         taskLockMap.put(autoTask.getId(), 1);
-        Future<Void> future = executorService.submit(() -> {
-            try {
+        Future<TaskResult> future = executorService.submit(() -> {
+            // 线程池同时能执行的任务就那么几个，所以超时判定必须要放在任务里头去，要是放在外面那不是任务多了必定超时
+            Future<Void> f = ThreadUtil.execAsync(() -> {
                 doTask(autoTask, taskLog);
                 taskLockMap.remove(autoTask.getId());
+                return null;
+            });
+            try {
+                f.get(autoIndex.getTimeout(), TimeUnit.SECONDS);
                 if (autoIndex.getDelay() > 0) {
                     ThreadUtil.safeSleep(autoIndex.getDelay() * 1000);
                 }
-                return null;
+                return TaskResult.doSuccess("任务执行完毕");
+            } catch (TimeoutException e) {
+                f.cancel(true);
+                endTask(autoTask, taskLog, AutoTaskStatus.TASK_TIMEOUT);
+                return TaskResult.doError("任务执行超时");
+            } catch (Exception e) {
+                endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
+                log.error("任务执行发生未知异常错误", e);
+                return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
             } finally {
                 taskLockMap.remove(autoTask.getId());
             }
         });
         if (async) {
-            // 要是异步的话还是得另外起一个线程去守护他
-            ThreadUtil.newThread(() -> runFutureTask(autoTask, future, autoIndex, taskLog), "Task_Daemon_" + autoTask.getId(), true).start();
             return TaskResult.doSuccess("任务提交成功！");
         } else {
-            return runFutureTask(autoTask, future, autoIndex, taskLog);
-        }
-    }
-
-    private TaskResult runFutureTask(AutoTask autoTask, Future<Void> future, AutoIndex autoIndex, TaskLog taskLog) {
-        try {
-            future.get(autoIndex.getTimeout(), TimeUnit.SECONDS);
-            return TaskResult.doSuccess("任务执行完毕");
-        } catch (TimeoutException e) {
-            future.cancel(true);
-            endTask(autoTask, taskLog, AutoTaskStatus.TASK_TIMEOUT);
-            return TaskResult.doError("任务执行超时");
-        } catch (Exception e) {
-            endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
-            log.error("任务执行发生未知异常错误", e);
-            return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
+            try {
+                return future.get();
+            } catch (Exception e) {
+                log.error("任务执行器发生错误", e);
+                return TaskResult.doError("任务执行器发生错误" + e.getMessage());
+            }
         }
     }
 
