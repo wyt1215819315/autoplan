@@ -7,14 +7,12 @@ import com.alibaba.fastjson.TypeReference;
 import com.miyoushe.sign.constant.MihayouConstants;
 import com.miyoushe.sign.gs.pojo.Award;
 import com.miyoushe.util.HttpUtils;
+import org.apache.http.Header;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author ponking
@@ -35,6 +33,19 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public Header[] getHeaders(String dsType) {
+        return new HeaderBuilder.Builder().addAll(getBasicHeaders())
+                .add("x-rpc-device_id", UUID.randomUUID().toString().replace("-", "").toUpperCase())
+                .add("Content-Type", "application/json;charset=UTF-8")
+                .add("x-rpc-client_type", getClientType())
+                .add("x-rpc-app_version", getAppVersion())
+                .add("x-rpc-signgame", "hk4e")
+                .add("Origin", MiHoYoConfig.NEW_SIGN_ORIGIN)
+                .add("Referer", MiHoYoConfig.NEW_SIGN_ORIGIN)
+                .add("DS", getDS()).build();
     }
 
     @Override
@@ -141,10 +152,6 @@ public class GenShinSignMiHoYo extends MiHoYoAbstractSign {
      * @return
      */
     public Award getAwardInfo(int day) {
-        Map<String, String> data = new HashMap<>();
-
-        data.put("act_id", MiHoYoConfig.ACT_ID);
-        data.put("region", MiHoYoConfig.REGION);
 
         JSONObject awardResult = HttpUtils.doGet(MiHoYoConfig.AWARD_URL, getHeaders(""));
         JSONArray jsonArray = awardResult.getJSONObject("data").getJSONArray("awards");
