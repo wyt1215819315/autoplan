@@ -1,5 +1,6 @@
 package com.github.system.task.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,7 +28,8 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
     @Override
     public HistoryTaskLog getNearlyLog(HistoryTaskLogVo historyTaskLogVo) {
         LambdaQueryWrapper<HistoryTaskLog> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(HistoryTaskLog::getType, historyTaskLogVo.getType());
+        queryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getType()), HistoryTaskLog::getType, historyTaskLogVo.getType());
+        queryWrapper.eq(historyTaskLogVo.getTaskId() != null, HistoryTaskLog::getTaskId, historyTaskLogVo.getTaskId());
         queryWrapper.eq(HistoryTaskLog::getUserId, historyTaskLogVo.getUserId());
         queryWrapper.orderByDesc(HistoryTaskLog::getDate);
         queryWrapper.last("limit 1");

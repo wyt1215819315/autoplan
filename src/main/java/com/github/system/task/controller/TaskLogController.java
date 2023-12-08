@@ -45,11 +45,22 @@ public class TaskLogController {
         return AjaxResult.doSuccess(log);
     }
 
-    @GetMapping("/getNearlyLog/{code}")
-    public AjaxResult getNearlyLog(@PathVariable String code) {
+    @ApiOperation("根据code查询最新日志")
+    @GetMapping("/getNearlyLogByCode/{code}")
+    public AjaxResult getNearlyLogByCode(@PathVariable String code) {
         HistoryTaskLogVo historyTaskLogVo = new HistoryTaskLogVo();
         historyTaskLogVo.setUserId(SessionUtils.getUserId());
         historyTaskLogVo.setType(code);
+        HistoryTaskLog log = logService.getNearlyLog(historyTaskLogVo);
+        return AjaxResult.doSuccess(log);
+    }
+
+    @ApiOperation("根据taskId查询最新日志")
+    @GetMapping("/getNearlyLogByTaskId/{taskId}")
+    public AjaxResult getNearlyLogByTaskId(@PathVariable Long taskId) {
+        HistoryTaskLogVo historyTaskLogVo = new HistoryTaskLogVo();
+        historyTaskLogVo.setUserId(SessionUtils.getUserId());
+        historyTaskLogVo.setTaskId(taskId);
         HistoryTaskLog log = logService.getNearlyLog(historyTaskLogVo);
         return AjaxResult.doSuccess(log);
     }

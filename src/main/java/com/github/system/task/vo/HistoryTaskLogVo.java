@@ -12,4 +12,6 @@ public class HistoryTaskLogVo {
 
     private Long userId;
 
+    private Long taskId;
+
 }
