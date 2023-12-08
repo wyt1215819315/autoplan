@@ -111,6 +111,8 @@ public class TaskInit {
         insertList.forEach(data -> autoIndexDao.insert(data));
         log.info("初始化任务列表完成,新增{}个任务", insertList.size());
         autoIndexLists = autoIndexDao.selectList(new QueryWrapper<>());
+        // todo 每个任务都要创建一个定时任务，这样就可以定义不同的时间点去运行
+
         // 初始化任务线程池
         autoIndexLists.forEach(data -> taskThreadMap.put(data.getCode(), createThread(data.getCode(), data.getThreadNum())));
         log.info("初始化任务线程完成：" + autoIndexLists.size());
