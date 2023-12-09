@@ -58,13 +58,13 @@ public class DailyTask {
      */
     public TaskResult gameSign(TaskLog log) throws Exception {
         for (MiHoYoAbstractGameSign sign : gameSignService) {
-            log.info("[{}]游戏签到任务开始", sign.getSignConfig().getGameName());
+            String gameName = sign.getSignConfig().getGameName();
+            log.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_START, gameName + "游戏签到子任务"));
             TaskResult taskResult = sign.doSign(log);
-            if (taskResult.isSuccess()) {
-                log.info("[{}]游戏签到任务结束", sign.getSignConfig().getGameName());
-            } else {
-                log.error("[{}]游戏签到任务出错：{}", sign.getSignConfig().getGameName(), taskResult.getMsg());
+            if (!taskResult.isSuccess()) {
+                log.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_ERROR, gameName + "游戏签到子任务出错"));
             }
+            log.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, gameName + "游戏签到子任务"));
         }
         return TaskResult.doSuccess();
     }

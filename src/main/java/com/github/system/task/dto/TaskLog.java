@@ -21,7 +21,8 @@ public class TaskLog {
     public enum LogType {
         TITLE,
         DEBUG, INFO, WARN, ERROR,
-        TASK_COMPLETE, TASK_ERROR, TASK_RESULT,
+        TASK_SUCCESS, TASK_ERROR, TASK_RESULT,
+        TASK_START, TASK_END,
         USER_CHECK_ERROR, USER_INFO_UPDATE_ERROR
     }
 

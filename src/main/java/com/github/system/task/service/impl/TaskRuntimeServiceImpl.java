@@ -39,7 +39,7 @@ import java.util.concurrent.*;
 @Service
 public class TaskRuntimeServiceImpl implements TaskRuntimeService {
     private final ConcurrentMap<Long, Integer> taskLockMap = new ConcurrentHashMap<>();
-
+    private final String TASK_ACTION_INIT_NAME = "初始化";
     @Resource
     private AutoTaskDao taskDao;
     @Resource
@@ -200,6 +200,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
         BaseTaskService<?, ?> service = ((BaseTaskService<?, ?>) bean);
         service.setThing(autoTask.getSettings(), taskLog);
         try {
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_START, TASK_ACTION_INIT_NAME));
             TaskResult init = service.init(taskLog);
             if (!init.isSuccess()) {
                 if (init.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
@@ -215,12 +216,15 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             taskLog.error("任务初始化失败:{}", e.getMessage());
             endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
             return;
+        } finally {
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, TASK_ACTION_INIT_NAME));
         }
         boolean allSuccess = true;
         for (Method method : taskMethodList) {
             TaskAction taskAction = method.getAnnotation(TaskAction.class);
             // 依次执行任务
             TaskResult taskResult;
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_START, taskAction.name()));
             try {
                 taskResult = ReflectUtil.invoke(service, method, taskLog);
                 if (taskResult.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
@@ -236,11 +240,12 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                 taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_RESULT, taskResult.getMsg()));
             }
             if (taskResult.isSuccess()) {
-                taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_COMPLETE, taskAction.name()));
+                taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_SUCCESS, taskAction.name()));
             } else {
                 allSuccess = false;
                 taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_ERROR, taskAction.name()));
             }
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, taskAction.name()));
             if (taskAction.delay() > 0) {
                 // 留百分之20的随机浮动范围
                 double range = taskAction.delay() * 0.2;
