@@ -96,19 +96,28 @@ public abstract class MiHoYoAbstractGameSign extends MiHoYoAbstractSign {
         Integer totalSignDay = signInfoResult.getJSONObject("data").getInt("total_sign_day");
         int day = isSign ? totalSignDay : totalSignDay + 1;
 
-        Award award = getAwardInfo(day);
+        Award award = getAwardInfo(day, log);
         log.info("{}月已签到{}天", time.getMonth().getValue(), totalSignDay);
-        log.info("{}签到获取{}{}", signInfoResult.getJSONObject("data").get("today"), award.getCnt(), award.getName());
+        if (award != null) {
+            log.info("{}签到获取{}{}", signInfoResult.getJSONObject("data").get("today"), award.getCnt(), award.getName());
+        }
     }
 
     /**
      * 获取今天奖励详情
      */
-    protected Award getAwardInfo(int day) {
-        JSONObject awardResult = HttpUtil.requestJson(getSignConfig().getAwardUrl(), null, getHeaders(""), HttpUtil.RequestType.GET);
-        JSONArray jsonArray = awardResult.getJSONObject("data").getJSONArray("awards");
-        List<Award> awards = JSONUtil.toList(jsonArray, Award.class);
-        return awards.get(day - 1);
+    protected Award getAwardInfo(int day,TaskLog log) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("act_id", getSignConfig().getSignActId());
+        JSONObject awardResult = HttpUtil.requestJson(getSignConfig().getAwardUrl(), params, getHeaders(""), HttpUtil.RequestType.GET);
+        if (awardResult.getInt("retcode") != 0) {
+            log.error("获取奖励详情失败：" + awardResult.toJSONString(0));
+            return null;
+        } else {
+            JSONArray jsonArray = awardResult.getJSONObject("data").getJSONArray("awards");
+            List<Award> awards = JSONUtil.toList(jsonArray, Award.class);
+            return awards.get(day - 1);
+        }
     }
 
     public R<List<SignUserInfo>> getUserInfo() {

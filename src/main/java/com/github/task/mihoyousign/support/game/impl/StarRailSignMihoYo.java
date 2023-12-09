@@ -23,9 +23,9 @@ public class StarRailSignMihoYo extends MiHoYoAbstractGameSign {
         return new MiHoYoGameSignConfig("星穹铁道",
                 MihoyouSignConstant.XQTD_ROLE_URL,
                 MihoyouSignConstant.XQTD_SIGN_ACT_ID,
-                MihoyouSignConstant.XQTD_SIGN_URL,
-                MihoyouSignConstant.XQTD_AWARD_URL,
-                MihoyouSignConstant.XQTD_INFO_URL
+                MihoyouSignConstant.SIGN_URL,
+                MihoyouSignConstant.AWARD_URL,
+                MihoyouSignConstant.INFO_URL
         );
     }
 

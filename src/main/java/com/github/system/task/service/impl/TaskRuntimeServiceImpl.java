@@ -233,6 +233,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                     return;
                 }
             } catch (Exception e) {
+                log.error("任务执行失败", e);
                 taskLog.error("任务执行失败，异常信息：" + e.getMessage(), e);
                 taskResult = TaskResult.doError();
             }
