@@ -9,10 +9,12 @@ import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dto.display.UserInfoDisplayDto;
 import com.github.system.task.entity.AutoIndex;
 import com.github.system.task.service.AutoIndexService;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,13 +79,19 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
     @Override
     public String getIcon(String code) {
         try {
-            File logosDir = ResourceUtils.getFile("classpath:logos");
-            File[] files = logosDir.listFiles(f -> code.equals(FileUtil.mainName(f)) && f.isFile());
-            if (files != null && files.length > 0) {
-                return Base64.encode(files[0]);
+            Resource[] resources = new PathMatchingResourcePatternResolver().getResources(ResourceUtils.CLASSPATH_URL_PREFIX + "logos/*");
+            for (Resource resource : resources) {
+                try {
+                    String file = resource.getURL().getFile();
+                    if (code.equals(FileUtil.mainName(file))) {
+                        return Base64.encode(resource.getInputStream());
+                    }
+                } catch (IOException e) {
+                    log.error("获取icon失败，code=" + code, e);
+                }
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            log.error("获取icon失败，code=" + code, e);
         }
         return null;
     }
