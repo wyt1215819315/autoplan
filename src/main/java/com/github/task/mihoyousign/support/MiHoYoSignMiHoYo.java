@@ -61,16 +61,17 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
         int sharePost = doTask(this, this.getClass().getDeclaredMethod("sharePost", PostResult.class), SHARE_NUM, genShinHomePosts);
         int upVotePost = doTask(this, this.getClass().getDeclaredMethod("upVotePost", PostResult.class), UP_VOTE_NUM, genShinHomePosts);
         //打印日志
-        log.append(new TaskLog.LogInfo(
-                ((VIEW_NUM - viewPost) > 0) ? TaskLog.LogType.WARN : TaskLog.LogType.INFO,
-                "浏览帖子,成功: " + viewPost + ",失败：" + (VIEW_NUM - viewPost)));
-        log.append(new TaskLog.LogInfo(
-                ((UP_VOTE_NUM - upVotePost) > 0) ? TaskLog.LogType.WARN : TaskLog.LogType.INFO,
-                "点赞帖子,成功: " + upVotePost + ",失败：" + (UP_VOTE_NUM - upVotePost)));
-        log.append(new TaskLog.LogInfo(
-                ((SHARE_NUM - sharePost) > 0) ? TaskLog.LogType.WARN : TaskLog.LogType.INFO,
-                "分享帖子,成功: " + sharePost + ",失败：" + (SHARE_NUM - sharePost)));
+        appendPostLog(VIEW_NUM, viewPost, "浏览", log);
+        appendPostLog(UP_VOTE_NUM, upVotePost, "点赞", log);
+        appendPostLog(SHARE_NUM, sharePost, "分享", log);
         return TaskResult.doSuccess();
+    }
+
+    public void appendPostLog(int sum, int result, String action, TaskLog log) {
+        int failed = sum - result;
+        log.append(new TaskLog.LogInfo(
+                (failed > 0) ? TaskLog.LogType.WARN : TaskLog.LogType.INFO,
+                action + "帖子,成功: " + result + (failed > 0 ? ",失败：" + failed : "")));
     }
 
     public int doTask(Object obj, Method method, int num, List<PostResult> posts) {
