@@ -137,6 +137,8 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                     log.warn("[{}]任务添加时出错，onlyId不能为空！", autoTask.getCode());
                     return CheckResult.doError("添加任务时出现系统错误！(onlyId为空)", taskLog);
                 }
+                // 从service中获取taskSettings，以支持保存校验方法中对对象做出的修改
+                autoTask.setSettings(JSONUtil.toJsonStr(service.getTaskSettings()));
                 autoTask.setOnlyId(userInfo.getOnlyId());
                 autoTask.setUserInfos(JSONUtil.toJsonStr(userInfo));
                 AutoTask tmpTask = taskDao.selectOne(new LambdaQueryWrapper<AutoTask>()
