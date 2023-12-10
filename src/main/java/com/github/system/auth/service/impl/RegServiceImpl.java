@@ -26,7 +26,7 @@ public class RegServiceImpl implements RegService {
 
     @Override
     public AjaxResult doReg(RegModel regModel) {
-        if ("false".equals(configService.getValueByKey(SystemConstant.AUTH_REG_ENABLE))) {
+        if ("false".equals(configService.getValueByKey(SystemConstant.SYSTEM_REG_ENABLE))) {
             return AjaxResult.doError("管理员未开放注册！");
         }
         String username = regModel.getUsername();
