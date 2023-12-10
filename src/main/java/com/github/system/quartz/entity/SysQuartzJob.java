@@ -70,7 +70,7 @@ public class SysQuartzJob implements Serializable {
         this.cronExpression = cronExpression;
         this.concurrent = concurrent;
         this.status = status;
-
+        this.timeout = 86400;
     }
 
 }

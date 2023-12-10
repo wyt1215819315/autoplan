@@ -3,6 +3,7 @@ package com.github.system.base.constant;
 public class SystemConstant {
 
     public static final String BASE_PACKAGE = "com.github";
+    public static final String DEFAULT_CRON = "0 0 8 * * ? *";
 
     /**
      * 公告内容字段

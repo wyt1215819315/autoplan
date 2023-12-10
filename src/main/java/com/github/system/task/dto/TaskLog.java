@@ -36,6 +36,10 @@ public class TaskLog {
         logger.debug(text);
     }
 
+    public void debug(String text, Throwable e) {
+        logger.debug(text, e);
+    }
+
     public void info(String text) {
         logList.add(new LogInfo(LogType.INFO, text));
     }

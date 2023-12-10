@@ -203,21 +203,24 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_START, TASK_ACTION_INIT_NAME));
             TaskResult init = service.init(taskLog);
             if (!init.isSuccess()) {
+                AutoTaskStatus status;
                 if (init.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
                     taskLog.error("用户信息校验失败，任务终止");
-                    endTask(autoTask, taskLog, AutoTaskStatus.USER_CHECK_ERROR);
+                    status = AutoTaskStatus.USER_CHECK_ERROR;
                 } else {
                     taskLog.error("任务初始化失败:{}", init.getMsg());
-                    endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
+                    status = AutoTaskStatus.TASK_INIT_ERROR;
                 }
+                taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, TASK_ACTION_INIT_NAME));
+                endTask(autoTask, taskLog, status);
                 return;
             }
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, TASK_ACTION_INIT_NAME));
         } catch (Exception e) {
             taskLog.error("任务初始化失败:{}", e.getMessage());
+            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, TASK_ACTION_INIT_NAME));
             endTask(autoTask, taskLog, AutoTaskStatus.TASK_INIT_ERROR);
             return;
-        } finally {
-            taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, TASK_ACTION_INIT_NAME));
         }
         boolean allSuccess = true;
         for (Method method : taskMethodList) {
@@ -229,6 +232,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                 taskResult = ReflectUtil.invoke(service, method, taskLog);
                 if (taskResult.getStatus() == AutoTaskStatus.USER_CHECK_ERROR.getStatus()) {
                     taskLog.error("用户信息校验失败，任务终止");
+                    taskLog.append(new TaskLog.LogInfo(TaskLog.LogType.TASK_END, taskAction.name()));
                     endTask(autoTask, taskLog, AutoTaskStatus.USER_CHECK_ERROR);
                     return;
                 }

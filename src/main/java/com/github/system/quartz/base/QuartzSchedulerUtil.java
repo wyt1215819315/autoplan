@@ -1,7 +1,6 @@
 package com.github.system.quartz.base;
 
 import cn.hutool.core.annotation.AnnotationUtil;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +16,7 @@ import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
@@ -25,14 +25,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * @CLASSNAME QuartzConfig
- * @Description Quartz配置类
- * @Auther Jan  橙寂
- * @DATE 2019/9/2 0002 15:21
- */
+
 @Configuration
 @Slf4j
+@DependsOn(value = "taskInit")
 public class QuartzSchedulerUtil {
 
     //这个东西可以放在配置文件中

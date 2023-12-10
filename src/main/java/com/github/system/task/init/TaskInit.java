@@ -4,10 +4,13 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
 import com.github.system.base.dto.customform.CustomFormDisplayDto;
 import com.github.system.base.dto.customform.CustomFormDisplayOptions;
+import com.github.system.quartz.dao.SysQuartzJobMapper;
+import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.task.annotation.*;
 import com.github.system.task.dao.AutoIndexDao;
 import com.github.system.task.dto.TaskInfo;
@@ -49,6 +52,8 @@ public class TaskInit {
 
     @Resource
     private AutoIndexDao autoIndexDao;
+    @Resource
+    private SysQuartzJobMapper quartzJobMapper;
 
     @PostConstruct
     public void init() {
@@ -111,8 +116,19 @@ public class TaskInit {
         insertList.forEach(data -> autoIndexDao.insert(data));
         log.info("初始化任务列表完成,新增{}个任务", insertList.size());
         autoIndexLists = autoIndexDao.selectList(new QueryWrapper<>());
-        // todo 每个任务都要创建一个定时任务，这样就可以定义不同的时间点去运行
-
+        // 获取quartz当前任务
+        List<SysQuartzJob> sysQuartzJobs = quartzJobMapper.selectList(new LambdaQueryWrapper<>());
+        // 每个任务都要创建一个定时任务，这样就可以定义不同的时间点去运行
+        List<String> invokeTargetList = sysQuartzJobs.stream().map(SysQuartzJob::getInvokeTarget).toList();
+        for (AutoIndex autoIndex : autoIndexLists) {
+            String invokeTarget = "BaseTaskSchedule.runTask(" + autoIndex.getId() + "L)";
+            if (!invokeTargetList.contains(invokeTarget)) {
+                // 插入一条定时任务
+                log.info("插入定时任务：" + autoIndex.getName());
+                SysQuartzJob sysQuartzJob = new SysQuartzJob(autoIndex.getName() + "定时任务", invokeTarget, SystemConstant.DEFAULT_CRON, 0, 1);
+                quartzJobMapper.insert(sysQuartzJob);
+            }
+        }
         // 初始化任务线程池
         autoIndexLists.forEach(data -> taskThreadMap.put(data.getCode(), createThread(data.getCode(), data.getThreadNum())));
         log.info("初始化任务线程完成：" + autoIndexLists.size());
