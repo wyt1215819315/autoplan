@@ -53,7 +53,7 @@ public class VideoWatch {
         Map<String, Object> params = new HashMap<>();
         params.put("bvid", bvid);
         params.put("csrf", taskInfo.getBiliJct());
-        JSONObject result = biliWebUtil.doPost((BiliUrlConstant.BILI_AV_SHARE), params);
+        JSONObject result = biliWebUtil.doPost(BiliUrlConstant.BILI_AV_SHARE, params);
 
         String videoTitle = BiliHelpUtil.getVideoTitle(bvid, biliWebUtil);
 

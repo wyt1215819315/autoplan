@@ -7,6 +7,7 @@ public class BiliUrlConstant {
 
     public static final String NEW_BILI_QRCODE_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate";
     public static final String NEW_BILI_QRCODE_STATUS_URL = "https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key=";
+    public static final String FINGER_API = "https://api.bilibili.com/x/frontend/finger/spi";
 
     /**
      * 直播签到

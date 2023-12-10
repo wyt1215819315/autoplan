@@ -6,6 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.system.base.constant.SystemConstant;
 import com.github.system.base.util.HttpUtil;
+import com.github.task.bili.constant.BiliUrlConstant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,14 @@ public class BiliWebUtil {
     private final String cookie;
 
     public BiliWebUtil(String cookie) {
+        // 获取buvid3,4
+        try {
+            JSONObject jsonObject = doGet(BiliUrlConstant.FINGER_API);
+            if (jsonObject.getInt("code") == 0) {
+                cookie += "buvid3" + jsonObject.getJSONObject("data").getStr("b_3") + ";";
+                cookie += "buvid4" + jsonObject.getJSONObject("data").getStr("b_4") + ";";
+            }
+        } catch (Exception ignored) {}
         this.cookie = cookie;
     }
 

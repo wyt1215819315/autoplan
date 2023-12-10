@@ -1,5 +1,6 @@
 package com.github.task.bili.util.task;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.github.task.bili.model.task.BiliTaskInfo;
@@ -34,11 +35,19 @@ public class GiveGift {
      * @since 2020-10-13
      */
     public String xliveGetRecommend() throws Exception {
-        return biliWebUtil.doGet("https://api.live.bilibili.com/relation/v1/AppWeb/getRecommendList")
-                .getJSONObject("data")
-                .getJSONArray("list")
-                .getJSONObject(6)
-                .getStr("roomid");
+//        JSONObject jsonObject = biliWebUtil.doGet("https://api.live.bilibili.com/relation/v1/AppWeb/getRecommendList");
+        // 获取热榜直播间，原先的接口不稳定，换一个
+        JSONObject jsonObject = biliWebUtil.doGet("https://api.live.bilibili.com/xlive/web-interface/v1/index/getHotRankList");
+        if (jsonObject.getInt("code") == 0) {
+            int index = RandomUtil.randomInt(0, jsonObject.getJSONObject("data").getInt("count") - 1);
+            return jsonObject
+                    .getJSONObject("data")
+                    .getJSONArray("list")
+                    .getJSONObject(index)
+                    .getStr("roomid");
+        } else {
+            throw new Exception("获取热榜直播间信息失败：" + jsonObject);
+        }
     }
 
     /**

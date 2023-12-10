@@ -24,7 +24,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
 
     @Override
     public TaskInfo getTaskInfo() {
-        return new TaskInfo("哔哩哔哩自动化", "bili", Duration.ofMinutes(1));
+        return new TaskInfo("哔哩哔哩", "bili", Duration.ofMinutes(1));
     }
 
     @Override
@@ -90,6 +90,7 @@ public class BiliServiceImpl extends BaseTaskService<BiliSettings, BiliUserInfo>
             biliTaskUtil.liveGift();
             return TaskResult.doSuccess();
         } catch (Exception e) {
+            log.debug("哔哩哔哩任务直播送礼出现错误", e);
             return TaskResult.doError(e.getMessage());
         }
     }
