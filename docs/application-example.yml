@@ -14,10 +14,6 @@ system:
     url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: 数据库用户名
     password: 数据库密码
-mybatis-plus:
-  configuration:
-    # 输出mybatis日志
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # 代理配置（并不是全局，目前只有推送用到）
 proxy:
   ip: 127.0.0.1
