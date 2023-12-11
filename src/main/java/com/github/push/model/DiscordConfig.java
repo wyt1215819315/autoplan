@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@PushEntity(PushTypeConstant.DISCORD)
+@PushEntity(value = PushTypeConstant.DISCORD, order = 3)
 public class DiscordConfig extends PushBaseConfig {
 
     @PushProperty(desc = "Discord的Webhook地址", value = "Webhook地址", notnull = true)

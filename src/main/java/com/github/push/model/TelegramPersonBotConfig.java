@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@PushEntity(value = PushTypeConstant.TELEGRAM_PERSON_BOT)
+@PushEntity(value = PushTypeConstant.TELEGRAM_PERSON_BOT, order = 10)
 public class TelegramPersonBotConfig extends PushBaseConfig {
 
     @PushProperty(value = "Token", desc = "@BotFather中申请的HTTP API <123456:Abcxxxo> 格式", notnull = true)

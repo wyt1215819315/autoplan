@@ -44,6 +44,8 @@ public class PushInit implements CommandLineRunner {
 //        Set<Class<?>> classes = ClassUtil.scanPackageBySuper(StrUtil.subBefore(packageName, ".", true) + ".model.impl", PushBaseConfig.class);
         Set<Class<?>> classes = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE + ".push", PushBaseConfig.class);
         Set<Class<?>> pushServiceClasses = ClassUtil.scanPackageBySuper(SystemConstant.BASE_PACKAGE + ".push", PushService.class);
+        // 通过Map存储key和对应的order值
+        Map<String, Integer> orderMap = new HashMap<>();
         for (Class<?> aClass : classes) {
             PushEntity apiModelAnno = AnnotationUtil.getAnnotation(aClass, PushEntity.class);
             if (apiModelAnno != null) {
@@ -64,6 +66,7 @@ public class PushInit implements CommandLineRunner {
                 pushBaseConfigMap.put(key, (Class<? extends PushBaseConfig>) aClass);
                 pushThreadMap.put(key, createThread(key));
                 pushTypeList.add(key);
+                orderMap.put(key, apiModelAnno.order());
                 // 扫描字段
                 Field[] declaredFields = ClassUtil.getDeclaredFields(aClass);
                 List<CustomFormDisplayDto> pushConfigDtoList = new ArrayList<>();
@@ -100,6 +103,8 @@ public class PushInit implements CommandLineRunner {
                 pushConfigMap.put(key, pushConfigDtoList);
             }
         }
+        // 排序
+        pushTypeList.sort(Comparator.comparingInt(orderMap::get));
         log.info("推送服务加载完成，共{}个", pushTypeList.size());
     }
 

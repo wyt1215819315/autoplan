@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@PushEntity(PushTypeConstant.DING_TALK)
+@PushEntity(value = PushTypeConstant.DING_TALK, order = 2)
 public class DingTalkPushConfig extends PushBaseConfig {
 
     @PushProperty(value = "钉钉推送地址", notnull = true)

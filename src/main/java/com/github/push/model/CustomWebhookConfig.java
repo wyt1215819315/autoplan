@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@PushEntity(PushTypeConstant.CUSTOM)
+@PushEntity(value = PushTypeConstant.CUSTOM, order = 999)
 public class CustomWebhookConfig extends PushBaseConfig {
 
     @PushProperty(value = "请求地址")
