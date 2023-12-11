@@ -1,6 +1,7 @@
 package com.github.push.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
@@ -40,6 +41,7 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
             url = "http://" + url;
         }
         Integer requestType = config.getRequestType();
+        Integer contentType = config.getContentType();
         List<CustomWebhookParam> paramsList;
         List<CustomWebhookHeader> headersList;
         CustomWebhookSuccessFlag successFlagObj;
@@ -51,7 +53,9 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
             return PushResultDto.doError("解析JSON配置失败：" + e.getMessage());
         }
         JSONObject mainObj = new JSONObject();
-        Map<String, Object> dataMap = BeanUtil.beanToMap(pushConfig);
+        Map<String, Object> dataMap = new HashMap<>();
+        BeanUtil.beanToMap(pushConfig, dataMap, CopyOptions.create().setIgnoreProperties("config", "taskLog"));
+        dataMap.put("content", getContent(pushConfig, contentType));
         // 组装表单参数
         for (CustomWebhookParam customWebhookParam : paramsList) {
             String key = customWebhookParam.getKey();
@@ -132,6 +136,16 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
             // 未正确配置校验方式
             return PushResultDto.doSuccess("未正确配置校验方式，无法判断成功状态");
         }
+    }
+
+    private String getContent(PushData<?> pushData, Integer contentType) {
+        String type = switch (contentType) {
+            case 1 -> "Markdown";
+            case 2 -> "JSON";
+            case 3 -> "JsonTree";
+            default -> "TXT";
+        };
+        return (String) pushData.getContent(type);
     }
 
     private HttpUtil.RequestType getRequestType(Integer requestType) {

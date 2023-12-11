@@ -24,8 +24,16 @@ public class CustomWebhookConfig extends PushBaseConfig {
             @PushPropertyOptions(num = 1, name = "POST JSON"),
             @PushPropertyOptions(num = 2, name = "POST Form-data"),
             @PushPropertyOptions(num = 3, name = "POST x-www-UrlEncode")
-    })
-    private Integer requestType = 0;
+    }, defaultValue = "0")
+    private Integer requestType;
+
+    @PushProperty(value = "正文内容格式", desc = "内容均会以文本形式传输", options = {
+            @PushPropertyOptions(num = 0, name = "纯文本"),
+            @PushPropertyOptions(num = 1, name = "Markdown"),
+            @PushPropertyOptions(num = 2, name = "源Json"),
+            @PushPropertyOptions(num = 3, name = "树结构Json")
+    }, defaultValue = "0")
+    private Integer contentType;
 
     @PushProperty(value = "成功标识", desc = "填写成功标识")
     private String successFlag;//jsonObj
