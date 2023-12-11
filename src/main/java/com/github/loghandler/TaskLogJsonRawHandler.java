@@ -8,7 +8,7 @@ import com.github.system.task.service.TaskLogDisplayHandler;
 
 import java.util.List;
 
-public class TaskLogJsonHandler implements TaskLogDisplayHandler {
+public class TaskLogJsonRawHandler implements TaskLogDisplayHandler {
     @Override
     public String getName() {
         return "JSON";
