@@ -20,4 +20,14 @@ public class PushPlusConfig extends PushBaseConfig {
     @NotBlank
     private String token;
 
+    @PushProperty(value = "发送消息渠道",defaultValue = "1",options = {
+            @PushPropertyOptions(num = 1,name = "微信公众号"),
+            @PushPropertyOptions(num = 2,name = "webhook"),
+            @PushPropertyOptions(num = 3,name = "企业微信应用"),
+            @PushPropertyOptions(num = 4,name = "邮箱"),
+            @PushPropertyOptions(num = 5,name = "短信")
+    })
+    @NotEmpty
+    private Integer channel;
+
 }
