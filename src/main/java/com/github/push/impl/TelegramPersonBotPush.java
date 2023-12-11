@@ -27,7 +27,7 @@ public class TelegramPersonBotPush implements PushService<TelegramPersonBotConfi
     public PushResultDto doPush(PushData<TelegramPersonBotConfig> pushConfig, Map<String, Object> params) throws Exception {
         TelegramPersonBotConfig config = pushConfig.getConfig();
         params.put("chat_id", config.getChatId());
-        params.put("text", pushConfig.getContent());
+        params.put("text", pushConfig.getContent("Markdown"));
         params.put("parse_mode", "Markdown");
         String url;
         if (StrUtil.isNotBlank(config.getUrl())) {

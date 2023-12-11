@@ -44,7 +44,9 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
         HistoryTaskLog historyTaskLog = new HistoryTaskLog(autoTask.getId(), autoTask.getCode(), status, userId, new Date(), (String) json);
         baseMapper.insert(historyTaskLog);
         // 推送结果集
-        PushUtil.doPush(userId, historyTaskLog.getId(), systemBean.getTitle() + "任务通知", taskLog);
+        String name = autoTask.getName();
+        name = name + (name.endsWith("任务") ? "通知" : "任务通知");
+        PushUtil.doPush(userId, historyTaskLog.getId(), name, taskLog);
     }
 
 }

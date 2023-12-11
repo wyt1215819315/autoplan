@@ -10,4 +10,6 @@ public @interface PushEntity {
     String value();
     int delay() default 0;
 
+    int order() default 0;
+
 }

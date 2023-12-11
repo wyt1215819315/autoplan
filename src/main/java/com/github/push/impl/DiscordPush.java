@@ -37,16 +37,17 @@ public class DiscordPush implements PushService<DiscordConfig> {
         DiscordWebhook discordWebhook = new DiscordWebhook();
         DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
         embedObject.setTitle(pushConfig.getTitle());
-        embedObject.setDescription(pushConfig.getContent());
-        if (ReUtil.contains(colorRegx, config.getColor())) {
+        embedObject.setDescription((String) pushConfig.getContent("Markdown"));
+        if (embedObject.getColor() != null && ReUtil.contains(colorRegx, config.getColor())) {
             int r = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 1));
             int g = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 2));
             int b = Integer.parseInt(ReUtil.get(colorRegx, config.getColor(), 3));
             if (r <= 255 && g <= 255 && b <= 255 && r >= 0 && g >= 0 && b >= 0) {
                 embedObject.setColor(new Color(r, g, b));
+            } else {
+                embedObject.setColor(new Color(239, 88, 88));
             }
-        }
-        if (embedObject.getColor() == null) {
+        } else {
             embedObject.setColor(new Color(239, 88, 88));
         }
         discordWebhook.addEmbed(embedObject);

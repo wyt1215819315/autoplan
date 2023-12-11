@@ -27,7 +27,7 @@ public class ServerChanPush implements PushService<ServerChainConfig> {
     public PushResultDto doPush(PushData<ServerChainConfig> pushConfig, Map<String, Object> params) throws Exception {
         ServerChainConfig config = pushConfig.getConfig();
         params.put("title", pushConfig.getTitle());
-        params.put("desp", pushConfig.getContent());
+        params.put("desp", pushConfig.getContent("Markdown"));
         params.put("channel", config.getChannel());
         if (StrUtil.isNotBlank(config.getOpenid())) {
             params.put("openid", config.getOpenid());

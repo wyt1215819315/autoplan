@@ -45,7 +45,7 @@ public class DingTalkPush implements PushService<DingTalkPushConfig> {
         Map<String,Object> markdownParams = new HashMap<>();
         // 经过测试，钉钉的安全策略关键字匹配也可以匹配标题的，所以说不需要再内容额外加关键字
         markdownParams.put("title", pushConfig.getTitle());
-        markdownParams.put("text", pushConfig.getContent());
+        markdownParams.put("text", pushConfig.getContent("Markdown"));
         params.put("markdown", markdownParams);
         params.put("msgtype", "markdown");
         JSONObject jsonObject = request(url, params, HttpUtil.RequestType.JSON);

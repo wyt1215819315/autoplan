@@ -78,7 +78,7 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     @Override
     public AjaxResult checkWebhook(PushData<?> pushData) {
         pushData.setUserId(SessionUtils.getUserId());
-        pushData.setTitle(systemBean.getTitle() + "测试消息");
+        pushData.setTitle(systemBean.getTitle() + "测试任务通知");
         TaskLog taskLog = new TaskLog();
         taskLog.info(SystemConstant.SYSTEM_WEBHOOK_TEST_MSG);
         pushData.setTaskLog(taskLog);

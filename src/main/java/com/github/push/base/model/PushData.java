@@ -20,7 +20,7 @@ public class PushData<T extends PushBaseConfig> {
         if (taskLogDisplayHandler == null) {
             taskLogDisplayHandler = taskLogHandlerClassesMap.get("TXT");
         }
-        return taskLogDisplayHandler.handle(this.taskLog);
+        return taskLogDisplayHandler.handle(this.taskLog, this);
     }
 
     public String getContent() {
