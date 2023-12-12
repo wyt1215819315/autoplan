@@ -32,7 +32,7 @@ public class QuartzJobController {
 
     @RequestMapping("/page")
     @ApiOperation("定时任务调度分页查询")
-    public Page<SysQuartzJob> page(@RequestBody Page<SysQuartzJob> page, SysQuartzJobVo sysQuartzJobVo) {
+    public Page<SysQuartzJob> page(@RequestBody Page<SysQuartzJob> page, @RequestBody SysQuartzJobVo sysQuartzJobVo) {
         LambdaQueryWrapper<SysQuartzJob> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysQuartzJobVo.getJobName()), SysQuartzJob::getJobName, sysQuartzJobVo.getJobName());
         lambdaQueryWrapper.eq(sysQuartzJobVo.getStatus() != null, SysQuartzJob::getStatus, sysQuartzJobVo.getStatus());

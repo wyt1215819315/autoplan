@@ -19,6 +19,9 @@ public class AjaxResult {
         this.code = code;
     }
 
+    public static AjaxResult status(boolean status) {
+        return status ? AjaxResult.doSuccess() : AjaxResult.doError();
+    }
     public static AjaxResult doSuccess() {
         return doSuccess("操作成功！");
     }

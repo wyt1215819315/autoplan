@@ -31,13 +31,18 @@ public class RegServiceImpl implements RegService {
         }
         String username = regModel.getUsername();
         String password = regModel.getPassword();
+        return doReg(username, password);
+    }
+
+    @Override
+    public AjaxResult doReg(String username, String password) {
         if (userService.findUserByUsername(username) != null) {
             return AjaxResult.doError("用户名已经存在！");
         }
         // 这边前端传的password是md5加密过的，后端储存再加盐然后保存
-        password = SecureUtil.md5(password + systemBean.getPwdSalt());
+        password = SecureUtil.md5(userService.encodePassword(password));
         SysUser user = new SysUser(username, password);
-        boolean b = userService.createUser(user);
+        boolean b = userService.save(user);
         if (b) {
             return AjaxResult.doSuccess("注册成功！");
         }

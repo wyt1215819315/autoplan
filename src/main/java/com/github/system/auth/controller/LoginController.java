@@ -2,8 +2,11 @@ package com.github.system.auth.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.system.auth.service.LoginService;
+import com.github.system.auth.service.UserService;
 import com.github.system.auth.vo.LoginModel;
+import com.github.system.auth.vo.SysUserVo;
 import com.github.system.base.dto.AjaxResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +29,8 @@ public class LoginController {
 
     @Resource
     private LoginService loginService;
+    @Resource
+    private UserService userService;
 
     @ApiOperation("用户名密码登录")
     @RequestMapping("/formLogin")
@@ -55,6 +60,15 @@ public class LoginController {
     @RequestMapping("/me")
     public AjaxResult me() {
         return loginService.me();
+    }
+
+    @ApiOperation("修改密码")
+    @RequestMapping("/editSelfPassword")
+    public AjaxResult editSelfPassword(@RequestBody SysUserVo sysUserVo) {
+        if (StrUtil.isBlank(sysUserVo.getPassword())) {
+            return AjaxResult.doError("密码不能为空！");
+        }
+        return AjaxResult.status(userService.editSelfPassword(sysUserVo));
     }
 
     @ApiOperation("注销")
