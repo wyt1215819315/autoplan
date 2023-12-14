@@ -6,14 +6,15 @@ system:
     # 系统全局名称
     title: Auto Plan
     # 密码盐值
-    pwdSalt: oldwu
+    pwdSalt: ${APP_SYS_SALT:oldwu}
   # 数据库连接配置
   datasource:
     # type=mysql时需要填写下面的连接信息，type=sqlite时会使用内置数据库无需额外填写信息，空着即可
-    type: mysql
-    url: jdbc:mysql://数据库地址:3306/数据库名称?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: 数据库用户名
-    password: 数据库密码
+    type: ${APP_DB_TYPE:sqlite}
+    # 仅需填写关键信息即可，系统会自动拼接其他部分，比如填写127.0.0.1:3306/auto_plan即可
+    url: ${APP_DB_URL:数据库地址:数据库端口/数据库名称}
+    username: ${APP_DB_USER:数据库用户名}
+    password: ${APP_DB_PWD:数据库密码}
 # 代理配置（并不是全局，目前只有推送用到）
 proxy:
   ip: 127.0.0.1

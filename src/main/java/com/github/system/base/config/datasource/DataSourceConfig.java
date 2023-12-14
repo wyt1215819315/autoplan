@@ -50,6 +50,12 @@ public class DataSourceConfig {
     @ConditionalOnProperty(name = "system.datasource.type", havingValue = "mysql")
     public DataSource mysqlDataSource() {
         log.info("数据库类型：mysql");
+        if (!url.startsWith("jdbc")) {
+            url = "jdbc:mysql://" + url;
+        }
+        if (!url.endsWith("Asia/Shanghai")) {
+            url += "?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai";
+        }
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl(url);
@@ -76,7 +82,6 @@ public class DataSourceConfig {
             IoUtil.closeIfPosible(inputStream);
             IoUtil.closeIfPosible(fos);
         }
-        System.out.println(dbPath);
         dataSource.setUrl("jdbc:sqlite:" + dbPath);
         return dataSource;
     }
