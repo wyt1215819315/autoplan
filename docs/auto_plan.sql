@@ -9,7 +9,7 @@
  Target Server Version : 80024
  File Encoding         : 65001
 
- Date: 10/12/2023 19:44:10
+ Date: 14/12/2023 09:04:23
 */
 
 SET NAMES utf8mb4;
@@ -66,8 +66,8 @@ CREATE TABLE `log_hi_task`  (
                                 `date` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
                                 `text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '日志内容',
                                 PRIMARY KEY (`id`) USING BTREE,
-                                INDEX `IDX_HI_TASK_USERID`(`user_id`) USING BTREE,
-                                INDEX `IDX_HI_TASK_USER_TYPE_DATE`(`user_id`, `date`, `type`) USING BTREE
+                                INDEX `IDX_HI_TASK_USER_TYPE_DATE`(`user_id`, `date`, `type`) USING BTREE,
+                                INDEX `IDX_HI_TASK_DATE`(`date`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -80,7 +80,8 @@ CREATE TABLE `log_push_result`  (
                                     `log_id` bigint NULL DEFAULT NULL COMMENT '日志id',
                                     `success` int NULL DEFAULT NULL COMMENT '是否成功 0失败 1成功',
                                     `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '推送结果数据',
-                                    PRIMARY KEY (`id`) USING BTREE
+                                    PRIMARY KEY (`id`) USING BTREE,
+                                    INDEX `IDX_LOG_RES_USERID`(`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -165,7 +166,8 @@ CREATE TABLE `sys_webhook`  (
                                 `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注名称',
                                 `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '推送类型',
                                 `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '数据json',
-                                PRIMARY KEY (`id`) USING BTREE
+                                PRIMARY KEY (`id`) USING BTREE,
+                                INDEX `IDX_SYS_WEBHOOK_USERID`(`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
