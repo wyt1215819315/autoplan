@@ -57,6 +57,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
+    - name: 初始化前端子项目
+      run: git submodule init && git submodule update --init --recursive
+
     - name: 安装前端依赖
       run: |
         cd autoplan-front && pnpm install --no-frozen-lockfile
