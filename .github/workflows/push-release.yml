@@ -76,8 +76,8 @@ jobs:
     - run: find . -type d -name 'amazon-corretto-17*linux-x64' -exec cp -r {} build/Linux_x64/jdk \;
     - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-aarch64-linux-jdk.tar.gz && tar -zxvf amazon-corretto-17-aarch64-linux-jdk.tar.gz
     - run: find . -type d -name 'amazon-corretto-17*linux-aarch64' -exec cp -r {} build/Linux_aarch64/jdk \;
-    - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-windows-jdk.zip && unzip amazon-corretto-17-x64-windows-jdk.zip
-    - run: find ./jdk-windows-x64 -maxdepth 1 -type d -name 'jdk17*' -exec cp -r {} build/Windows_x64/jdk \;
+    - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-windows-jdk.zip && unzip amazon-corretto-17-x64-windows-jdk.zip -d amazon-corretto-17-x64-windows-jdk
+    - run: find ./amazon-corretto-17-x64-windows-jdk -maxdepth 1 -type d -name 'jdk17*' -exec cp -r {} build/Windows_x64/jdk \;
     - run: cp target/auto_plan.jar build/Linux_x64 && cp target/auto_plan.jar build/Linux_aarch64 && cp target/auto_plan.jar build/Windows_x64
     - run: cp script/start.sh build/Linux_x64 && cp script/start.sh build/Linux_aarch64 && cp script/start.sh build/Windows_x64
     - run: tar -czvf build/auto_plan_linux_x64.tar.gz  build/Linux_x64/
