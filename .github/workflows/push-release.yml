@@ -30,6 +30,44 @@ jobs:
     - name: 构建Maven项目
       run: mvn -B package --file pom.xml
 
+    # 构建前端
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - uses: pnpm/action-setup@v2
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 8.6.10
+        run_install: false
+
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: 安装前端依赖
+      run: |
+        cd autoplan-front && pnpm install --no-frozen-lockfile
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 构建前端
+      run: cd autoplan-front && pnpm run build
+
     - run: mkdir build && mkdir build/Linux_x64 && mkdir build/Linux_aarch64 && mkdir build/Windows_x64
     - run: wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz && tar -zxvf amazon-corretto-17-x64-linux-jdk.tar.gz
     - run: find . -type d -name 'amazon-corretto-17*linux-x64' -exec cp -r {} build/Linux_x64/jdk \;
@@ -42,6 +80,7 @@ jobs:
     - run: tar -czvf build/auto_plan_linux_x64.tar.gz  build/Linux_x64/
     - run: tar -czvf build/auto_plan_linux_aarch64.tar.gz  build/Linux_aarch64/
     - run: zip -r build/auto_plan_windows_x64.zip build/Windows_x64/
+    - run: zip -r build/autoplan_front.zip autoplan-front/dist/
     - run: cp target/auto_plan.jar build
 
     - name: 获取 Maven pom.xml中 version版本环境变量
@@ -56,4 +95,36 @@ jobs:
         title: "Release ${{ env.RELEASE_VERSION }}"
         files:
           build/auto_plan*
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: delik8shub/streampark
+        tags: |
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=ref,event=tag
+          type=ref,event=branch
+
+    - name: Build and push streampark
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: deploy/docker/Dockerfile
+        platforms: linux/amd64,linux/arm64/v8
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
 
