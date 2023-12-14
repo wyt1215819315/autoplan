@@ -2,6 +2,7 @@ package com.github.system.base.config.datasource;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
@@ -75,19 +76,24 @@ public class DataSourceConfig {
             IoUtil.closeIfPosible(inputStream);
             IoUtil.closeIfPosible(fos);
         }
-        dataSource.setUrl("jdbc:sqlite::" + dbPath);
+        System.out.println(dbPath);
+        dataSource.setUrl("jdbc:sqlite:" + dbPath);
         return dataSource;
     }
 
     @Bean(name = "db1SqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource,
-                                               @Qualifier("mybatisPlusInterceptor") MybatisPlusInterceptor mybatisPlusInterceptor,
-                                               @Qualifier("mybatisPlusGlobalConfig") GlobalConfig globalConfig
+                                               @Qualifier("mybatisPlusInterceptor") MybatisPlusInterceptor mybatisPlusInterceptor
+//            , @Qualifier("mybatisPlusGlobalConfig") GlobalConfig globalConfig
     ) throws Exception {
         MybatisSqlSessionFactoryBean sessionFactoryBean = new MybatisSqlSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setPlugins(mybatisPlusInterceptor);
-        sessionFactoryBean.setGlobalConfig(globalConfig);
+//        sessionFactoryBean.setGlobalConfig(globalConfig);
+//        MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
+//        mybatisConfiguration.setUseGeneratedKeys(false);
+//        mybatisConfiguration.setUseGeneratedShortKey(false);
+//        sessionFactoryBean.setConfiguration(mybatisConfiguration);
         sessionFactoryBean.setMapperLocations(resolveMapperLocations());
         return sessionFactoryBean.getObject();
     }

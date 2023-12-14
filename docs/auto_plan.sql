@@ -135,8 +135,8 @@ CREATE TABLE `sys_role_user`  (
                                   `user_id` bigint NOT NULL COMMENT '用户id',
                                   `role_id` bigint NOT NULL COMMENT '角色id',
                                   PRIMARY KEY (`id`) USING BTREE,
-                                  UNIQUE INDEX `sys_user_id`(`user_id`) USING BTREE,
-                                  INDEX `sys_role_id`(`role_id`) USING BTREE,
+                                  UNIQUE INDEX `UK_SYS_ROLE_USER` (`user_id`, `role_id`) USING BTREE,
+                                  INDEX `INDEX_SYS_ROLE_USER_ROLEID` (`role_id`) USING BTREE,
                                   CONSTRAINT `sys_role_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
                                   CONSTRAINT `sys_role_user_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;

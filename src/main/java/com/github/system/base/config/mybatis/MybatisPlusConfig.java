@@ -36,14 +36,14 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
-    @Bean
-    public GlobalConfig mybatisPlusGlobalConfig() {
-        GlobalConfig globalConfig = new GlobalConfig();
-        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
-        dbConfig.setIdType(IdType.AUTO);
-        globalConfig.setDbConfig(dbConfig);
-        return globalConfig;
-    }
+//    @Bean
+//    public GlobalConfig mybatisPlusGlobalConfig() {
+//        GlobalConfig globalConfig = new GlobalConfig();
+//        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+//        dbConfig.setIdType(IdType.AUTO);
+//        globalConfig.setDbConfig(dbConfig);
+//        return globalConfig;
+//    }
 
 
 }
