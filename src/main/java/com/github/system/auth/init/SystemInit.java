@@ -2,9 +2,13 @@ package com.github.system.auth.init;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.github.system.auth.dao.SysRoleDao;
 import com.github.system.auth.entity.SysRole;
+import com.github.system.auth.entity.SysUser;
 import com.github.system.auth.service.SysRoleService;
+import com.github.system.auth.service.UserService;
+import com.github.system.auth.vo.SysUserVo;
 import com.github.system.base.util.SpringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 
@@ -19,9 +24,11 @@ import java.util.*;
 public class SystemInit implements CommandLineRunner {
     private final Log logger = LogFactory.getLog(SystemInit.class);
 
-    @Autowired
+    @Resource
     private SysRoleService sysRoleService;
-    @Autowired
+    @Resource
+    private UserService userService;
+    @Resource
     private SysRoleDao sysRoleDao;
 
 
@@ -29,7 +36,6 @@ public class SystemInit implements CommandLineRunner {
      * 初始化角色
      */
     public void systemRoleInit() throws Exception {
-        logger.info("初始化角色缓存...");
         Date date = new Date();
         List<SysRole> allRole = sysRoleService.getAllRole();
         List<SysRole> initRole = new ArrayList<>();
@@ -52,10 +58,28 @@ public class SystemInit implements CommandLineRunner {
         logger.info("初始化角色缓存完毕！耗时" + (System.currentTimeMillis() - date.getTime()) + "ms");
     }
 
+    /**
+     * 如果为第一次使用系统，没有任何用户，则初始化一个初始系统管理员用户
+     */
+    public void onceSystemUserInit() {
+        if (userService.count() == 0) {
+            // 生成密码
+            String password = RandomUtil.randomString(6);
+            logger.info("创建初始超级用户：admin 密码：" + password);
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername("admin");
+            sysUser.setPassword(userService.encodePassword(password));
+            userService.save(sysUser);
+            // 写入超管权限
+            sysRoleService.addUserRole(sysUser.getId(), "ADMIN");
+        }
+    }
+
 
     @Override
     public void run(String... args) throws Exception {
         systemRoleInit();
+        onceSystemUserInit();
 //        long l = System.currentTimeMillis();
 //        SystemDictUtil.refreshRedisDictCache();
 //        logger.info("初始化字典缓存完成！耗时" + (System.currentTimeMillis() - l) + "ms");

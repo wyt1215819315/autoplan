@@ -9,5 +9,11 @@ public interface SysRoleService {
 
     List<SysRole> getAllRole();
 
+    SysRole getRoleByCode(String code);
+
+    boolean addUserRole(Long userId, String roleCode);
+
+    boolean addUserRole(Long userId, Long roleId);
+
     List<String> getUserRole(Long userId);
 }
