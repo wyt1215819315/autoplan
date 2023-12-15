@@ -94,7 +94,7 @@ jobs:
     # 上传文件并发布 Release
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        repo_token: "${{ secrets.RESPONSITY_TOKEN }}"
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "${{ env.RELEASE_VERSION }}"
         prerelease: false
         title: "Release ${{ env.RELEASE_VERSION }}"
