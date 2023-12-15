@@ -116,7 +116,7 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "${{ env.RELEASE_VERSION }}"
         prerelease: false
-        title: "Release ${{ env.RELEASE_VERSION }}"
+        title: "${{ env.RELEASE_VERSION }}"
         files: |
           build/auto_plan*
           build/application-example.yml
