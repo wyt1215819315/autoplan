@@ -86,6 +86,7 @@ jobs:
     - run: zip -r build/auto_plan_windows_x64.zip build/Windows_x64/
     - run: zip -r build/autoplan_front.zip autoplan-front/dist/
     - run: cp target/auto_plan.jar build
+    - run: cp docs/application-example.yml build
 
     - name: 获取 Maven pom.xml中 version版本环境变量
       run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
@@ -93,12 +94,13 @@ jobs:
     # 上传文件并发布 Release
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        repo_token: "${{ secrets.RESPONSITY_TOKEN }}"
         automatic_release_tag: "${{ env.RELEASE_VERSION }}"
         prerelease: false
         title: "Release ${{ env.RELEASE_VERSION }}"
-        files:
+        files: |
           build/auto_plan*
+          build/application-example.yml
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
