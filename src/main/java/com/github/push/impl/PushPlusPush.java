@@ -26,9 +26,11 @@ public class PushPlusPush implements PushService<PushPlusConfig> {
         PushPlusConfig config = pushConfig.getConfig();
         params.put("token", config.getToken());
         params.put("title", pushConfig.getTitle());
-        params.put("content", pushConfig.getContent());
+        params.put("content", pushConfig.getContent("Markdown"));
         params.put("template", "markdown");
-        params.put("channel", getChannel(config.getChannel()));
+        if (config.getChannel() != null) {
+            params.put("channel", getChannel(config.getChannel()));
+        }
         JSONObject jsonObject = request(PushUrlConstant.PUSH_PLUS, params, HttpUtil.RequestType.JSON);
         if (jsonObject.getInt("code") == 200) {
             return PushResultDto.doSuccess(jsonObject.getStr("msg"), jsonObject.getStr("data"));

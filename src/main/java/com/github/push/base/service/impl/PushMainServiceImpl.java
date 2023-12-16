@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -33,14 +34,16 @@ public class PushMainServiceImpl implements PushMainService {
             log.error("未找到推送执行器：" + type);
             return PushResultDto.doError("未找到推送执行器" + type);
         }
-        return push(pushData, type);
+        return push(pushData, type, true);
     }
 
     @Override
-    public PushResultDto push(PushData pushData, String type) {
+    public PushResultDto push(PushData pushData, String type, boolean valid) {
         PushResultDto pushResultDto;
         try {
-            ValidatorUtils.validate(pushData.getConfig());
+            if (valid) {
+                ValidatorUtils.validate(pushData.getConfig());
+            }
             pushResultDto = PushInit.pushServiceMap.get(type).getDeclaredConstructor().newInstance().doPush(pushData, new HashMap<>());
         } catch (ConstraintViolationException e) {
             pushResultDto = PushResultDto.doError(ValidatorUtils.parseHtmlError(e));
@@ -66,7 +69,7 @@ public class PushMainServiceImpl implements PushMainService {
         PushEntity pushEntityAnno = configClass.getAnnotation(PushEntity.class);
         int delay = pushEntityAnno.delay();
         PushInit.pushThreadMap.get(type).submit(() -> {
-            PushResultDto pushResultDto = push(pushData, type);
+            PushResultDto pushResultDto = push(pushData, type, false);
             // 记录日志
             if (pushData.getLogId() != null) {
                 PushResultLog pushResultLog = new PushResultLog();
@@ -74,6 +77,7 @@ public class PushMainServiceImpl implements PushMainService {
                 pushResultLog.setSuccess(pushResultDto.isSuccess() ? 1 : 0);
                 pushResultLog.setUserId(pushData.getUserId());
                 pushResultLog.setData(pushResultDto.getData());
+                pushResultLog.setDate(new Date());
                 pushResultLogDao.insert(pushResultLog);
             }
             // 延迟

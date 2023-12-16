@@ -6,8 +6,8 @@ import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
-import com.github.system.base.entity.SysWebhook;
 import com.github.push.base.service.WebhookService;
+import com.github.system.base.entity.SysWebhook;
 import com.github.system.task.dto.TaskLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class PushUtil {
         return pushMainService.doPush(pushData);
     }
 
-    public static <T extends PushBaseConfig> void doPush(Long userId,Long logId, String title, TaskLog taskLog) {
+    public static <T extends PushBaseConfig> void doPush(Long userId, Long logId, String title, TaskLog taskLog) {
         List<SysWebhook> userWebhook = webhookService.getUserWebhook(userId);
         if (!userWebhook.isEmpty()) {
             userWebhook.forEach(w -> {
@@ -39,7 +39,7 @@ public class PushUtil {
                 pushData.setTaskLog(taskLog);
                 pushData.setLogId(logId);
                 pushData.setUserId(userId);
-                pushData.setConfig((T) JSONUtil.toBean(w.getData(),aClass));
+                pushData.setConfig((T) JSONUtil.toBean(w.getData(), aClass));
                 pushMainService.doPushAsync(pushData);
             });
         }

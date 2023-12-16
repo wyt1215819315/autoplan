@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,7 +27,7 @@ public class PushPlusConfig extends PushBaseConfig {
             @PushPropertyOptions(num = 4,name = "邮箱"),
             @PushPropertyOptions(num = 5,name = "短信")
     })
-    @NotEmpty
+    @NotNull
     private Integer channel;
 
 }

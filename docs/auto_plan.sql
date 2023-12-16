@@ -77,7 +77,7 @@ DROP TABLE IF EXISTS `log_push_result`;
 CREATE TABLE `log_push_result`  (
                                     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
                                     `user_id` bigint NULL DEFAULT NULL COMMENT '用户id',
-                                    `log_id` bigint NULL DEFAULT NULL COMMENT '日志id',
+                                    `task_id` bigint NULL DEFAULT NULL COMMENT '日志id',
                                     `success` int NULL DEFAULT NULL COMMENT '是否成功 0失败 1成功',
                                     `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '推送结果数据',
                                     PRIMARY KEY (`id`) USING BTREE,
