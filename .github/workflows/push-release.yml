@@ -118,6 +118,7 @@ jobs:
         prerelease: false
         title: "${{ env.RELEASE_VERSION }}"
         files: |
+          build/autoplan_front.zip
           build/auto_plan*
           build/application-example.yml
 
