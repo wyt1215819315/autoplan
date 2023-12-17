@@ -85,8 +85,10 @@ public class MiHoYoSignMiHoYo extends MiHoYoAbstractSign {
             }
             set.add(index);
             try {
-                method.invoke(obj, posts.get(index));
-                sc++;
+                Object invoke = method.invoke(obj, posts.get(index));
+                if (invoke instanceof Boolean b && b) {
+                    sc++;
+                }
             } catch (Exception e) {
                 log.error("米游社任务调用出错：", e);
             }
