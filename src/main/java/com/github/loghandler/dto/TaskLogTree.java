@@ -9,6 +9,7 @@ import java.util.List;
 public class TaskLogTree {
 
     private String style;
+    private TaskLog.LogType logType;
     private String data;
     private List<TaskLogTree> children;
 

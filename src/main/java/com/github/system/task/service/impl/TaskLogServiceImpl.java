@@ -40,7 +40,7 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
     public void insertAndPush(AutoTask autoTask, TaskLog taskLog, Integer status) {
         Long userId = autoTask.getUserId();
         // 储存到系统表
-        Object json = taskLogHandlerClassesMap.get("JSON").handle(taskLog);
+        Object json = taskLogHandlerClassesMap.get("JsonTree").handle(taskLog);
         HistoryTaskLog historyTaskLog = new HistoryTaskLog(autoTask.getId(), autoTask.getCode(), status, userId, new Date(), (String) json);
         baseMapper.insert(historyTaskLog);
         // 推送结果集
