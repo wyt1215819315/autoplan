@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github</groupId>
     <artifactId>autoplan</artifactId>
-    <version>3.0.0-DEV</version>
+    <version>3.0.1-DEV</version>
     <name>auto_plan</name>
     <description>auto_plan project for Spring Boot</description>
     <properties>
