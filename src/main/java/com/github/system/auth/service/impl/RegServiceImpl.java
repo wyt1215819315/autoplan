@@ -40,7 +40,7 @@ public class RegServiceImpl implements RegService {
             return AjaxResult.doError("用户名已经存在！");
         }
         // 这边前端传的password是md5加密过的，后端储存再加盐然后保存
-        password = SecureUtil.md5(userService.encodePassword(password));
+        password = userService.encodePassword(password);
         SysUser user = new SysUser(username, password);
         boolean b = userService.save(user);
         if (b) {
