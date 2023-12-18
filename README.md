@@ -67,30 +67,61 @@
 [**更多详细使用说明请查看**](https://blog.oldwu.top/index.php/archives/84/#toc_5)
 
 ## 项目部署
-1. 首先准备好`application.yml`配置文件，模板文件可以点击链接下载：
-[application.yml](https://github.com/wyt1215819315/autoplan/blob/master/application-example.yml)
-2. 在`mysql`中创建数据库并导入`auto_plan.sql`
-3. 接下来你可以选择两种方式部署：
-   * 第一种方法 **使用 <a href="https://github.com/wyt1215819315/autoplan/releases">Releases</a> 中打包好的jar运行**
-     * 将`application.yml`修改正确并放入jar包同级目录中
-     * 使用`java -jar xxx.jar`运行
-   * 第二种方法 **自行编译jar包**
-     * 导入idea并下载依赖（请使用JDK17）
-     * 在`resources`文件夹放入`application.yml`配置文件（可选，你可以选择外置配置文件）
-     * 使用maven install打包成jar
-     * 使用`java -jar xxx.jar`运行
 
+### docker部署（推荐）
+#### 基本用法
+```shell
+docker run --name autoplan \
+-p 需要映射的端口:80 \
+-e APP_DB_TYPE=数据库类型  \
+-e APP_DB_URL=数据库地址  \
+-e APP_DB_USER=数据库用户  \
+-e APP_DB_PWD=数据库密码  \
+-v 内置数据库挂载位置:/app/db \
+-d wyt1215819315/auto_plan:latest
+```
 
-4. 注册账号，并将其定为管理员账户，步骤：
-   * 查看`sys_user`表中你的账号对应的`id`
-   * 进入`sys_role_user`表中找到对应的`user_id`
-   * 将对应行的`sys_role_id`值改为1
-5. 一些定时任务的配置请登录管理员账号在`自动任务管理`中查看
+#### 使用内置数据库sqlite启动
+```shell
+docker run --name autoplan \
+-p 需要映射的端口:80 \
+-v 内置数据库挂载位置:/app/db \
+-d wyt1215819315/auto_plan:latest
+```
 
-> **提示：[Releases](https://github.com/wyt1215819315/autoplan/releases) 中的jar包可能更新不及时，项目设置有自动构建，急需最新版jar包，可前往 [actions](https://github.com/wyt1215819315/autoplan/actions) 自行下载**
+#### 使用自建mysql启动
+```shell
+docker run --name autoplan \
+-p 需要映射的端口:80 \
+-e APP_DB_TYPE=mysql  \
+-e APP_DB_URL=127.0.0.1:3306/auto_plan  \
+-e APP_DB_USER=root  \
+-e APP_DB_PWD=123456  \
+-d wyt1215819315/auto_plan:latest
+```
+
+#### 查看日志
+```shell
+# docker logs [容器id或名称]
+docker logs autoplan
+```
+
+### 手动部署（前后端都需要单独部署）
+
+1. release中打包好的压缩包中包含jdk17环境和启动脚本，根据你的环境选择相对应的包（如果之前已经下过包了，只需要下载auto_plan.jar覆盖掉原来解压出来的即可，如果配置文件有改动的话也要手动改一下）
+2. 按需要修改配置文件： 默认配置为使用本地sqlite数据库，无需独立部署，如果需要改为mysql，请修改配置文件中`system.datasource`项中的配置，并将`docs/auto_plan.sql`导入你的数据库中
+3. 运行start.bat（win）或start.sh（linux）启动即可，观察日志，如果无报错则后台部署完毕
+4. 将release中的autoplan_front.zip前端包解压出来，部署到nginx即可，包支持gzip，推荐在nginx开启gzip以获得最佳性能
+
+### 注意事项
+1. 第一次启动时无用户的情况，系统会生成一个默认的超管用户，密码会打印在控制台上请注意查看
+2. 自动构建的包仅支持根域名部署，后台访问路径为`/api`，如果需要在二级路径部署，请自行修改配置文件后重新编译（docker部署的也许能在外面一层nginx rewrite，没试过）
+3. 如果使用mysql模式下，docker里的应用无法连接部署在宿主机的数据库，请检查防火墙配置，docker桥接的情况下，相当于容器本身有一个自己的ip，并且不能使用127.0.0.1来访问宿主机上部署的mysql，需要使用内网地址
 
 **版本更新时，请务必备份数据库，以免未知的后果造成影响**
 
+
+## 构建
 ### 拉取项目
 ```shell
 # 拉取后台主项目
@@ -103,16 +134,37 @@ $ git submodule init
 $ git submodule update --init --recursive
 ```
 
-### 构建
+### 运行环境
+1. JDK17
+2. Maven
+3. Node.js 16+
+4. pnpm
 
-### [更新日志](docs/update_log.md)
+### 构建指令
+#### 后台
+```shell
+mvn install
+```
+#### 前端
+```shell
+# 全局安装pnpm
+npm install -g pnpm
+# 使用pnpm安装依赖
+pnpm install
+# 本地开发环境测试
+pnpm serve
+# 编译前端包（输出在前端路径的dist下）
+pnpm build
+```
 
-### 项目说明
+## [更新日志](docs/update_log.md)
+
+## 项目说明
 作者本人没有很多时间去维护各种任务，而且仅仅只会简单的抓包，如果任务本身有问题比如api换了什么，加了加密算法什么的，作者可能没有时间和能力去及时维护这些任务，所以还是欢迎各位大佬提交pr来共同维护项目吧
 
 项目主体部分有问题的话我会尽力去修复的
 
-### 鸣谢
+## 鸣谢
 1. <a href="https://github.com/JunzhouLiu/BILIBILI-HELPER-PRE">BILIBILI-HELPER-PRE（作者不干了）</a>
 2. <a href="https://github.com/secriy/CloudMusic-LevelUp">CloudMusic-LevelUp</a>
 3. <a href="https://github.com/PonKing66/genshi-helper">genshi-helper</a>
