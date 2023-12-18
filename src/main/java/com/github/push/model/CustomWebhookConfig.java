@@ -41,7 +41,7 @@ public class CustomWebhookConfig extends PushBaseConfig {
     /**
      * 这俩玩意是特例，需要前端做下键值对形式提交，后台当成json去解析填充
      */
-    @PushProperty(value = "请求参数", desc = "自定义的请求参数，JSON提交形式支持直接将JSON路径作为键填写，例如data.userInfo[0].user")
+    @PushProperty(value = "请求参数", desc = "自定义的请求参数，JSON提交形式支持直接将JSON路径作为键填写，例如data.userInfo[0].user\n值可以使用的占位符:{content},{title}")
     private String params;//jsonArray
 
     @PushProperty(value = "请求头配置", desc = "自定义的请求头")

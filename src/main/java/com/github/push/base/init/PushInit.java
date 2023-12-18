@@ -6,8 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.github.push.base.annotation.PushEntity;
 import com.github.push.base.annotation.PushProperty;
 import com.github.push.base.annotation.PushPropertyOptions;
-import com.github.push.base.dto.PushConfigDto;
-import com.github.push.base.dto.PushConfigOptions;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.service.PushService;
 import com.github.system.base.constant.SystemConstant;
