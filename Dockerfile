@@ -24,5 +24,4 @@ COPY docs/nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # 启动 Nginx 和 Spring Boot 项目
-CMD nginx
-ENTRYPOINT ["java","-jar","auto_plan.jar","--spring.profiles.active=docker"]
+ENTRYPOINT nginx && java -jar auto_plan.jar --spring.profiles.active=docker
