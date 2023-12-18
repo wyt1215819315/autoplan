@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.push.PushUtil;
+import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.configuration.SystemBean;
 import com.github.system.task.dto.TaskLog;
 import com.github.system.task.vo.HistoryTaskLogVo;
@@ -30,7 +31,9 @@ public class TaskLogServiceImpl extends ServiceImpl<HistoryTaskLogDao, HistoryTa
         LambdaQueryWrapper<HistoryTaskLog> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getType()), HistoryTaskLog::getType, historyTaskLogVo.getType());
         queryWrapper.eq(historyTaskLogVo.getTaskId() != null, HistoryTaskLog::getTaskId, historyTaskLogVo.getTaskId());
-        queryWrapper.eq(HistoryTaskLog::getUserId, historyTaskLogVo.getUserId());
+        if (!SessionUtils.isAdmin()) {
+            queryWrapper.eq(HistoryTaskLog::getUserId, historyTaskLogVo.getUserId());
+        }
         queryWrapper.orderByDesc(HistoryTaskLog::getDate);
         queryWrapper.last("limit 1");
         return baseMapper.selectOne(queryWrapper);
