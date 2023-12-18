@@ -24,7 +24,7 @@ public class AutoIndexController {
     private AutoIndexService autoIndexService;
 
     @ApiOperation("列表")
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public List<AutoIndex> list() {
         return autoIndexService.userList();
     }
@@ -60,15 +60,15 @@ public class AutoIndexController {
     }
 
     @ApiOperation("管理员分页列表")
-    @RequestMapping("/admin/page")
+    @GetMapping("/admin/page")
     @SaCheckRole("ADMIN")
-    public Page<AutoIndex> adminPage(@RequestBody Page<AutoIndex> page) {
+    public Page<AutoIndex> adminPage(Page<AutoIndex> page) {
         LambdaQueryWrapper<AutoIndex> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         return autoIndexService.page(page, lambdaQueryWrapper);
     }
 
     @ApiOperation("修改")
-    @RequestMapping("/admin/update")
+    @PostMapping("/admin/update")
     @SaCheckRole("ADMIN")
     public AjaxResult adminUpdate(@RequestBody AutoIndex autoIndex) {
         if (autoIndexService.updateById(autoIndex)) {
@@ -78,7 +78,7 @@ public class AutoIndexController {
     }
 
     @ApiOperation("修改开启状态")
-    @RequestMapping("/admin/changeEnable")
+    @PostMapping("/admin/changeEnable")
     @SaCheckRole("ADMIN")
     public AjaxResult adminChangeEnable(@RequestBody AutoIndex autoIndex) {
         AutoIndex entity = autoIndexService.getById(autoIndex.getId());

@@ -21,14 +21,14 @@ public class AutoTaskController {
     private AutoTaskService autoTaskService;
 
     @ApiOperation("任务分页查询")
-    @RequestMapping("/{indexId}/page")
-    public Page<AutoTaskDto> taskPage(@RequestBody Page<AutoTask> page, @PathVariable String indexId) throws Exception {
+    @GetMapping("/{indexId}/page")
+    public Page<AutoTaskDto> taskPage(Page<AutoTask> page, @PathVariable String indexId) throws Exception {
         return autoTaskService.taskPage(page, indexId);
     }
 
     @ApiOperation("我的任务列表分页")
-    @RequestMapping("/mine/page")
-    public Page<AutoTaskDto> minePage(@RequestBody Page<AutoTask> page) throws Exception {
+    @GetMapping("/mine/page")
+    public Page<AutoTaskDto> minePage(Page<AutoTask> page) throws Exception {
         return autoTaskService.minePage(page);
     }
 
@@ -59,25 +59,25 @@ public class AutoTaskController {
     }
 
     @ApiOperation("校验任务")
-    @RequestMapping("/{indexId}/check")
+    @PostMapping("/{indexId}/check")
     public AjaxResult checkUser(@PathVariable Long indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
         return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(indexId, autoTaskVo, false));
     }
 
     @ApiOperation("校验任务并保存")
-    @RequestMapping("/{indexId}/checkAndSave")
+    @PostMapping("/{indexId}/checkAndSave")
     public AjaxResult checkUserAndSave(@PathVariable Long indexId, @RequestBody AutoTaskVo autoTaskVo) throws Exception {
         return AjaxResult.doSuccess(autoTaskService.checkOrSaveUser(indexId, autoTaskVo, true));
     }
 
     @ApiOperation("校验任务并更新")
-    @RequestMapping("/checkAndUpdate")
+    @PostMapping("/checkAndUpdate")
     public AjaxResult checkUserAndSave(@RequestBody AutoTaskVo autoTaskVo) throws Exception {
         return AjaxResult.doSuccess(autoTaskService.checkAndUpdate(autoTaskVo, true));
     }
 
     @ApiOperation("编辑情况下的校验任务")
-    @RequestMapping("/checkUserWithTask")
+    @PostMapping("/checkUserWithTask")
     public AjaxResult checkUserWithTask(@RequestBody AutoTaskVo autoTaskVo) throws Exception {
         return AjaxResult.doSuccess(autoTaskService.checkAndUpdate(autoTaskVo, false));
     }

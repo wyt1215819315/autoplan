@@ -24,8 +24,8 @@ public class SysUserController {
     private UserService userService;
 
     @ApiOperation("分页查询")
-    @RequestMapping("/page")
-    public Page<SysUser> page(@RequestBody Page<SysUser> page, @RequestBody SysUserVo sysUserVo) {
+    @GetMapping("/page")
+    public Page<SysUser> page(Page<SysUser> page, SysUserVo sysUserVo) {
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(SysUser.class, i -> !"password".equals(i.getProperty()));
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysUserVo.getUsername()), SysUser::getUsername, sysUserVo.getUsername());
@@ -43,7 +43,7 @@ public class SysUserController {
     }
 
     @ApiOperation("更新")
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public AjaxResult update(@RequestBody SysUserVo sysUserVo) {
         if (userService.checkIfAdmin(sysUserVo.getId())) {
             return AjaxResult.doError("不能修改管理员用户！");
@@ -52,7 +52,7 @@ public class SysUserController {
     }
 
     @ApiOperation("新增")
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public AjaxResult save(@RequestBody SysUserVo sysUserVo) {
         return AjaxResult.status(userService.saveUser(sysUserVo));
     }

@@ -26,8 +26,8 @@ public class TaskLogController {
 
     @ApiOperation("列表")
     @SaCheckRole("ADMIN")
-    @RequestMapping("/list")
-    public Page<HistoryTaskLog> list(@RequestBody Page<HistoryTaskLog> page, @RequestBody HistoryTaskLogVo historyTaskLogVo) {
+    @GetMapping("/list")
+    public Page<HistoryTaskLog> list(Page<HistoryTaskLog> page, HistoryTaskLogVo historyTaskLogVo) {
         LambdaQueryWrapper<HistoryTaskLog> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(HistoryTaskLog.class, i -> !"text".equals(i.getProperty()));
         lambdaQueryWrapper.eq(StrUtil.isNotEmpty(historyTaskLogVo.getType()), HistoryTaskLog::getType, historyTaskLogVo.getType());
