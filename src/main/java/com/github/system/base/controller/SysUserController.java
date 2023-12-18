@@ -10,10 +10,7 @@ import com.github.system.base.dto.AjaxResult;
 import com.github.system.auth.vo.SysUserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -37,14 +34,20 @@ public class SysUserController {
     }
 
     @ApiOperation("删除")
-    @RequestMapping("/delete/{id}")
-    public AjaxResult delete(@PathVariable String id) {
+    @GetMapping("/delete/{id}")
+    public AjaxResult delete(@PathVariable Long id) {
+        if (userService.checkIfAdmin(id)) {
+            return AjaxResult.doError("不能删除管理员用户！");
+        }
         return AjaxResult.status(userService.removeById(id));
     }
 
     @ApiOperation("更新")
     @RequestMapping("/update")
     public AjaxResult update(@RequestBody SysUserVo sysUserVo) {
+        if (userService.checkIfAdmin(sysUserVo.getId())) {
+            return AjaxResult.doError("不能修改管理员用户！");
+        }
         return AjaxResult.status(userService.updateUser(sysUserVo));
     }
 

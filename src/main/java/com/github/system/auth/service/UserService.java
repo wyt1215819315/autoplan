@@ -14,4 +14,6 @@ public interface UserService extends IService<SysUser> {
     boolean editSelfPassword(SysUserVo sysUserVo);
 
     String encodePassword(String password);
+
+    boolean checkIfAdmin(Long userId);
 }

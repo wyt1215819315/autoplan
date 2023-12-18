@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.system.auth.dao.SysUserDao;
 import com.github.system.auth.entity.SysUser;
+import com.github.system.auth.service.SysRoleService;
 import com.github.system.auth.service.UserService;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.configuration.SystemBean;
@@ -14,12 +15,15 @@ import com.github.system.auth.vo.SysUserVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements UserService {
 
     @Resource
     private SystemBean systemBean;
+    @Resource
+    private SysRoleService roleService;
 
     @Override
     public SysUser findUserByUsername(String username) {
@@ -58,6 +62,12 @@ public class UserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements
     @Override
     public String encodePassword(String password) {
         return SecureUtil.md5(password + systemBean.getPwdSalt());
+    }
+
+    @Override
+    public boolean checkIfAdmin(Long userId) {
+        List<String> userRole = roleService.getUserRole(userId);
+        return userRole == null || !userRole.contains("ADMIN");
     }
 
 }
