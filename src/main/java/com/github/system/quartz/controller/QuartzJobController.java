@@ -64,7 +64,7 @@ public class QuartzJobController {
 
     @ApiOperation("编辑")
     @PostMapping("/update")
-    public AjaxResult update(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) {
+    public AjaxResult update(@RequestBody @Validated SysQuartzJobVo sysQuartzJobVo) throws SchedulerException {
         if (sysQuartzJobVo.getId() == null) {
             return AjaxResult.doError("id不能为空");
         }
@@ -72,7 +72,18 @@ public class QuartzJobController {
         if (!sysQuartzJobService.isValidExpression(sysQuartzJobVo.getCronExpression())) {
             return AjaxResult.doError("CRON表达式校验不通过！");
         }
-        return sysQuartzJobService.updateById(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
+        SysQuartzJob job = sysQuartzJobService.getById(sysQuartzJobVo.getId());
+        if (job == null) {
+            return AjaxResult.doError();
+        }
+        job.setStatus(sysQuartzJobVo.getStatus());
+        AjaxResult ajaxResult = sysQuartzJobService.updateById(sysQuartzJobVo) ? AjaxResult.doSuccess() : AjaxResult.doError();
+        if (ajaxResult.isSuccess()) {
+            // 修改任务状态
+            sysQuartzJobService.changeStatus(job);
+        }
+        // 提交修改
+        return ajaxResult;
     }
 
     @ApiOperation("获取cron表达式的下n次执行时间")
@@ -86,7 +97,6 @@ public class QuartzJobController {
     public AjaxResult changeStatus(@RequestBody SysQuartzJobVo sysQuartzJobVo) throws SchedulerException {
         SysQuartzJob job = sysQuartzJobService.getById(sysQuartzJobVo.getId());
         job.setStatus(sysQuartzJobVo.getStatus());
-        sysQuartzJobService.updateById(job);
         return AjaxResult.doSuccess(sysQuartzJobService.changeStatus(job));
     }
 

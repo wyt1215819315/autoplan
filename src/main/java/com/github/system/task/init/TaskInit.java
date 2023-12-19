@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.system.base.constant.SystemConstant;
 import com.github.system.base.dto.customform.CustomFormDisplayDto;
 import com.github.system.base.dto.customform.CustomFormDisplayOptions;
+import com.github.system.quartz.base.ScheduleConstants;
 import com.github.system.quartz.dao.SysQuartzJobMapper;
 import com.github.system.quartz.entity.SysQuartzJob;
 import com.github.system.task.annotation.*;
@@ -125,7 +126,11 @@ public class TaskInit {
             if (!invokeTargetList.contains(invokeTarget)) {
                 // 插入一条定时任务
                 log.info("插入定时任务：" + autoIndex.getName());
-                SysQuartzJob sysQuartzJob = new SysQuartzJob(autoIndex.getName() + "定时任务", invokeTarget, SystemConstant.DEFAULT_CRON, 0, 1);
+                SysQuartzJob sysQuartzJob = new SysQuartzJob(autoIndex.getName() + "定时任务",
+                        invokeTarget,
+                        SystemConstant.DEFAULT_CRON,
+                        ScheduleConstants.Concurrent.NOTCONCURRENT.getValue(),
+                        ScheduleConstants.Status.NORMAL.getValue());
                 quartzJobMapper.insert(sysQuartzJob);
             }
         }

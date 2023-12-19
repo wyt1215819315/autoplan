@@ -1,5 +1,7 @@
 package com.github.system.quartz.base;
 
+import lombok.Getter;
+
 /**
  * 任务调度通用常量
  *
@@ -54,7 +56,8 @@ public interface ScheduleConstants {
      */
     public static final Integer STOP_STATUS = 2;
 
-    public enum Status {
+    @Getter
+    enum Status {
         /**
          * 正常
          */
@@ -64,14 +67,29 @@ public interface ScheduleConstants {
          */
         PAUSE(1);
 
-        private Integer value;
+        private final Integer value;
 
-        private Status(Integer value) {
+        Status(Integer value) {
             this.value = value;
         }
 
-        public Integer getValue() {
-            return value;
+    }
+    @Getter
+    enum Concurrent {
+        /**
+         * 并发执行
+         */
+        CONCURRENT(0),
+        /**
+         * 非并发执行
+         */
+        NOTCONCURRENT(1);
+
+        private final Integer value;
+
+        Concurrent(Integer value) {
+            this.value = value;
         }
+
     }
 }
