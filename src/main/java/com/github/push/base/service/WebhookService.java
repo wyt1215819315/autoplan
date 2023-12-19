@@ -13,6 +13,8 @@ public interface WebhookService extends IService<SysWebhook> {
 
     boolean saveOrUpdateCustom(SysWebhook entity) throws Exception;
 
+    boolean changeStatus(SysWebhook sysWebhook);
+
     List<SysWebhook> getUserWebhook(long userId);
 
     AjaxResult checkWebhook(PushData<?> pushData);

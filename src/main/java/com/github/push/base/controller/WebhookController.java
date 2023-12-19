@@ -50,6 +50,15 @@ public class WebhookController {
         return webhookService.saveOrUpdateCustom(sysWebhook) ? AjaxResult.doSuccess() : AjaxResult.doError();
     }
 
+    @ApiOperation("修改状态")
+    @PostMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody SysWebhook sysWebhook) {
+        if (sysWebhook.getId() == null) {
+            return AjaxResult.doError("id不能为空");
+        }
+        return AjaxResult.status(webhookService.changeStatus(sysWebhook));
+    }
+
     @ApiOperation("删除")
     @GetMapping("/delete/{id}")
     public AjaxResult delete(@PathVariable String id) {

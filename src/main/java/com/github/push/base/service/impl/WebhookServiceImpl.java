@@ -68,6 +68,17 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     }
 
     @Override
+    public boolean changeStatus(SysWebhook sysWebhook) {
+        SysWebhook query = getById(sysWebhook.getId());
+        if (query == null) {
+            return false;
+        }
+        query.setEnable(sysWebhook.getEnable());
+        baseMapper.updateById(sysWebhook);
+        return true;
+    }
+
+    @Override
     public List<SysWebhook> getUserWebhook(long userId) {
         LambdaQueryWrapper<SysWebhook> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(SysWebhook::getUserId, userId);
