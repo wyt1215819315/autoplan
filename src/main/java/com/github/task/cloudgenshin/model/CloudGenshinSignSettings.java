@@ -22,7 +22,8 @@ public class CloudGenshinSignSettings extends BaseTaskSettings {
 
     @SettingColumn(name = "客户端类型", options = {
             @SettingColumnOptions(num = 1, name = "IOS设备(1)"),
-            @SettingColumnOptions(num = 2, name = "Android和鸿蒙设备(2)")
+            @SettingColumnOptions(num = 2, name = "Android和鸿蒙设备(2)"),
+            @SettingColumnOptions(num = 3, name = "PC(3)")
     }, desc = "x-rpc-client_type")
     @NotNull
     private Integer clientType;
@@ -43,7 +44,7 @@ public class CloudGenshinSignSettings extends BaseTaskSettings {
     @NotBlank
     private String sysVersion;
 
-    @SettingColumn(name = "下载渠道", desc = "x-rpc-channel")
+    @SettingColumn(name = "下载渠道", desc = "x-rpc-channel", defaultValue = "mihoyo")
     @NotBlank
     private String channel;
 

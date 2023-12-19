@@ -2,6 +2,8 @@ package com.github.push.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
@@ -16,8 +18,12 @@ import com.github.push.model.CustomWebhookConfig;
 import com.github.push.model.push.custom.CustomWebhookHeader;
 import com.github.push.model.push.custom.CustomWebhookParam;
 import com.github.push.model.push.custom.CustomWebhookSuccessFlag;
+import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.service.SysConfigService;
 import com.github.system.base.util.HttpUtil;
+import com.github.system.base.util.SpringUtil;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +45,21 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
         String url = config.getUrl();
         if (!url.startsWith("http")) {
             url = "http://" + url;
+        }
+        // 判断是否启用安全模式，在安全模式下，对本地url网段的请求将被忽略
+        URI uri = new URI(url);
+        String host = uri.getHost();
+        if (Validator.isIpv4(host)) {
+            SysConfigService sysConfigService = SpringUtil.getBean(SysConfigService.class);
+            String ipLimit = sysConfigService.getValueByKey(SystemConstant.CUSTOM_WEBHOOK_IP_LIMIT);
+            if (StrUtil.isNotBlank(ipLimit)) {
+                List<String> ipList = StrUtil.splitTrim(ipLimit, "\n");
+                for (String cidr : ipList) {
+                    if (cidr.equals(host) || NetUtil.isInRange(host, cidr)) {
+                        return PushResultDto.doError("由于安全策略限制，不允许请求此IP地址，如需请求请联系管理员修改配置");
+                    }
+                }
+            }
         }
         Integer requestType = config.getRequestType();
         Integer contentType = config.getContentType();

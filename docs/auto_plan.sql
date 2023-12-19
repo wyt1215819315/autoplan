@@ -101,13 +101,15 @@ CREATE TABLE `sys_config`  (
                                `remark` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
                                PRIMARY KEY (`id`) USING BTREE,
                                UNIQUE INDEX `INDEX_UNIQUE_bond`(`key`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------
 INSERT INTO `sys_config` VALUES (1, 'system_notice_content', NULL, '系统公告文本', '备注测试');
 INSERT INTO `sys_config` VALUES (2, 'system_reg_enable', 'true', '是否开放注册', NULL);
+INSERT INTO `sys_config` VALUES (3, 'custom_webhook_ip_limit', '127.0.0.1\n192.168.1.0/24', '自定义Webhook请求IP段限制', '支持cidr表达式和全等匹配，如192.168.1.1和192.168.1.0/24都能够被识别');
+INSERT INTO `sys_config` VALUES (4, 'user_webhook_max_limit', '10', '用户Webhook最大添加数量配置', NULL);
 
 -- ----------------------------
 -- Table structure for sys_role

@@ -24,8 +24,8 @@ public class SysConfigController {
     @Resource
     private SysConfigService sysConfigService;
 
-    @RequestMapping("/page")
-    public Page<SysConfig> page(@RequestBody Page<SysConfig> page) {
+    @GetMapping("/page")
+    public Page<SysConfig> page(Page<SysConfig> page) {
         return sysConfigService.page(page);
     }
 
