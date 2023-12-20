@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * @author chenjj
@@ -33,6 +34,7 @@ public class JacksonConfig {
         objectMapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         // 序列化时，日期的统一格式
 		objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         // 空值不序列化
 		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper;

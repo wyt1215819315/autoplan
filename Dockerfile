@@ -1,5 +1,8 @@
 FROM amazoncorretto:17
 
+# 配置时区
+ENV TZ=Asia/Shanghai
+
 # 设定工作目录
 WORKDIR /app
 
