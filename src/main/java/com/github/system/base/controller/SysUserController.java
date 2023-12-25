@@ -28,7 +28,7 @@ public class SysUserController {
     public Page<SysUser> page(Page<SysUser> page, SysUserVo sysUserVo) {
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(SysUser.class, i -> !"password".equals(i.getProperty()));
-        lambdaQueryWrapper.eq(StrUtil.isNotEmpty(sysUserVo.getUsername()), SysUser::getUsername, sysUserVo.getUsername());
+        lambdaQueryWrapper.like(StrUtil.isNotEmpty(sysUserVo.getUsername()), SysUser::getUsername, sysUserVo.getUsername());
         lambdaQueryWrapper.orderByDesc(SysUser::getRegdate);
         return userService.page(page, lambdaQueryWrapper);
     }
@@ -54,6 +54,9 @@ public class SysUserController {
     @ApiOperation("新增")
     @PostMapping("/save")
     public AjaxResult save(@RequestBody SysUserVo sysUserVo) {
+        if (StrUtil.isEmpty(sysUserVo.getPassword())) {
+            return AjaxResult.doError("密码不能为空！");
+        }
         return AjaxResult.status(userService.saveUser(sysUserVo));
     }
 

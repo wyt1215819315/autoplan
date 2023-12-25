@@ -10,8 +10,8 @@ import com.github.system.auth.entity.SysUser;
 import com.github.system.auth.service.SysRoleService;
 import com.github.system.auth.service.UserService;
 import com.github.system.auth.util.SessionUtils;
-import com.github.system.base.configuration.SystemBean;
 import com.github.system.auth.vo.SysUserVo;
+import com.github.system.base.configuration.SystemBean;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -67,7 +67,9 @@ public class UserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements
     @Override
     public boolean checkIfAdmin(Long userId) {
         List<String> userRole = roleService.getUserRole(userId);
-        return userRole == null || !userRole.contains("ADMIN");
+        if (userRole == null) {
+            return false;
+        } else return userRole.contains("ADMIN");
     }
 
 }
