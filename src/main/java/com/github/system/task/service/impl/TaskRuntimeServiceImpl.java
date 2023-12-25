@@ -285,31 +285,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             return TaskResult.doSuccess("任务已经在执行了");
         }
         taskLockMap.put(autoTask.getId(), 1);
-        Future<TaskResult> future = executorService.submit(() -> {
-            // 线程池同时能执行的任务就那么几个，所以超时判定必须要放在任务里头去，要是放在外面那不是任务多了必定超时
-            Future<Void> f = ThreadUtil.execAsync(() -> {
-                doTask(autoTask, taskLog);
-                taskLockMap.remove(autoTask.getId());
-                return null;
-            });
-            try {
-                f.get(autoIndex.getTimeout(), TimeUnit.SECONDS);
-                if (autoIndex.getDelay() > 0) {
-                    ThreadUtil.safeSleep(autoIndex.getDelay() * 1000);
-                }
-                return TaskResult.doSuccess("任务执行完毕");
-            } catch (TimeoutException e) {
-                f.cancel(true);
-                endTask(autoTask, taskLog, AutoTaskStatus.TASK_TIMEOUT);
-                return TaskResult.doError("任务执行超时");
-            } catch (Exception e) {
-                endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
-                log.error("任务执行发生未知异常错误", e);
-                return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
-            } finally {
-                taskLockMap.remove(autoTask.getId());
-            }
-        });
+        Future<TaskResult> future = executorService.submit(() -> submitTask(autoTask, taskLog, autoIndex));
         if (async) {
             return TaskResult.doSuccess("任务提交成功！");
         } else {
@@ -319,6 +295,52 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
                 log.error("任务执行器发生错误", e);
                 return TaskResult.doError("任务执行器发生错误" + e.getMessage());
             }
+        }
+    }
+
+    @Override
+    public ExecutorService doTaskSchedule(AutoTask autoTask) {
+        String code = autoTask.getCode();
+        ExecutorService executorService = TaskInit.taskThreadMap.get(code);
+        TaskLog taskLog = new TaskLog();
+        if (executorService == null) {
+            taskLog.errorConsole("没有找到CODE={}的任务执行器", code);
+            return null;
+        }
+        // 查询
+        AutoIndex autoIndex = indexDao.selectOne(new LambdaQueryWrapper<AutoIndex>().eq(AutoIndex::getId, autoTask.getIndexId()));
+        // 增加超时中断和任务重复执行判断
+        if (taskLockMap.containsKey((autoTask.getId()))) {
+            return executorService;
+        }
+        taskLockMap.put(autoTask.getId(), 1);
+        executorService.submit(() -> submitTask(autoTask, taskLog, autoIndex));
+        return executorService;
+    }
+
+    private TaskResult submitTask(AutoTask autoTask, TaskLog taskLog, AutoIndex autoIndex) {
+        // 线程池同时能执行的任务就那么几个，所以超时判定必须要放在任务里头去，要是放在外面那不是任务多了必定超时
+        Future<Void> f = ThreadUtil.execAsync(() -> {
+            doTask(autoTask, taskLog);
+            taskLockMap.remove(autoTask.getId());
+            return null;
+        });
+        try {
+            f.get(autoIndex.getTimeout(), TimeUnit.SECONDS);
+            if (autoIndex.getDelay() > 0) {
+                ThreadUtil.safeSleep(autoIndex.getDelay() * 1000);
+            }
+            return TaskResult.doSuccess("任务执行完毕");
+        } catch (TimeoutException e) {
+            f.cancel(true);
+            endTask(autoTask, taskLog, AutoTaskStatus.TASK_TIMEOUT);
+            return TaskResult.doError("任务执行超时");
+        } catch (Exception e) {
+            endTask(autoTask, taskLog, AutoTaskStatus.UNKNOWN_ERROR);
+            log.error("任务执行发生未知异常错误", e);
+            return TaskResult.doError("任务执行发生未知异常错误：" + e.getMessage());
+        } finally {
+            taskLockMap.remove(autoTask.getId());
         }
     }
 
