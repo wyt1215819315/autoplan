@@ -3,6 +3,7 @@ package com.github.push.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
@@ -55,7 +56,7 @@ public class CustomWebhook implements PushService<CustomWebhookConfig> {
             if (StrUtil.isNotBlank(ipLimit)) {
                 List<String> ipList = StrUtil.splitTrim(ipLimit, "\n");
                 for (String cidr : ipList) {
-                    if (cidr.equals(host) || NetUtil.isInRange(host, cidr)) {
+                    if (cidr.equals(host) || (host.contains(Ipv4Util.IP_MASK_SPLIT_MARK) && NetUtil.isInRange(host, cidr))) {
                         return PushResultDto.doError("由于安全策略限制，不允许请求此IP地址，如需请求请联系管理员修改配置");
                     }
                 }
