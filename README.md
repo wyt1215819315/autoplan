@@ -106,6 +106,11 @@ docker run --name autoplan \
 docker logs autoplan
 ```
 
+### docker-compose部署
+1. 按照`docker-compose.yml`中的提示自行修改，配置好数据库，挂载路径等配置
+2. 执行`docker-compose up -d`
+3. 使用`docker-compose logs`来查看运行日志
+
 ### 手动部署（前后端都需要单独部署）
 
 1. release中打包好的压缩包中包含jdk17环境和启动脚本，根据你的环境选择相对应的包（如果之前已经下过包了，只需要下载auto_plan.jar覆盖掉原来解压出来的即可，如果配置文件有改动的话也要手动改一下）

@@ -1,37 +1,18 @@
 version: '3'
 
 services:
-  mysql:
-    image: mysql:8.0.19
-    container_name: autoplan-mysql
-    restart: always
-    ports:
-      - 3306:3306
-    volumes:
-      - ./auto_plan.sql:/docker-entrypoint-initdb.d/
-    environment:
-      - MYSQL_ROOT_PASSWORD="密码"
-      - TZ="Asia/Shanghai"
-    networks:
-      autoplan_net:
-        aliases:
-          - autoplan-mysql
   autoplan:
-    image: muxia0326/autoplan
+    image: wyt1215819315/auto_plan
     container_name: autoplan
     restart: always
     ports:
-      - 26666:26666
+      - 端口:80
+    # 如果使用自建mysql，无需写volumes挂载
     volumes:
-      - ./application.yml:/tmp/yml/
+      - 内置数据库挂载位置:/app/db
+    #（如果使用sqlite下面的环境变量都不用写，直接删了就行）
     environment:
-      - TZ="Asia/Shanghai"
-    networks:
-      autoplan_net:
-        aliases:
-          - autoplan-mysql
-
-
-networks:
-  autoplan_net:
-    name: autoplan_net
+      - APP_DB_TYPE=数据库类型
+      - APP_DB_URL=数据库地址
+      - APP_DB_USER=数据库用户
+      - APP_DB_PWD=数据库密码
