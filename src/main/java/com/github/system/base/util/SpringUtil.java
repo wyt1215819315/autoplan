@@ -1,6 +1,7 @@
 package com.github.system.base.util;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import com.github.AutoPlanApplication;
 import com.github.system.base.constant.SystemConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
@@ -152,6 +153,20 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil {
             log.error("包扫描时出错：" + e.getMessage(), e);
         }
         return new HashSet<>();
+    }
+
+    /**
+     * 使用代码控制项目进行重启
+     */
+    public static void restartProject() {
+        Thread restartThread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                AutoPlanApplication.restart();
+            } catch (InterruptedException ignored) {}
+        });
+        restartThread.setDaemon(false);
+        restartThread.start();
     }
 
 }

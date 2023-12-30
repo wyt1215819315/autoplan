@@ -1,5 +1,6 @@
 package com.github.system.router.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.system.router.dto.AsyncRouter;
 import com.github.system.router.dto.AsyncRouterChildren;
 import com.github.system.router.dto.AsyncRouterMeta;
@@ -34,7 +35,7 @@ public class SystemRouterServiceImpl implements SystemRouterService {
         for (AutoIndex autoIndex : autoIndices) {
             AsyncRouterMeta meta = new AsyncRouterMeta();
             meta.setTitle(autoIndex.getName());
-            meta.setIcon(autoIndex.getIcon());
+            meta.setIcon(StrUtil.isNotBlank(autoIndex.getIcon()) ? autoIndex.getIcon() : "card");
             meta.setShowParents(true);
             AsyncRouterChildren asyncRouterChildren = new AsyncRouterChildren();
             asyncRouterChildren.setMeta(meta);

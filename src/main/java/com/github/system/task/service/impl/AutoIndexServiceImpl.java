@@ -29,7 +29,7 @@ public class AutoIndexServiceImpl extends ServiceImpl<AutoIndexDao, AutoIndex> i
     @Override
     public List<AutoIndex> userList() {
         LambdaQueryWrapper<AutoIndex> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(AutoIndex::getId, AutoIndex::getCode, AutoIndex::getName)
+        lambdaQueryWrapper.select(AutoIndex::getId, AutoIndex::getCode, AutoIndex::getName, AutoIndex::getIcon)
                 .eq(AutoIndex::getEnable, 1);
         return list(lambdaQueryWrapper);
     }
