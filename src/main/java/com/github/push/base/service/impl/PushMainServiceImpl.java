@@ -9,7 +9,7 @@ import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.PushMainService;
 import com.github.system.base.dao.PushResultLogDao;
-import com.github.system.base.entity.PushResultLog;
+import com.github.push.base.entity.PushResultLog;
 import com.github.system.task.util.ValidatorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

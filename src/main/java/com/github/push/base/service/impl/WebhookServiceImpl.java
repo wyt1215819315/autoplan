@@ -6,23 +6,23 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.push.PushUtil;
 import com.github.push.base.dto.PushResultDto;
+import com.github.push.base.entity.PushResultLog;
+import com.github.push.base.entity.SysWebhook;
 import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.WebhookService;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.configuration.SystemBean;
 import com.github.system.base.constant.SystemConstant;
+import com.github.system.base.dao.PushResultLogDao;
 import com.github.system.base.dao.SysWebhookDao;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.base.entity.SysWebhook;
 import com.github.system.base.service.SysConfigService;
 import com.github.system.task.dto.TaskLog;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> implements WebhookService {
@@ -31,6 +31,9 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     private SystemBean systemBean;
     @Resource
     private SysConfigService configService;
+
+    @Resource
+    private PushResultLogDao pushResultLogDao;
 
     @Override
     public Map<String, Object> getColumn() {
@@ -98,5 +101,16 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
             return AjaxResult.doSuccess("推送成功，请检查是否正常收到推送！");
         }
         return AjaxResult.doError("<h3>推送失败！</h3><br/>" + pushResultDto.getMsg() + (StrUtil.isBlank(pushResultDto.getData()) ? "" : ("<br/>" + pushResultDto.getData())));
+    }
+
+    @Override
+    public List<PushResultLog> getTaskPushResult(Long taskId) {
+        List<PushResultLog> pushResultLogs = pushResultLogDao.selectList(new LambdaQueryWrapper<PushResultLog>().eq(PushResultLog::getTaskId, taskId));
+        if (!pushResultLogs.isEmpty()) {
+            if (Objects.equals(SessionUtils.getUserId(), pushResultLogs.get(0).getUserId()) || SessionUtils.isAdmin()) {
+                return pushResultLogs;
+            }
+        }
+        return new ArrayList<>();
     }
 }

@@ -4,18 +4,20 @@ package com.github.push.base.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.push.base.entity.PushResultLog;
 import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.WebhookService;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.dto.AjaxResult;
-import com.github.system.base.entity.SysWebhook;
+import com.github.push.base.entity.SysWebhook;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "系统Webhook")
@@ -93,6 +95,12 @@ public class WebhookController {
         PushData pushData = new PushData<>();
         pushData.setConfig(bean);
         return webhookService.checkWebhook(pushData);
+    }
+
+    @ApiOperation("根据taskId获取推送结果")
+    @GetMapping("/{taskId}/pushResult")
+    public List<PushResultLog> getTaskPushResult(@PathVariable Long taskId) {
+        return webhookService.getTaskPushResult(taskId);
     }
 
 
