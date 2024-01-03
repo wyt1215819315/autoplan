@@ -44,6 +44,9 @@ public class AutoIndex {
         this.name = name;
         this.code = code;
         this.delay = delay;
+        this.threadNum = 1;
+        this.timeout = 600;
+        this.icon = "";
     }
 
     public AutoIndex(Integer enable, String name, String code, Integer delay, Integer threadNum) {
@@ -52,6 +55,7 @@ public class AutoIndex {
         this.code = code;
         this.delay = delay;
         this.threadNum = threadNum;
+        this.icon = "";
     }
 
     public AutoIndex(Integer enable, String name, String code, Integer delay, Integer threadNum, Integer timeout) {
@@ -61,5 +65,6 @@ public class AutoIndex {
         this.delay = delay;
         this.threadNum = threadNum;
         this.timeout = timeout;
+        this.icon = "";
     }
 }

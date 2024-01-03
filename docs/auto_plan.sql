@@ -24,7 +24,7 @@ CREATE TABLE `auto_index`  (
                                `enable` int NOT NULL DEFAULT 1 COMMENT '是否开启，0不开启 1开启',
                                `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
                                `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '代号',
-                               `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '前端渲染的图标',
+                               `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '前端渲染的图标',
                                `delay` int NOT NULL DEFAULT 0 COMMENT '任务延迟',
                                `thread_num` int NOT NULL DEFAULT 1 COMMENT '任务同时运行的并发数量，为了防止风控一般都是1',
                                `timeout` int NOT NULL DEFAULT 600 COMMENT '超时时间，单位秒',
