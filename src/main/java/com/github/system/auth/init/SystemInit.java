@@ -3,6 +3,7 @@ package com.github.system.auth.init;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.github.system.auth.dao.SysRoleDao;
 import com.github.system.auth.entity.SysRole;
 import com.github.system.auth.entity.SysUser;
