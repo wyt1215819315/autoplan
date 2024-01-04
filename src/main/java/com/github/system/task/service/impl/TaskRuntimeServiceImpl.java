@@ -117,8 +117,9 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             taskLog.error("任务初始化抛出异常:{}", e.getMessage());
             return CheckResult.doError("任务初始化失败", taskLog);
         }
+        LoginResult<?> loginResult;
         try {
-            LoginResult<?> loginResult = service.checkUser();
+            loginResult = service.checkUser();
             if (!loginResult.isSuccess()) {
                 return CheckResult.doError("登录任务执行失败：" + loginResult.getMsg(), taskLog);
             }
@@ -160,7 +161,7 @@ public class TaskRuntimeServiceImpl implements TaskRuntimeService {
             taskLog.error("检查用户抛出异常:{}", e.getMessage());
             return CheckResult.doError("用户校验失败", taskLog);
         }
-        return CheckResult.doSuccess("用户检查通过", taskLog);
+        return CheckResult.doSuccess(StrUtil.isNotBlank(loginResult.getMsg()) ? loginResult.getMsg() : "用户检查通过", taskLog);
     }
 
     private void doTask(AutoTask autoTask, TaskLog taskLog) {
