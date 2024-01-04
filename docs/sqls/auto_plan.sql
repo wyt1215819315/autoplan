@@ -77,12 +77,12 @@ DROP TABLE IF EXISTS `log_push_result`;
 CREATE TABLE `log_push_result`  (
                                     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
                                     `user_id` bigint NULL DEFAULT NULL COMMENT '用户id',
-                                    `task_id` bigint NULL DEFAULT NULL COMMENT '日志id',
+                                    `log_id` bigint NULL DEFAULT NULL COMMENT '日志id',
                                     `success` int NULL DEFAULT NULL COMMENT '是否成功 0失败 1成功',
                                     `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '推送结果数据',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     INDEX `IDX_LOG_RES_USERID`(`user_id`) USING BTREE,
-                                    INDEX `IDX_LOG_RES_TASKID`(`task_id`) USING BTREE
+                                    INDEX `IDX_LOG_RES_LOGID`(`log_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

@@ -9,6 +9,7 @@ import static com.github.system.task.init.TaskInit.taskLogHandlerClassesMap;
 @Data
 public class PushData<T extends PushBaseConfig> {
 
+    private Long webhookId;
     private Long userId;
     private Long logId;
     private TaskLog taskLog;

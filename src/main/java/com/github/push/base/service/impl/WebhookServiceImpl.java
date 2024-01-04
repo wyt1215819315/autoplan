@@ -11,14 +11,17 @@ import com.github.push.base.entity.SysWebhook;
 import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.WebhookService;
+import com.github.push.base.vo.TaskPushResultVo;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.configuration.SystemBean;
 import com.github.system.base.constant.SystemConstant;
 import com.github.system.base.dao.PushResultLogDao;
-import com.github.system.base.dao.SysWebhookDao;
+import com.github.push.base.dao.SysWebhookDao;
 import com.github.system.base.dto.AjaxResult;
 import com.github.system.base.service.SysConfigService;
+import com.github.system.task.dao.HistoryTaskLogDao;
 import com.github.system.task.dto.TaskLog;
+import com.github.system.task.entity.HistoryTaskLog;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,9 +34,10 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     private SystemBean systemBean;
     @Resource
     private SysConfigService configService;
-
     @Resource
     private PushResultLogDao pushResultLogDao;
+    @Resource
+    private HistoryTaskLogDao historyTaskLogDao;
 
     @Override
     public Map<String, Object> getColumn() {
@@ -104,13 +108,12 @@ public class WebhookServiceImpl extends ServiceImpl<SysWebhookDao, SysWebhook> i
     }
 
     @Override
-    public List<PushResultLog> getTaskPushResult(Long taskId) {
-        List<PushResultLog> pushResultLogs = pushResultLogDao.selectList(new LambdaQueryWrapper<PushResultLog>().eq(PushResultLog::getTaskId, taskId));
-        if (!pushResultLogs.isEmpty()) {
-            if (Objects.equals(SessionUtils.getUserId(), pushResultLogs.get(0).getUserId()) || SessionUtils.isAdmin()) {
-                return pushResultLogs;
-            }
+    public List<TaskPushResultVo> getTaskPushResult(Long logId) {
+        // 查log是不是他的
+        HistoryTaskLog historyTaskLog = historyTaskLogDao.selectById(logId);
+        if (historyTaskLog == null || (!Objects.equals(historyTaskLog.getUserId(), SessionUtils.getUserId()) && !SessionUtils.isAdmin())) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+        return pushResultLogDao.getTaskPushResult(logId);
     }
 }

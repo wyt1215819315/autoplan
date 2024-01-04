@@ -9,6 +9,7 @@ import com.github.push.base.init.PushInit;
 import com.github.push.base.model.PushBaseConfig;
 import com.github.push.base.model.PushData;
 import com.github.push.base.service.WebhookService;
+import com.github.push.base.vo.TaskPushResultVo;
 import com.github.system.auth.util.SessionUtils;
 import com.github.system.base.dto.AjaxResult;
 import com.github.push.base.entity.SysWebhook;
@@ -97,10 +98,10 @@ public class WebhookController {
         return webhookService.checkWebhook(pushData);
     }
 
-    @ApiOperation("根据taskId获取推送结果")
-    @GetMapping("/{taskId}/pushResult")
-    public List<PushResultLog> getTaskPushResult(@PathVariable Long taskId) {
-        return webhookService.getTaskPushResult(taskId);
+    @ApiOperation("根据logId获取推送结果")
+    @GetMapping("/{logId}/pushResult")
+    public List<TaskPushResultVo> getTaskPushResult(@PathVariable Long logId) {
+        return webhookService.getTaskPushResult(logId);
     }
 
 

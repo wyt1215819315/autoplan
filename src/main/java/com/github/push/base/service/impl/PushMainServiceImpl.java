@@ -73,9 +73,10 @@ public class PushMainServiceImpl implements PushMainService {
             // 记录日志
             if (pushData.getLogId() != null) {
                 PushResultLog pushResultLog = new PushResultLog();
-                pushResultLog.setTaskId(pushData.getLogId());
+                pushResultLog.setLogId(pushData.getLogId());
                 pushResultLog.setSuccess(pushResultDto.isSuccess() ? 1 : 0);
                 pushResultLog.setUserId(pushData.getUserId());
+                pushResultLog.setWebhookId(pushData.getWebhookId());
                 pushResultLog.setData(pushResultDto.getData());
                 pushResultLog.setDate(new Date());
                 pushResultLogDao.insert(pushResultLog);

@@ -3,6 +3,7 @@ package com.github.push.base.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.push.base.entity.PushResultLog;
 import com.github.push.base.model.PushData;
+import com.github.push.base.vo.TaskPushResultVo;
 import com.github.system.base.dto.AjaxResult;
 import com.github.push.base.entity.SysWebhook;
 
@@ -20,5 +21,5 @@ public interface WebhookService extends IService<SysWebhook> {
 
     AjaxResult checkWebhook(PushData<?> pushData);
 
-    List<PushResultLog> getTaskPushResult(Long taskId);
+    List<TaskPushResultVo> getTaskPushResult(Long logId);
 }

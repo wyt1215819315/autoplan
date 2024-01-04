@@ -38,6 +38,7 @@ public class PushUtil {
                 pushData.setTitle(title);
                 pushData.setTaskLog(taskLog);
                 pushData.setLogId(logId);
+                pushData.setWebhookId(w.getId());
                 pushData.setUserId(userId);
                 pushData.setConfig((T) JSONUtil.toBean(w.getData(), aClass));
                 pushMainService.doPushAsync(pushData);

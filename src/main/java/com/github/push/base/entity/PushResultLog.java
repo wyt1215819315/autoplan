@@ -21,7 +21,10 @@ public class PushResultLog {
     private Long userId;
 
     @ApiModelProperty("任务日志id")
-    private Long taskId;
+    private Long logId;
+
+    @ApiModelProperty("webhook Id")
+    private Long webhookId;
 
     @ApiModelProperty("是否成功 0失败 1成功")
     private Integer success;
