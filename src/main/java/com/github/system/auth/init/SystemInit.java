@@ -64,11 +64,11 @@ public class SystemInit implements CommandLineRunner {
     public void onceSystemUserInit() {
         if (userService.count() == 0) {
             // 生成密码
-            String password = RandomUtil.randomString(6);
+            String password = RandomUtil.randomString(8);
             logger.info("创建初始超级用户：admin 密码：" + password);
             SysUser sysUser = new SysUser();
             sysUser.setUsername("admin");
-            sysUser.setPassword(userService.encodePassword(password));
+            sysUser.setPassword(userService.encodePassword(SecureUtil.md5(password)));
             userService.save(sysUser);
             // 写入超管权限
             sysRoleService.addUserRole(sysUser.getId(), "ADMIN");
