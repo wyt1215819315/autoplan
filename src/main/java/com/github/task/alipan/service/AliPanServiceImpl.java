@@ -67,8 +67,9 @@ public class AliPanServiceImpl extends BaseTaskService<AliPanSettings, AliPanUse
             return TaskResult.doError("获取奖励列表失败：" + jsonObject);
         } else {
             JSONObject data = jsonObject.getJSONObject("result");
+            // 这东西获取的是今天的签到是第几天
             this.signInCount = data.getInt("signInDay");
-            log.info("当前已签到{}天", this.signInCount);
+            log.info("当前签到天为{}", this.signInCount);
             if (!data.getBool("isSignIn")) {
                 log.info("今日已经签到过了，无需再次签到");
             } else {
@@ -79,7 +80,7 @@ public class AliPanServiceImpl extends BaseTaskService<AliPanSettings, AliPanUse
                 } else {
                     data = jsonObject.getJSONObject("result");
                     log.info("[{}]签到成功，{}，奖励描述：{}", this.userInfo.getStr("nick_name"), data.getStr("notice"), data.getStr("description"));
-                    this.signInCount++;
+//                    this.signInCount++;
                 }
             }
             return TaskResult.doSuccess();
