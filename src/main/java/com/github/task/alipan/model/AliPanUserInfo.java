@@ -1,5 +1,6 @@
 package com.github.task.alipan.model;
 
+import com.github.system.desensitized.DataDesensitization;
 import com.github.system.task.annotation.UserInfoColumn;
 import com.github.system.task.model.BaseUserInfo;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
 public class AliPanUserInfo extends BaseUserInfo {
 
     @UserInfoColumn("昵称")
+    @DataDesensitization
     private String nickName;
 
     @UserInfoColumn("本月签到数量")
